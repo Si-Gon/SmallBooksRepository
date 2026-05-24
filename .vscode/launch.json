@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "MicroserviceConfigApplication",
+            "request": "launch",
+            "mainClass": "com.microservice.config.MicroserviceConfigApplication",
+            "projectName": "microservice-config"
+        },
+        {
+            "type": "java",
+            "name": "MicroserviceGatewayApplication",
+            "request": "launch",
+            "mainClass": "com.microservice.gateway.microservice_gateway.MicroserviceGatewayApplication",
+            "projectName": "microservice-gateway"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-MicroserviceEurekaApplication<microservice-eureka>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.microservice.eureka.MicroserviceEurekaApplication",
+            "projectName": "microservice-eureka",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

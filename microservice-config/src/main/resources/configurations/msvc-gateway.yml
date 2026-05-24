@@ -1,0 +1,70 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: msvc-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+
+        - id: identity-service-public
+          uri: lb://identity-service
+          predicates:
+            - Path=/auth/**
+
+        - id: catalog-service
+          uri: lb://catalog-service
+          predicates:
+            - Path=/api/catalog/**
+          filters:
+            - name: JwtAuthFilter
+            
+        - id: license-service
+          uri: lb://license-service
+          predicates:
+            - Path=/api/licenses/**
+          filters:
+            - name: JwtAuthFilter
+
+        - id: elending-service
+          uri: lb://elending-service
+          predicates:
+            - Path=/api/lending/**
+          filters:
+            - name: JwtAuthFilter
+
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+          - Path=/api/notifications/**
+          filters:
+          - name: JwtAuthFilter
+
+        - id: subscription-service
+          uri: lb://subscription-service
+          predicates:
+          - Path=/api/subscriptions/**
+          filters:
+          - name: JwtAuthFilter
+        # Aquí irán las rutas de cada MS de SmallBooks
+        # Se agregan a medida que se construyen en Fase 2-4
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: true    
+    fetch-registry: true          
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+# Clave JWT — misma que usa identity-service para firmar los tokens
+# El gateway la usa para validar sin llamar a identity-service
+jwt:
+  secret: Duoc.1983Duoc.1983Duoc.1983Duoc.1983
+        

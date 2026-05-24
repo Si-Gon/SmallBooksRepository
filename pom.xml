@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.3.11</version> 
+    <relativePath/>
+</parent>
+
+  <groupId>com.mycompany.app</groupId>
+  <artifactId>SpringMicroService</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>SmallBooks — Plataforma de Biblioteca Digital</name>
+  <packaging>pom</packaging>
+
+  <!-- ============================================================ -->
+  <!-- MÓDULOS DEL PROYECTO                                         -->
+  <!-- Cada módulo es un microservicio independiente.               -->
+  <!-- Orden recomendado de arranque:                               -->
+  <!--   1. microservice-config  :8888                              -->
+  <!--   2. microservice-eureka  :8761                              -->
+  <!--   3. identity-service     :8084                              -->
+  <!--   4. microservice-gateway :8080                              -->
+  <!-- Los MS de negocio (catalog, lending, etc.) se agregan        -->
+  <!-- a medida que se construyen en Fase 2-4                       -->
+  <!-- ============================================================ -->
+  <modules>
+    <module>microservice-config</module>
+    <module>microservice-eureka</module>
+    <module>microservice-gateway</module>
+    <module>identity-service</module>
+    <module>catalog-service</module>
+    <module>license-service</module>
+    <!-- <module>elending-service</module>      -->
+    <!-- Fase 3 — Entrega de contenido -->
+    <!-- <module>ingestion-service</module>     -->
+    <!-- <module>content-delivery-service</module> -->
+    <!-- Fase 4 — Valor agregado -->
+    <!-- <module>notification-service</module>  -->
+    <!-- <module>subscription-service</module>  -->
+    <!-- <module>search-service</module>        -->
+    <!-- <module>analytics-service</module>     -->
+  </modules>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.release>17</maven.compiler.release>
+    <!-- BOM de Spring Cloud compatible con Spring Boot 3.1.x -->
+    <spring-cloud.version>2023.0.5</spring-cloud.version>
+  </properties>
+
+  
+  <!-- DEPENDENCIAS GLOBALES                                        -->
+  <!-- Todo módulo hijo hereda estas dependencias automáticamente   -->
+ 
+  <dependencies>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.30</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+  
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring-cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>3.1.5</version>
+          <configuration>
+            <excludes>
+              <exclude>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+              </exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>
