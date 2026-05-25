@@ -2,7 +2,7 @@ package com.silvio.subscription.controller;
 
 import com.silvio.subscription.dto.SuscripcionRequestDTO;
 import com.silvio.subscription.dto.SuscripcionResponseDTO;
-import com.silvio.subscription.service.SubscriptionService;
+import com.silvio.subscription.service.SuscripcionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,16 +17,23 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/subscriptions")
 @RequiredArgsConstructor
-public class SubscriptionController {
+public class SuscripcionController {
 
-    private final SubscriptionService subscriptionService;
+    private final SuscripcionService suscripcionService;
 
     @GetMapping("/mi-plan")
     public ResponseEntity<SuscripcionResponseDTO> miPlan(
             @RequestHeader("Authorization") String authHeader) {
         String usuarioId = extraerUsuario(authHeader);
-        return ResponseEntity.ok(subscriptionService.obtenerPorUsuario(usuarioId));
+        return ResponseEntity.ok(suscripcionService.obtenerPorUsuario(usuarioId));
     }
+    
+    // Endpoint interno para Feign — consulta por usuarioId directo
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<SuscripcionResponseDTO> obtenerPorUsuarioId(
+            @PathVariable String usuarioId) {
+        return ResponseEntity.ok(suscripcionService.obtenerPorUsuario(usuarioId));
+}
 
     @PostMapping
     public ResponseEntity<SuscripcionResponseDTO> crear(
@@ -34,14 +41,14 @@ public class SubscriptionController {
             @RequestHeader("Authorization") String authHeader) {
         String usuarioId = extraerUsuario(authHeader);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(subscriptionService.crear(request, usuarioId));
+                .body(suscripcionService.crear(request, usuarioId));
     }
 
     @PatchMapping("/cancelar")
     public ResponseEntity<SuscripcionResponseDTO> cancelar(
             @RequestHeader("Authorization") String authHeader) {
         String usuarioId = extraerUsuario(authHeader);
-        return ResponseEntity.ok(subscriptionService.cancelar(usuarioId));
+        return ResponseEntity.ok(suscripcionService.cancelar(usuarioId));
     }
 
     // Mismo método que LendingController — extrae username del token JWT

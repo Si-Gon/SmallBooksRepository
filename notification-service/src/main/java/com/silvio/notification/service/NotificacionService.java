@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class NotificationService {
+public class NotificacionService {
 
     private final NotificacionRepository notificacionRepository;
 

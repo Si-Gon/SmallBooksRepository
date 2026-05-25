@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class SubscriptionService {
+public class SuscripcionService {
 
     private final SuscripcionRepository suscripcionRepository;
 

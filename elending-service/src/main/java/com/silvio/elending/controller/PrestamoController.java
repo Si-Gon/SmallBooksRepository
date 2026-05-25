@@ -45,10 +45,9 @@ public class PrestamoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(prestamo);
     }
 
-    // -----------------------------------------------------------------------
     // GET /api/lending/prestamos/activos
     // Lista los préstamos activos del usuario autenticado
-    // -----------------------------------------------------------------------
+    
     @GetMapping("/prestamos/activos")
     public ResponseEntity<List<PrestamoResponseDTO>> obtenerActivos(
             @RequestHeader("Authorization") String authHeader) {
@@ -57,10 +56,9 @@ public class PrestamoController {
         return ResponseEntity.ok(prestamoService.obtenerPrestamosActivos(usuarioId));
     }
 
-    // -----------------------------------------------------------------------
     // GET /api/lending/prestamos/historial
     // Lista todos los préstamos (activos y vencidos) del usuario
-    // -----------------------------------------------------------------------
+    
     @GetMapping("/prestamos/historial")
     public ResponseEntity<List<PrestamoResponseDTO>> obtenerHistorial(
             @RequestHeader("Authorization") String authHeader) {
@@ -68,12 +66,28 @@ public class PrestamoController {
         String usuarioId = extraerUsuarioDelToken(authHeader);
         return ResponseEntity.ok(prestamoService.obtenerHistorial(usuarioId));
     }
+    
+    // GET /api/lending/prestamos/todos
+    // Usado por Analytics Service via Feign para calcular estadísticas globales
+    
+    @GetMapping("/prestamos/todos")
+    public ResponseEntity<List<PrestamoResponseDTO>> obtenerTodos() {
+        return ResponseEntity.ok(prestamoService.obtenerTodos());
+    }
+ 
+    // GET /api/lending/prestamos/historial/{usuarioId}
+    // Usado por Analytics Service via Feign para historial de un usuario
+    
+    @GetMapping("/prestamos/historial/{usuarioId}")
+    public ResponseEntity<List<PrestamoResponseDTO>> obtenerHistorialPorId(
+            @PathVariable String usuarioId) {
+        return ResponseEntity.ok(prestamoService.obtenerHistorial(usuarioId));
+    }
 
-    // -----------------------------------------------------------------------
     // Método privado: extrae el username del token JWT
     // El token tiene 3 partes separadas por puntos: header.payload.signature
     // El payload está en Base64 y contiene el campo "sub" con el username
-    // -----------------------------------------------------------------------
+    
     private String extraerUsuarioDelToken(String authHeader) {
         try {
             // Quitar "Bearer "
