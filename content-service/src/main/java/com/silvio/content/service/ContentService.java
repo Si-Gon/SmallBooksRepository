@@ -1,0 +1,58 @@
+package com.silvio.content.service;
+
+import com.silvio.content.client.IngestionClient;
+import com.silvio.content.client.LendingClient;
+import com.silvio.content.dto.PrestamoDTO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class ContentService {
+
+    private final LendingClient lendingClient;
+    private final IngestionClient ingestionClient;
+
+    public byte[] obtenerArchivo(Long libroId, String authHeader) {
+        log.info("Solicitud de acceso al archivo del libro id: {}", libroId);
+
+        // Paso 1: Verificar préstamo activo
+        List<PrestamoDTO> prestamosActivos;
+        try {
+            prestamosActivos = lendingClient.obtenerPrestamosActivos(authHeader);
+            log.info("Préstamos activos encontrados: {}", prestamosActivos.size());
+        } catch (Exception e) {
+            log.error("Error al verificar préstamos — libro: {}: {}", libroId, e.getMessage());
+            throw new RuntimeException("No se pudo verificar el préstamo: " + e.getMessage());
+        }
+
+        // Paso 2: Verificar que tiene el libro
+        boolean tienePrestamo = prestamosActivos.stream()
+                .anyMatch(p -> p.getLibroId().equals(libroId) &&
+                               "ACTIVO".equals(p.getEstado()));
+
+        if (!tienePrestamo) {
+            log.warn("Acceso denegado — sin préstamo activo para libro id: {}", libroId);
+            throw new RuntimeException(
+                    "Acceso denegado — no tienes un préstamo activo del libro con id: " + libroId);
+        }
+
+        log.info("Préstamo verificado — entregando archivo del libro id: {}", libroId);
+
+        // Paso 3: Obtener el archivo
+        try {
+            byte[] bytes = ingestionClient.obtenerBytes(libroId);
+            log.info("Archivo entregado exitosamente — libro: {}, tamaño: {} bytes",
+                    libroId, bytes.length);
+            return bytes;
+        } catch (Exception e) {
+            log.error("Error al obtener archivo del libro {}: {}", libroId, e.getMessage());
+            throw new RuntimeException(
+                    "No se pudo obtener el archivo del libro con id: " + libroId);
+        }
+    }
+}

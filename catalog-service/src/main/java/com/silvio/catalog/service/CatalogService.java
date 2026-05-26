@@ -4,48 +4,51 @@ import com.silvio.catalog.dto.LibroRequestDTO;
 import com.silvio.catalog.dto.LibroResponseDTO;
 import com.silvio.catalog.model.Libro;
 import com.silvio.catalog.repository.LibroRepository;
+
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@NonNull
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CatalogService {
 
     private final LibroRepository libroRepository;
 
-    
-    // GET todos los libros
-
     public List<LibroResponseDTO> obtenerTodos() {
+        log.info("Consultando todos los libros del catálogo");
         return libroRepository.findAll()
                 .stream()
                 .map(this::mapearADto)
                 .collect(Collectors.toList());
     }
 
-    // GET solo disponibles — para mostrar qué se puede prestar
-   
     public List<LibroResponseDTO> obtenerDisponibles() {
+        log.info("Consultando libros disponibles");
         return libroRepository.findByDisponibleTrue()
                 .stream()
                 .map(this::mapearADto)
                 .collect(Collectors.toList());
     }
 
-    // GET por id
-   
-    public LibroResponseDTO obtenerPorId(Long id) {
+    public LibroResponseDTO obtenerPorId(@NonNull Long id) {
+        log.info("Consultando libro con id: {}", id);
         Libro libro = libroRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Libro no encontrado con id: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Libro no encontrado con id: {}", id);
+                    return new RuntimeException("Libro no encontrado con id: " + id);
+                });
         return mapearADto(libro);
     }
 
-    // Búsqueda por título, autor o género
-    
     public List<LibroResponseDTO> buscar(String titulo, String autor, String genero) {
+        log.info("Búsqueda — titulo: {}, autor: {}, genero: {}", titulo, autor, genero);
         if (titulo != null && !titulo.isBlank()) {
             return libroRepository.findByTituloContainingIgnoreCase(titulo)
                     .stream().map(this::mapearADto).collect(Collectors.toList());
@@ -58,17 +61,16 @@ public class CatalogService {
             return libroRepository.findByGeneroIgnoreCase(genero)
                     .stream().map(this::mapearADto).collect(Collectors.toList());
         }
-        // Si no se especifica ningún filtro devuelve todos
         return obtenerTodos();
     }
 
-    // POST — agregar libro al catálogo
-  
     public LibroResponseDTO agregar(LibroRequestDTO request) {
+        log.info("Agregando libro al catálogo — ISBN: {}, título: {}", 
+                request.getIsbn(), request.getTitulo());
 
-        // Verificar ISBN duplicado
         libroRepository.findByIsbn(request.getIsbn())
                 .ifPresent(l -> {
+                    log.warn("ISBN duplicado: {}", request.getIsbn());
                     throw new RuntimeException("Ya existe un libro con ISBN: " + request.getIsbn());
                 });
 
@@ -82,16 +84,21 @@ public class CatalogService {
         libro.setGenero(request.getGenero());
         libro.setSinopsis(request.getSinopsis());
         libro.setPortadaUrl(request.getPortadaUrl());
-        libro.setDisponible(true); // todo libro nuevo nace disponible
+        libro.setDisponible(true);
 
-        return mapearADto(libroRepository.save(libro));
+        Libro guardado = libroRepository.save(libro);
+        log.info("Libro agregado exitosamente — id: {}, título: {}", 
+                guardado.getId(), guardado.getTitulo());
+        return mapearADto(guardado);
     }
 
-    // PUT — actualizar datos del libro
-    
-    public LibroResponseDTO actualizar(Long id, LibroRequestDTO request) {
+    public LibroResponseDTO actualizar(@NonNull Long id, LibroRequestDTO request) {
+        log.info("Actualizando libro id: {}", id);
         Libro libro = libroRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Libro no encontrado con id: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Libro no encontrado para actualizar — id: {}", id);
+                    return new RuntimeException("Libro no encontrado con id: " + id);
+                });
 
         libro.setTitulo(request.getTitulo());
         libro.setAutor(request.getAutor());
@@ -103,30 +110,26 @@ public class CatalogService {
         libro.setSinopsis(request.getSinopsis());
         libro.setPortadaUrl(request.getPortadaUrl());
 
+        log.info("Libro actualizado exitosamente — id: {}", id);
         return mapearADto(libroRepository.save(libro));
     }
 
-    // PATCH — cambiar disponibilidad
-    // Llamado por E-Lending Service via Feign cuando se crea o cierra un préstamo
-    
-    public LibroResponseDTO cambiarDisponibilidad(Long id, Boolean disponible) {
+    public LibroResponseDTO cambiarDisponibilidad(@NonNull Long id, Boolean disponible) {
+        log.info("Cambiando disponibilidad libro id: {} → {}", id, disponible);
         Libro libro = libroRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Libro no encontrado con id: " + id));
-
         libro.setDisponible(disponible);
         return mapearADto(libroRepository.save(libro));
     }
 
-    // DELETE — eliminar libro del catálogo
-    
-    public void eliminar(Long id) {
+    public void eliminar(@NonNull Long id) {
+        log.info("Eliminando libro id: {}", id);
         Libro libro = libroRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Libro no encontrado con id: " + id));
         libroRepository.delete(libro);
+        log.info("Libro eliminado exitosamente — id: {}", id);
     }
 
-    // Mapeo privado Entidad → ResponseDTO
-    
     private LibroResponseDTO mapearADto(Libro libro) {
         LibroResponseDTO dto = new LibroResponseDTO();
         dto.setId(libro.getId());

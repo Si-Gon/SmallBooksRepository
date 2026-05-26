@@ -3,6 +3,7 @@ package com.silvio.identity.service;
 import com.silvio.identity.model.User;
 import com.silvio.identity.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,6 +17,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
@@ -25,21 +27,28 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void registerUser(String username, String rawPassword, Set<String> roles) {
+        log.info("Registrando nuevo usuario: {}", username);
         if (userRepository.findByUsername(username).isPresent()) {
+            log.warn("Intento de registro con username ya existente: {}", username);
             throw new RuntimeException(" El usuario '" + username + "' ya existe");
         }
-        
+
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(rawPassword));
         user.setRoles(roles != null && !roles.isEmpty() ? roles : Set.of("ROLE_USER"));
         userRepository.save(user);
+        log.info("Usuario registrado exitosamente: {} con roles: {}", username, user.getRoles());
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.info("Cargando usuario para autenticación: {}", username);
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(" Usuario no encontrado: " + username));
+                .orElseThrow(() -> {
+                    log.warn("Usuario no encontrado: {}", username);
+                    return new UsernameNotFoundException(" Usuario no encontrado: " + username);
+                });
 
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
@@ -52,42 +61,52 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public String createPasswordResetToken(String username) {
+        log.info("Generando token de recuperación para: {}", username);
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException(" Usuario no encontrado"));
-        
+
         String resetToken = UUID.randomUUID().toString();
         user.setResetToken(resetToken);
-        user.setResetTokenExpiry(LocalDateTime.now().plusHours(24)); // Válido por 24 horas
+        user.setResetTokenExpiry(LocalDateTime.now().plusHours(24));
         userRepository.save(user);
-        
+        log.info("Token de recuperación generado para usuario: {}", username);
         return resetToken;
     }
 
     @Transactional
     public void resetPassword(String token, String newPassword) {
+        log.info("Intentando reset de contraseña con token");
         User user = userRepository.findByResetToken(token)
-                .orElseThrow(() -> new RuntimeException(" Token de recuperación inválido"));
-        
+                .orElseThrow(() -> {
+                    log.warn("Token de recuperación inválido");
+                    return new RuntimeException(" Token de recuperación inválido");
+                });
+
         if (user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
+            log.warn("Token de recuperación expirado para usuario: {}", user.getUsername());
             throw new RuntimeException(" El token de recuperación ha expirado");
         }
-        
+
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setResetToken(null);
         user.setResetTokenExpiry(null);
         userRepository.save(user);
+        log.info("Contraseña actualizada exitosamente para usuario: {}", user.getUsername());
     }
 
     @Transactional
     public void changePassword(String username, String currentPassword, String newPassword) {
+        log.info("Cambiando contraseña para usuario: {}", username);
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException(" Usuario no encontrado"));
-        
+
         if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            log.warn("Contraseña actual incorrecta para usuario: {}", username);
             throw new RuntimeException(" Contraseña actual incorrecta");
         }
-        
+
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
+        log.info("Contraseña cambiada exitosamente para usuario: {}", username);
     }
 }

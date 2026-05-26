@@ -66,6 +66,20 @@ spring:
           filters:
             - name: JwtAuthFilter
 
+        - id: ingestion-service
+          uri: lb://ingestion-service
+          predicates:
+            - Path=/api/ingestion/**
+          filters:
+            - name: JwtAuthFilter
+
+        - id: content-service
+          uri: lb://content-service
+          predicates:
+            - Path=/api/content/**
+          filters:
+            - name: JwtAuthFilter
+
 eureka:
   instance:
     hostname: localhost

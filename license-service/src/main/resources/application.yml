@@ -3,3 +3,10 @@ spring:
     name: license-service
   config:
     import: optional:configserver:http://localhost:8888
+
+logging:
+  file:
+    name: logs/smallbooks.log
+  level:
+    root: INFO
+    com.silvio: DEBUG

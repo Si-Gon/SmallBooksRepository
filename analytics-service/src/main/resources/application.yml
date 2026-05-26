@@ -3,3 +3,12 @@ spring:
     name: analytics-service
   config:
     import: optional:configserver:http://localhost:8888
+
+logging:
+  file:
+    name: logs/smallbooks.log   # ← se crea en la raíz del proyecto
+  level:
+    root: INFO
+    com.silvio: DEBUG           # ← para ver los logs de la aplicación
+    
+    

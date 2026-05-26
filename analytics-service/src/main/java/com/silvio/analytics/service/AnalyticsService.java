@@ -4,84 +4,78 @@ import com.silvio.analytics.client.LendingClient;
 import com.silvio.analytics.dto.EstadisticasDTO;
 import com.silvio.analytics.dto.PrestamoAnalyticsDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AnalyticsService {
 
     private final LendingClient lendingClient;
 
-    // Estadísticas globales del sistema
-    
     public EstadisticasDTO obtenerEstadisticas() {
+        log.info("Calculando estadísticas globales del sistema");
         List<PrestamoAnalyticsDTO> todos;
         try {
             todos = lendingClient.obtenerTodos();
+            log.info("Total préstamos obtenidos para análisis: {}", todos.size());
         } catch (Exception e) {
+            log.error("Error al obtener datos de préstamos: {}", e.getMessage());
             throw new RuntimeException("Error al obtener datos de préstamos: " + e.getMessage());
         }
 
         EstadisticasDTO stats = new EstadisticasDTO();
-
-        // Total de préstamos
         stats.setTotalPrestamos((long) todos.size());
 
-        // Activos y vencidos
-        stats.setPrestamosActivos(
-                todos.stream().filter(p -> "ACTIVO".equals(p.getEstado())).count());
-        stats.setPrestamosVencidos(
-                todos.stream().filter(p -> "VENCIDO".equals(p.getEstado())).count());
+        long activos = todos.stream().filter(p -> "ACTIVO".equals(p.getEstado())).count();
+        long vencidos = todos.stream().filter(p -> "VENCIDO".equals(p.getEstado())).count();
+        stats.setPrestamosActivos(activos);
+        stats.setPrestamosVencidos(vencidos);
 
-        // Top 5 libros más prestados
-        // Agrupa por libroId, cuenta cuántos préstamos tiene cada uno,
-        // ordena descendente y toma los primeros 5
+        log.info("Estadísticas — total: {}, activos: {}, vencidos: {}",
+                todos.size(), activos, vencidos);
+
         Map<Long, Long> librosMasPrestados = todos.stream()
                 .collect(Collectors.groupingBy(
-                        PrestamoAnalyticsDTO::getLibroId,
-                        Collectors.counting()))
+                        PrestamoAnalyticsDTO::getLibroId, Collectors.counting()))
                 .entrySet().stream()
                 .sorted(Map.Entry.<Long, Long>comparingByValue().reversed())
                 .limit(5)
                 .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (e1, e2) -> e1,
-                        java.util.LinkedHashMap::new));
+                        Map.Entry::getKey, Map.Entry::getValue,
+                        (e1, e2) -> e1, java.util.LinkedHashMap::new));
 
         stats.setLibrosMasPrestados(librosMasPrestados);
 
-        // Top 5 usuarios más activos
         Map<String, Long> usuariosMasActivos = todos.stream()
                 .collect(Collectors.groupingBy(
-                        PrestamoAnalyticsDTO::getUsuarioId,
-                        Collectors.counting()))
+                        PrestamoAnalyticsDTO::getUsuarioId, Collectors.counting()))
                 .entrySet().stream()
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
                 .limit(5)
                 .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (e1, e2) -> e1,
-                        java.util.LinkedHashMap::new));
+                        Map.Entry::getKey, Map.Entry::getValue,
+                        (e1, e2) -> e1, java.util.LinkedHashMap::new));
 
         stats.setUsuariosMasActivos(usuariosMasActivos);
-
+        log.info("Estadísticas calculadas exitosamente");
         return stats;
     }
 
-    // Historial de préstamos de un usuario específico
-    
     public List<PrestamoAnalyticsDTO> historialUsuario(String usuarioId) {
+        log.info("Consultando historial del usuario: {}", usuarioId);
         try {
-            return lendingClient.obtenerHistorial(usuarioId);
+            List<PrestamoAnalyticsDTO> historial = lendingClient.obtenerHistorial(usuarioId);
+            log.info("Historial del usuario {}: {} préstamos", usuarioId, historial.size());
+            return historial;
         } catch (Exception e) {
-            throw new RuntimeException(
-                    "Error al obtener historial del usuario: " + usuarioId);
+            log.error("Error al obtener historial del usuario {}: {}", usuarioId, e.getMessage());
+            throw new RuntimeException("Error al obtener historial del usuario: " + usuarioId);
         }
     }
 }

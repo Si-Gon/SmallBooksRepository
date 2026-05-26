@@ -6,41 +6,45 @@ import com.silvio.subscription.model.Suscripcion;
 import com.silvio.subscription.model.Suscripcion.PlanSuscripcion;
 import com.silvio.subscription.repository.SuscripcionRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SuscripcionService {
 
     private final SuscripcionRepository suscripcionRepository;
 
-    // Reglas por plan — centralizadas aquí para fácil mantenimiento
     private static final int BASICO_MAX_PRESTAMOS = 2;
     private static final int BASICO_DIAS_PRESTAMO = 7;
     private static final int PREMIUM_MAX_PRESTAMOS = 5;
     private static final int PREMIUM_DIAS_PRESTAMO = 14;
 
-    // Consultar suscripción activa — usado por E-Lending via Feign
-   
     public SuscripcionResponseDTO obtenerPorUsuario(String usuarioId) {
+        log.info("Consultando suscripción activa del usuario: {}", usuarioId);
         Suscripcion suscripcion = suscripcionRepository
                 .findByUsuarioIdAndActivaTrue(usuarioId)
-                .orElseThrow(() -> new RuntimeException(
-                        "No hay suscripción activa para el usuario: " + usuarioId));
+                .orElseThrow(() -> {
+                    log.warn("Sin suscripción activa para usuario: {}", usuarioId);
+                    return new RuntimeException(
+                            "No hay suscripción activa para el usuario: " + usuarioId);
+                });
         return mapearADto(suscripcion);
     }
 
-    // Crear nueva suscripción
-    
     @Transactional
     public SuscripcionResponseDTO crear(SuscripcionRequestDTO request, String usuarioId) {
+        log.info("Creando suscripción {} para usuario: {}, duración: {} mes(es)",
+                request.getPlan(), usuarioId, request.getMeses());
 
-        // Si ya tiene una activa, cancelarla primero
         suscripcionRepository.findByUsuarioIdAndActivaTrue(usuarioId)
                 .ifPresent(s -> {
+                    log.info("Cancelando suscripción anterior {} para usuario: {}",
+                            s.getPlan(), usuarioId);
                     s.setActiva(false);
                     suscripcionRepository.save(s);
                 });
@@ -53,25 +57,25 @@ public class SuscripcionService {
         suscripcion.setFechaFin(ahora.plusMonths(request.getMeses()));
         suscripcion.setActiva(true);
 
-        return mapearADto(suscripcionRepository.save(suscripcion));
+        Suscripcion guardada = suscripcionRepository.save(suscripcion);
+        log.info("Suscripción creada — id: {}, usuario: {}, plan: {}, vence: {}",
+                guardada.getId(), usuarioId, guardada.getPlan(), guardada.getFechaFin());
+        return mapearADto(guardada);
     }
 
-    // Cancelar suscripción
-    
     @Transactional
     public SuscripcionResponseDTO cancelar(String usuarioId) {
+        log.info("Cancelando suscripción del usuario: {}", usuarioId);
         Suscripcion suscripcion = suscripcionRepository
                 .findByUsuarioIdAndActivaTrue(usuarioId)
                 .orElseThrow(() -> new RuntimeException(
                         "No hay suscripción activa para el usuario: " + usuarioId));
 
         suscripcion.setActiva(false);
+        log.info("Suscripción cancelada — usuario: {}, plan: {}", usuarioId, suscripcion.getPlan());
         return mapearADto(suscripcionRepository.save(suscripcion));
     }
 
-    // Mapeo — incluye reglas del plan en la respuesta
-    // E-Lending consulta estos valores para aplicar límites
-    
     private SuscripcionResponseDTO mapearADto(Suscripcion s) {
         SuscripcionResponseDTO dto = new SuscripcionResponseDTO();
         dto.setId(s.getId());
@@ -81,7 +85,6 @@ public class SuscripcionService {
         dto.setFechaFin(s.getFechaFin());
         dto.setActiva(s.getActiva());
 
-        // Aplicar reglas según el plan
         if (s.getPlan() == PlanSuscripcion.PREMIUM) {
             dto.setMaxPrestamos(PREMIUM_MAX_PRESTAMOS);
             dto.setDiasPrestamo(PREMIUM_DIAS_PRESTAMO);
@@ -89,7 +92,6 @@ public class SuscripcionService {
             dto.setMaxPrestamos(BASICO_MAX_PRESTAMOS);
             dto.setDiasPrestamo(BASICO_DIAS_PRESTAMO);
         }
-
         return dto;
     }
 }
