@@ -1,64 +1,112 @@
-2026-05-25T20:00:48.426-04:00  INFO 16100 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Starting LicenseServiceApplication using Java 17.0.10 with PID 16100 (C:\WorkSpace\cursos-microservicios\license-service\target\classes started by Silvi in C:\WorkSpace\cursos-microservicios\license-service)
-2026-05-25T20:00:48.429-04:00 DEBUG 16100 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Running with Spring Boot v3.5.14, Spring v6.2.18
-2026-05-25T20:00:48.431-04:00  INFO 16100 --- [license-service] [main] c.s.license.LicenseServiceApplication    : No active profile set, falling back to 1 default profile: "default"
-2026-05-25T20:00:48.483-04:00  INFO 16100 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-05-25T20:00:48.483-04:00  INFO 16100 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=license-service, profiles=[default], label=null, version=null, state=null
-2026-05-25T20:00:49.380-04:00  INFO 16100 --- [license-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-05-25T20:00:49.576-04:00  INFO 16100 --- [license-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 182 ms. Found 1 JPA repository interface.
-2026-05-25T20:00:49.834-04:00  INFO 16100 --- [license-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=51164738-b375-334e-9617-18716ad85492
-2026-05-25T20:00:50.305-04:00  INFO 16100 --- [license-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8086 (http)
-2026-05-25T20:00:50.324-04:00  INFO 16100 --- [license-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-05-25T20:00:50.324-04:00  INFO 16100 --- [license-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.54]
-2026-05-25T20:00:50.409-04:00  INFO 16100 --- [license-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-05-25T20:00:50.411-04:00  INFO 16100 --- [license-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1924 ms
-2026-05-25T20:00:50.674-04:00  INFO 16100 --- [license-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-05-25T20:00:50.883-04:00  INFO 16100 --- [license-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4ffe3d42
-2026-05-25T20:00:50.885-04:00  INFO 16100 --- [license-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-05-25T20:00:50.950-04:00  INFO 16100 --- [license-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_license?useSSL=false&serverTimezone=UTC (MySQL 8.4)
-2026-05-25T20:00:50.963-04:00  WARN 16100 --- [license-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-05-25T20:00:51.020-04:00  INFO 16100 --- [license-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.043s)
-2026-05-25T20:00:51.039-04:00  INFO 16100 --- [license-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_license`: 2
-2026-05-25T20:00:51.045-04:00  INFO 16100 --- [license-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_license` is up to date. No migration necessary.
-2026-05-25T20:00:51.158-04:00  INFO 16100 --- [license-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-05-25T20:00:51.219-04:00  INFO 16100 --- [license-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.49.Final
-2026-05-25T20:00:51.256-04:00  INFO 16100 --- [license-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-05-25T20:00:51.558-04:00  INFO 16100 --- [license-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-05-25T20:00:51.630-04:00  WARN 16100 --- [license-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-05-25T20:00:51.654-04:00  INFO 16100 --- [license-service] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
-	Database driver: undefined/unknown
-	Database version: 8.4.3
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2026-05-25T20:00:52.728-04:00  INFO 16100 --- [license-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-05-25T20:00:52.770-04:00  INFO 16100 --- [license-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-05-25T20:00:53.282-04:00  WARN 16100 --- [license-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-05-25T20:00:53.814-04:00  INFO 16100 --- [license-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-05-25T20:00:53.877-04:00  WARN 16100 --- [license-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-05-25T20:00:53.925-04:00  INFO 16100 --- [license-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-05-25T20:00:53.957-04:00  INFO 16100 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-05-25T20:00:53.961-04:00  INFO 16100 --- [license-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-25T20:00:53.973-04:00  INFO 16100 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-05-25T20:00:53.974-04:00  INFO 16100 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-05-25T20:00:53.974-04:00  INFO 16100 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-05-25T20:00:53.974-04:00  INFO 16100 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-05-25T20:00:53.975-04:00  INFO 16100 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-05-25T20:00:53.975-04:00  INFO 16100 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-05-25T20:00:53.975-04:00  INFO 16100 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-05-25T20:00:54.265-04:00  INFO 16100 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-05-25T20:00:54.268-04:00  INFO 16100 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-05-25T20:00:54.270-04:00  INFO 16100 --- [license-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-05-25T20:00:54.272-04:00  INFO 16100 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1779753654271 with initial instances count: 11
-2026-05-25T20:00:54.276-04:00  INFO 16100 --- [license-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application LICENSE-SERVICE with eureka with status UP
-2026-05-25T20:00:54.277-04:00  INFO 16100 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1779753654277, current=UP, previous=STARTING]
-2026-05-25T20:00:54.279-04:00  INFO 16100 --- [license-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_LICENSE-SERVICE/DESKTOP-N7DD3QB:license-service:8086: registering service...
-2026-05-25T20:00:54.311-04:00  INFO 16100 --- [license-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8086 (http) with context path '/'
-2026-05-25T20:00:54.312-04:00  INFO 16100 --- [license-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8086
-2026-05-25T20:00:54.322-04:00  INFO 16100 --- [license-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_LICENSE-SERVICE/DESKTOP-N7DD3QB:license-service:8086 - registration status: 204
-2026-05-25T20:00:54.353-04:00  INFO 16100 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Started LicenseServiceApplication in 7.06 seconds (process running for 7.559)
-2026-05-25T20:05:53.980-04:00  INFO 16100 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-25T20:10:53.983-04:00  INFO 16100 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-25T20:15:53.993-04:00  INFO 16100 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-25T20:20:54.003-04:00  INFO 16100 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-27T12:56:51.739-04:00  INFO 5196 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Starting LicenseServiceApplication using Java 17.0.10 with PID 5196 (C:\WorkSpace\smallbooks-microservicios\license-service\target\classes started by Silvi in C:\WorkSpace\smallbooks-microservicios\license-service)
+2026-05-27T12:56:51.748-04:00 DEBUG 5196 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-05-27T12:56:51.749-04:00  INFO 5196 --- [license-service] [main] c.s.license.LicenseServiceApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-05-27T12:56:51.801-04:00  INFO 5196 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-05-27T12:56:51.802-04:00  INFO 5196 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=license-service, profiles=[default], label=null, version=null, state=null
+2026-05-27T12:56:52.449-04:00  INFO 5196 --- [license-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-27T12:56:52.591-04:00  INFO 5196 --- [license-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 130 ms. Found 1 JPA repository interface.
+2026-05-27T12:56:52.755-04:00  INFO 5196 --- [license-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=faa7db41-f8b3-3de8-bc6f-009ca1a9b23f
+2026-05-27T12:56:53.145-04:00  INFO 5196 --- [license-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8086 (http)
+2026-05-27T12:56:53.158-04:00  INFO 5196 --- [license-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-27T12:56:53.159-04:00  INFO 5196 --- [license-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-05-27T12:56:53.238-04:00  INFO 5196 --- [license-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-05-27T12:56:53.239-04:00  INFO 5196 --- [license-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1435 ms
+2026-05-27T12:56:53.422-04:00  INFO 5196 --- [license-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-05-27T12:56:53.574-04:00  INFO 5196 --- [license-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@500ec769
+2026-05-27T12:56:53.576-04:00  INFO 5196 --- [license-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-05-27T12:56:53.623-04:00  INFO 5196 --- [license-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_license (MySQL 8.4)
+2026-05-27T12:56:53.632-04:00  WARN 5196 --- [license-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-05-27T12:56:53.679-04:00  INFO 5196 --- [license-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.038s)
+2026-05-27T12:56:53.694-04:00  INFO 5196 --- [license-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_license`: 2
+2026-05-27T12:56:53.698-04:00  INFO 5196 --- [license-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_license` is up to date. No migration necessary.
+2026-05-27T12:56:53.773-04:00  INFO 5196 --- [license-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-05-27T12:56:53.827-04:00  INFO 5196 --- [license-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-05-27T12:56:53.860-04:00  INFO 5196 --- [license-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-05-27T12:56:54.138-04:00  INFO 5196 --- [license-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-27T12:56:54.193-04:00  WARN 5196 --- [license-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-27T12:56:54.872-04:00  INFO 5196 --- [license-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-27T12:56:54.896-04:00  INFO 5196 --- [license-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-27T12:56:55.291-04:00  WARN 5196 --- [license-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-27T12:56:55.840-04:00  INFO 5196 --- [license-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-05-27T12:56:55.881-04:00  WARN 5196 --- [license-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-05-27T12:56:55.926-04:00  INFO 5196 --- [license-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-05-27T12:56:55.955-04:00  INFO 5196 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-05-27T12:56:55.959-04:00  INFO 5196 --- [license-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-27T12:56:55.968-04:00  INFO 5196 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-05-27T12:56:55.968-04:00  INFO 5196 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-05-27T12:56:55.968-04:00  INFO 5196 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-05-27T12:56:55.969-04:00  INFO 5196 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-05-27T12:56:55.969-04:00  INFO 5196 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-05-27T12:56:55.969-04:00  INFO 5196 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-05-27T12:56:55.969-04:00  INFO 5196 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-05-27T12:56:56.246-04:00  INFO 5196 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-05-27T12:56:56.247-04:00  INFO 5196 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-05-27T12:56:56.249-04:00  INFO 5196 --- [license-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-05-27T12:56:56.250-04:00  INFO 5196 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1779901016250 with initial instances count: 2
+2026-05-27T12:56:56.255-04:00  INFO 5196 --- [license-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application LICENSE-SERVICE with eureka with status UP
+2026-05-27T12:56:56.257-04:00  INFO 5196 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1779901016257, current=UP, previous=STARTING]
+2026-05-27T12:56:56.258-04:00  INFO 5196 --- [license-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_LICENSE-SERVICE/DESKTOP-N7DD3QB:license-service:8086: registering service...
+2026-05-27T12:56:56.282-04:00  INFO 5196 --- [license-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8086 (http) with context path '/'
+2026-05-27T12:56:56.283-04:00  INFO 5196 --- [license-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8086
+2026-05-27T12:56:56.292-04:00  INFO 5196 --- [license-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_LICENSE-SERVICE/DESKTOP-N7DD3QB:license-service:8086 - registration status: 204
+2026-05-27T12:56:56.328-04:00  INFO 5196 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Started LicenseServiceApplication in 5.44 seconds (process running for 5.924)
+2026-05-27T13:01:11.143-04:00  INFO 22236 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Starting LicenseServiceApplication using Java 17.0.10 with PID 22236 (C:\WorkSpace\smallbooks-microservicios\license-service\target\classes started by Silvi in C:\WorkSpace\smallbooks-microservicios\license-service)
+2026-05-27T13:01:11.145-04:00 DEBUG 22236 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-05-27T13:01:11.146-04:00  INFO 22236 --- [license-service] [main] c.s.license.LicenseServiceApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-05-27T13:01:11.187-04:00  INFO 22236 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-05-27T13:01:11.188-04:00  INFO 22236 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=license-service, profiles=[default], label=null, version=null, state=null
+2026-05-27T13:01:11.854-04:00  INFO 22236 --- [license-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-27T13:01:11.997-04:00  INFO 22236 --- [license-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 133 ms. Found 1 JPA repository interface.
+2026-05-27T13:01:12.161-04:00  INFO 22236 --- [license-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=faa7db41-f8b3-3de8-bc6f-009ca1a9b23f
+2026-05-27T13:01:12.525-04:00  INFO 22236 --- [license-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8086 (http)
+2026-05-27T13:01:12.537-04:00  INFO 22236 --- [license-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-27T13:01:12.538-04:00  INFO 22236 --- [license-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-05-27T13:01:12.619-04:00  INFO 22236 --- [license-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-05-27T13:01:12.619-04:00  INFO 22236 --- [license-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1429 ms
+2026-05-27T13:01:12.817-04:00  INFO 22236 --- [license-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-05-27T13:01:12.974-04:00  INFO 22236 --- [license-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@136fece2
+2026-05-27T13:01:12.976-04:00  INFO 22236 --- [license-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-05-27T13:01:13.026-04:00  INFO 22236 --- [license-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_license (MySQL 8.4)
+2026-05-27T13:01:13.036-04:00  WARN 22236 --- [license-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-05-27T13:01:13.075-04:00  INFO 22236 --- [license-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.029s)
+2026-05-27T13:01:13.087-04:00  INFO 22236 --- [license-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_license`: 2
+2026-05-27T13:01:13.091-04:00  INFO 22236 --- [license-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_license` is up to date. No migration necessary.
+2026-05-27T13:01:13.153-04:00  INFO 22236 --- [license-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-05-27T13:01:13.205-04:00  INFO 22236 --- [license-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-05-27T13:01:13.243-04:00  INFO 22236 --- [license-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-05-27T13:01:13.513-04:00  INFO 22236 --- [license-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-27T13:01:13.571-04:00  WARN 22236 --- [license-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-27T13:01:14.283-04:00  INFO 22236 --- [license-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-27T13:01:14.305-04:00  INFO 22236 --- [license-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-27T13:01:14.643-04:00  WARN 22236 --- [license-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-27T13:01:15.134-04:00  INFO 22236 --- [license-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-05-27T13:01:15.171-04:00  WARN 22236 --- [license-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-05-27T13:01:15.227-04:00  INFO 22236 --- [license-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-05-27T13:01:15.251-04:00  INFO 22236 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-05-27T13:01:15.255-04:00  INFO 22236 --- [license-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-27T13:01:15.263-04:00  INFO 22236 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-05-27T13:01:15.264-04:00  INFO 22236 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-05-27T13:01:15.264-04:00  INFO 22236 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-05-27T13:01:15.264-04:00  INFO 22236 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-05-27T13:01:15.264-04:00  INFO 22236 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-05-27T13:01:15.264-04:00  INFO 22236 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-05-27T13:01:15.265-04:00  INFO 22236 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-05-27T13:01:15.510-04:00  INFO 22236 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-05-27T13:01:15.512-04:00  INFO 22236 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-05-27T13:01:15.514-04:00  INFO 22236 --- [license-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-05-27T13:01:15.515-04:00  INFO 22236 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1779901275515 with initial instances count: 4
+2026-05-27T13:01:15.518-04:00  INFO 22236 --- [license-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application LICENSE-SERVICE with eureka with status UP
+2026-05-27T13:01:15.519-04:00  INFO 22236 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1779901275519, current=UP, previous=STARTING]
+2026-05-27T13:01:15.521-04:00  INFO 22236 --- [license-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_LICENSE-SERVICE/DESKTOP-N7DD3QB:license-service:8086: registering service...
+2026-05-27T13:01:15.540-04:00  INFO 22236 --- [license-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8086 (http) with context path '/'
+2026-05-27T13:01:15.541-04:00  INFO 22236 --- [license-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8086
+2026-05-27T13:01:15.550-04:00  INFO 22236 --- [license-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_LICENSE-SERVICE/DESKTOP-N7DD3QB:license-service:8086 - registration status: 204
+2026-05-27T13:01:15.586-04:00  INFO 22236 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Started LicenseServiceApplication in 5.288 seconds (process running for 5.754)
+2026-05-27T13:06:15.272-04:00  INFO 22236 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-27T13:07:44.161-04:00  INFO 22236 --- [license-service] [http-nio-8086-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-27T13:07:44.161-04:00  INFO 22236 --- [license-service] [http-nio-8086-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-05-27T13:07:44.163-04:00  INFO 22236 --- [license-service] [http-nio-8086-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-05-27T13:07:44.195-04:00  INFO 22236 --- [license-service] [http-nio-8086-exec-1] c.silvio.license.service.LicenseService  : Consultando todas las licencias
+2026-05-27T13:11:15.279-04:00  INFO 22236 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-27T13:16:15.289-04:00  INFO 22236 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-27T13:21:15.290-04:00  INFO 22236 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

@@ -5,14 +5,16 @@
             "name": "MicroserviceConfigApplication",
             "request": "launch",
             "mainClass": "com.microservice.config.MicroserviceConfigApplication",
-            "projectName": "microservice-config"
+            "projectName": "microservice-config",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=49681 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=microservice-config"
         },
         {
             "type": "java",
             "name": "MicroserviceGatewayApplication",
             "request": "launch",
             "mainClass": "com.microservice.gateway.microservice_gateway.MicroserviceGatewayApplication",
-            "projectName": "microservice-gateway"
+            "projectName": "microservice-gateway",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=51357 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=microservice-gateway"
         },
         {
             "type": "java",
@@ -21,6 +23,110 @@
             "cwd": "${workspaceFolder}",
             "mainClass": "com.microservice.eureka.MicroserviceEurekaApplication",
             "projectName": "microservice-eureka",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=51299 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=microservice-eureka"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-IdentityServiceApplication<identity-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.silvio.identity.IdentityServiceApplication",
+            "projectName": "identity-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=51337 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=identity-service"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-CatalogServiceApplication<catalog-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.silvio.catalog.CatalogServiceApplication",
+            "projectName": "catalog-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=49734 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=catalog-service"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-LicenseServiceApplication<license-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.silvio.license.LicenseServiceApplication",
+            "projectName": "license-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=49781 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=license-service"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-PrestamoServiceApplication<elending-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.silvio.elending.PrestamoServiceApplication",
+            "projectName": "elending-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ContentServiceApplication<content-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.silvio.content.ContentServiceApplication",
+            "projectName": "content-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-IngestionServiceApplication<ingestion-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.silvio.ingestion.IngestionServiceApplication",
+            "projectName": "ingestion-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-NotificationServiceApplication<notification-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.silvio.notification.NotificationServiceApplication",
+            "projectName": "notification-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-SearchServiceApplication<search-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.silvio.search.SearchServiceApplication",
+            "projectName": "search-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-SubscriptionServiceApplication<subscription-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.silvio.subscription.SubscriptionServiceApplication",
+            "projectName": "subscription-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-AnalyticsServiceApplication<analytics-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.silvio.analytics.AnalyticsServiceApplication",
+            "projectName": "analytics-service",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
         }

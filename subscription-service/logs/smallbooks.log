@@ -1,64 +1,56 @@
-2026-05-25T20:01:54.893-04:00  INFO 6016 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Starting SubscriptionServiceApplication using Java 17.0.10 with PID 6016 (C:\WorkSpace\cursos-microservicios\subscription-service\target\classes started by Silvi in C:\WorkSpace\cursos-microservicios\subscription-service)
-2026-05-25T20:01:54.895-04:00 DEBUG 6016 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Running with Spring Boot v3.5.14, Spring v6.2.18
-2026-05-25T20:01:54.897-04:00  INFO 6016 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : No active profile set, falling back to 1 default profile: "default"
-2026-05-25T20:01:54.971-04:00  INFO 6016 --- [subscription-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-05-25T20:01:54.973-04:00  INFO 6016 --- [subscription-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=subscription-service, profiles=[default], label=null, version=null, state=null
-2026-05-25T20:01:55.703-04:00  INFO 6016 --- [subscription-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-05-25T20:01:55.868-04:00  INFO 6016 --- [subscription-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 152 ms. Found 1 JPA repository interface.
-2026-05-25T20:01:56.146-04:00  INFO 6016 --- [subscription-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=0a4f31ed-fd62-384b-8fcd-17ba459de7b4
-2026-05-25T20:01:56.537-04:00  INFO 6016 --- [subscription-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8089 (http)
-2026-05-25T20:01:56.554-04:00  INFO 6016 --- [subscription-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-05-25T20:01:56.554-04:00  INFO 6016 --- [subscription-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.54]
-2026-05-25T20:01:56.622-04:00  INFO 6016 --- [subscription-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-05-25T20:01:56.623-04:00  INFO 6016 --- [subscription-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1648 ms
-2026-05-25T20:01:56.832-04:00  INFO 6016 --- [subscription-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-05-25T20:01:57.025-04:00  INFO 6016 --- [subscription-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7fc1fd31
-2026-05-25T20:01:57.027-04:00  INFO 6016 --- [subscription-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-05-25T20:01:57.083-04:00  INFO 6016 --- [subscription-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_subscriptions?useSSL=false&serverTimezone=UTC (MySQL 8.4)
-2026-05-25T20:01:57.096-04:00  WARN 6016 --- [subscription-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-05-25T20:01:57.148-04:00  INFO 6016 --- [subscription-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.039s)
-2026-05-25T20:01:57.170-04:00  INFO 6016 --- [subscription-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_subscriptions`: 1
-2026-05-25T20:01:57.174-04:00  INFO 6016 --- [subscription-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_subscriptions` is up to date. No migration necessary.
-2026-05-25T20:01:57.269-04:00  INFO 6016 --- [subscription-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-05-25T20:01:57.328-04:00  INFO 6016 --- [subscription-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.49.Final
-2026-05-25T20:01:57.367-04:00  INFO 6016 --- [subscription-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-05-25T20:01:57.653-04:00  INFO 6016 --- [subscription-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-05-25T20:01:57.722-04:00  WARN 6016 --- [subscription-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-05-25T20:01:57.740-04:00  INFO 6016 --- [subscription-service] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
-	Database driver: undefined/unknown
-	Database version: 8.4.3
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2026-05-25T20:01:58.600-04:00  INFO 6016 --- [subscription-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-05-25T20:01:58.640-04:00  INFO 6016 --- [subscription-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-05-25T20:01:59.033-04:00  WARN 6016 --- [subscription-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-05-25T20:01:59.648-04:00  INFO 6016 --- [subscription-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-05-25T20:01:59.702-04:00  WARN 6016 --- [subscription-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-05-25T20:01:59.728-04:00  INFO 6016 --- [subscription-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-05-25T20:01:59.762-04:00  INFO 6016 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-05-25T20:01:59.767-04:00  INFO 6016 --- [subscription-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-25T20:01:59.778-04:00  INFO 6016 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-05-25T20:01:59.780-04:00  INFO 6016 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-05-25T20:01:59.780-04:00  INFO 6016 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-05-25T20:01:59.780-04:00  INFO 6016 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-05-25T20:01:59.780-04:00  INFO 6016 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-05-25T20:01:59.781-04:00  INFO 6016 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-05-25T20:01:59.781-04:00  INFO 6016 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-05-25T20:02:00.094-04:00  INFO 6016 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-05-25T20:02:00.098-04:00  INFO 6016 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-05-25T20:02:00.101-04:00  INFO 6016 --- [subscription-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-05-25T20:02:00.103-04:00  INFO 6016 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1779753720103 with initial instances count: 11
-2026-05-25T20:02:00.109-04:00  INFO 6016 --- [subscription-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application SUBSCRIPTION-SERVICE with eureka with status UP
-2026-05-25T20:02:00.109-04:00  INFO 6016 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1779753720109, current=UP, previous=STARTING]
-2026-05-25T20:02:00.112-04:00  INFO 6016 --- [subscription-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SUBSCRIPTION-SERVICE/DESKTOP-N7DD3QB:subscription-service:8089: registering service...
-2026-05-25T20:02:00.144-04:00  INFO 6016 --- [subscription-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8089 (http) with context path '/'
-2026-05-25T20:02:00.149-04:00  INFO 6016 --- [subscription-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8089
-2026-05-25T20:02:00.157-04:00  INFO 6016 --- [subscription-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SUBSCRIPTION-SERVICE/DESKTOP-N7DD3QB:subscription-service:8089 - registration status: 204
-2026-05-25T20:02:00.197-04:00  INFO 6016 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Started SubscriptionServiceApplication in 6.365 seconds (process running for 6.932)
-2026-05-25T20:06:59.784-04:00  INFO 6016 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-25T20:11:59.795-04:00  INFO 6016 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-25T20:16:59.796-04:00  INFO 6016 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-25T20:21:59.798-04:00  INFO 6016 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-27T13:01:48.393-04:00  INFO 5412 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Starting SubscriptionServiceApplication using Java 17.0.10 with PID 5412 (C:\WorkSpace\smallbooks-microservicios\subscription-service\target\classes started by Silvi in C:\WorkSpace\smallbooks-microservicios\subscription-service)
+2026-05-27T13:01:48.400-04:00 DEBUG 5412 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-05-27T13:01:48.401-04:00  INFO 5412 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-05-27T13:01:48.449-04:00  INFO 5412 --- [subscription-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-05-27T13:01:48.449-04:00  INFO 5412 --- [subscription-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=subscription-service, profiles=[default], label=null, version=null, state=null
+2026-05-27T13:01:49.074-04:00  INFO 5412 --- [subscription-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-27T13:01:49.216-04:00  INFO 5412 --- [subscription-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 134 ms. Found 1 JPA repository interface.
+2026-05-27T13:01:49.410-04:00  INFO 5412 --- [subscription-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=432f4b66-354a-3308-9fb5-4aff9554b802
+2026-05-27T13:01:49.849-04:00  INFO 5412 --- [subscription-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8089 (http)
+2026-05-27T13:01:49.866-04:00  INFO 5412 --- [subscription-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-27T13:01:49.867-04:00  INFO 5412 --- [subscription-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-05-27T13:01:49.962-04:00  INFO 5412 --- [subscription-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-05-27T13:01:49.963-04:00  INFO 5412 --- [subscription-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1512 ms
+2026-05-27T13:01:50.208-04:00  INFO 5412 --- [subscription-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-05-27T13:01:50.367-04:00  INFO 5412 --- [subscription-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@fee881
+2026-05-27T13:01:50.370-04:00  INFO 5412 --- [subscription-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-05-27T13:01:50.421-04:00  INFO 5412 --- [subscription-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_subscriptions (MySQL 8.4)
+2026-05-27T13:01:50.434-04:00  WARN 5412 --- [subscription-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-05-27T13:01:50.480-04:00  INFO 5412 --- [subscription-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.036s)
+2026-05-27T13:01:50.498-04:00  INFO 5412 --- [subscription-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_subscriptions`: 1
+2026-05-27T13:01:50.501-04:00  INFO 5412 --- [subscription-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_subscriptions` is up to date. No migration necessary.
+2026-05-27T13:01:50.575-04:00  INFO 5412 --- [subscription-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-05-27T13:01:50.630-04:00  INFO 5412 --- [subscription-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-05-27T13:01:50.664-04:00  INFO 5412 --- [subscription-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-05-27T13:01:50.977-04:00  INFO 5412 --- [subscription-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-27T13:01:51.043-04:00  WARN 5412 --- [subscription-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-27T13:01:51.723-04:00  INFO 5412 --- [subscription-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-27T13:01:51.748-04:00  INFO 5412 --- [subscription-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-27T13:01:52.169-04:00  WARN 5412 --- [subscription-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-27T13:01:52.631-04:00  INFO 5412 --- [subscription-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-05-27T13:01:52.672-04:00  WARN 5412 --- [subscription-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-05-27T13:01:52.729-04:00  INFO 5412 --- [subscription-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-05-27T13:01:52.757-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-05-27T13:01:52.761-04:00  INFO 5412 --- [subscription-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-27T13:01:52.770-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-05-27T13:01:52.771-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-05-27T13:01:52.771-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-05-27T13:01:52.771-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-05-27T13:01:52.771-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-05-27T13:01:52.772-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-05-27T13:01:52.772-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-05-27T13:01:53.069-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-05-27T13:01:53.071-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-05-27T13:01:53.074-04:00  INFO 5412 --- [subscription-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-05-27T13:01:53.075-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1779901313075 with initial instances count: 7
+2026-05-27T13:01:53.079-04:00  INFO 5412 --- [subscription-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application SUBSCRIPTION-SERVICE with eureka with status UP
+2026-05-27T13:01:53.080-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1779901313080, current=UP, previous=STARTING]
+2026-05-27T13:01:53.081-04:00  INFO 5412 --- [subscription-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SUBSCRIPTION-SERVICE/DESKTOP-N7DD3QB:subscription-service:8089: registering service...
+2026-05-27T13:01:53.104-04:00  INFO 5412 --- [subscription-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8089 (http) with context path '/'
+2026-05-27T13:01:53.106-04:00  INFO 5412 --- [subscription-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8089
+2026-05-27T13:01:53.112-04:00  INFO 5412 --- [subscription-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SUBSCRIPTION-SERVICE/DESKTOP-N7DD3QB:subscription-service:8089 - registration status: 204
+2026-05-27T13:01:53.151-04:00  INFO 5412 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Started SubscriptionServiceApplication in 5.687 seconds (process running for 6.178)
+2026-05-27T13:06:52.775-04:00  INFO 5412 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-27T13:11:52.789-04:00  INFO 5412 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-27T13:16:52.794-04:00  INFO 5412 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-27T13:21:52.797-04:00  INFO 5412 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

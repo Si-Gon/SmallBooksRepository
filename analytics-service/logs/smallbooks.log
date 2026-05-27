@@ -1,40 +1,39 @@
-2026-05-25T19:56:44.097-04:00  INFO 6520 --- [analytics-service] [main] c.s.a.AnalyticsServiceApplication        : Starting AnalyticsServiceApplication using Java 17.0.10 with PID 6520 (C:\WorkSpace\cursos-microservicios\analytics-service\target\classes started by Silvi in C:\WorkSpace\cursos-microservicios\analytics-service)
-2026-05-25T19:56:44.100-04:00 DEBUG 6520 --- [analytics-service] [main] c.s.a.AnalyticsServiceApplication        : Running with Spring Boot v3.5.14, Spring v6.2.18
-2026-05-25T19:56:44.101-04:00  INFO 6520 --- [analytics-service] [main] c.s.a.AnalyticsServiceApplication        : No active profile set, falling back to 1 default profile: "default"
-2026-05-25T19:56:44.138-04:00  INFO 6520 --- [analytics-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-05-25T19:56:44.139-04:00  INFO 6520 --- [analytics-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=analytics-service, profiles=[default], label=null, version=null, state=null
-2026-05-25T19:56:44.930-04:00  INFO 6520 --- [analytics-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=4c8edeb9-ebb4-3414-8694-0bb2ad5af0e9
-2026-05-25T19:56:45.298-04:00  INFO 6520 --- [analytics-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8091 (http)
-2026-05-25T19:56:45.316-04:00  INFO 6520 --- [analytics-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-05-25T19:56:45.317-04:00  INFO 6520 --- [analytics-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.54]
-2026-05-25T19:56:45.397-04:00  INFO 6520 --- [analytics-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-05-25T19:56:45.398-04:00  INFO 6520 --- [analytics-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1256 ms
-2026-05-25T19:56:45.802-04:00  INFO 6520 --- [analytics-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'elending-service' URL not provided. Will try picking an instance via load-balancing.
-2026-05-25T19:56:46.348-04:00  INFO 6520 --- [analytics-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-05-25T19:56:46.376-04:00  WARN 6520 --- [analytics-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-05-25T19:56:46.410-04:00  INFO 6520 --- [analytics-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-05-25T19:56:46.445-04:00  INFO 6520 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-05-25T19:56:46.454-04:00  INFO 6520 --- [analytics-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-25T19:56:46.464-04:00  INFO 6520 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-05-25T19:56:46.464-04:00  INFO 6520 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-05-25T19:56:46.464-04:00  INFO 6520 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-05-25T19:56:46.465-04:00  INFO 6520 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-05-25T19:56:46.465-04:00  INFO 6520 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-05-25T19:56:46.465-04:00  INFO 6520 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-05-25T19:56:46.465-04:00  INFO 6520 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-05-25T19:56:46.768-04:00  INFO 6520 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-05-25T19:56:46.771-04:00  INFO 6520 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-05-25T19:56:46.774-04:00  INFO 6520 --- [analytics-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-05-25T19:56:46.775-04:00  INFO 6520 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1779753406775 with initial instances count: 11
-2026-05-25T19:56:46.779-04:00  INFO 6520 --- [analytics-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application ANALYTICS-SERVICE with eureka with status UP
-2026-05-25T19:56:46.780-04:00  INFO 6520 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1779753406780, current=UP, previous=STARTING]
-2026-05-25T19:56:46.783-04:00  INFO 6520 --- [analytics-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ANALYTICS-SERVICE/DESKTOP-N7DD3QB:analytics-service:8091: registering service...
-2026-05-25T19:56:46.808-04:00  INFO 6520 --- [analytics-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8091 (http) with context path '/'
-2026-05-25T19:56:46.810-04:00  INFO 6520 --- [analytics-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8091
-2026-05-25T19:56:46.830-04:00  INFO 6520 --- [analytics-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ANALYTICS-SERVICE/DESKTOP-N7DD3QB:analytics-service:8091 - registration status: 204
-2026-05-25T19:56:46.861-04:00  INFO 6520 --- [analytics-service] [main] c.s.a.AnalyticsServiceApplication        : Started AnalyticsServiceApplication in 3.74 seconds (process running for 4.244)
-2026-05-25T20:01:46.479-04:00  INFO 6520 --- [analytics-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-25T20:06:46.485-04:00  INFO 6520 --- [analytics-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-25T20:11:46.495-04:00  INFO 6520 --- [analytics-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-25T20:16:46.504-04:00  INFO 6520 --- [analytics-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-25T20:21:46.516-04:00  INFO 6520 --- [analytics-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-27T13:01:56.868-04:00  INFO 24340 --- [analytics-service] [main] c.s.a.AnalyticsServiceApplication        : Starting AnalyticsServiceApplication using Java 17.0.10 with PID 24340 (C:\WorkSpace\smallbooks-microservicios\analytics-service\target\classes started by Silvi in C:\WorkSpace\smallbooks-microservicios\analytics-service)
+2026-05-27T13:01:56.878-04:00 DEBUG 24340 --- [analytics-service] [main] c.s.a.AnalyticsServiceApplication        : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-05-27T13:01:56.880-04:00  INFO 24340 --- [analytics-service] [main] c.s.a.AnalyticsServiceApplication        : No active profile set, falling back to 1 default profile: "default"
+2026-05-27T13:01:56.922-04:00  INFO 24340 --- [analytics-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-05-27T13:01:56.922-04:00  INFO 24340 --- [analytics-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=analytics-service, profiles=[default], label=null, version=null, state=null
+2026-05-27T13:01:57.661-04:00  INFO 24340 --- [analytics-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=fdb9be2d-dc0e-363c-b104-ec7a375174bc
+2026-05-27T13:01:57.998-04:00  INFO 24340 --- [analytics-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8091 (http)
+2026-05-27T13:01:58.014-04:00  INFO 24340 --- [analytics-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-27T13:01:58.014-04:00  INFO 24340 --- [analytics-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-05-27T13:01:58.092-04:00  INFO 24340 --- [analytics-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-05-27T13:01:58.092-04:00  INFO 24340 --- [analytics-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1168 ms
+2026-05-27T13:01:58.378-04:00  INFO 24340 --- [analytics-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'elending-service' URL not provided. Will try picking an instance via load-balancing.
+2026-05-27T13:01:58.816-04:00  INFO 24340 --- [analytics-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-05-27T13:01:58.840-04:00  WARN 24340 --- [analytics-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-05-27T13:01:58.889-04:00  INFO 24340 --- [analytics-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-05-27T13:01:58.918-04:00  INFO 24340 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-05-27T13:01:58.924-04:00  INFO 24340 --- [analytics-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-27T13:01:58.933-04:00  INFO 24340 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-05-27T13:01:58.934-04:00  INFO 24340 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-05-27T13:01:58.934-04:00  INFO 24340 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-05-27T13:01:58.934-04:00  INFO 24340 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-05-27T13:01:58.934-04:00  INFO 24340 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-05-27T13:01:58.935-04:00  INFO 24340 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-05-27T13:01:58.935-04:00  INFO 24340 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-05-27T13:01:59.215-04:00  INFO 24340 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-05-27T13:01:59.217-04:00  INFO 24340 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-05-27T13:01:59.218-04:00  INFO 24340 --- [analytics-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-05-27T13:01:59.219-04:00  INFO 24340 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1779901319219 with initial instances count: 7
+2026-05-27T13:01:59.223-04:00  INFO 24340 --- [analytics-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application ANALYTICS-SERVICE with eureka with status UP
+2026-05-27T13:01:59.224-04:00  INFO 24340 --- [analytics-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1779901319224, current=UP, previous=STARTING]
+2026-05-27T13:01:59.226-04:00  INFO 24340 --- [analytics-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ANALYTICS-SERVICE/DESKTOP-N7DD3QB:analytics-service:8091: registering service...
+2026-05-27T13:01:59.250-04:00  INFO 24340 --- [analytics-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8091 (http) with context path '/'
+2026-05-27T13:01:59.252-04:00  INFO 24340 --- [analytics-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8091
+2026-05-27T13:01:59.270-04:00  INFO 24340 --- [analytics-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ANALYTICS-SERVICE/DESKTOP-N7DD3QB:analytics-service:8091 - registration status: 204
+2026-05-27T13:01:59.298-04:00  INFO 24340 --- [analytics-service] [main] c.s.a.AnalyticsServiceApplication        : Started AnalyticsServiceApplication in 3.324 seconds (process running for 3.835)
+2026-05-27T13:06:58.953-04:00  INFO 24340 --- [analytics-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-27T13:11:58.955-04:00  INFO 24340 --- [analytics-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-27T13:16:58.961-04:00  INFO 24340 --- [analytics-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-05-27T13:21:58.965-04:00  INFO 24340 --- [analytics-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

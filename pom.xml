@@ -22,27 +22,23 @@
   <!-- Orden recomendado de arranque:                               -->
   <!--   1. microservice-config  :8888                              -->
   <!--   2. microservice-eureka  :8761                              -->
-  <!--   3. identity-service     :8084                              -->
+  <!--   3. identity-services    :8084                              -->
   <!--   4. microservice-gateway :8080                              -->
-  <!-- Los MS de negocio (catalog, lending, etc.) se agregan        -->
-  <!-- a medida que se construyen en Fase 2-4                       -->
   <!-- ============================================================ -->
   <modules>
     <module>microservice-config</module>
     <module>microservice-eureka</module>
     <module>microservice-gateway</module>
-    <module>identity-service</module>
+    <module>identity-services</module>
     <module>catalog-service</module>
     <module>license-service</module>
-    <!-- <module>elending-service</module>      -->
-    <!-- Fase 3 — Entrega de contenido -->
-    <!-- <module>ingestion-service</module>     -->
-    <!-- <module>content-delivery-service</module> -->
-    <!-- Fase 4 — Valor agregado -->
-    <!-- <module>notification-service</module>  -->
-    <!-- <module>subscription-service</module>  -->
-    <!-- <module>search-service</module>        -->
-    <!-- <module>analytics-service</module>     -->
+    <module>elending-service</module>      
+    <module>ingestion-service</module>     
+    <module>content-service</module> 
+    <module>notification-service</module>  
+    <module>subscription-service</module>  
+    <module>search-service</module>        
+    <module>analytics-service</module>     
   </modules>
 
   <properties>
