@@ -84,7 +84,7 @@ El secret JWT está definido en `microservice-config/src/main/resources/configur
 ```yaml
 jwt:
   secret: Duoc.1983Duoc.1983Duoc.1983Duoc.1983
-  access-token-expiration: 900000    # 15 minutos
+  access-token-expiration: 1800000    # 30 minutos
   refresh-token-expiration: 604800000 # 7 días
 ```
 

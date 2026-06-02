@@ -54,3 +54,72 @@
 2026-05-27T13:11:24.988-04:00  INFO 5992 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-05-27T13:16:24.998-04:00  INFO 5992 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-05-27T13:21:24.999-04:00  INFO 5992 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T14:46:33.585-04:00  INFO 24016 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Starting IngestionServiceApplication using Java 17.0.12 with PID 24016 (C:\workspace\SmallBooksRepository\ingestion-service\target\classes started by SSDD in C:\workspace\SmallBooksRepository\ingestion-service)
+2026-06-02T14:46:33.588-04:00 DEBUG 24016 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-02T14:46:33.589-04:00  INFO 24016 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : No active profile set, falling back to 1 default profile: "default"
+2026-06-02T14:46:33.642-04:00  INFO 24016 --- [ingestion-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-02T14:46:33.642-04:00  INFO 24016 --- [ingestion-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=ingestion-service, profiles=[default], label=null, version=null, state=null
+2026-06-02T14:46:34.378-04:00  INFO 24016 --- [ingestion-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-02T14:46:34.523-04:00  INFO 24016 --- [ingestion-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 136 ms. Found 1 JPA repository interface.
+2026-06-02T14:46:34.755-04:00  INFO 24016 --- [ingestion-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=81f7d803-abea-35a3-abb5-362b1ae43dc7
+2026-06-02T14:46:35.454-04:00  INFO 24016 --- [ingestion-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8092 (http)
+2026-06-02T14:46:35.478-04:00  INFO 24016 --- [ingestion-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-02T14:46:35.479-04:00  INFO 24016 --- [ingestion-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-02T14:46:35.590-04:00  INFO 24016 --- [ingestion-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-02T14:46:35.591-04:00  INFO 24016 --- [ingestion-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1946 ms
+2026-06-02T14:46:35.898-04:00  INFO 24016 --- [ingestion-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-02T14:46:36.181-04:00  INFO 24016 --- [ingestion-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1bdafb01
+2026-06-02T14:46:36.184-04:00  INFO 24016 --- [ingestion-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-02T14:46:36.228-04:00  INFO 24016 --- [ingestion-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_ingestion (MySQL 8.4)
+2026-06-02T14:46:36.238-04:00  WARN 24016 --- [ingestion-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-02T14:46:36.258-04:00  INFO 24016 --- [ingestion-service] [main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table `db_ingestion`.`flyway_schema_history` does not exist yet
+2026-06-02T14:46:36.261-04:00  INFO 24016 --- [ingestion-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.014s)
+2026-06-02T14:46:36.276-04:00  INFO 24016 --- [ingestion-service] [main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table `db_ingestion`.`flyway_schema_history` ...
+2026-06-02T14:46:36.341-04:00  INFO 24016 --- [ingestion-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_ingestion`: << Empty Schema >>
+2026-06-02T14:46:36.350-04:00  INFO 24016 --- [ingestion-service] [main] o.f.core.internal.command.DbMigrate      : Migrating schema `db_ingestion` to version "1 - crear tabla archivos libros"
+2026-06-02T14:46:36.407-04:00  INFO 24016 --- [ingestion-service] [main] o.f.core.internal.command.DbMigrate      : Successfully applied 1 migration to schema `db_ingestion`, now at version v1 (execution time 00:00.024s)
+2026-06-02T14:46:36.546-04:00  INFO 24016 --- [ingestion-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-02T14:46:36.649-04:00  INFO 24016 --- [ingestion-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-02T14:46:36.703-04:00  INFO 24016 --- [ingestion-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-02T14:46:36.940-04:00  INFO 24016 --- [ingestion-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-02T14:46:36.989-04:00  WARN 24016 --- [ingestion-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-02T14:46:37.651-04:00  INFO 24016 --- [ingestion-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-02T14:46:37.677-04:00  INFO 24016 --- [ingestion-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-02T14:46:38.107-04:00  WARN 24016 --- [ingestion-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-02T14:46:39.496-04:00  INFO 24016 --- [ingestion-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-02T14:46:39.532-04:00  WARN 24016 --- [ingestion-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-02T14:46:39.644-04:00  INFO 24016 --- [ingestion-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-02T14:46:39.671-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-02T14:46:39.675-04:00  INFO 24016 --- [ingestion-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T14:46:39.686-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-02T14:46:39.687-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-02T14:46:39.687-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-02T14:46:39.687-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-02T14:46:39.688-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-02T14:46:39.688-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-02T14:46:39.688-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-02T14:46:40.052-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-02T14:46:40.056-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-02T14:46:40.059-04:00  INFO 24016 --- [ingestion-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-02T14:46:40.061-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1780426000060 with initial instances count: 8
+2026-06-02T14:46:40.069-04:00  INFO 24016 --- [ingestion-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application INGESTION-SERVICE with eureka with status UP
+2026-06-02T14:46:40.070-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1780426000070, current=UP, previous=STARTING]
+2026-06-02T14:46:40.072-04:00  INFO 24016 --- [ingestion-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_INGESTION-SERVICE/PNAWSA05LC54409.duoc.acad:ingestion-service:8092: registering service...
+2026-06-02T14:46:40.103-04:00  INFO 24016 --- [ingestion-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8092 (http) with context path '/'
+2026-06-02T14:46:40.105-04:00  INFO 24016 --- [ingestion-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_INGESTION-SERVICE/PNAWSA05LC54409.duoc.acad:ingestion-service:8092 - registration status: 204
+2026-06-02T14:46:40.105-04:00  INFO 24016 --- [ingestion-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8092
+2026-06-02T14:46:40.475-04:00  INFO 24016 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Started IngestionServiceApplication in 8.315 seconds (process running for 9.07)
+2026-06-02T14:51:39.706-04:00  INFO 24016 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T14:56:39.719-04:00  INFO 24016 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T15:01:06.814-04:00  INFO 24016 --- [ingestion-service] [http-nio-8092-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-02T15:01:06.815-04:00  INFO 24016 --- [ingestion-service] [http-nio-8092-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-06-02T15:01:06.816-04:00  INFO 24016 --- [ingestion-service] [http-nio-8092-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-06-02T15:01:06.968-04:00  INFO 24016 --- [ingestion-service] [http-nio-8092-exec-1] c.s.ingestion.service.IngestionService   : Subiendo archivo para libro id: 1, nombre: c8cf01c83fcd163f06e727cabcff90ac100-años-de-soledad-Gabriel-García-Marquez.pdf, tamaño: 1253177 bytes
+2026-06-02T15:01:07.201-04:00  INFO 24016 --- [ingestion-service] [http-nio-8092-exec-1] c.s.ingestion.service.IngestionService   : Archivo subido exitosamente — id: 1, libro: 1, formato: PDF, ruta: C:\smallbooks\archivos\libro_1_c8cf01c83fcd163f06e727cabcff90ac100-años-de-soledad-Gabriel-García-Marquez.pdf
+2026-06-02T15:01:39.721-04:00  INFO 24016 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T15:02:13.777-04:00  INFO 24016 --- [ingestion-service] [http-nio-8092-exec-3] c.s.ingestion.service.IngestionService   : Consultando info de archivo para libro id: 1
+2026-06-02T15:02:43.122-04:00  INFO 24016 --- [ingestion-service] [http-nio-8092-exec-4] c.s.ingestion.service.IngestionService   : Obteniendo bytes del archivo para libro id: 1
+2026-06-02T15:06:39.736-04:00  INFO 24016 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T15:11:39.747-04:00  INFO 24016 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T15:16:39.756-04:00  INFO 24016 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T15:21:39.769-04:00  INFO 24016 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

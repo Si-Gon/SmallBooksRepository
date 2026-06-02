@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// Endpoints REST semánticos (IE1.1.2):
+// Endpoints REST:
 //   GET    /api/catalog              → listar todos
 //   GET    /api/catalog/disponibles  → listar disponibles
 //   GET    /api/catalog/{id}         → obtener uno

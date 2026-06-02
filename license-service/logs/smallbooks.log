@@ -110,3 +110,93 @@
 2026-05-27T13:11:15.279-04:00  INFO 22236 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-05-27T13:16:15.289-04:00  INFO 22236 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-05-27T13:21:15.290-04:00  INFO 22236 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T14:45:30.516-04:00  INFO 22008 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Starting LicenseServiceApplication using Java 17.0.12 with PID 22008 (C:\workspace\SmallBooksRepository\license-service\target\classes started by SSDD in C:\workspace\SmallBooksRepository\license-service)
+2026-06-02T14:45:30.519-04:00 DEBUG 22008 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-02T14:45:30.520-04:00  INFO 22008 --- [license-service] [main] c.s.license.LicenseServiceApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-06-02T14:45:30.572-04:00  INFO 22008 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-02T14:45:30.573-04:00  INFO 22008 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=license-service, profiles=[default], label=null, version=null, state=null
+2026-06-02T14:45:31.322-04:00  INFO 22008 --- [license-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-02T14:45:31.459-04:00  INFO 22008 --- [license-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 128 ms. Found 1 JPA repository interface.
+2026-06-02T14:45:31.690-04:00  INFO 22008 --- [license-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=faa7db41-f8b3-3de8-bc6f-009ca1a9b23f
+2026-06-02T14:45:32.377-04:00  INFO 22008 --- [license-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8086 (http)
+2026-06-02T14:45:32.404-04:00  INFO 22008 --- [license-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-02T14:45:32.404-04:00  INFO 22008 --- [license-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-02T14:45:32.502-04:00  INFO 22008 --- [license-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-02T14:45:32.502-04:00  INFO 22008 --- [license-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1926 ms
+2026-06-02T14:45:32.788-04:00  INFO 22008 --- [license-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-02T14:45:33.156-04:00  INFO 22008 --- [license-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@136fece2
+2026-06-02T14:45:33.160-04:00  INFO 22008 --- [license-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-02T14:45:33.246-04:00  INFO 22008 --- [license-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_license (MySQL 8.4)
+2026-06-02T14:45:33.261-04:00  WARN 22008 --- [license-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-02T14:45:33.307-04:00  INFO 22008 --- [license-service] [main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table `db_license`.`flyway_schema_history` does not exist yet
+2026-06-02T14:45:33.312-04:00  INFO 22008 --- [license-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.032s)
+2026-06-02T14:45:33.329-04:00  INFO 22008 --- [license-service] [main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table `db_license`.`flyway_schema_history` ...
+2026-06-02T14:45:33.409-04:00  INFO 22008 --- [license-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_license`: << Empty Schema >>
+2026-06-02T14:45:33.417-04:00  INFO 22008 --- [license-service] [main] o.f.core.internal.command.DbMigrate      : Migrating schema `db_license` to version "1 - crear tabla licencias"
+2026-06-02T14:45:33.466-04:00  INFO 22008 --- [license-service] [main] o.f.core.internal.command.DbMigrate      : Migrating schema `db_license` to version "2 - insertar licencias iniciales"
+2026-06-02T14:45:33.490-04:00  INFO 22008 --- [license-service] [main] o.f.core.internal.command.DbMigrate      : Successfully applied 2 migrations to schema `db_license`, now at version v2 (execution time 00:00.025s)
+2026-06-02T14:45:33.626-04:00  INFO 22008 --- [license-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-02T14:45:33.697-04:00  INFO 22008 --- [license-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-02T14:45:33.754-04:00  INFO 22008 --- [license-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-02T14:45:34.033-04:00  INFO 22008 --- [license-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-02T14:45:34.082-04:00  WARN 22008 --- [license-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-02T14:45:34.774-04:00  INFO 22008 --- [license-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-02T14:45:34.800-04:00  INFO 22008 --- [license-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-02T14:45:35.168-04:00  WARN 22008 --- [license-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-02T14:45:36.555-04:00  INFO 22008 --- [license-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-02T14:45:36.589-04:00  WARN 22008 --- [license-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-02T14:45:36.722-04:00  INFO 22008 --- [license-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-02T14:45:36.753-04:00  INFO 22008 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-02T14:45:36.760-04:00  INFO 22008 --- [license-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T14:45:36.771-04:00  INFO 22008 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-02T14:45:36.772-04:00  INFO 22008 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-02T14:45:36.772-04:00  INFO 22008 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-02T14:45:36.773-04:00  INFO 22008 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-02T14:45:36.773-04:00  INFO 22008 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-02T14:45:36.773-04:00  INFO 22008 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-02T14:45:36.774-04:00  INFO 22008 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-02T14:45:37.193-04:00  INFO 22008 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-02T14:45:37.196-04:00  INFO 22008 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-02T14:45:37.198-04:00  INFO 22008 --- [license-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-02T14:45:37.200-04:00  INFO 22008 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1780425937200 with initial instances count: 4
+2026-06-02T14:45:37.204-04:00  INFO 22008 --- [license-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application LICENSE-SERVICE with eureka with status UP
+2026-06-02T14:45:37.205-04:00  INFO 22008 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1780425937205, current=UP, previous=STARTING]
+2026-06-02T14:45:37.206-04:00  INFO 22008 --- [license-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_LICENSE-SERVICE/PNAWSA05LC54409.duoc.acad:license-service:8086: registering service...
+2026-06-02T14:45:37.234-04:00  INFO 22008 --- [license-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8086 (http) with context path '/'
+2026-06-02T14:45:37.235-04:00  INFO 22008 --- [license-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_LICENSE-SERVICE/PNAWSA05LC54409.duoc.acad:license-service:8086 - registration status: 204
+2026-06-02T14:45:37.235-04:00  INFO 22008 --- [license-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8086
+2026-06-02T14:45:37.597-04:00  INFO 22008 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Started LicenseServiceApplication in 8.508 seconds (process running for 9.283)
+2026-06-02T14:50:36.778-04:00  INFO 22008 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T14:50:39.353-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-02T14:50:39.353-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-06-02T14:50:39.356-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-06-02T14:50:39.392-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-1] c.silvio.license.service.LicenseService  : Consultando todas las licencias
+2026-06-02T14:52:56.489-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-3] c.silvio.license.service.LicenseService  : Consultando licencia para libro id: 1
+2026-06-02T14:52:56.531-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-4] c.silvio.license.service.LicenseService  : Descontando copia — libro id: 1
+2026-06-02T14:52:56.536-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-4] c.silvio.license.service.LicenseService  : Copia descontada — libro: 1, disponibles: 4/5
+2026-06-02T14:53:07.282-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-5] c.silvio.license.service.LicenseService  : Consultando todas las licencias
+2026-06-02T14:55:15.014-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-8] c.silvio.license.service.LicenseService  : Consultando licencia para libro id: 2
+2026-06-02T14:55:15.022-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-9] c.silvio.license.service.LicenseService  : Descontando copia — libro id: 2
+2026-06-02T14:55:15.025-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-9] c.silvio.license.service.LicenseService  : Copia descontada — libro: 2, disponibles: 2/3
+2026-06-02T14:55:20.801-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-10] c.silvio.license.service.LicenseService  : Consultando licencia para libro id: 3
+2026-06-02T14:55:20.810-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-1] c.silvio.license.service.LicenseService  : Descontando copia — libro id: 3
+2026-06-02T14:55:20.813-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-1] c.silvio.license.service.LicenseService  : Copia descontada — libro: 3, disponibles: 4/5
+2026-06-02T14:55:24.727-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-2] c.silvio.license.service.LicenseService  : Consultando licencia para libro id: 4
+2026-06-02T14:55:24.736-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-3] c.silvio.license.service.LicenseService  : Descontando copia — libro id: 4
+2026-06-02T14:55:24.740-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-3] c.silvio.license.service.LicenseService  : Copia descontada — libro: 4, disponibles: 2/3
+2026-06-02T14:55:30.619-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-4] c.silvio.license.service.LicenseService  : Consultando licencia para libro id: 5
+2026-06-02T14:55:30.627-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-5] c.silvio.license.service.LicenseService  : Descontando copia — libro id: 5
+2026-06-02T14:55:30.630-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-5] c.silvio.license.service.LicenseService  : Copia descontada — libro: 5, disponibles: 9/10
+2026-06-02T14:55:36.783-04:00  INFO 22008 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T15:00:36.786-04:00  INFO 22008 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T15:05:36.797-04:00  INFO 22008 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T15:10:36.809-04:00  INFO 22008 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T15:12:08.631-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-7] c.silvio.license.service.LicenseService  : Consultando licencia para libro id: 1
+2026-06-02T15:12:08.639-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-8] c.silvio.license.service.LicenseService  : Descontando copia — libro id: 1
+2026-06-02T15:12:08.643-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-8] c.silvio.license.service.LicenseService  : Copia descontada — libro: 1, disponibles: 3/5
+2026-06-02T15:12:14.232-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-9] c.silvio.license.service.LicenseService  : Consultando licencia para libro id: 2
+2026-06-02T15:12:14.240-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-10] c.silvio.license.service.LicenseService  : Descontando copia — libro id: 2
+2026-06-02T15:12:14.243-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-10] c.silvio.license.service.LicenseService  : Copia descontada — libro: 2, disponibles: 1/3
+2026-06-02T15:12:55.666-04:00  INFO 22008 --- [license-service] [http-nio-8086-exec-1] c.silvio.license.service.LicenseService  : Consultando todas las licencias
+2026-06-02T15:15:36.823-04:00  INFO 22008 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T15:20:36.832-04:00  INFO 22008 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

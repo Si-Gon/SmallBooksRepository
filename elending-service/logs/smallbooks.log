@@ -60,3 +60,426 @@
 2026-05-27T13:10:57.333-04:00  INFO 8180 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-05-27T13:15:57.345-04:00  INFO 8180 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-05-27T13:20:57.350-04:00  INFO 8180 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T14:45:14.428-04:00  INFO 5044 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : Starting PrestamoServiceApplication using Java 17.0.12 with PID 5044 (C:\workspace\SmallBooksRepository\elending-service\target\classes started by SSDD in C:\workspace\SmallBooksRepository\elending-service)
+2026-06-02T14:45:14.431-04:00 DEBUG 5044 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-02T14:45:14.432-04:00  INFO 5044 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : No active profile set, falling back to 1 default profile: "default"
+2026-06-02T14:45:14.495-04:00  INFO 5044 --- [elending-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-02T14:45:14.495-04:00  INFO 5044 --- [elending-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=elending-service, profiles=[default], label=null, version=null, state=null
+2026-06-02T14:45:15.270-04:00  INFO 5044 --- [elending-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-02T14:45:15.417-04:00  INFO 5044 --- [elending-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 136 ms. Found 1 JPA repository interface.
+2026-06-02T14:45:15.669-04:00  INFO 5044 --- [elending-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=ffe452bc-0a18-3d58-b17f-37bc0b7c868c
+2026-06-02T14:45:16.297-04:00  INFO 5044 --- [elending-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8087 (http)
+2026-06-02T14:45:16.317-04:00  INFO 5044 --- [elending-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-02T14:45:16.318-04:00  INFO 5044 --- [elending-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-02T14:45:16.434-04:00  INFO 5044 --- [elending-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-02T14:45:16.435-04:00  INFO 5044 --- [elending-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1936 ms
+2026-06-02T14:45:16.843-04:00  INFO 5044 --- [elending-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-02T14:45:17.186-04:00  INFO 5044 --- [elending-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@3add5e17
+2026-06-02T14:45:17.188-04:00  INFO 5044 --- [elending-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-02T14:45:17.247-04:00  INFO 5044 --- [elending-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_lending (MySQL 8.4)
+2026-06-02T14:45:17.261-04:00  WARN 5044 --- [elending-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-02T14:45:17.295-04:00  INFO 5044 --- [elending-service] [main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table `db_lending`.`flyway_schema_history` does not exist yet
+2026-06-02T14:45:17.299-04:00  INFO 5044 --- [elending-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.022s)
+2026-06-02T14:45:17.319-04:00  INFO 5044 --- [elending-service] [main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table `db_lending`.`flyway_schema_history` ...
+2026-06-02T14:45:17.398-04:00  INFO 5044 --- [elending-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_lending`: << Empty Schema >>
+2026-06-02T14:45:17.409-04:00  INFO 5044 --- [elending-service] [main] o.f.core.internal.command.DbMigrate      : Migrating schema `db_lending` to version "1 - crear tabla prestamos"
+2026-06-02T14:45:17.502-04:00  INFO 5044 --- [elending-service] [main] o.f.core.internal.command.DbMigrate      : Successfully applied 1 migration to schema `db_lending`, now at version v1 (execution time 00:00.057s)
+2026-06-02T14:45:17.649-04:00  INFO 5044 --- [elending-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-02T14:45:17.794-04:00  INFO 5044 --- [elending-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-02T14:45:17.853-04:00  INFO 5044 --- [elending-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-02T14:45:18.149-04:00  INFO 5044 --- [elending-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-02T14:45:18.199-04:00  WARN 5044 --- [elending-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-02T14:45:18.900-04:00  INFO 5044 --- [elending-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-02T14:45:18.924-04:00  INFO 5044 --- [elending-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-02T14:45:19.256-04:00  WARN 5044 --- [elending-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-02T14:45:19.857-04:00  INFO 5044 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'license-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-02T14:45:19.926-04:00  INFO 5044 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'subscription-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-02T14:45:19.951-04:00  INFO 5044 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'notification-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-02T14:45:21.148-04:00  INFO 5044 --- [elending-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-02T14:45:21.182-04:00  WARN 5044 --- [elending-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-02T14:45:21.324-04:00  INFO 5044 --- [elending-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-02T14:45:21.366-04:00  INFO 5044 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-02T14:45:21.375-04:00  INFO 5044 --- [elending-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T14:45:21.393-04:00  INFO 5044 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-02T14:45:21.394-04:00  INFO 5044 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-02T14:45:21.394-04:00  INFO 5044 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-02T14:45:21.395-04:00  INFO 5044 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-02T14:45:21.395-04:00  INFO 5044 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-02T14:45:21.395-04:00  INFO 5044 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-02T14:45:21.395-04:00  INFO 5044 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-02T14:45:21.802-04:00  INFO 5044 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-02T14:45:21.805-04:00  INFO 5044 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-02T14:45:21.809-04:00  INFO 5044 --- [elending-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-02T14:45:21.811-04:00  INFO 5044 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1780425921811 with initial instances count: 2
+2026-06-02T14:45:21.815-04:00  INFO 5044 --- [elending-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application ELENDING-SERVICE with eureka with status UP
+2026-06-02T14:45:21.817-04:00  INFO 5044 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1780425921817, current=UP, previous=STARTING]
+2026-06-02T14:45:21.820-04:00  INFO 5044 --- [elending-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/PNAWSA05LC54409.duoc.acad:elending-service:8087: registering service...
+2026-06-02T14:45:21.880-04:00  INFO 5044 --- [elending-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/PNAWSA05LC54409.duoc.acad:elending-service:8087 - registration status: 204
+2026-06-02T14:45:21.885-04:00  INFO 5044 --- [elending-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8087 (http) with context path '/'
+2026-06-02T14:45:21.887-04:00  INFO 5044 --- [elending-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8087
+2026-06-02T14:45:22.260-04:00  INFO 5044 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : Started PrestamoServiceApplication in 9.222 seconds (process running for 9.963)
+2026-06-02T14:45:22.268-04:00  INFO 5044 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Scheduler ejecutado — verificando préstamos vencidos a las 2026-06-02T14:45:22.268381500
+2026-06-02T14:45:22.379-04:00  INFO 5044 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Préstamos vencidos encontrados: 0
+2026-06-02T14:45:22.383-04:00  INFO 5044 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Préstamos próximos a vencer (2 días): 0
+2026-06-02T14:50:21.411-04:00  INFO 5044 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T14:52:56.251-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-02T14:52:56.252-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-06-02T14:52:56.254-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-06-02T14:52:56.332-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-1] c.s.elending.service.PrestamoService     : Iniciando creación de préstamo — usuario: admin, libro: 1
+2026-06-02T14:52:56.454-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-1] c.s.elending.service.PrestamoService     : Plan activo para usuario admin: PREMIUM — max: 5 préstamos, 14 días
+2026-06-02T14:52:56.525-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-1] c.s.elending.service.PrestamoService     : Licencia libro 1: 5/5 copias disponibles
+2026-06-02T14:52:56.599-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-1] c.s.elending.service.PrestamoService     : Copia descontada exitosamente — libro: 1
+2026-06-02T14:52:56.658-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-1] c.s.elending.service.PrestamoService     : Préstamo creado exitosamente — id: 1, usuario: admin, libro: 1, vence: 2026-06-16T14:52:56.600138300
+2026-06-02T14:52:56.998-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-1] c.s.elending.service.PrestamoService     : Notificación PRESTAMO_CREADO enviada al usuario admin
+2026-06-02T14:54:58.631-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-3] c.s.elending.service.PrestamoService     : Consultando historial completo del usuario: admin
+2026-06-02T14:55:14.995-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-4] c.s.elending.service.PrestamoService     : Iniciando creación de préstamo — usuario: admin, libro: 2
+2026-06-02T14:55:15.006-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-4] c.s.elending.service.PrestamoService     : Plan activo para usuario admin: PREMIUM — max: 5 préstamos, 14 días
+2026-06-02T14:55:15.019-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-4] c.s.elending.service.PrestamoService     : Licencia libro 2: 3/3 copias disponibles
+2026-06-02T14:55:15.036-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-4] c.s.elending.service.PrestamoService     : Copia descontada exitosamente — libro: 2
+2026-06-02T14:55:15.038-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-4] c.s.elending.service.PrestamoService     : Préstamo creado exitosamente — id: 2, usuario: admin, libro: 2, vence: 2026-06-16T14:55:15.036713800
+2026-06-02T14:55:15.053-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-4] c.s.elending.service.PrestamoService     : Notificación PRESTAMO_CREADO enviada al usuario admin
+2026-06-02T14:55:20.783-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-5] c.s.elending.service.PrestamoService     : Iniciando creación de préstamo — usuario: admin, libro: 3
+2026-06-02T14:55:20.792-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-5] c.s.elending.service.PrestamoService     : Plan activo para usuario admin: PREMIUM — max: 5 préstamos, 14 días
+2026-06-02T14:55:20.807-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-5] c.s.elending.service.PrestamoService     : Licencia libro 3: 5/5 copias disponibles
+2026-06-02T14:55:20.821-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-5] c.s.elending.service.PrestamoService     : Copia descontada exitosamente — libro: 3
+2026-06-02T14:55:20.824-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-5] c.s.elending.service.PrestamoService     : Préstamo creado exitosamente — id: 3, usuario: admin, libro: 3, vence: 2026-06-16T14:55:20.822288700
+2026-06-02T14:55:20.838-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-5] c.s.elending.service.PrestamoService     : Notificación PRESTAMO_CREADO enviada al usuario admin
+2026-06-02T14:55:21.418-04:00  INFO 5044 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T14:55:24.710-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-6] c.s.elending.service.PrestamoService     : Iniciando creación de préstamo — usuario: admin, libro: 4
+2026-06-02T14:55:24.718-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-6] c.s.elending.service.PrestamoService     : Plan activo para usuario admin: PREMIUM — max: 5 préstamos, 14 días
+2026-06-02T14:55:24.732-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-6] c.s.elending.service.PrestamoService     : Licencia libro 4: 3/3 copias disponibles
+2026-06-02T14:55:24.752-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-6] c.s.elending.service.PrestamoService     : Copia descontada exitosamente — libro: 4
+2026-06-02T14:55:24.755-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-6] c.s.elending.service.PrestamoService     : Préstamo creado exitosamente — id: 4, usuario: admin, libro: 4, vence: 2026-06-16T14:55:24.753077200
+2026-06-02T14:55:24.782-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-6] c.s.elending.service.PrestamoService     : Notificación PRESTAMO_CREADO enviada al usuario admin
+2026-06-02T14:55:30.603-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-7] c.s.elending.service.PrestamoService     : Iniciando creación de préstamo — usuario: admin, libro: 5
+2026-06-02T14:55:30.610-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-7] c.s.elending.service.PrestamoService     : Plan activo para usuario admin: PREMIUM — max: 5 préstamos, 14 días
+2026-06-02T14:55:30.624-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-7] c.s.elending.service.PrestamoService     : Licencia libro 5: 10/10 copias disponibles
+2026-06-02T14:55:30.642-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-7] c.s.elending.service.PrestamoService     : Copia descontada exitosamente — libro: 5
+2026-06-02T14:55:30.645-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-7] c.s.elending.service.PrestamoService     : Préstamo creado exitosamente — id: 5, usuario: admin, libro: 5, vence: 2026-06-16T14:55:30.643219
+2026-06-02T14:55:30.659-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-7] c.s.elending.service.PrestamoService     : Notificación PRESTAMO_CREADO enviada al usuario admin
+2026-06-02T14:55:39.734-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-8] c.s.elending.service.PrestamoService     : Consultando historial completo del usuario: admin
+2026-06-02T14:55:57.006-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-9] c.s.elending.service.PrestamoService     : Consultando todos los préstamos para Analytics
+2026-06-02T15:00:21.420-04:00  INFO 5044 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T15:02:43.086-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-2] c.s.elending.service.PrestamoService     : Consultando préstamos activos del usuario: admin
+2026-06-02T15:05:21.427-04:00  INFO 5044 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T15:06:23.667-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-4] c.s.elending.service.PrestamoService     : Iniciando creación de préstamo — usuario: admin, libro: 5
+2026-06-02T15:06:23.679-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-4] c.s.elending.service.PrestamoService     : Plan activo para usuario admin: PREMIUM — max: 5 préstamos, 14 días
+2026-06-02T15:06:23.684-04:00  WARN 5044 --- [elending-service] [http-nio-8087-exec-4] c.s.elending.service.PrestamoService     : Usuario admin alcanzó límite de préstamos activos: 5/5
+2026-06-02T15:10:21.438-04:00  INFO 5044 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T15:12:08.603-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-6] c.s.elending.service.PrestamoService     : Iniciando creación de préstamo — usuario: pepito, libro: 1
+2026-06-02T15:12:08.621-04:00  WARN 5044 --- [elending-service] [http-nio-8087-exec-6] c.s.elending.service.PrestamoService     : No se encontró suscripción activa para usuario pepito. Aplicando plan BASICO por defecto.
+2026-06-02T15:12:08.636-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-6] c.s.elending.service.PrestamoService     : Licencia libro 1: 4/5 copias disponibles
+2026-06-02T15:12:08.649-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-6] c.s.elending.service.PrestamoService     : Copia descontada exitosamente — libro: 1
+2026-06-02T15:12:08.652-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-6] c.s.elending.service.PrestamoService     : Préstamo creado exitosamente — id: 6, usuario: pepito, libro: 1, vence: 2026-06-09T15:12:08.650592400
+2026-06-02T15:12:08.666-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-6] c.s.elending.service.PrestamoService     : Notificación PRESTAMO_CREADO enviada al usuario pepito
+2026-06-02T15:12:14.216-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-7] c.s.elending.service.PrestamoService     : Iniciando creación de préstamo — usuario: pepito, libro: 2
+2026-06-02T15:12:14.224-04:00  WARN 5044 --- [elending-service] [http-nio-8087-exec-7] c.s.elending.service.PrestamoService     : No se encontró suscripción activa para usuario pepito. Aplicando plan BASICO por defecto.
+2026-06-02T15:12:14.237-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-7] c.s.elending.service.PrestamoService     : Licencia libro 2: 2/3 copias disponibles
+2026-06-02T15:12:14.255-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-7] c.s.elending.service.PrestamoService     : Copia descontada exitosamente — libro: 2
+2026-06-02T15:12:14.258-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-7] c.s.elending.service.PrestamoService     : Préstamo creado exitosamente — id: 7, usuario: pepito, libro: 2, vence: 2026-06-09T15:12:14.256679
+2026-06-02T15:12:14.277-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-7] c.s.elending.service.PrestamoService     : Notificación PRESTAMO_CREADO enviada al usuario pepito
+2026-06-02T15:12:30.966-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-8] c.s.elending.service.PrestamoService     : Iniciando creación de préstamo — usuario: pepito, libro: 3
+2026-06-02T15:12:30.975-04:00  WARN 5044 --- [elending-service] [http-nio-8087-exec-8] c.s.elending.service.PrestamoService     : No se encontró suscripción activa para usuario pepito. Aplicando plan BASICO por defecto.
+2026-06-02T15:12:30.979-04:00  WARN 5044 --- [elending-service] [http-nio-8087-exec-8] c.s.elending.service.PrestamoService     : Usuario pepito alcanzó límite de préstamos activos: 2/2
+2026-06-02T15:13:32.975-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-10] c.s.elending.service.PrestamoService     : Consultando todos los préstamos para Analytics
+2026-06-02T15:13:50.582-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-1] c.s.elending.service.PrestamoService     : Consultando todos los préstamos para Analytics
+2026-06-02T15:14:13.170-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-2] c.s.elending.service.PrestamoService     : Consultando historial completo del usuario: admin
+2026-06-02T15:14:42.328-04:00  INFO 5044 --- [elending-service] [http-nio-8087-exec-3] c.s.elending.service.PrestamoService     : Consultando historial completo del usuario: pepito
+2026-06-02T15:15:21.450-04:00  INFO 5044 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T15:20:21.462-04:00  INFO 5044 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-02T15:24:53.865-04:00  INFO 5044 --- [elending-service] [DiscoveryClient-CacheRefreshExecutor-%d] c.n.d.s.t.d.RedirectingEurekaHttpClient  : Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/} exception=I/O error on GET request for "http://localhost:8761/eureka/apps/delta": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information stacktrace=org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8761/eureka/apps/delta": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+	at org.springframework.web.client.RestTemplate.createResourceAccessException(RestTemplate.java:915)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:895)
+	at org.springframework.web.client.RestTemplate.execute(RestTemplate.java:830)
+	at org.springframework.web.client.RestTemplate.exchange(RestTemplate.java:691)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.getApplicationsInternal(RestTemplateEurekaHttpClient.java:170)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.getDelta(RestTemplateEurekaHttpClient.java:182)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.execute(RedirectingEurekaHttpClient.java:91)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:120)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
+	at com.netflix.discovery.DiscoveryClient.getAndUpdateDelta(DiscoveryClient.java:1080)
+	at com.netflix.discovery.DiscoveryClient.fetchRegistry(DiscoveryClient.java:963)
+	at com.netflix.discovery.DiscoveryClient.refreshRegistry(DiscoveryClient.java:1473)
+	at com.netflix.discovery.DiscoveryClient$CacheRefreshThread.run(DiscoveryClient.java:1441)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.lambda$connectSocket$0(PlainConnectionSocketFactory.java:91)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:569)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.connectSocket(PlainConnectionSocketFactory.java:90)
+	at org.apache.hc.client5.http.socket.ConnectionSocketFactory.connectSocket(ConnectionSocketFactory.java:123)
+	at org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:189)
+	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:450)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:162)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:172)
+	at org.apache.hc.client5.http.impl.classic.ConnectExec.execute(ConnectExec.java:142)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ProtocolExec.execute(ProtocolExec.java:192)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.HttpRequestRetryExec.execute(HttpRequestRetryExec.java:113)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ContentCompressionExec.execute(ContentCompressionExec.java:152)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.RedirectExec.execute(RedirectExec.java:116)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.InternalHttpClient.doExecute(InternalHttpClient.java:170)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:87)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:55)
+	at org.apache.hc.client5.http.classic.HttpClient.executeOpen(HttpClient.java:183)
+	at org.springframework.http.client.HttpComponentsClientHttpRequest.executeInternal(HttpComponentsClientHttpRequest.java:99)
+	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:70)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:112)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateTransportClientFactory.lambda$restTemplate$3(RestTemplateTransportClientFactory.java:170)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:88)
+	at org.springframework.http.client.InterceptingClientHttpRequest.executeInternal(InterceptingClientHttpRequest.java:72)
+	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:48)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:889)
+	... 22 more
+
+2026-06-02T15:24:53.865-04:00  INFO 5044 --- [elending-service] [DiscoveryClient-HeartbeatExecutor-%d] c.n.d.s.t.d.RedirectingEurekaHttpClient  : Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/} exception=I/O error on PUT request for "http://localhost:8761/eureka/apps/ELENDING-SERVICE/PNAWSA05LC54409.duoc.acad:elending-service:8087": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information stacktrace=org.springframework.web.client.ResourceAccessException: I/O error on PUT request for "http://localhost:8761/eureka/apps/ELENDING-SERVICE/PNAWSA05LC54409.duoc.acad:elending-service:8087": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+	at org.springframework.web.client.RestTemplate.createResourceAccessException(RestTemplate.java:915)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:895)
+	at org.springframework.web.client.RestTemplate.execute(RestTemplate.java:830)
+	at org.springframework.web.client.RestTemplate.exchange(RestTemplate.java:691)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.sendHeartBeat(RestTemplateEurekaHttpClient.java:115)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.execute(RedirectingEurekaHttpClient.java:91)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92)
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:120)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92)
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89)
+	at com.netflix.discovery.DiscoveryClient.renew(DiscoveryClient.java:845)
+	at com.netflix.discovery.DiscoveryClient$HeartbeatThread.run(DiscoveryClient.java:1402)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.lambda$connectSocket$0(PlainConnectionSocketFactory.java:91)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:569)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.connectSocket(PlainConnectionSocketFactory.java:90)
+	at org.apache.hc.client5.http.socket.ConnectionSocketFactory.connectSocket(ConnectionSocketFactory.java:123)
+	at org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:189)
+	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:450)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:162)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:172)
+	at org.apache.hc.client5.http.impl.classic.ConnectExec.execute(ConnectExec.java:142)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ProtocolExec.execute(ProtocolExec.java:192)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.HttpRequestRetryExec.execute(HttpRequestRetryExec.java:113)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ContentCompressionExec.execute(ContentCompressionExec.java:152)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.RedirectExec.execute(RedirectExec.java:116)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.InternalHttpClient.doExecute(InternalHttpClient.java:170)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:87)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:55)
+	at org.apache.hc.client5.http.classic.HttpClient.executeOpen(HttpClient.java:183)
+	at org.springframework.http.client.HttpComponentsClientHttpRequest.executeInternal(HttpComponentsClientHttpRequest.java:99)
+	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:70)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:112)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateTransportClientFactory.lambda$restTemplate$3(RestTemplateTransportClientFactory.java:170)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:88)
+	at org.springframework.http.client.InterceptingClientHttpRequest.executeInternal(InterceptingClientHttpRequest.java:72)
+	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:48)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:889)
+	... 19 more
+
+2026-06-02T15:24:53.866-04:00  WARN 5044 --- [elending-service] [DiscoveryClient-CacheRefreshExecutor-%d] c.n.d.s.t.d.RetryableEurekaHttpClient    : Request execution failed with message: I/O error on GET request for "http://localhost:8761/eureka/apps/delta": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+2026-06-02T15:24:53.866-04:00  WARN 5044 --- [elending-service] [DiscoveryClient-HeartbeatExecutor-%d] c.n.d.s.t.d.RetryableEurekaHttpClient    : Request execution failed with message: I/O error on PUT request for "http://localhost:8761/eureka/apps/ELENDING-SERVICE/PNAWSA05LC54409.duoc.acad:elending-service:8087": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+2026-06-02T15:24:53.873-04:00  INFO 5044 --- [elending-service] [DiscoveryClient-HeartbeatExecutor-%d] c.n.d.s.t.d.RedirectingEurekaHttpClient  : Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/}, exception=I/O error on PUT request for "http://localhost:8761/eureka/apps/ELENDING-SERVICE/PNAWSA05LC54409.duoc.acad:elending-service:8087": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information stacktrace=org.springframework.web.client.ResourceAccessException: I/O error on PUT request for "http://localhost:8761/eureka/apps/ELENDING-SERVICE/PNAWSA05LC54409.duoc.acad:elending-service:8087": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+	at org.springframework.web.client.RestTemplate.createResourceAccessException(RestTemplate.java:915)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:895)
+	at org.springframework.web.client.RestTemplate.execute(RestTemplate.java:830)
+	at org.springframework.web.client.RestTemplate.exchange(RestTemplate.java:691)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.sendHeartBeat(RestTemplateEurekaHttpClient.java:115)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.executeOnNewServer(RedirectingEurekaHttpClient.java:121)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.execute(RedirectingEurekaHttpClient.java:80)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92)
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:120)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92)
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89)
+	at com.netflix.discovery.DiscoveryClient.renew(DiscoveryClient.java:845)
+	at com.netflix.discovery.DiscoveryClient$HeartbeatThread.run(DiscoveryClient.java:1402)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.lambda$connectSocket$0(PlainConnectionSocketFactory.java:91)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:569)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.connectSocket(PlainConnectionSocketFactory.java:90)
+	at org.apache.hc.client5.http.socket.ConnectionSocketFactory.connectSocket(ConnectionSocketFactory.java:123)
+	at org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:189)
+	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:450)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:162)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:172)
+	at org.apache.hc.client5.http.impl.classic.ConnectExec.execute(ConnectExec.java:142)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ProtocolExec.execute(ProtocolExec.java:192)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.HttpRequestRetryExec.execute(HttpRequestRetryExec.java:113)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ContentCompressionExec.execute(ContentCompressionExec.java:152)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.RedirectExec.execute(RedirectExec.java:116)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.InternalHttpClient.doExecute(InternalHttpClient.java:170)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:87)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:55)
+	at org.apache.hc.client5.http.classic.HttpClient.executeOpen(HttpClient.java:183)
+	at org.springframework.http.client.HttpComponentsClientHttpRequest.executeInternal(HttpComponentsClientHttpRequest.java:99)
+	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:70)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:112)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateTransportClientFactory.lambda$restTemplate$3(RestTemplateTransportClientFactory.java:170)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:88)
+	at org.springframework.http.client.InterceptingClientHttpRequest.executeInternal(InterceptingClientHttpRequest.java:72)
+	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:48)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:889)
+	... 20 more
+
+2026-06-02T15:24:53.873-04:00  INFO 5044 --- [elending-service] [DiscoveryClient-CacheRefreshExecutor-%d] c.n.d.s.t.d.RedirectingEurekaHttpClient  : Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/}, exception=I/O error on GET request for "http://localhost:8761/eureka/apps/delta": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information stacktrace=org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8761/eureka/apps/delta": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+	at org.springframework.web.client.RestTemplate.createResourceAccessException(RestTemplate.java:915)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:895)
+	at org.springframework.web.client.RestTemplate.execute(RestTemplate.java:830)
+	at org.springframework.web.client.RestTemplate.exchange(RestTemplate.java:691)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.getApplicationsInternal(RestTemplateEurekaHttpClient.java:170)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.getDelta(RestTemplateEurekaHttpClient.java:182)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.executeOnNewServer(RedirectingEurekaHttpClient.java:121)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.execute(RedirectingEurekaHttpClient.java:80)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:120)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
+	at com.netflix.discovery.DiscoveryClient.getAndUpdateDelta(DiscoveryClient.java:1080)
+	at com.netflix.discovery.DiscoveryClient.fetchRegistry(DiscoveryClient.java:963)
+	at com.netflix.discovery.DiscoveryClient.refreshRegistry(DiscoveryClient.java:1473)
+	at com.netflix.discovery.DiscoveryClient$CacheRefreshThread.run(DiscoveryClient.java:1441)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.lambda$connectSocket$0(PlainConnectionSocketFactory.java:91)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:569)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.connectSocket(PlainConnectionSocketFactory.java:90)
+	at org.apache.hc.client5.http.socket.ConnectionSocketFactory.connectSocket(ConnectionSocketFactory.java:123)
+	at org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:189)
+	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:450)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:162)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:172)
+	at org.apache.hc.client5.http.impl.classic.ConnectExec.execute(ConnectExec.java:142)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ProtocolExec.execute(ProtocolExec.java:192)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.HttpRequestRetryExec.execute(HttpRequestRetryExec.java:113)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ContentCompressionExec.execute(ContentCompressionExec.java:152)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.RedirectExec.execute(RedirectExec.java:116)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.InternalHttpClient.doExecute(InternalHttpClient.java:170)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:87)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:55)
+	at org.apache.hc.client5.http.classic.HttpClient.executeOpen(HttpClient.java:183)
+	at org.springframework.http.client.HttpComponentsClientHttpRequest.executeInternal(HttpComponentsClientHttpRequest.java:99)
+	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:70)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:112)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateTransportClientFactory.lambda$restTemplate$3(RestTemplateTransportClientFactory.java:170)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:88)
+	at org.springframework.http.client.InterceptingClientHttpRequest.executeInternal(InterceptingClientHttpRequest.java:72)
+	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:48)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:889)
+	... 23 more
+
+2026-06-02T15:24:53.874-04:00  WARN 5044 --- [elending-service] [DiscoveryClient-HeartbeatExecutor-%d] c.n.d.s.t.d.RetryableEurekaHttpClient    : Request execution failed with message: I/O error on PUT request for "http://localhost:8761/eureka/apps/ELENDING-SERVICE/PNAWSA05LC54409.duoc.acad:elending-service:8087": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+2026-06-02T15:24:53.874-04:00  WARN 5044 --- [elending-service] [DiscoveryClient-CacheRefreshExecutor-%d] c.n.d.s.t.d.RetryableEurekaHttpClient    : Request execution failed with message: I/O error on GET request for "http://localhost:8761/eureka/apps/delta": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+2026-06-02T15:24:53.874-04:00  INFO 5044 --- [elending-service] [DiscoveryClient-CacheRefreshExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/PNAWSA05LC54409.duoc.acad:elending-service:8087 - was unable to refresh its cache! This periodic background refresh will be retried in 30 seconds. status = Cannot execute request on any known server stacktrace = com.netflix.discovery.shared.transport.TransportException: Cannot execute request on any known server
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:112)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
+	at com.netflix.discovery.DiscoveryClient.getAndUpdateDelta(DiscoveryClient.java:1080)
+	at com.netflix.discovery.DiscoveryClient.fetchRegistry(DiscoveryClient.java:963)
+	at com.netflix.discovery.DiscoveryClient.refreshRegistry(DiscoveryClient.java:1473)
+	at com.netflix.discovery.DiscoveryClient$CacheRefreshThread.run(DiscoveryClient.java:1441)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+
+2026-06-02T15:24:53.874-04:00 ERROR 5044 --- [elending-service] [DiscoveryClient-HeartbeatExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/PNAWSA05LC54409.duoc.acad:elending-service:8087 - was unable to send heartbeat!
+
+com.netflix.discovery.shared.transport.TransportException: Cannot execute request on any known server
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:112) ~[eureka-client-2.0.4.jar:2.0.4]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89) ~[eureka-client-2.0.4.jar:2.0.4]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92) ~[eureka-client-2.0.4.jar:2.0.4]
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76) ~[eureka-client-2.0.4.jar:2.0.4]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89) ~[eureka-client-2.0.4.jar:2.0.4]
+	at com.netflix.discovery.DiscoveryClient.renew(DiscoveryClient.java:845) ~[eureka-client-2.0.4.jar:2.0.4]
+	at com.netflix.discovery.DiscoveryClient$HeartbeatThread.run(DiscoveryClient.java:1402) ~[eureka-client-2.0.4.jar:2.0.4]
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539) ~[na:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+
