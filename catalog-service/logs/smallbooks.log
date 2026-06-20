@@ -1,185 +1,121 @@
-2026-05-27T12:56:35.605-04:00  INFO 17832 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Starting CatalogServiceApplication using Java 17.0.10 with PID 17832 (C:\WorkSpace\smallbooks-microservicios\catalog-service\target\classes started by Silvi in C:\WorkSpace\smallbooks-microservicios\catalog-service)
-2026-05-27T12:56:35.615-04:00 DEBUG 17832 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-05-27T12:56:35.616-04:00  INFO 17832 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : No active profile set, falling back to 1 default profile: "default"
-2026-05-27T12:56:35.668-04:00  INFO 17832 --- [catalog-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-05-27T12:56:35.668-04:00  INFO 17832 --- [catalog-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=catalog-service, profiles=[default], label=null, version=null, state=null
-2026-05-27T12:56:36.311-04:00  INFO 17832 --- [catalog-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-05-27T12:56:36.468-04:00  INFO 17832 --- [catalog-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 148 ms. Found 1 JPA repository interface.
-2026-05-27T12:56:36.656-04:00  INFO 17832 --- [catalog-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=853eb0c2-aa01-33da-88b0-2dd926f4fddf
-2026-05-27T12:56:37.031-04:00  INFO 17832 --- [catalog-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8085 (http)
-2026-05-27T12:56:37.044-04:00  INFO 17832 --- [catalog-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-05-27T12:56:37.045-04:00  INFO 17832 --- [catalog-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-05-27T12:56:37.114-04:00  INFO 17832 --- [catalog-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-05-27T12:56:37.114-04:00  INFO 17832 --- [catalog-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1442 ms
-2026-05-27T12:56:37.305-04:00  INFO 17832 --- [catalog-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-05-27T12:56:37.458-04:00  INFO 17832 --- [catalog-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@248d3a
-2026-05-27T12:56:37.459-04:00  INFO 17832 --- [catalog-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-05-27T12:56:37.506-04:00  INFO 17832 --- [catalog-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_catalog (MySQL 8.4)
-2026-05-27T12:56:37.515-04:00  WARN 17832 --- [catalog-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-05-27T12:56:37.562-04:00  INFO 17832 --- [catalog-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.036s)
-2026-05-27T12:56:37.576-04:00  INFO 17832 --- [catalog-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_catalog`: 2
-2026-05-27T12:56:37.580-04:00  INFO 17832 --- [catalog-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_catalog` is up to date. No migration necessary.
-2026-05-27T12:56:37.648-04:00  INFO 17832 --- [catalog-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-05-27T12:56:37.704-04:00  INFO 17832 --- [catalog-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-05-27T12:56:37.738-04:00  INFO 17832 --- [catalog-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-05-27T12:56:38.029-04:00  INFO 17832 --- [catalog-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-05-27T12:56:38.083-04:00  WARN 17832 --- [catalog-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-05-27T12:56:38.771-04:00  INFO 17832 --- [catalog-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-05-27T12:56:38.796-04:00  INFO 17832 --- [catalog-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-05-27T12:56:39.105-04:00  WARN 17832 --- [catalog-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-05-27T12:56:39.663-04:00  INFO 17832 --- [catalog-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-05-27T12:56:39.702-04:00  WARN 17832 --- [catalog-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-05-27T12:56:39.752-04:00  INFO 17832 --- [catalog-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-05-27T12:56:39.776-04:00  INFO 17832 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-05-27T12:56:39.783-04:00  INFO 17832 --- [catalog-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-27T12:56:39.793-04:00  INFO 17832 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-05-27T12:56:39.794-04:00  INFO 17832 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-05-27T12:56:39.794-04:00  INFO 17832 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-05-27T12:56:39.794-04:00  INFO 17832 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-05-27T12:56:39.794-04:00  INFO 17832 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-05-27T12:56:39.794-04:00  INFO 17832 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-05-27T12:56:39.794-04:00  INFO 17832 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-05-27T12:56:40.042-04:00  INFO 17832 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-05-27T12:56:40.045-04:00  INFO 17832 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-05-27T12:56:40.047-04:00  INFO 17832 --- [catalog-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-05-27T12:56:40.048-04:00  INFO 17832 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1779901000048 with initial instances count: 2
-2026-05-27T12:56:40.052-04:00  INFO 17832 --- [catalog-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application CATALOG-SERVICE with eureka with status UP
-2026-05-27T12:56:40.053-04:00  INFO 17832 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1779901000053, current=UP, previous=STARTING]
-2026-05-27T12:56:40.054-04:00  INFO 17832 --- [catalog-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_CATALOG-SERVICE/DESKTOP-N7DD3QB:catalog-service:8085: registering service...
-2026-05-27T12:56:40.077-04:00  INFO 17832 --- [catalog-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8085 (http) with context path '/'
-2026-05-27T12:56:40.078-04:00  INFO 17832 --- [catalog-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8085
-2026-05-27T12:56:40.087-04:00  INFO 17832 --- [catalog-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_CATALOG-SERVICE/DESKTOP-N7DD3QB:catalog-service:8085 - registration status: 204
-2026-05-27T12:56:40.122-04:00  INFO 17832 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Started CatalogServiceApplication in 5.39 seconds (process running for 5.849)
-2026-05-27T13:00:43.069-04:00  INFO 15284 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Starting CatalogServiceApplication using Java 17.0.10 with PID 15284 (C:\WorkSpace\smallbooks-microservicios\catalog-service\target\classes started by Silvi in C:\WorkSpace\smallbooks-microservicios\catalog-service)
-2026-05-27T13:00:43.071-04:00 DEBUG 15284 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-05-27T13:00:43.072-04:00  INFO 15284 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : No active profile set, falling back to 1 default profile: "default"
-2026-05-27T13:00:43.116-04:00  INFO 15284 --- [catalog-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-05-27T13:00:43.117-04:00  INFO 15284 --- [catalog-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=catalog-service, profiles=[default], label=null, version=null, state=null
-2026-05-27T13:00:43.755-04:00  INFO 15284 --- [catalog-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-05-27T13:00:43.892-04:00  INFO 15284 --- [catalog-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 128 ms. Found 1 JPA repository interface.
-2026-05-27T13:00:44.066-04:00  INFO 15284 --- [catalog-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=853eb0c2-aa01-33da-88b0-2dd926f4fddf
-2026-05-27T13:00:44.420-04:00  INFO 15284 --- [catalog-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8085 (http)
-2026-05-27T13:00:44.433-04:00  INFO 15284 --- [catalog-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-05-27T13:00:44.433-04:00  INFO 15284 --- [catalog-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-05-27T13:00:44.501-04:00  INFO 15284 --- [catalog-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-05-27T13:00:44.501-04:00  INFO 15284 --- [catalog-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1381 ms
-2026-05-27T13:00:44.676-04:00  INFO 15284 --- [catalog-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-05-27T13:00:44.831-04:00  INFO 15284 --- [catalog-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@bc8d68b
-2026-05-27T13:00:44.834-04:00  INFO 15284 --- [catalog-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-05-27T13:00:44.886-04:00  INFO 15284 --- [catalog-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_catalog (MySQL 8.4)
-2026-05-27T13:00:44.896-04:00  WARN 15284 --- [catalog-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-05-27T13:00:44.933-04:00  INFO 15284 --- [catalog-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.027s)
-2026-05-27T13:00:44.947-04:00  INFO 15284 --- [catalog-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_catalog`: 2
-2026-05-27T13:00:44.953-04:00  INFO 15284 --- [catalog-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_catalog` is up to date. No migration necessary.
-2026-05-27T13:00:45.015-04:00  INFO 15284 --- [catalog-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-05-27T13:00:45.065-04:00  INFO 15284 --- [catalog-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-05-27T13:00:45.114-04:00  INFO 15284 --- [catalog-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-05-27T13:00:45.384-04:00  INFO 15284 --- [catalog-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-05-27T13:00:45.436-04:00  WARN 15284 --- [catalog-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-05-27T13:00:46.117-04:00  INFO 15284 --- [catalog-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-05-27T13:00:46.139-04:00  INFO 15284 --- [catalog-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-05-27T13:00:46.419-04:00  WARN 15284 --- [catalog-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-05-27T13:00:46.932-04:00  INFO 15284 --- [catalog-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-05-27T13:00:46.967-04:00  WARN 15284 --- [catalog-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-05-27T13:00:47.012-04:00  INFO 15284 --- [catalog-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-05-27T13:00:47.033-04:00  INFO 15284 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-05-27T13:00:47.036-04:00  INFO 15284 --- [catalog-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-27T13:00:47.045-04:00  INFO 15284 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-05-27T13:00:47.045-04:00  INFO 15284 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-05-27T13:00:47.045-04:00  INFO 15284 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-05-27T13:00:47.045-04:00  INFO 15284 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-05-27T13:00:47.046-04:00  INFO 15284 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-05-27T13:00:47.046-04:00  INFO 15284 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-05-27T13:00:47.046-04:00  INFO 15284 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-05-27T13:00:47.304-04:00  INFO 15284 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-05-27T13:00:47.306-04:00  INFO 15284 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-05-27T13:00:47.307-04:00  INFO 15284 --- [catalog-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-05-27T13:00:47.308-04:00  INFO 15284 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1779901247308 with initial instances count: 1
-2026-05-27T13:00:47.311-04:00  INFO 15284 --- [catalog-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application CATALOG-SERVICE with eureka with status UP
-2026-05-27T13:00:47.312-04:00  INFO 15284 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1779901247312, current=UP, previous=STARTING]
-2026-05-27T13:00:47.314-04:00  INFO 15284 --- [catalog-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_CATALOG-SERVICE/DESKTOP-N7DD3QB:catalog-service:8085: registering service...
-2026-05-27T13:00:47.333-04:00  INFO 15284 --- [catalog-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8085 (http) with context path '/'
-2026-05-27T13:00:47.334-04:00  INFO 15284 --- [catalog-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8085
-2026-05-27T13:00:47.342-04:00  INFO 15284 --- [catalog-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_CATALOG-SERVICE/DESKTOP-N7DD3QB:catalog-service:8085 - registration status: 204
-2026-05-27T13:00:47.375-04:00  INFO 15284 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Started CatalogServiceApplication in 5.137 seconds (process running for 5.603)
-2026-05-27T13:05:47.055-04:00  INFO 15284 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-27T13:07:29.581-04:00  INFO 15284 --- [catalog-service] [http-nio-8085-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-05-27T13:07:29.581-04:00  INFO 15284 --- [catalog-service] [http-nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-05-27T13:07:29.581-04:00  INFO 15284 --- [catalog-service] [http-nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
-2026-05-27T13:07:29.615-04:00  INFO 15284 --- [catalog-service] [http-nio-8085-exec-1] c.silvio.catalog.service.CatalogService  : Consultando todos los libros del catálogo
-2026-05-27T13:10:47.056-04:00  INFO 15284 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-27T13:15:47.067-04:00  INFO 15284 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-27T13:20:47.083-04:00  INFO 15284 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T14:45:00.685-04:00  INFO 22056 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Starting CatalogServiceApplication using Java 17.0.12 with PID 22056 (C:\workspace\SmallBooksRepository\catalog-service\target\classes started by SSDD in C:\workspace\SmallBooksRepository\catalog-service)
-2026-06-02T14:45:00.688-04:00 DEBUG 22056 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-02T14:45:00.690-04:00  INFO 22056 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : No active profile set, falling back to 1 default profile: "default"
-2026-06-02T14:45:00.735-04:00  INFO 22056 --- [catalog-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-02T14:45:00.735-04:00  INFO 22056 --- [catalog-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=catalog-service, profiles=[default], label=null, version=null, state=null
-2026-06-02T14:45:01.516-04:00  INFO 22056 --- [catalog-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-02T14:45:01.651-04:00  INFO 22056 --- [catalog-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 125 ms. Found 1 JPA repository interface.
-2026-06-02T14:45:01.875-04:00  INFO 22056 --- [catalog-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=853eb0c2-aa01-33da-88b0-2dd926f4fddf
-2026-06-02T14:45:02.523-04:00  INFO 22056 --- [catalog-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8085 (http)
-2026-06-02T14:45:02.561-04:00  INFO 22056 --- [catalog-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-02T14:45:02.562-04:00  INFO 22056 --- [catalog-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-02T14:45:02.676-04:00  INFO 22056 --- [catalog-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-02T14:45:02.678-04:00  INFO 22056 --- [catalog-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1939 ms
-2026-06-02T14:45:03.115-04:00  INFO 22056 --- [catalog-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-02T14:45:03.459-04:00  INFO 22056 --- [catalog-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7aa3857b
-2026-06-02T14:45:03.463-04:00  INFO 22056 --- [catalog-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-02T14:45:03.521-04:00  INFO 22056 --- [catalog-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_catalog (MySQL 8.4)
-2026-06-02T14:45:03.535-04:00  WARN 22056 --- [catalog-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-06-02T14:45:03.557-04:00  INFO 22056 --- [catalog-service] [main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table `db_catalog`.`flyway_schema_history` does not exist yet
-2026-06-02T14:45:03.560-04:00  INFO 22056 --- [catalog-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.015s)
-2026-06-02T14:45:03.576-04:00  INFO 22056 --- [catalog-service] [main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table `db_catalog`.`flyway_schema_history` ...
-2026-06-02T14:45:03.649-04:00  INFO 22056 --- [catalog-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_catalog`: << Empty Schema >>
-2026-06-02T14:45:03.657-04:00  INFO 22056 --- [catalog-service] [main] o.f.core.internal.command.DbMigrate      : Migrating schema `db_catalog` to version "1 - crear tabla libros"
-2026-06-02T14:45:03.683-04:00  WARN 22056 --- [catalog-service] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Integer display width is deprecated and will be removed in a future release. (SQL State: HY000 - Error Code: 1681)
-2026-06-02T14:45:03.715-04:00  INFO 22056 --- [catalog-service] [main] o.f.core.internal.command.DbMigrate      : Migrating schema `db_catalog` to version "2 - insertar libros iniciales"
-2026-06-02T14:45:03.741-04:00  INFO 22056 --- [catalog-service] [main] o.f.core.internal.command.DbMigrate      : Successfully applied 2 migrations to schema `db_catalog`, now at version v2 (execution time 00:00.034s)
-2026-06-02T14:45:03.858-04:00  INFO 22056 --- [catalog-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-02T14:45:03.925-04:00  INFO 22056 --- [catalog-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-06-02T14:45:03.966-04:00  INFO 22056 --- [catalog-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-02T14:45:04.224-04:00  INFO 22056 --- [catalog-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-02T14:45:04.275-04:00  WARN 22056 --- [catalog-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-06-02T14:45:04.987-04:00  INFO 22056 --- [catalog-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-02T14:45:05.015-04:00  INFO 22056 --- [catalog-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-02T14:45:05.343-04:00  WARN 22056 --- [catalog-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-02T14:45:06.809-04:00  INFO 22056 --- [catalog-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-06-02T14:45:06.849-04:00  WARN 22056 --- [catalog-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-06-02T14:45:06.986-04:00  INFO 22056 --- [catalog-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-06-02T14:45:07.034-04:00  INFO 22056 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-06-02T14:45:07.043-04:00  INFO 22056 --- [catalog-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T14:45:07.066-04:00  INFO 22056 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-02T14:45:07.066-04:00  INFO 22056 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-02T14:45:07.067-04:00  INFO 22056 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-02T14:45:07.067-04:00  INFO 22056 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-02T14:45:07.067-04:00  INFO 22056 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-02T14:45:07.068-04:00  INFO 22056 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-06-02T14:45:07.068-04:00  INFO 22056 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-02T14:45:07.393-04:00  INFO 22056 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-02T14:45:07.396-04:00  INFO 22056 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-06-02T14:45:07.398-04:00  INFO 22056 --- [catalog-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-06-02T14:45:07.399-04:00  INFO 22056 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1780425907399 with initial instances count: 2
-2026-06-02T14:45:07.402-04:00  INFO 22056 --- [catalog-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application CATALOG-SERVICE with eureka with status UP
-2026-06-02T14:45:07.403-04:00  INFO 22056 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1780425907403, current=UP, previous=STARTING]
-2026-06-02T14:45:07.404-04:00  INFO 22056 --- [catalog-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_CATALOG-SERVICE/PNAWSA05LC54409.duoc.acad:catalog-service:8085: registering service...
-2026-06-02T14:45:07.429-04:00  INFO 22056 --- [catalog-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8085 (http) with context path '/'
-2026-06-02T14:45:07.430-04:00  INFO 22056 --- [catalog-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_CATALOG-SERVICE/PNAWSA05LC54409.duoc.acad:catalog-service:8085 - registration status: 204
-2026-06-02T14:45:07.430-04:00  INFO 22056 --- [catalog-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8085
-2026-06-02T14:45:07.788-04:00  INFO 22056 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Started CatalogServiceApplication in 8.508 seconds (process running for 9.258)
-2026-06-02T14:48:42.165-04:00  INFO 22056 --- [catalog-service] [http-nio-8085-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-02T14:48:42.165-04:00  INFO 22056 --- [catalog-service] [http-nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-06-02T14:48:42.167-04:00  INFO 22056 --- [catalog-service] [http-nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-2026-06-02T14:48:42.205-04:00  INFO 22056 --- [catalog-service] [http-nio-8085-exec-1] c.silvio.catalog.service.CatalogService  : Consultando todos los libros del catálogo
-2026-06-02T14:49:01.221-04:00  INFO 22056 --- [catalog-service] [http-nio-8085-exec-2] c.silvio.catalog.service.CatalogService  : Consultando libros disponibles
-2026-06-02T14:49:51.016-04:00  INFO 22056 --- [catalog-service] [http-nio-8085-exec-3] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 1
-2026-06-02T14:49:54.158-04:00  INFO 22056 --- [catalog-service] [http-nio-8085-exec-4] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 2
-2026-06-02T14:49:56.922-04:00  INFO 22056 --- [catalog-service] [http-nio-8085-exec-5] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 3
-2026-06-02T14:49:59.571-04:00  INFO 22056 --- [catalog-service] [http-nio-8085-exec-6] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 1
-2026-06-02T14:50:07.085-04:00  INFO 22056 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T14:55:07.097-04:00  INFO 22056 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T15:00:07.099-04:00  INFO 22056 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T15:05:07.100-04:00  INFO 22056 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T15:10:07.105-04:00  INFO 22056 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T15:15:07.109-04:00  INFO 22056 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T15:20:07.113-04:00  INFO 22056 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:02:09.890-04:00  INFO 17332 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Starting CatalogServiceApplication using Java 17.0.10 with PID 17332 (C:\WorkSpace\SmallBooksRepository\catalog-service\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\catalog-service)
+2026-06-19T20:02:09.898-04:00 DEBUG 17332 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-19T20:02:09.899-04:00  INFO 17332 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-06-19T20:02:09.943-04:00  INFO 17332 --- [catalog-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-19T20:02:09.944-04:00  INFO 17332 --- [catalog-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=catalog-service, profiles=[default], label=null, version=null, state=null
+2026-06-19T20:02:10.644-04:00  INFO 17332 --- [catalog-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-19T20:02:10.786-04:00  INFO 17332 --- [catalog-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 132 ms. Found 1 JPA repository interface.
+2026-06-19T20:02:10.997-04:00  INFO 17332 --- [catalog-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=853eb0c2-aa01-33da-88b0-2dd926f4fddf
+2026-06-19T20:02:11.432-04:00  INFO 17332 --- [catalog-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8085 (http)
+2026-06-19T20:02:11.448-04:00  INFO 17332 --- [catalog-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-19T20:02:11.448-04:00  INFO 17332 --- [catalog-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-19T20:02:11.523-04:00  INFO 17332 --- [catalog-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-19T20:02:11.524-04:00  INFO 17332 --- [catalog-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1578 ms
+2026-06-19T20:02:11.722-04:00  INFO 17332 --- [catalog-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-19T20:02:11.862-04:00  INFO 17332 --- [catalog-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@3b9c9b8b
+2026-06-19T20:02:11.865-04:00  INFO 17332 --- [catalog-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-19T20:02:11.911-04:00  INFO 17332 --- [catalog-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_catalog (MySQL 8.4)
+2026-06-19T20:02:11.922-04:00  WARN 17332 --- [catalog-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-19T20:02:11.965-04:00  INFO 17332 --- [catalog-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.034s)
+2026-06-19T20:02:11.980-04:00  INFO 17332 --- [catalog-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_catalog`: 2
+2026-06-19T20:02:11.984-04:00  INFO 17332 --- [catalog-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_catalog` is up to date. No migration necessary.
+2026-06-19T20:02:12.045-04:00  INFO 17332 --- [catalog-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-19T20:02:12.095-04:00  INFO 17332 --- [catalog-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-19T20:02:12.126-04:00  INFO 17332 --- [catalog-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-19T20:02:12.421-04:00  INFO 17332 --- [catalog-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-19T20:02:12.476-04:00  WARN 17332 --- [catalog-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-19T20:02:13.181-04:00  INFO 17332 --- [catalog-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-19T20:02:13.204-04:00  INFO 17332 --- [catalog-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-19T20:02:13.516-04:00  WARN 17332 --- [catalog-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-19T20:02:14.123-04:00  INFO 17332 --- [catalog-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-19T20:02:14.167-04:00  WARN 17332 --- [catalog-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-19T20:02:14.235-04:00  INFO 17332 --- [catalog-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-19T20:02:14.258-04:00  INFO 17332 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-19T20:02:14.262-04:00  INFO 17332 --- [catalog-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:02:14.271-04:00  INFO 17332 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-19T20:02:14.272-04:00  INFO 17332 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-19T20:02:14.272-04:00  INFO 17332 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-19T20:02:14.272-04:00  INFO 17332 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-19T20:02:14.272-04:00  INFO 17332 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-19T20:02:14.272-04:00  INFO 17332 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-19T20:02:14.272-04:00  INFO 17332 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-19T20:02:14.551-04:00  INFO 17332 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-19T20:02:14.553-04:00  INFO 17332 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-19T20:02:14.555-04:00  INFO 17332 --- [catalog-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-19T20:02:14.557-04:00  INFO 17332 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781913734556 with initial instances count: 2
+2026-06-19T20:02:14.560-04:00  INFO 17332 --- [catalog-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application CATALOG-SERVICE with eureka with status UP
+2026-06-19T20:02:14.561-04:00  INFO 17332 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781913734561, current=UP, previous=STARTING]
+2026-06-19T20:02:14.563-04:00  INFO 17332 --- [catalog-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_CATALOG-SERVICE/host.docker.internal:catalog-service:8085: registering service...
+2026-06-19T20:02:14.590-04:00  INFO 17332 --- [catalog-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8085 (http) with context path '/'
+2026-06-19T20:02:14.591-04:00  INFO 17332 --- [catalog-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8085
+2026-06-19T20:02:14.599-04:00  INFO 17332 --- [catalog-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_CATALOG-SERVICE/host.docker.internal:catalog-service:8085 - registration status: 204
+2026-06-19T20:02:14.661-04:00  INFO 17332 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Started CatalogServiceApplication in 5.646 seconds (process running for 6.167)
+2026-06-19T20:07:14.288-04:00  INFO 17332 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:12:14.290-04:00  INFO 17332 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:17:14.315-04:00  INFO 17332 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:22:14.317-04:00  INFO 17332 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:27:14.326-04:00  INFO 17332 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:32:14.340-04:00  INFO 17332 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:37:14.342-04:00  INFO 17332 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:42:14.358-04:00  INFO 17332 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:47:14.372-04:00  INFO 17332 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:47:45.227-04:00  INFO 11836 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Starting CatalogServiceApplication using Java 17.0.10 with PID 11836 (C:\WorkSpace\SmallBooksRepository\catalog-service\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\catalog-service)
+2026-06-19T20:47:45.234-04:00 DEBUG 11836 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-19T20:47:45.237-04:00  INFO 11836 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-06-19T20:47:45.301-04:00  INFO 11836 --- [catalog-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-19T20:47:45.302-04:00  INFO 11836 --- [catalog-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=catalog-service, profiles=[default], label=null, version=null, state=null
+2026-06-19T20:47:46.240-04:00  INFO 11836 --- [catalog-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-19T20:47:46.379-04:00  INFO 11836 --- [catalog-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 131 ms. Found 1 JPA repository interface.
+2026-06-19T20:47:46.605-04:00  INFO 11836 --- [catalog-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=89a12adf-a224-3d68-aeb9-71550e19b974
+2026-06-19T20:47:47.145-04:00  INFO 11836 --- [catalog-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8085 (http)
+2026-06-19T20:47:47.163-04:00  INFO 11836 --- [catalog-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-19T20:47:47.164-04:00  INFO 11836 --- [catalog-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-19T20:47:47.263-04:00  INFO 11836 --- [catalog-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-19T20:47:47.264-04:00  INFO 11836 --- [catalog-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1960 ms
+2026-06-19T20:47:47.489-04:00  INFO 11836 --- [catalog-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-19T20:47:47.679-04:00  INFO 11836 --- [catalog-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@559e3f67
+2026-06-19T20:47:47.681-04:00  INFO 11836 --- [catalog-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-19T20:47:47.739-04:00  INFO 11836 --- [catalog-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_catalog (MySQL 8.4)
+2026-06-19T20:47:47.753-04:00  WARN 11836 --- [catalog-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-19T20:47:47.805-04:00  INFO 11836 --- [catalog-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.040s)
+2026-06-19T20:47:47.823-04:00  INFO 11836 --- [catalog-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_catalog`: 2
+2026-06-19T20:47:47.826-04:00  INFO 11836 --- [catalog-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_catalog` is up to date. No migration necessary.
+2026-06-19T20:47:47.905-04:00  INFO 11836 --- [catalog-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-19T20:47:47.967-04:00  INFO 11836 --- [catalog-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-19T20:47:48.003-04:00  INFO 11836 --- [catalog-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-19T20:47:48.326-04:00  INFO 11836 --- [catalog-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-19T20:47:48.386-04:00  WARN 11836 --- [catalog-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-19T20:47:49.295-04:00  INFO 11836 --- [catalog-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-19T20:47:49.331-04:00  INFO 11836 --- [catalog-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-19T20:47:49.805-04:00  WARN 11836 --- [catalog-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-19T20:47:50.585-04:00  INFO 11836 --- [catalog-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-19T20:47:50.651-04:00  WARN 11836 --- [catalog-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-19T20:47:50.714-04:00  INFO 11836 --- [catalog-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-19T20:47:50.743-04:00  INFO 11836 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-19T20:47:50.749-04:00  INFO 11836 --- [catalog-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:47:50.759-04:00  INFO 11836 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-19T20:47:50.759-04:00  INFO 11836 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-19T20:47:50.759-04:00  INFO 11836 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-19T20:47:50.759-04:00  INFO 11836 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-19T20:47:50.760-04:00  INFO 11836 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-19T20:47:50.760-04:00  INFO 11836 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-19T20:47:50.760-04:00  INFO 11836 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-19T20:47:51.151-04:00  INFO 11836 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-19T20:47:51.153-04:00  INFO 11836 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-19T20:47:51.155-04:00  INFO 11836 --- [catalog-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-19T20:47:51.157-04:00  INFO 11836 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781916471156 with initial instances count: 11
+2026-06-19T20:47:51.161-04:00  INFO 11836 --- [catalog-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application CATALOG-SERVICE with eureka with status UP
+2026-06-19T20:47:51.162-04:00  INFO 11836 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781916471162, current=UP, previous=STARTING]
+2026-06-19T20:47:51.164-04:00  INFO 11836 --- [catalog-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_CATALOG-SERVICE/host.docker.internal:catalog-service:8085: registering service...
+2026-06-19T20:47:51.197-04:00  INFO 11836 --- [catalog-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8085 (http) with context path '/'
+2026-06-19T20:47:51.199-04:00  INFO 11836 --- [catalog-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8085
+2026-06-19T20:47:51.202-04:00  INFO 11836 --- [catalog-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_CATALOG-SERVICE/host.docker.internal:catalog-service:8085 - registration status: 204
+2026-06-19T20:47:51.271-04:00  INFO 11836 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Started CatalogServiceApplication in 7.232 seconds (process running for 7.736)
+2026-06-19T20:48:01.486-04:00  INFO 11836 --- [catalog-service] [http-nio-8085-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-19T20:48:01.486-04:00  INFO 11836 --- [catalog-service] [http-nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-06-19T20:48:01.488-04:00  INFO 11836 --- [catalog-service] [http-nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-06-19T20:48:02.054-04:00  INFO 11836 --- [catalog-service] [http-nio-8085-exec-9] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 278 ms
+2026-06-19T20:52:50.777-04:00  INFO 11836 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:57:50.784-04:00  INFO 11836 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:02:50.796-04:00  INFO 11836 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:07:50.801-04:00  INFO 11836 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

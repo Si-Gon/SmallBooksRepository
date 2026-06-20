@@ -2,11 +2,15 @@ package com.silvio.subscription.dto;
 
 import com.silvio.subscription.model.Suscripcion.PlanSuscripcion;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
+import org.springframework.hateoas.RepresentationModel;
+
 @Data
-public class SuscripcionResponseDTO {
+@EqualsAndHashCode(callSuper = false)
+public class SuscripcionResponseDTO extends RepresentationModel<SuscripcionResponseDTO> {
 
     private Long id;
     private String usuarioId;

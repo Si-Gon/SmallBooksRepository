@@ -1,10 +1,14 @@
 package com.silvio.search.dto;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 // Resultado de búsqueda — incluye datos del libro y disponibilidad
 @Data
-public class SearchResultDTO {
+@EqualsAndHashCode(callSuper = false)
+public class SearchResultDTO extends RepresentationModel<SearchResultDTO> {
     private Long id;
     private String titulo;
     private String autor;

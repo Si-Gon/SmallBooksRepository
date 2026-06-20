@@ -3,22 +3,22 @@ package com.silvio.elending.controller;
 import com.silvio.elending.dto.PrestamoRequestDTO;
 import com.silvio.elending.dto.PrestamoResponseDTO;
 import com.silvio.elending.service.PrestamoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 import java.util.List;
 
-// Endpoints REST semánticos:
-//   POST /api/lending/prestamos              → crear préstamo
-//   GET  /api/lending/prestamos/activos      → mis préstamos activos
-//   GET  /api/lending/prestamos/historial    → mi historial completo
-
-// El usuarioId NO viene en el body — se extrae del header Authorization
-// Esto evita que un usuario pueda crear préstamos a nombre de otro
-
+@Tag(name = "E-Lending", description = "Gestión de préstamos digitales — reglas BASICO (2 préstamos, 7 días) y PREMIUM (5 préstamos, 14 días)")
 @RestController
 @RequestMapping("/api/lending")
 @RequiredArgsConstructor
@@ -26,85 +26,111 @@ public class PrestamoController {
 
     private final PrestamoService prestamoService;
 
-    // -----------------------------------------------------------------------
-    // POST /api/lending/prestamos
-    // El token JWT viene en el header Authorization: Bearer <token>
-    // Extraemos el username del token para identificar al usuario
-    // -----------------------------------------------------------------------
+    @Operation(summary = "Crear préstamo",
+               description = "Crea un nuevo préstamo digital. El usuario se identifica desde el token JWT — " +
+                             "no es necesario enviar el usuarioId en el body. " +
+                             "Valida límites de plan: BASICO (máx 2 activos), PREMIUM (máx 5 activos)")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Préstamo creado exitosamente"),
+        @ApiResponse(responseCode = "400", description = "Límite de préstamos alcanzado según el plan"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "404", description = "Libro no encontrado o no disponible")
+    })
     @PostMapping("/prestamos")
     public ResponseEntity<PrestamoResponseDTO> crearPrestamo(
             @Valid @RequestBody PrestamoRequestDTO request,
+            @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
             @RequestHeader("Authorization") String authHeader) {
 
-        // Extraer username del token
-        // El token tiene formato: Bearer eyJhbGci...
-        // El username está codificado en el payload del JWT
         String usuarioId = extraerUsuarioDelToken(authHeader);
-
         PrestamoResponseDTO prestamo = prestamoService.crearPrestamo(request, usuarioId);
+        prestamo.add(linkTo(methodOn(PrestamoController.class).obtenerActivos(authHeader)).withRel("mis-activos"));
+        prestamo.add(linkTo(methodOn(PrestamoController.class).obtenerHistorial(authHeader)).withRel("mi-historial"));
+
         return ResponseEntity.status(HttpStatus.CREATED).body(prestamo);
     }
 
-    // GET /api/lending/prestamos/activos
-    // Lista los préstamos activos del usuario autenticado
-    
+    @Operation(summary = "Obtener préstamos activos",
+               description = "Lista los préstamos activos del usuario autenticado. " +
+                             "El usuario se identifica desde el token JWT")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista de préstamos activos"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente")
+    })
     @GetMapping("/prestamos/activos")
     public ResponseEntity<List<PrestamoResponseDTO>> obtenerActivos(
+            @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
             @RequestHeader("Authorization") String authHeader) {
 
         String usuarioId = extraerUsuarioDelToken(authHeader);
-        return ResponseEntity.ok(prestamoService.obtenerPrestamosActivos(usuarioId));
+        List<PrestamoResponseDTO> prestamos = prestamoService.obtenerPrestamosActivos(usuarioId);
+
+        prestamos.forEach(p ->
+        p.add(linkTo(methodOn(PrestamoController.class).obtenerHistorial(authHeader)).withRel("mi-historial")));
+
+        return ResponseEntity.ok(prestamos);
     }
 
-    // GET /api/lending/prestamos/historial
-    // Lista todos los préstamos (activos y vencidos) del usuario
-    
+    @Operation(summary = "Obtener historial de préstamos",
+               description = "Lista todos los préstamos (activos y vencidos) del usuario autenticado")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Historial completo obtenido"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente")
+    })
     @GetMapping("/prestamos/historial")
     public ResponseEntity<List<PrestamoResponseDTO>> obtenerHistorial(
+            @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
             @RequestHeader("Authorization") String authHeader) {
 
         String usuarioId = extraerUsuarioDelToken(authHeader);
-        return ResponseEntity.ok(prestamoService.obtenerHistorial(usuarioId));
+        List<PrestamoResponseDTO> prestamos = prestamoService.obtenerHistorial(usuarioId);
+
+    prestamos.forEach(p ->
+        p.add(linkTo(methodOn(PrestamoController.class).obtenerActivos(authHeader)).withRel("mis-activos")));
+
+    return ResponseEntity.ok(prestamos);
     }
-    
-    // GET /api/lending/prestamos/todos
-    // Usado por Analytics Service via Feign para calcular estadísticas globales
-    
+
+    @Operation(summary = "Obtener todos los préstamos",
+               description = "Endpoint interno usado por Analytics Service via Feign. " +
+                             "Devuelve todos los préstamos del sistema para cálculo de estadísticas globales")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista completa de préstamos")
+    })
     @GetMapping("/prestamos/todos")
     public ResponseEntity<List<PrestamoResponseDTO>> obtenerTodos() {
-        return ResponseEntity.ok(prestamoService.obtenerTodos());
+        List<PrestamoResponseDTO> prestamos = prestamoService.obtenerTodos();
+        prestamos.forEach(p ->
+        p.add(linkTo(methodOn(PrestamoController.class).obtenerTodos()).withSelfRel()));
+        return ResponseEntity.ok(prestamos);
     }
- 
-    // GET /api/lending/prestamos/historial/{usuarioId}
-    // Usado por Analytics Service via Feign para historial de un usuario
-    
+
+    @Operation(summary = "Obtener historial por usuario",
+               description = "Endpoint interno usado por Analytics Service via Feign. " +
+                             "Devuelve el historial de préstamos de un usuario específico")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Historial obtenido exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
     @GetMapping("/prestamos/historial/{usuarioId}")
     public ResponseEntity<List<PrestamoResponseDTO>> obtenerHistorialPorId(
+            @Parameter(description = "ID del usuario (username)", required = true)
             @PathVariable String usuarioId) {
-        return ResponseEntity.ok(prestamoService.obtenerHistorial(usuarioId));
+        List<PrestamoResponseDTO> prestamos = prestamoService.obtenerHistorial(usuarioId);
+        prestamos.forEach(p ->
+        p.add(linkTo(methodOn(PrestamoController.class).obtenerHistorialPorId(usuarioId)).withSelfRel())
+    );
+        return ResponseEntity.ok(prestamos);
     }
 
-    // Método privado: extrae el username del token JWT
-    // El token tiene 3 partes separadas por puntos: header.payload.signature
-    // El payload está en Base64 y contiene el campo "sub" con el username
-    
     private String extraerUsuarioDelToken(String authHeader) {
         try {
-            // Quitar "Bearer "
             String token = authHeader.substring(7);
-
-            // El payload es la segunda parte (índice 1) separada por "."
             String payload = token.split("\\.")[1];
-
-            // Decodificar Base64
             String decodedPayload = new String(
                     java.util.Base64.getUrlDecoder().decode(payload));
-
-            // Extraer el campo "sub" del JSON
-            // Ejemplo de payload: {"roles":"ROLE_USER","type":"access","sub":"admin",...}
             String sub = decodedPayload.split("\"sub\":\"")[1].split("\"")[0];
             return sub;
-
         } catch (Exception e) {
             throw new RuntimeException("No se pudo extraer el usuario del token");
         }

@@ -15,7 +15,6 @@ import java.nio.file.Paths;
 // Para migrar a MySQL: quitar @Primary aquí y agregarlo en DatabaseStorageService
 
 @Service
-@Primary
 public class LocalStorageService implements StorageService {
 
     // Ruta base configurada en el yml del Config Server

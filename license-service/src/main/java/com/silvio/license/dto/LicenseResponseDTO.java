@@ -1,9 +1,13 @@
 package com.silvio.license.dto;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class LicenseResponseDTO {
+@EqualsAndHashCode(callSuper = false)
+public class LicenseResponseDTO extends RepresentationModel<LicenseResponseDTO>{
 
     private Long id;
     private Long libroId;

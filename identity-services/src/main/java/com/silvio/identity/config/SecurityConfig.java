@@ -31,7 +31,11 @@ public class SecurityConfig {
                             "/auth/register",
                             "/auth/refresh",
                             "/auth/forgot-password",
-                            "/auth/reset-password"
+                            "/auth/reset-password",
+                            "/swagger-ui/**",
+                            "/swagger-ui.html",
+                            "/v3/api-docs/**",
+                            "/v3/api-docs"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

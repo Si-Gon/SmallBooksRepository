@@ -30,10 +30,15 @@ public class ArchivoLibro {
     private Long tamanio;
 
     // En Opción A: ruta completa en disco
-    // En Opción B (futura): id del BLOB en MySQL
+    
     @Column(name = "ruta_o_clave", nullable = false)
     private String rutaOClave;
 
     @Column(name = "fecha_subida", nullable = false)
     private LocalDateTime fechaSubida;
+    
+    // En Opción B (futura): id del BLOB en MySQL
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] datos;
 }

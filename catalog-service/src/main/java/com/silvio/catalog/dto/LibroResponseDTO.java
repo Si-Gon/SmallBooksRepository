@@ -1,9 +1,12 @@
 package com.silvio.catalog.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.hateoas.RepresentationModel;
 
 @Data
-public class LibroResponseDTO {
+@EqualsAndHashCode(callSuper = false)
+public class LibroResponseDTO extends RepresentationModel<LibroResponseDTO> {
 
     private Long id;
     private String titulo;

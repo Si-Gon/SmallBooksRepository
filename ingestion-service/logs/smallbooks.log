@@ -1,125 +1,592 @@
-2026-05-27T13:01:20.695-04:00  INFO 5992 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Starting IngestionServiceApplication using Java 17.0.10 with PID 5992 (C:\WorkSpace\smallbooks-microservicios\ingestion-service\target\classes started by Silvi in C:\WorkSpace\smallbooks-microservicios\ingestion-service)
-2026-05-27T13:01:20.705-04:00 DEBUG 5992 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-05-27T13:01:20.708-04:00  INFO 5992 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : No active profile set, falling back to 1 default profile: "default"
-2026-05-27T13:01:20.758-04:00  INFO 5992 --- [ingestion-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-05-27T13:01:20.759-04:00  INFO 5992 --- [ingestion-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=ingestion-service, profiles=[default], label=null, version=null, state=null
-2026-05-27T13:01:21.417-04:00  INFO 5992 --- [ingestion-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-05-27T13:01:21.552-04:00  INFO 5992 --- [ingestion-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 127 ms. Found 1 JPA repository interface.
-2026-05-27T13:01:21.759-04:00  INFO 5992 --- [ingestion-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=81f7d803-abea-35a3-abb5-362b1ae43dc7
-2026-05-27T13:01:22.178-04:00  INFO 5992 --- [ingestion-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8092 (http)
-2026-05-27T13:01:22.190-04:00  INFO 5992 --- [ingestion-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-05-27T13:01:22.191-04:00  INFO 5992 --- [ingestion-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-05-27T13:01:22.269-04:00  INFO 5992 --- [ingestion-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-05-27T13:01:22.269-04:00  INFO 5992 --- [ingestion-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1507 ms
-2026-05-27T13:01:22.435-04:00  INFO 5992 --- [ingestion-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-05-27T13:01:22.570-04:00  INFO 5992 --- [ingestion-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@fd87c22
-2026-05-27T13:01:22.572-04:00  INFO 5992 --- [ingestion-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-05-27T13:01:22.621-04:00  INFO 5992 --- [ingestion-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_ingestion (MySQL 8.4)
-2026-05-27T13:01:22.634-04:00  WARN 5992 --- [ingestion-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-05-27T13:01:22.678-04:00  INFO 5992 --- [ingestion-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.035s)
-2026-05-27T13:01:22.696-04:00  INFO 5992 --- [ingestion-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_ingestion`: 1
-2026-05-27T13:01:22.700-04:00  INFO 5992 --- [ingestion-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_ingestion` is up to date. No migration necessary.
-2026-05-27T13:01:22.783-04:00  INFO 5992 --- [ingestion-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-05-27T13:01:22.859-04:00  INFO 5992 --- [ingestion-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-05-27T13:01:22.896-04:00  INFO 5992 --- [ingestion-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-05-27T13:01:23.182-04:00  INFO 5992 --- [ingestion-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-05-27T13:01:23.239-04:00  WARN 5992 --- [ingestion-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-05-27T13:01:23.953-04:00  INFO 5992 --- [ingestion-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-05-27T13:01:23.979-04:00  INFO 5992 --- [ingestion-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-05-27T13:01:24.350-04:00  WARN 5992 --- [ingestion-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-05-27T13:01:24.827-04:00  INFO 5992 --- [ingestion-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-05-27T13:01:24.876-04:00  WARN 5992 --- [ingestion-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-05-27T13:01:24.925-04:00  INFO 5992 --- [ingestion-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-05-27T13:01:24.955-04:00  INFO 5992 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-05-27T13:01:24.959-04:00  INFO 5992 --- [ingestion-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-27T13:01:24.967-04:00  INFO 5992 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-05-27T13:01:24.968-04:00  INFO 5992 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-05-27T13:01:24.968-04:00  INFO 5992 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-05-27T13:01:24.968-04:00  INFO 5992 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-05-27T13:01:24.968-04:00  INFO 5992 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-05-27T13:01:24.968-04:00  INFO 5992 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-05-27T13:01:24.969-04:00  INFO 5992 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-05-27T13:01:25.206-04:00  INFO 5992 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-05-27T13:01:25.207-04:00  INFO 5992 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-05-27T13:01:25.209-04:00  INFO 5992 --- [ingestion-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-05-27T13:01:25.210-04:00  INFO 5992 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1779901285210 with initial instances count: 4
-2026-05-27T13:01:25.213-04:00  INFO 5992 --- [ingestion-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application INGESTION-SERVICE with eureka with status UP
-2026-05-27T13:01:25.214-04:00  INFO 5992 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1779901285214, current=UP, previous=STARTING]
-2026-05-27T13:01:25.216-04:00  INFO 5992 --- [ingestion-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_INGESTION-SERVICE/DESKTOP-N7DD3QB:ingestion-service:8092: registering service...
-2026-05-27T13:01:25.244-04:00  INFO 5992 --- [ingestion-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8092 (http) with context path '/'
-2026-05-27T13:01:25.245-04:00  INFO 5992 --- [ingestion-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8092
-2026-05-27T13:01:25.259-04:00  INFO 5992 --- [ingestion-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_INGESTION-SERVICE/DESKTOP-N7DD3QB:ingestion-service:8092 - registration status: 204
-2026-05-27T13:01:25.291-04:00  INFO 5992 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Started IngestionServiceApplication in 5.452 seconds (process running for 5.956)
-2026-05-27T13:06:24.975-04:00  INFO 5992 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-27T13:11:24.988-04:00  INFO 5992 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-27T13:16:24.998-04:00  INFO 5992 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-27T13:21:24.999-04:00  INFO 5992 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T14:46:33.585-04:00  INFO 24016 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Starting IngestionServiceApplication using Java 17.0.12 with PID 24016 (C:\workspace\SmallBooksRepository\ingestion-service\target\classes started by SSDD in C:\workspace\SmallBooksRepository\ingestion-service)
-2026-06-02T14:46:33.588-04:00 DEBUG 24016 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-02T14:46:33.589-04:00  INFO 24016 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : No active profile set, falling back to 1 default profile: "default"
-2026-06-02T14:46:33.642-04:00  INFO 24016 --- [ingestion-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-02T14:46:33.642-04:00  INFO 24016 --- [ingestion-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=ingestion-service, profiles=[default], label=null, version=null, state=null
-2026-06-02T14:46:34.378-04:00  INFO 24016 --- [ingestion-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-02T14:46:34.523-04:00  INFO 24016 --- [ingestion-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 136 ms. Found 1 JPA repository interface.
-2026-06-02T14:46:34.755-04:00  INFO 24016 --- [ingestion-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=81f7d803-abea-35a3-abb5-362b1ae43dc7
-2026-06-02T14:46:35.454-04:00  INFO 24016 --- [ingestion-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8092 (http)
-2026-06-02T14:46:35.478-04:00  INFO 24016 --- [ingestion-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-02T14:46:35.479-04:00  INFO 24016 --- [ingestion-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-02T14:46:35.590-04:00  INFO 24016 --- [ingestion-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-02T14:46:35.591-04:00  INFO 24016 --- [ingestion-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1946 ms
-2026-06-02T14:46:35.898-04:00  INFO 24016 --- [ingestion-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-02T14:46:36.181-04:00  INFO 24016 --- [ingestion-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1bdafb01
-2026-06-02T14:46:36.184-04:00  INFO 24016 --- [ingestion-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-02T14:46:36.228-04:00  INFO 24016 --- [ingestion-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_ingestion (MySQL 8.4)
-2026-06-02T14:46:36.238-04:00  WARN 24016 --- [ingestion-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-06-02T14:46:36.258-04:00  INFO 24016 --- [ingestion-service] [main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table `db_ingestion`.`flyway_schema_history` does not exist yet
-2026-06-02T14:46:36.261-04:00  INFO 24016 --- [ingestion-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.014s)
-2026-06-02T14:46:36.276-04:00  INFO 24016 --- [ingestion-service] [main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table `db_ingestion`.`flyway_schema_history` ...
-2026-06-02T14:46:36.341-04:00  INFO 24016 --- [ingestion-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_ingestion`: << Empty Schema >>
-2026-06-02T14:46:36.350-04:00  INFO 24016 --- [ingestion-service] [main] o.f.core.internal.command.DbMigrate      : Migrating schema `db_ingestion` to version "1 - crear tabla archivos libros"
-2026-06-02T14:46:36.407-04:00  INFO 24016 --- [ingestion-service] [main] o.f.core.internal.command.DbMigrate      : Successfully applied 1 migration to schema `db_ingestion`, now at version v1 (execution time 00:00.024s)
-2026-06-02T14:46:36.546-04:00  INFO 24016 --- [ingestion-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-02T14:46:36.649-04:00  INFO 24016 --- [ingestion-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-06-02T14:46:36.703-04:00  INFO 24016 --- [ingestion-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-02T14:46:36.940-04:00  INFO 24016 --- [ingestion-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-02T14:46:36.989-04:00  WARN 24016 --- [ingestion-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-06-02T14:46:37.651-04:00  INFO 24016 --- [ingestion-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-02T14:46:37.677-04:00  INFO 24016 --- [ingestion-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-02T14:46:38.107-04:00  WARN 24016 --- [ingestion-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-02T14:46:39.496-04:00  INFO 24016 --- [ingestion-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-06-02T14:46:39.532-04:00  WARN 24016 --- [ingestion-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-06-02T14:46:39.644-04:00  INFO 24016 --- [ingestion-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-06-02T14:46:39.671-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-06-02T14:46:39.675-04:00  INFO 24016 --- [ingestion-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T14:46:39.686-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-02T14:46:39.687-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-02T14:46:39.687-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-02T14:46:39.687-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-02T14:46:39.688-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-02T14:46:39.688-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-06-02T14:46:39.688-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-02T14:46:40.052-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-02T14:46:40.056-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-06-02T14:46:40.059-04:00  INFO 24016 --- [ingestion-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-06-02T14:46:40.061-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1780426000060 with initial instances count: 8
-2026-06-02T14:46:40.069-04:00  INFO 24016 --- [ingestion-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application INGESTION-SERVICE with eureka with status UP
-2026-06-02T14:46:40.070-04:00  INFO 24016 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1780426000070, current=UP, previous=STARTING]
-2026-06-02T14:46:40.072-04:00  INFO 24016 --- [ingestion-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_INGESTION-SERVICE/PNAWSA05LC54409.duoc.acad:ingestion-service:8092: registering service...
-2026-06-02T14:46:40.103-04:00  INFO 24016 --- [ingestion-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8092 (http) with context path '/'
-2026-06-02T14:46:40.105-04:00  INFO 24016 --- [ingestion-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_INGESTION-SERVICE/PNAWSA05LC54409.duoc.acad:ingestion-service:8092 - registration status: 204
-2026-06-02T14:46:40.105-04:00  INFO 24016 --- [ingestion-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8092
-2026-06-02T14:46:40.475-04:00  INFO 24016 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Started IngestionServiceApplication in 8.315 seconds (process running for 9.07)
-2026-06-02T14:51:39.706-04:00  INFO 24016 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T14:56:39.719-04:00  INFO 24016 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T15:01:06.814-04:00  INFO 24016 --- [ingestion-service] [http-nio-8092-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-02T15:01:06.815-04:00  INFO 24016 --- [ingestion-service] [http-nio-8092-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-06-02T15:01:06.816-04:00  INFO 24016 --- [ingestion-service] [http-nio-8092-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-2026-06-02T15:01:06.968-04:00  INFO 24016 --- [ingestion-service] [http-nio-8092-exec-1] c.s.ingestion.service.IngestionService   : Subiendo archivo para libro id: 1, nombre: c8cf01c83fcd163f06e727cabcff90ac100-años-de-soledad-Gabriel-García-Marquez.pdf, tamaño: 1253177 bytes
-2026-06-02T15:01:07.201-04:00  INFO 24016 --- [ingestion-service] [http-nio-8092-exec-1] c.s.ingestion.service.IngestionService   : Archivo subido exitosamente — id: 1, libro: 1, formato: PDF, ruta: C:\smallbooks\archivos\libro_1_c8cf01c83fcd163f06e727cabcff90ac100-años-de-soledad-Gabriel-García-Marquez.pdf
-2026-06-02T15:01:39.721-04:00  INFO 24016 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T15:02:13.777-04:00  INFO 24016 --- [ingestion-service] [http-nio-8092-exec-3] c.s.ingestion.service.IngestionService   : Consultando info de archivo para libro id: 1
-2026-06-02T15:02:43.122-04:00  INFO 24016 --- [ingestion-service] [http-nio-8092-exec-4] c.s.ingestion.service.IngestionService   : Obteniendo bytes del archivo para libro id: 1
-2026-06-02T15:06:39.736-04:00  INFO 24016 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T15:11:39.747-04:00  INFO 24016 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T15:16:39.756-04:00  INFO 24016 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T15:21:39.769-04:00  INFO 24016 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:04:19.858-04:00  INFO 12952 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Starting IngestionServiceApplication using Java 17.0.10 with PID 12952 (C:\WorkSpace\SmallBooksRepository\ingestion-service\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\ingestion-service)
+2026-06-19T20:04:19.867-04:00 DEBUG 12952 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-19T20:04:19.868-04:00  INFO 12952 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : No active profile set, falling back to 1 default profile: "default"
+2026-06-19T20:04:19.916-04:00  INFO 12952 --- [ingestion-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-19T20:04:19.917-04:00  INFO 12952 --- [ingestion-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=ingestion-service, profiles=[default], label=null, version=null, state=null
+2026-06-19T20:04:20.717-04:00  INFO 12952 --- [ingestion-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-19T20:04:20.858-04:00  INFO 12952 --- [ingestion-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 133 ms. Found 1 JPA repository interface.
+2026-06-19T20:04:21.031-04:00  INFO 12952 --- [ingestion-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=242add46-1150-3aa8-8849-6e2c87f6c5a5
+2026-06-19T20:04:21.476-04:00  INFO 12952 --- [ingestion-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8092 (http)
+2026-06-19T20:04:21.487-04:00  INFO 12952 --- [ingestion-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-19T20:04:21.488-04:00  INFO 12952 --- [ingestion-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-19T20:04:21.575-04:00  INFO 12952 --- [ingestion-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-19T20:04:21.575-04:00  INFO 12952 --- [ingestion-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1654 ms
+2026-06-19T20:04:21.802-04:00  INFO 12952 --- [ingestion-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-19T20:04:21.957-04:00  INFO 12952 --- [ingestion-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5af38a4a
+2026-06-19T20:04:21.959-04:00  INFO 12952 --- [ingestion-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-19T20:04:22.014-04:00  INFO 12952 --- [ingestion-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_ingestion (MySQL 8.4)
+2026-06-19T20:04:22.025-04:00  WARN 12952 --- [ingestion-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-19T20:04:22.071-04:00  INFO 12952 --- [ingestion-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.035s)
+2026-06-19T20:04:22.088-04:00  INFO 12952 --- [ingestion-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_ingestion`: 1
+2026-06-19T20:04:22.104-04:00  INFO 12952 --- [ingestion-service] [main] o.f.core.internal.command.DbMigrate      : Migrating schema `db_ingestion` to version "2 - add datos blob"
+2026-06-19T20:04:22.157-04:00  INFO 12952 --- [ingestion-service] [main] o.f.core.internal.command.DbMigrate      : Successfully applied 1 migration to schema `db_ingestion`, now at version v2 (execution time 00:00.028s)
+2026-06-19T20:04:22.225-04:00  INFO 12952 --- [ingestion-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-19T20:04:22.281-04:00  INFO 12952 --- [ingestion-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-19T20:04:22.317-04:00  INFO 12952 --- [ingestion-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-19T20:04:22.678-04:00  INFO 12952 --- [ingestion-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-19T20:04:22.735-04:00  WARN 12952 --- [ingestion-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-19T20:04:23.480-04:00  INFO 12952 --- [ingestion-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-19T20:04:23.509-04:00  INFO 12952 --- [ingestion-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-19T20:04:23.889-04:00  WARN 12952 --- [ingestion-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-19T20:04:24.461-04:00  INFO 12952 --- [ingestion-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-19T20:04:24.512-04:00  WARN 12952 --- [ingestion-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-19T20:04:24.576-04:00  INFO 12952 --- [ingestion-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-19T20:04:24.605-04:00  INFO 12952 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-19T20:04:24.609-04:00  INFO 12952 --- [ingestion-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:04:24.621-04:00  INFO 12952 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-19T20:04:24.622-04:00  INFO 12952 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-19T20:04:24.622-04:00  INFO 12952 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-19T20:04:24.622-04:00  INFO 12952 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-19T20:04:24.622-04:00  INFO 12952 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-19T20:04:24.623-04:00  INFO 12952 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-19T20:04:24.623-04:00  INFO 12952 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-19T20:04:24.912-04:00  INFO 12952 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-19T20:04:24.915-04:00  INFO 12952 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-19T20:04:24.920-04:00  INFO 12952 --- [ingestion-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-19T20:04:24.923-04:00  INFO 12952 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781913864922 with initial instances count: 7
+2026-06-19T20:04:24.928-04:00  INFO 12952 --- [ingestion-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application INGESTION-SERVICE with eureka with status UP
+2026-06-19T20:04:24.930-04:00  INFO 12952 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781913864930, current=UP, previous=STARTING]
+2026-06-19T20:04:24.934-04:00  INFO 12952 --- [ingestion-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_INGESTION-SERVICE/host.docker.internal:ingestion-service:8092: registering service...
+2026-06-19T20:04:24.967-04:00  INFO 12952 --- [ingestion-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8092 (http) with context path '/'
+2026-06-19T20:04:24.969-04:00  INFO 12952 --- [ingestion-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8092
+2026-06-19T20:04:24.973-04:00  INFO 12952 --- [ingestion-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_INGESTION-SERVICE/host.docker.internal:ingestion-service:8092 - registration status: 204
+2026-06-19T20:04:25.030-04:00  INFO 12952 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Started IngestionServiceApplication in 6.117 seconds (process running for 6.634)
+2026-06-19T20:09:24.631-04:00  INFO 12952 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:11:37.267-04:00  INFO 12952 --- [ingestion-service] [http-nio-8092-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-19T20:11:37.267-04:00  INFO 12952 --- [ingestion-service] [http-nio-8092-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-06-19T20:11:37.267-04:00  INFO 12952 --- [ingestion-service] [http-nio-8092-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-06-19T20:11:37.295-04:00  WARN 12952 --- [ingestion-service] [http-nio-8092-exec-1] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpMediaTypeNotSupportedException: Content-Type is not supported]
+2026-06-19T20:12:41.220-04:00  INFO 12952 --- [ingestion-service] [http-nio-8092-exec-3] c.s.ingestion.service.IngestionService   : Subiendo archivo para libro id: 1, nombre: Cuentos que cuidan.pdf, tamaño: 11202128 bytes
+2026-06-19T20:12:41.360-04:00  INFO 12952 --- [ingestion-service] [http-nio-8092-exec-3] c.s.ingestion.service.IngestionService   : Reemplazando archivo existente para libro id: 1
+2026-06-19T20:12:49.398-04:00  INFO 12952 --- [ingestion-service] [http-nio-8092-exec-4] c.s.ingestion.service.IngestionService   : Subiendo archivo para libro id: 2, nombre: Cuentos que cuidan.pdf, tamaño: 11202128 bytes
+2026-06-19T20:12:49.923-04:00  WARN 12952 --- [ingestion-service] [http-nio-8092-exec-4] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1062, SQLState: 23000
+2026-06-19T20:12:49.923-04:00 ERROR 12952 --- [ingestion-service] [http-nio-8092-exec-4] o.h.engine.jdbc.spi.SqlExceptionHelper   : Duplicate entry '2' for key 'archivos_libros.libro_id'
+2026-06-19T20:13:36.974-04:00  INFO 12952 --- [ingestion-service] [http-nio-8092-exec-5] c.s.ingestion.service.IngestionService   : Subiendo archivo para libro id: 3, nombre: Cuentos que cuidan.pdf, tamaño: 11202128 bytes
+2026-06-19T20:13:37.345-04:00  WARN 12952 --- [ingestion-service] [http-nio-8092-exec-5] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1062, SQLState: 23000
+2026-06-19T20:13:37.346-04:00 ERROR 12952 --- [ingestion-service] [http-nio-8092-exec-5] o.h.engine.jdbc.spi.SqlExceptionHelper   : Duplicate entry '3' for key 'archivos_libros.libro_id'
+2026-06-19T20:13:41.179-04:00  INFO 12952 --- [ingestion-service] [http-nio-8092-exec-6] c.s.ingestion.service.IngestionService   : Subiendo archivo para libro id: 4, nombre: Cuentos que cuidan.pdf, tamaño: 11202128 bytes
+2026-06-19T20:13:41.538-04:00  WARN 12952 --- [ingestion-service] [http-nio-8092-exec-6] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1062, SQLState: 23000
+2026-06-19T20:13:41.538-04:00 ERROR 12952 --- [ingestion-service] [http-nio-8092-exec-6] o.h.engine.jdbc.spi.SqlExceptionHelper   : Duplicate entry '4' for key 'archivos_libros.libro_id'
+2026-06-19T20:13:45.177-04:00  INFO 12952 --- [ingestion-service] [http-nio-8092-exec-7] c.s.ingestion.service.IngestionService   : Subiendo archivo para libro id: 5, nombre: Cuentos que cuidan.pdf, tamaño: 11202128 bytes
+2026-06-19T20:13:45.523-04:00  WARN 12952 --- [ingestion-service] [http-nio-8092-exec-7] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1062, SQLState: 23000
+2026-06-19T20:13:45.524-04:00 ERROR 12952 --- [ingestion-service] [http-nio-8092-exec-7] o.h.engine.jdbc.spi.SqlExceptionHelper   : Duplicate entry '5' for key 'archivos_libros.libro_id'
+2026-06-19T20:13:48.938-04:00  INFO 12952 --- [ingestion-service] [http-nio-8092-exec-8] c.s.ingestion.service.IngestionService   : Subiendo archivo para libro id: 99, nombre: Cuentos que cuidan.pdf, tamaño: 11202128 bytes
+2026-06-19T20:13:49.311-04:00  WARN 12952 --- [ingestion-service] [http-nio-8092-exec-8] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1062, SQLState: 23000
+2026-06-19T20:13:49.311-04:00 ERROR 12952 --- [ingestion-service] [http-nio-8092-exec-8] o.h.engine.jdbc.spi.SqlExceptionHelper   : Duplicate entry '99' for key 'archivos_libros.libro_id'
+2026-06-19T20:14:24.641-04:00  INFO 12952 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:15:35.576-04:00  INFO 12952 --- [ingestion-service] [http-nio-8092-exec-9] c.s.ingestion.service.IngestionService   : Subiendo archivo para libro id: 1, nombre: Cuentos que cuidan.pdf, tamaño: 11202128 bytes
+2026-06-19T20:15:35.961-04:00  WARN 12952 --- [ingestion-service] [http-nio-8092-exec-9] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1062, SQLState: 23000
+2026-06-19T20:15:35.961-04:00 ERROR 12952 --- [ingestion-service] [http-nio-8092-exec-9] o.h.engine.jdbc.spi.SqlExceptionHelper   : Duplicate entry '1' for key 'archivos_libros.libro_id'
+2026-06-19T20:15:51.699-04:00  INFO 12952 --- [ingestion-service] [http-nio-8092-exec-10] c.s.ingestion.service.IngestionService   : Subiendo archivo para libro id: 99, nombre: Cuentos que cuidan.pdf, tamaño: 11202128 bytes
+2026-06-19T20:15:52.075-04:00  WARN 12952 --- [ingestion-service] [http-nio-8092-exec-10] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1062, SQLState: 23000
+2026-06-19T20:15:52.075-04:00 ERROR 12952 --- [ingestion-service] [http-nio-8092-exec-10] o.h.engine.jdbc.spi.SqlExceptionHelper   : Duplicate entry '99' for key 'archivos_libros.libro_id'
+2026-06-19T20:19:24.647-04:00  INFO 12952 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:24:24.648-04:00  INFO 12952 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:27:04.493-04:00  INFO 24284 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Starting IngestionServiceApplication using Java 17.0.10 with PID 24284 (C:\WorkSpace\SmallBooksRepository\ingestion-service\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\ingestion-service)
+2026-06-19T20:27:04.497-04:00 DEBUG 24284 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-19T20:27:04.498-04:00  INFO 24284 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : No active profile set, falling back to 1 default profile: "default"
+2026-06-19T20:27:04.538-04:00  INFO 24284 --- [ingestion-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-19T20:27:04.538-04:00  INFO 24284 --- [ingestion-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=ingestion-service, profiles=[default], label=null, version=null, state=null
+2026-06-19T20:27:05.462-04:00  INFO 24284 --- [ingestion-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-19T20:27:05.605-04:00  INFO 24284 --- [ingestion-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 132 ms. Found 1 JPA repository interface.
+2026-06-19T20:27:05.783-04:00  INFO 24284 --- [ingestion-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=242add46-1150-3aa8-8849-6e2c87f6c5a5
+2026-06-19T20:27:06.154-04:00  INFO 24284 --- [ingestion-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8092 (http)
+2026-06-19T20:27:06.168-04:00  INFO 24284 --- [ingestion-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-19T20:27:06.169-04:00  INFO 24284 --- [ingestion-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-19T20:27:06.244-04:00  INFO 24284 --- [ingestion-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-19T20:27:06.244-04:00  INFO 24284 --- [ingestion-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1693 ms
+2026-06-19T20:27:06.466-04:00  INFO 24284 --- [ingestion-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-19T20:27:06.624-04:00  INFO 24284 --- [ingestion-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@500ec769
+2026-06-19T20:27:06.626-04:00  INFO 24284 --- [ingestion-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-19T20:27:06.684-04:00  INFO 24284 --- [ingestion-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_ingestion (MySQL 8.4)
+2026-06-19T20:27:06.699-04:00  WARN 24284 --- [ingestion-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-19T20:27:06.751-04:00  INFO 24284 --- [ingestion-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.039s)
+2026-06-19T20:27:06.772-04:00  INFO 24284 --- [ingestion-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_ingestion`: 2
+2026-06-19T20:27:06.776-04:00  INFO 24284 --- [ingestion-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_ingestion` is up to date. No migration necessary.
+2026-06-19T20:27:06.872-04:00  INFO 24284 --- [ingestion-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-19T20:27:06.955-04:00  INFO 24284 --- [ingestion-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-19T20:27:07.014-04:00  INFO 24284 --- [ingestion-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-19T20:27:07.303-04:00  INFO 24284 --- [ingestion-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-19T20:27:07.383-04:00  WARN 24284 --- [ingestion-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-19T20:27:08.031-04:00  INFO 24284 --- [ingestion-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-19T20:27:08.068-04:00  INFO 24284 --- [ingestion-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-19T20:27:08.467-04:00  WARN 24284 --- [ingestion-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-19T20:27:09.092-04:00  INFO 24284 --- [ingestion-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-19T20:27:09.126-04:00  WARN 24284 --- [ingestion-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-19T20:27:09.189-04:00  INFO 24284 --- [ingestion-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-19T20:27:09.207-04:00  INFO 24284 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-19T20:27:09.220-04:00  INFO 24284 --- [ingestion-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:27:09.233-04:00  INFO 24284 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-19T20:27:09.233-04:00  INFO 24284 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-19T20:27:09.233-04:00  INFO 24284 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-19T20:27:09.234-04:00  INFO 24284 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-19T20:27:09.234-04:00  INFO 24284 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-19T20:27:09.234-04:00  INFO 24284 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-19T20:27:09.234-04:00  INFO 24284 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-19T20:27:09.574-04:00  INFO 24284 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-19T20:27:09.577-04:00  INFO 24284 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-19T20:27:09.580-04:00  INFO 24284 --- [ingestion-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-19T20:27:09.584-04:00  INFO 24284 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781915229582 with initial instances count: 11
+2026-06-19T20:27:09.588-04:00  INFO 24284 --- [ingestion-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application INGESTION-SERVICE with eureka with status UP
+2026-06-19T20:27:09.589-04:00  INFO 24284 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781915229589, current=UP, previous=STARTING]
+2026-06-19T20:27:09.591-04:00  INFO 24284 --- [ingestion-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_INGESTION-SERVICE/host.docker.internal:ingestion-service:8092: registering service...
+2026-06-19T20:27:09.611-04:00  INFO 24284 --- [ingestion-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8092 (http) with context path '/'
+2026-06-19T20:27:09.611-04:00  INFO 24284 --- [ingestion-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8092
+2026-06-19T20:27:09.622-04:00  INFO 24284 --- [ingestion-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_INGESTION-SERVICE/host.docker.internal:ingestion-service:8092 - registration status: 204
+2026-06-19T20:27:09.674-04:00  INFO 24284 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Started IngestionServiceApplication in 6.325 seconds (process running for 6.892)
+2026-06-19T20:27:31.936-04:00  INFO 24284 --- [ingestion-service] [http-nio-8092-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-19T20:27:31.936-04:00  INFO 24284 --- [ingestion-service] [http-nio-8092-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-06-19T20:27:31.937-04:00  INFO 24284 --- [ingestion-service] [http-nio-8092-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-06-19T20:27:32.192-04:00 ERROR 24284 --- [ingestion-service] [http-nio-8092-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Handler dispatch failed: java.lang.Error: Unresolved compilation problem: 
+	Unhandled exception type IOException
+] with root cause
+
+java.lang.Error: Unresolved compilation problem: 
+	Unhandled exception type IOException
+
+	at com.silvio.ingestion.service.IngestionService.subirArchivo(IngestionService.java:58) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:355) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:769) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:379) ~[spring-tx-6.1.19.jar:6.1.19]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:769) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:721) ~[spring-aop-6.1.19.jar:6.1.19]
+	at com.silvio.ingestion.service.IngestionService$$SpringCGLIB$$0.subirArchivo(<generated>) ~[classes/:na]
+	at com.silvio.ingestion.controller.IngestionController.subirArchivo(IngestionController.java:34) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.40.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.40.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+
+2026-06-19T20:30:42.227-04:00 ERROR 24284 --- [ingestion-service] [http-nio-8092-exec-2] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Handler dispatch failed: java.lang.Error: Unresolved compilation problem: 
+	Unhandled exception type IOException
+] with root cause
+
+java.lang.Error: Unresolved compilation problem: 
+	Unhandled exception type IOException
+
+	at com.silvio.ingestion.service.IngestionService.subirArchivo(IngestionService.java:58) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:355) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:769) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:379) ~[spring-tx-6.1.19.jar:6.1.19]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:769) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:721) ~[spring-aop-6.1.19.jar:6.1.19]
+	at com.silvio.ingestion.service.IngestionService$$SpringCGLIB$$0.subirArchivo(<generated>) ~[classes/:na]
+	at com.silvio.ingestion.controller.IngestionController.subirArchivo(IngestionController.java:34) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.40.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.40.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+
+2026-06-19T20:31:31.989-04:00 ERROR 24284 --- [ingestion-service] [http-nio-8092-exec-4] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Handler dispatch failed: java.lang.Error: Unresolved compilation problem: 
+	Unhandled exception type IOException
+] with root cause
+
+java.lang.Error: Unresolved compilation problem: 
+	Unhandled exception type IOException
+
+	at com.silvio.ingestion.service.IngestionService.subirArchivo(IngestionService.java:58) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:355) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:769) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:379) ~[spring-tx-6.1.19.jar:6.1.19]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:769) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:721) ~[spring-aop-6.1.19.jar:6.1.19]
+	at com.silvio.ingestion.service.IngestionService$$SpringCGLIB$$0.subirArchivo(<generated>) ~[classes/:na]
+	at com.silvio.ingestion.controller.IngestionController.subirArchivo(IngestionController.java:34) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.40.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.40.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+
+2026-06-19T20:31:59.240-04:00 ERROR 24284 --- [ingestion-service] [http-nio-8092-exec-5] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Handler dispatch failed: java.lang.Error: Unresolved compilation problem: 
+	Unhandled exception type IOException
+] with root cause
+
+java.lang.Error: Unresolved compilation problem: 
+	Unhandled exception type IOException
+
+	at com.silvio.ingestion.service.IngestionService.subirArchivo(IngestionService.java:58) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:355) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:769) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:379) ~[spring-tx-6.1.19.jar:6.1.19]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:769) ~[spring-aop-6.1.19.jar:6.1.19]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:721) ~[spring-aop-6.1.19.jar:6.1.19]
+	at com.silvio.ingestion.service.IngestionService$$SpringCGLIB$$0.subirArchivo(<generated>) ~[classes/:na]
+	at com.silvio.ingestion.controller.IngestionController.subirArchivo(IngestionController.java:34) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.40.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.19.jar:6.1.19]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.40.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.19.jar:6.1.19]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.40.jar:10.1.40]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+
+2026-06-19T20:32:09.245-04:00  INFO 24284 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:04:18.517-04:00  INFO 15428 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Starting IngestionServiceApplication using Java 17.0.10 with PID 15428 (C:\WorkSpace\SmallBooksRepository\ingestion-service\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\ingestion-service)
+2026-06-19T21:04:18.517-04:00 DEBUG 15428 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-19T21:04:18.517-04:00  INFO 15428 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : No active profile set, falling back to 1 default profile: "default"
+2026-06-19T21:04:18.583-04:00  INFO 15428 --- [ingestion-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-19T21:04:18.584-04:00  INFO 15428 --- [ingestion-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=ingestion-service, profiles=[default], label=null, version=null, state=null
+2026-06-19T21:04:19.342-04:00  INFO 15428 --- [ingestion-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-19T21:04:19.478-04:00  INFO 15428 --- [ingestion-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 127 ms. Found 1 JPA repository interface.
+2026-06-19T21:04:19.794-04:00  INFO 15428 --- [ingestion-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=4d2d0441-9a37-3981-a328-1ca8511b957d
+2026-06-19T21:04:20.308-04:00  INFO 15428 --- [ingestion-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8092 (http)
+2026-06-19T21:04:20.320-04:00  INFO 15428 --- [ingestion-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-19T21:04:20.320-04:00  INFO 15428 --- [ingestion-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-19T21:04:20.384-04:00  INFO 15428 --- [ingestion-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-19T21:04:20.384-04:00  INFO 15428 --- [ingestion-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1797 ms
+2026-06-19T21:04:20.579-04:00  INFO 15428 --- [ingestion-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-19T21:04:20.723-04:00  INFO 15428 --- [ingestion-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@af9dd34
+2026-06-19T21:04:20.725-04:00  INFO 15428 --- [ingestion-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-19T21:04:20.783-04:00  INFO 15428 --- [ingestion-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_ingestion (MySQL 8.4)
+2026-06-19T21:04:20.793-04:00  WARN 15428 --- [ingestion-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-19T21:04:20.834-04:00  INFO 15428 --- [ingestion-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.030s)
+2026-06-19T21:04:20.849-04:00  INFO 15428 --- [ingestion-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_ingestion`: 2
+2026-06-19T21:04:20.852-04:00  INFO 15428 --- [ingestion-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_ingestion` is up to date. No migration necessary.
+2026-06-19T21:04:20.927-04:00  INFO 15428 --- [ingestion-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-19T21:04:20.978-04:00  INFO 15428 --- [ingestion-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-19T21:04:21.016-04:00  INFO 15428 --- [ingestion-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-19T21:04:21.295-04:00  INFO 15428 --- [ingestion-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-19T21:04:21.343-04:00  WARN 15428 --- [ingestion-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-19T21:04:22.212-04:00  INFO 15428 --- [ingestion-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-19T21:04:22.237-04:00  INFO 15428 --- [ingestion-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-19T21:04:22.714-04:00  WARN 15428 --- [ingestion-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-19T21:04:23.417-04:00  INFO 15428 --- [ingestion-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-19T21:04:23.466-04:00  WARN 15428 --- [ingestion-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-19T21:04:23.521-04:00  INFO 15428 --- [ingestion-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-19T21:04:23.559-04:00  INFO 15428 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-19T21:04:23.567-04:00  INFO 15428 --- [ingestion-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:04:23.581-04:00  INFO 15428 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-19T21:04:23.581-04:00  INFO 15428 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-19T21:04:23.581-04:00  INFO 15428 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-19T21:04:23.583-04:00  INFO 15428 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-19T21:04:23.583-04:00  INFO 15428 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-19T21:04:23.583-04:00  INFO 15428 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-19T21:04:23.584-04:00  INFO 15428 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-19T21:04:24.036-04:00  INFO 15428 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-19T21:04:24.073-04:00  INFO 15428 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-19T21:04:24.094-04:00  INFO 15428 --- [ingestion-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-19T21:04:24.105-04:00  INFO 15428 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781917464105 with initial instances count: 11
+2026-06-19T21:04:24.113-04:00  INFO 15428 --- [ingestion-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application INGESTION-SERVICE with eureka with status UP
+2026-06-19T21:04:24.115-04:00  INFO 15428 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781917464115, current=UP, previous=STARTING]
+2026-06-19T21:04:24.125-04:00  INFO 15428 --- [ingestion-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_INGESTION-SERVICE/host.docker.internal:ingestion-service:8092: registering service...
+2026-06-19T21:04:24.153-04:00  INFO 15428 --- [ingestion-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8092 (http) with context path '/'
+2026-06-19T21:04:24.162-04:00  INFO 15428 --- [ingestion-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8092
+2026-06-19T21:04:24.277-04:00  INFO 15428 --- [ingestion-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_INGESTION-SERVICE/host.docker.internal:ingestion-service:8092 - registration status: 204
+2026-06-19T21:04:24.385-04:00  INFO 15428 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Started IngestionServiceApplication in 7.002 seconds (process running for 7.492)
+2026-06-19T21:09:23.587-04:00  INFO 15428 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:09:48.763-04:00  INFO 15428 --- [ingestion-service] [http-nio-8092-exec-4] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-19T21:09:48.763-04:00  INFO 15428 --- [ingestion-service] [http-nio-8092-exec-4] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-06-19T21:09:48.763-04:00  INFO 15428 --- [ingestion-service] [http-nio-8092-exec-4] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-06-19T21:09:49.318-04:00  INFO 15428 --- [ingestion-service] [http-nio-8092-exec-8] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 240 ms
+2026-06-19T21:14:23.594-04:00  INFO 15428 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:19:23.594-04:00  INFO 15428 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:24:23.603-04:00  INFO 15428 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:29:23.607-04:00  INFO 15428 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:32:26.020-04:00  INFO 17508 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Starting IngestionServiceApplication using Java 17.0.10 with PID 17508 (C:\WorkSpace\SmallBooksRepository\ingestion-service\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\ingestion-service)
+2026-06-19T21:32:26.033-04:00 DEBUG 17508 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-19T21:32:26.034-04:00  INFO 17508 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : No active profile set, falling back to 1 default profile: "default"
+2026-06-19T21:32:26.231-04:00  INFO 17508 --- [ingestion-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-19T21:32:26.232-04:00  INFO 17508 --- [ingestion-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=ingestion-service, profiles=[default], label=null, version=null, state=null
+2026-06-19T21:32:27.895-04:00  INFO 17508 --- [ingestion-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-19T21:32:28.294-04:00  INFO 17508 --- [ingestion-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 363 ms. Found 1 JPA repository interface.
+2026-06-19T21:32:28.891-04:00  INFO 17508 --- [ingestion-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=4d2d0441-9a37-3981-a328-1ca8511b957d
+2026-06-19T21:32:30.644-04:00  INFO 17508 --- [ingestion-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8092 (http)
+2026-06-19T21:32:30.821-04:00  INFO 17508 --- [ingestion-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-19T21:32:31.074-04:00  INFO 17508 --- [ingestion-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-19T21:32:31.698-04:00  INFO 17508 --- [ingestion-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-19T21:32:31.699-04:00  INFO 17508 --- [ingestion-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 5460 ms
+2026-06-19T21:32:32.679-04:00  INFO 17508 --- [ingestion-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-19T21:32:33.229-04:00  INFO 17508 --- [ingestion-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@186f7434
+2026-06-19T21:32:33.282-04:00  INFO 17508 --- [ingestion-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-19T21:32:33.473-04:00  INFO 17508 --- [ingestion-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_ingestion (MySQL 8.4)
+2026-06-19T21:32:33.535-04:00  WARN 17508 --- [ingestion-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-19T21:32:33.608-04:00  INFO 17508 --- [ingestion-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.049s)
+2026-06-19T21:32:33.658-04:00  INFO 17508 --- [ingestion-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_ingestion`: 2
+2026-06-19T21:32:33.681-04:00  INFO 17508 --- [ingestion-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_ingestion` is up to date. No migration necessary.
+2026-06-19T21:32:33.830-04:00  INFO 17508 --- [ingestion-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-19T21:32:33.984-04:00  INFO 17508 --- [ingestion-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-19T21:32:34.109-04:00  INFO 17508 --- [ingestion-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-19T21:32:34.771-04:00  INFO 17508 --- [ingestion-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-19T21:32:34.859-04:00  WARN 17508 --- [ingestion-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-19T21:32:37.272-04:00  INFO 17508 --- [ingestion-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-19T21:32:37.349-04:00  INFO 17508 --- [ingestion-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-19T21:32:39.088-04:00  WARN 17508 --- [ingestion-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-19T21:32:43.782-04:00  INFO 17508 --- [ingestion-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-19T21:32:43.895-04:00  WARN 17508 --- [ingestion-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-19T21:32:44.227-04:00  INFO 17508 --- [ingestion-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-19T21:32:44.420-04:00  INFO 17508 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-19T21:32:44.531-04:00  INFO 17508 --- [ingestion-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:32:44.735-04:00  INFO 17508 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-19T21:32:44.849-04:00  INFO 17508 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-19T21:32:44.947-04:00  INFO 17508 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-19T21:32:44.994-04:00  INFO 17508 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-19T21:32:45.076-04:00  INFO 17508 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-19T21:32:45.245-04:00  INFO 17508 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-19T21:32:45.299-04:00  INFO 17508 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-19T21:32:45.942-04:00  INFO 17508 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-19T21:32:46.030-04:00  INFO 17508 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-19T21:32:46.120-04:00  INFO 17508 --- [ingestion-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-19T21:32:46.216-04:00  INFO 17508 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781919166216 with initial instances count: 11
+2026-06-19T21:32:46.280-04:00  INFO 17508 --- [ingestion-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application INGESTION-SERVICE with eureka with status UP
+2026-06-19T21:32:46.333-04:00  INFO 17508 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781919166333, current=UP, previous=STARTING]
+2026-06-19T21:32:46.369-04:00  INFO 17508 --- [ingestion-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_INGESTION-SERVICE/host.docker.internal:ingestion-service:8092: registering service...
+2026-06-19T21:32:47.587-04:00  INFO 17508 --- [ingestion-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_INGESTION-SERVICE/host.docker.internal:ingestion-service:8092 - registration status: 204
+2026-06-19T21:32:47.587-04:00  INFO 17508 --- [ingestion-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8092 (http) with context path '/'
+2026-06-19T21:32:47.589-04:00  INFO 17508 --- [ingestion-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8092
+2026-06-19T21:32:49.000-04:00  INFO 17508 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Started IngestionServiceApplication in 24.316 seconds (process running for 25.03)
+2026-06-19T21:37:45.373-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:42:45.375-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:47:45.379-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:52:45.389-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:52:54.484-04:00  INFO 17508 --- [ingestion-service] [http-nio-8092-exec-5] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-19T21:52:54.484-04:00  INFO 17508 --- [ingestion-service] [http-nio-8092-exec-5] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-06-19T21:52:54.484-04:00  INFO 17508 --- [ingestion-service] [http-nio-8092-exec-5] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-06-19T21:52:54.939-04:00  INFO 17508 --- [ingestion-service] [http-nio-8092-exec-3] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 227 ms
+2026-06-19T21:53:26.722-04:00  INFO 17508 --- [ingestion-service] [http-nio-8092-exec-9] c.s.ingestion.service.IngestionService   : Subiendo archivo para libro id: 2, nombre: Cuentos que cuidan.pdf, tamaño: 11202128 bytes
+2026-06-19T21:53:27.342-04:00  INFO 17508 --- [ingestion-service] [http-nio-8092-exec-9] c.s.ingestion.service.IngestionService   : Archivo subido exitosamente — id: 17, libro: 2, formato: PDF, ruta: db:2
+2026-06-19T21:55:03.346-04:00  INFO 17508 --- [ingestion-service] [http-nio-8092-exec-7] c.s.ingestion.service.IngestionService   : Consultando info de archivo para libro id: 1
+2026-06-19T21:55:03.346-04:00  WARN 17508 --- [ingestion-service] [http-nio-8092-exec-7] c.s.ingestion.service.IngestionService   : No hay archivo para libro id: 1
+2026-06-19T21:55:11.127-04:00  INFO 17508 --- [ingestion-service] [http-nio-8092-exec-2] c.s.ingestion.service.IngestionService   : Consultando info de archivo para libro id: 16
+2026-06-19T21:55:11.130-04:00  WARN 17508 --- [ingestion-service] [http-nio-8092-exec-2] c.s.ingestion.service.IngestionService   : No hay archivo para libro id: 16
+2026-06-19T21:55:19.509-04:00  INFO 17508 --- [ingestion-service] [http-nio-8092-exec-8] c.s.ingestion.service.IngestionService   : Consultando info de archivo para libro id: 2
+2026-06-19T21:55:27.152-04:00  INFO 17508 --- [ingestion-service] [http-nio-8092-exec-3] c.s.ingestion.service.IngestionService   : Consultando info de archivo para libro id: 1
+2026-06-19T21:55:27.154-04:00  WARN 17508 --- [ingestion-service] [http-nio-8092-exec-3] c.s.ingestion.service.IngestionService   : No hay archivo para libro id: 1
+2026-06-19T21:55:30.798-04:00  INFO 17508 --- [ingestion-service] [http-nio-8092-exec-9] c.s.ingestion.service.IngestionService   : Consultando info de archivo para libro id: 3
+2026-06-19T21:55:30.798-04:00  WARN 17508 --- [ingestion-service] [http-nio-8092-exec-9] c.s.ingestion.service.IngestionService   : No hay archivo para libro id: 3
+2026-06-19T21:55:34.547-04:00  INFO 17508 --- [ingestion-service] [http-nio-8092-exec-5] c.s.ingestion.service.IngestionService   : Consultando info de archivo para libro id: 99
+2026-06-19T21:57:45.398-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:02:45.402-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:07:45.413-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:12:45.420-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:17:45.426-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:22:45.437-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:27:45.443-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:32:45.449-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:37:45.462-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:42:45.471-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:47:45.478-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:52:45.491-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:57:45.505-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:02:45.509-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:07:45.516-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:12:45.519-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:17:45.520-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:22:45.527-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:27:45.535-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:32:45.540-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:37:45.554-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:42:45.562-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:47:45.566-04:00  INFO 17508 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

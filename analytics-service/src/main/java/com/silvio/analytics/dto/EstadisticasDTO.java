@@ -1,11 +1,15 @@
 package com.silvio.analytics.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Map;
 
+import org.springframework.hateoas.RepresentationModel;
+
 @Data
-public class EstadisticasDTO {
+@EqualsAndHashCode(callSuper = false)
+public class EstadisticasDTO extends RepresentationModel<EstadisticasDTO> {
 
     // Total de préstamos en el sistema
     private Long totalPrestamos;

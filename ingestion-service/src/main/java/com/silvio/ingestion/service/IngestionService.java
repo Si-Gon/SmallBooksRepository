@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -44,7 +46,7 @@ public class IngestionService {
             archivoRepository.delete(existente);
         });
 
-        String rutaOClave = storageService.guardar(archivo, libroId);
+        String rutaOClave = storageService.guardar(archivo, libroId); // devuelve "db:1"
         String formato = contentType.contains("pdf") ? "PDF" : "EPUB";
 
         ArchivoLibro archivoLibro = new ArchivoLibro();
@@ -54,6 +56,11 @@ public class IngestionService {
         archivoLibro.setTamanio(archivo.getSize());
         archivoLibro.setRutaOClave(rutaOClave);
         archivoLibro.setFechaSubida(LocalDateTime.now());
+        try {
+            archivoLibro.setDatos(archivo.getBytes());
+            } catch (IOException e) {
+            throw new RuntimeException("Error al leer los bytes del archivo: " + e.getMessage());
+        }
 
         ArchivoLibro guardado = archivoRepository.save(archivoLibro);
         log.info("Archivo subido exitosamente — id: {}, libro: {}, formato: {}, ruta: {}",

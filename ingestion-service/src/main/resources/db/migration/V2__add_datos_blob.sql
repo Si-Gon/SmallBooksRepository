@@ -1,0 +1,2 @@
+ALTER TABLE archivos_libros
+ADD COLUMN datos LONGBLOB NULL;

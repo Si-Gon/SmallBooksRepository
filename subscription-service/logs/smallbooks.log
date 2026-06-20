@@ -1,138 +1,506 @@
-2026-05-27T13:01:48.393-04:00  INFO 5412 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Starting SubscriptionServiceApplication using Java 17.0.10 with PID 5412 (C:\WorkSpace\smallbooks-microservicios\subscription-service\target\classes started by Silvi in C:\WorkSpace\smallbooks-microservicios\subscription-service)
-2026-05-27T13:01:48.400-04:00 DEBUG 5412 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-05-27T13:01:48.401-04:00  INFO 5412 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : No active profile set, falling back to 1 default profile: "default"
-2026-05-27T13:01:48.449-04:00  INFO 5412 --- [subscription-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-05-27T13:01:48.449-04:00  INFO 5412 --- [subscription-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=subscription-service, profiles=[default], label=null, version=null, state=null
-2026-05-27T13:01:49.074-04:00  INFO 5412 --- [subscription-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-05-27T13:01:49.216-04:00  INFO 5412 --- [subscription-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 134 ms. Found 1 JPA repository interface.
-2026-05-27T13:01:49.410-04:00  INFO 5412 --- [subscription-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=432f4b66-354a-3308-9fb5-4aff9554b802
-2026-05-27T13:01:49.849-04:00  INFO 5412 --- [subscription-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8089 (http)
-2026-05-27T13:01:49.866-04:00  INFO 5412 --- [subscription-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-05-27T13:01:49.867-04:00  INFO 5412 --- [subscription-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-05-27T13:01:49.962-04:00  INFO 5412 --- [subscription-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-05-27T13:01:49.963-04:00  INFO 5412 --- [subscription-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1512 ms
-2026-05-27T13:01:50.208-04:00  INFO 5412 --- [subscription-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-05-27T13:01:50.367-04:00  INFO 5412 --- [subscription-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@fee881
-2026-05-27T13:01:50.370-04:00  INFO 5412 --- [subscription-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-05-27T13:01:50.421-04:00  INFO 5412 --- [subscription-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_subscriptions (MySQL 8.4)
-2026-05-27T13:01:50.434-04:00  WARN 5412 --- [subscription-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-05-27T13:01:50.480-04:00  INFO 5412 --- [subscription-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.036s)
-2026-05-27T13:01:50.498-04:00  INFO 5412 --- [subscription-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_subscriptions`: 1
-2026-05-27T13:01:50.501-04:00  INFO 5412 --- [subscription-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_subscriptions` is up to date. No migration necessary.
-2026-05-27T13:01:50.575-04:00  INFO 5412 --- [subscription-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-05-27T13:01:50.630-04:00  INFO 5412 --- [subscription-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-05-27T13:01:50.664-04:00  INFO 5412 --- [subscription-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-05-27T13:01:50.977-04:00  INFO 5412 --- [subscription-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-05-27T13:01:51.043-04:00  WARN 5412 --- [subscription-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-05-27T13:01:51.723-04:00  INFO 5412 --- [subscription-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-05-27T13:01:51.748-04:00  INFO 5412 --- [subscription-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-05-27T13:01:52.169-04:00  WARN 5412 --- [subscription-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-05-27T13:01:52.631-04:00  INFO 5412 --- [subscription-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-05-27T13:01:52.672-04:00  WARN 5412 --- [subscription-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-05-27T13:01:52.729-04:00  INFO 5412 --- [subscription-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-05-27T13:01:52.757-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-05-27T13:01:52.761-04:00  INFO 5412 --- [subscription-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-27T13:01:52.770-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-05-27T13:01:52.771-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-05-27T13:01:52.771-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-05-27T13:01:52.771-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-05-27T13:01:52.771-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-05-27T13:01:52.772-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-05-27T13:01:52.772-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-05-27T13:01:53.069-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-05-27T13:01:53.071-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-05-27T13:01:53.074-04:00  INFO 5412 --- [subscription-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-05-27T13:01:53.075-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1779901313075 with initial instances count: 7
-2026-05-27T13:01:53.079-04:00  INFO 5412 --- [subscription-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application SUBSCRIPTION-SERVICE with eureka with status UP
-2026-05-27T13:01:53.080-04:00  INFO 5412 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1779901313080, current=UP, previous=STARTING]
-2026-05-27T13:01:53.081-04:00  INFO 5412 --- [subscription-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SUBSCRIPTION-SERVICE/DESKTOP-N7DD3QB:subscription-service:8089: registering service...
-2026-05-27T13:01:53.104-04:00  INFO 5412 --- [subscription-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8089 (http) with context path '/'
-2026-05-27T13:01:53.106-04:00  INFO 5412 --- [subscription-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8089
-2026-05-27T13:01:53.112-04:00  INFO 5412 --- [subscription-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SUBSCRIPTION-SERVICE/DESKTOP-N7DD3QB:subscription-service:8089 - registration status: 204
-2026-05-27T13:01:53.151-04:00  INFO 5412 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Started SubscriptionServiceApplication in 5.687 seconds (process running for 6.178)
-2026-05-27T13:06:52.775-04:00  INFO 5412 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-27T13:11:52.789-04:00  INFO 5412 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-27T13:16:52.794-04:00  INFO 5412 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-05-27T13:21:52.797-04:00  INFO 5412 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T14:46:20.306-04:00  INFO 22872 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Starting SubscriptionServiceApplication using Java 17.0.12 with PID 22872 (C:\workspace\SmallBooksRepository\subscription-service\target\classes started by SSDD in C:\workspace\SmallBooksRepository\subscription-service)
-2026-06-02T14:46:20.309-04:00 DEBUG 22872 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-02T14:46:20.311-04:00  INFO 22872 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : No active profile set, falling back to 1 default profile: "default"
-2026-06-02T14:46:20.370-04:00  INFO 22872 --- [subscription-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-02T14:46:20.371-04:00  INFO 22872 --- [subscription-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=subscription-service, profiles=[default], label=null, version=null, state=null
-2026-06-02T14:46:21.186-04:00  INFO 22872 --- [subscription-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-02T14:46:21.321-04:00  INFO 22872 --- [subscription-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 127 ms. Found 1 JPA repository interface.
-2026-06-02T14:46:21.554-04:00  INFO 22872 --- [subscription-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=432f4b66-354a-3308-9fb5-4aff9554b802
-2026-06-02T14:46:22.241-04:00  INFO 22872 --- [subscription-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8089 (http)
-2026-06-02T14:46:22.263-04:00  INFO 22872 --- [subscription-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-02T14:46:22.264-04:00  INFO 22872 --- [subscription-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-02T14:46:22.377-04:00  INFO 22872 --- [subscription-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-02T14:46:22.378-04:00  INFO 22872 --- [subscription-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2004 ms
-2026-06-02T14:46:22.740-04:00  INFO 22872 --- [subscription-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-02T14:46:23.090-04:00  INFO 22872 --- [subscription-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@60ae7cf2
-2026-06-02T14:46:23.094-04:00  INFO 22872 --- [subscription-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-02T14:46:23.157-04:00  INFO 22872 --- [subscription-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_subscriptions (MySQL 8.4)
-2026-06-02T14:46:23.171-04:00  WARN 22872 --- [subscription-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-06-02T14:46:23.196-04:00  INFO 22872 --- [subscription-service] [main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table `db_subscriptions`.`flyway_schema_history` does not exist yet
-2026-06-02T14:46:23.200-04:00  INFO 22872 --- [subscription-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.016s)
-2026-06-02T14:46:23.217-04:00  INFO 22872 --- [subscription-service] [main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table `db_subscriptions`.`flyway_schema_history` ...
-2026-06-02T14:46:23.286-04:00  INFO 22872 --- [subscription-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_subscriptions`: << Empty Schema >>
-2026-06-02T14:46:23.295-04:00  INFO 22872 --- [subscription-service] [main] o.f.core.internal.command.DbMigrate      : Migrating schema `db_subscriptions` to version "1 - crear tabla suscripciones"
-2026-06-02T14:46:23.320-04:00  WARN 22872 --- [subscription-service] [main] o.f.c.i.s.DefaultSqlScriptExecutor       : DB: Integer display width is deprecated and will be removed in a future release. (SQL State: HY000 - Error Code: 1681)
-2026-06-02T14:46:23.372-04:00  INFO 22872 --- [subscription-service] [main] o.f.core.internal.command.DbMigrate      : Successfully applied 1 migration to schema `db_subscriptions`, now at version v1 (execution time 00:00.039s)
-2026-06-02T14:46:23.541-04:00  INFO 22872 --- [subscription-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-02T14:46:23.614-04:00  INFO 22872 --- [subscription-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-06-02T14:46:23.659-04:00  INFO 22872 --- [subscription-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-02T14:46:23.913-04:00  INFO 22872 --- [subscription-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-02T14:46:23.964-04:00  WARN 22872 --- [subscription-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-06-02T14:46:24.679-04:00  INFO 22872 --- [subscription-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-02T14:46:24.704-04:00  INFO 22872 --- [subscription-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-02T14:46:25.107-04:00  WARN 22872 --- [subscription-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-02T14:46:26.468-04:00  INFO 22872 --- [subscription-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-06-02T14:46:26.504-04:00  WARN 22872 --- [subscription-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-06-02T14:46:26.619-04:00  INFO 22872 --- [subscription-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-06-02T14:46:26.655-04:00  INFO 22872 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-06-02T14:46:26.660-04:00  INFO 22872 --- [subscription-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T14:46:26.669-04:00  INFO 22872 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-02T14:46:26.670-04:00  INFO 22872 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-02T14:46:26.671-04:00  INFO 22872 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-02T14:46:26.671-04:00  INFO 22872 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-02T14:46:26.671-04:00  INFO 22872 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-02T14:46:26.672-04:00  INFO 22872 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-06-02T14:46:26.672-04:00  INFO 22872 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-02T14:46:27.033-04:00  INFO 22872 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-02T14:46:27.036-04:00  INFO 22872 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-06-02T14:46:27.038-04:00  INFO 22872 --- [subscription-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-06-02T14:46:27.040-04:00  INFO 22872 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1780425987040 with initial instances count: 6
-2026-06-02T14:46:27.043-04:00  INFO 22872 --- [subscription-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application SUBSCRIPTION-SERVICE with eureka with status UP
-2026-06-02T14:46:27.044-04:00  INFO 22872 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1780425987044, current=UP, previous=STARTING]
-2026-06-02T14:46:27.046-04:00  INFO 22872 --- [subscription-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SUBSCRIPTION-SERVICE/PNAWSA05LC54409.duoc.acad:subscription-service:8089: registering service...
-2026-06-02T14:46:27.076-04:00  INFO 22872 --- [subscription-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8089 (http) with context path '/'
-2026-06-02T14:46:27.078-04:00  INFO 22872 --- [subscription-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8089
-2026-06-02T14:46:27.078-04:00  INFO 22872 --- [subscription-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SUBSCRIPTION-SERVICE/PNAWSA05LC54409.duoc.acad:subscription-service:8089 - registration status: 204
-2026-06-02T14:46:27.433-04:00  INFO 22872 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Started SubscriptionServiceApplication in 8.526 seconds (process running for 9.282)
-2026-06-02T14:51:26.679-04:00  INFO 22872 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T14:51:32.966-04:00  INFO 22872 --- [subscription-service] [http-nio-8089-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-02T14:51:32.967-04:00  INFO 22872 --- [subscription-service] [http-nio-8089-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-06-02T14:51:32.968-04:00  INFO 22872 --- [subscription-service] [http-nio-8089-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-2026-06-02T14:51:33.018-04:00  INFO 22872 --- [subscription-service] [http-nio-8089-exec-1] c.s.s.service.SuscripcionService         : Consultando suscripción activa del usuario: admin
-2026-06-02T14:51:33.203-04:00  WARN 22872 --- [subscription-service] [http-nio-8089-exec-1] c.s.s.service.SuscripcionService         : Sin suscripción activa para usuario: admin
-2026-06-02T14:51:54.672-04:00  INFO 22872 --- [subscription-service] [http-nio-8089-exec-2] c.s.s.service.SuscripcionService         : Creando suscripción PREMIUM para usuario: admin, duración: 1 mes(es)
-2026-06-02T14:51:54.713-04:00  INFO 22872 --- [subscription-service] [http-nio-8089-exec-2] c.s.s.service.SuscripcionService         : Suscripción creada — id: 1, usuario: admin, plan: PREMIUM, vence: 2026-07-02T14:51:54.676765400
-2026-06-02T14:52:56.437-04:00  INFO 22872 --- [subscription-service] [http-nio-8089-exec-4] c.s.s.service.SuscripcionService         : Consultando suscripción activa del usuario: admin
-2026-06-02T14:55:15.000-04:00  INFO 22872 --- [subscription-service] [http-nio-8089-exec-6] c.s.s.service.SuscripcionService         : Consultando suscripción activa del usuario: admin
-2026-06-02T14:55:20.786-04:00  INFO 22872 --- [subscription-service] [http-nio-8089-exec-7] c.s.s.service.SuscripcionService         : Consultando suscripción activa del usuario: admin
-2026-06-02T14:55:24.713-04:00  INFO 22872 --- [subscription-service] [http-nio-8089-exec-8] c.s.s.service.SuscripcionService         : Consultando suscripción activa del usuario: admin
-2026-06-02T14:55:30.606-04:00  INFO 22872 --- [subscription-service] [http-nio-8089-exec-9] c.s.s.service.SuscripcionService         : Consultando suscripción activa del usuario: admin
-2026-06-02T14:56:26.682-04:00  INFO 22872 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T15:01:26.687-04:00  INFO 22872 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T15:06:23.673-04:00  INFO 22872 --- [subscription-service] [http-nio-8089-exec-1] c.s.s.service.SuscripcionService         : Consultando suscripción activa del usuario: admin
-2026-06-02T15:06:26.694-04:00  INFO 22872 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T15:11:26.702-04:00  INFO 22872 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T15:12:08.609-04:00  INFO 22872 --- [subscription-service] [http-nio-8089-exec-3] c.s.s.service.SuscripcionService         : Consultando suscripción activa del usuario: pepito
-2026-06-02T15:12:08.612-04:00  WARN 22872 --- [subscription-service] [http-nio-8089-exec-3] c.s.s.service.SuscripcionService         : Sin suscripción activa para usuario: pepito
-2026-06-02T15:12:14.219-04:00  INFO 22872 --- [subscription-service] [http-nio-8089-exec-4] c.s.s.service.SuscripcionService         : Consultando suscripción activa del usuario: pepito
-2026-06-02T15:12:14.222-04:00  WARN 22872 --- [subscription-service] [http-nio-8089-exec-4] c.s.s.service.SuscripcionService         : Sin suscripción activa para usuario: pepito
-2026-06-02T15:12:30.969-04:00  INFO 22872 --- [subscription-service] [http-nio-8089-exec-5] c.s.s.service.SuscripcionService         : Consultando suscripción activa del usuario: pepito
-2026-06-02T15:12:30.973-04:00  WARN 22872 --- [subscription-service] [http-nio-8089-exec-5] c.s.s.service.SuscripcionService         : Sin suscripción activa para usuario: pepito
-2026-06-02T15:16:26.704-04:00  INFO 22872 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-02T15:21:26.717-04:00  INFO 22872 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:04:00.758-04:00  INFO 29756 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Starting SubscriptionServiceApplication using Java 17.0.10 with PID 29756 (C:\WorkSpace\SmallBooksRepository\subscription-service\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\subscription-service)
+2026-06-19T20:04:00.766-04:00 DEBUG 29756 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-19T20:04:00.767-04:00  INFO 29756 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-06-19T20:04:00.815-04:00  INFO 29756 --- [subscription-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-19T20:04:00.816-04:00  INFO 29756 --- [subscription-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=subscription-service, profiles=[default], label=null, version=null, state=null
+2026-06-19T20:04:01.464-04:00  INFO 29756 --- [subscription-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-19T20:04:01.605-04:00  INFO 29756 --- [subscription-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 133 ms. Found 1 JPA repository interface.
+2026-06-19T20:04:01.778-04:00  INFO 29756 --- [subscription-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=432f4b66-354a-3308-9fb5-4aff9554b802
+2026-06-19T20:04:02.214-04:00  INFO 29756 --- [subscription-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8089 (http)
+2026-06-19T20:04:02.226-04:00  INFO 29756 --- [subscription-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-19T20:04:02.227-04:00  INFO 29756 --- [subscription-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-19T20:04:02.304-04:00  INFO 29756 --- [subscription-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-19T20:04:02.304-04:00  INFO 29756 --- [subscription-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1485 ms
+2026-06-19T20:04:02.530-04:00  INFO 29756 --- [subscription-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-19T20:04:02.683-04:00  INFO 29756 --- [subscription-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@3b9c9b8b
+2026-06-19T20:04:02.685-04:00  INFO 29756 --- [subscription-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-19T20:04:02.730-04:00  INFO 29756 --- [subscription-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_subscriptions (MySQL 8.4)
+2026-06-19T20:04:02.741-04:00  WARN 29756 --- [subscription-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-19T20:04:02.783-04:00  INFO 29756 --- [subscription-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.033s)
+2026-06-19T20:04:02.796-04:00  INFO 29756 --- [subscription-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_subscriptions`: 1
+2026-06-19T20:04:02.801-04:00  INFO 29756 --- [subscription-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_subscriptions` is up to date. No migration necessary.
+2026-06-19T20:04:02.872-04:00  INFO 29756 --- [subscription-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-19T20:04:02.933-04:00  INFO 29756 --- [subscription-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-19T20:04:02.971-04:00  INFO 29756 --- [subscription-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-19T20:04:03.301-04:00  INFO 29756 --- [subscription-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-19T20:04:03.367-04:00  WARN 29756 --- [subscription-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-19T20:04:04.074-04:00  INFO 29756 --- [subscription-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-19T20:04:04.099-04:00  INFO 29756 --- [subscription-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-19T20:04:04.490-04:00  WARN 29756 --- [subscription-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-19T20:04:05.034-04:00  INFO 29756 --- [subscription-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-19T20:04:05.086-04:00  WARN 29756 --- [subscription-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-19T20:04:05.133-04:00  INFO 29756 --- [subscription-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-19T20:04:05.171-04:00  INFO 29756 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-19T20:04:05.176-04:00  INFO 29756 --- [subscription-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:04:05.187-04:00  INFO 29756 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-19T20:04:05.188-04:00  INFO 29756 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-19T20:04:05.188-04:00  INFO 29756 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-19T20:04:05.188-04:00  INFO 29756 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-19T20:04:05.188-04:00  INFO 29756 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-19T20:04:05.188-04:00  INFO 29756 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-19T20:04:05.188-04:00  INFO 29756 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-19T20:04:05.479-04:00  INFO 29756 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-19T20:04:05.481-04:00  INFO 29756 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-19T20:04:05.483-04:00  INFO 29756 --- [subscription-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-19T20:04:05.484-04:00  INFO 29756 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781913845484 with initial instances count: 7
+2026-06-19T20:04:05.488-04:00  INFO 29756 --- [subscription-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application SUBSCRIPTION-SERVICE with eureka with status UP
+2026-06-19T20:04:05.488-04:00  INFO 29756 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781913845488, current=UP, previous=STARTING]
+2026-06-19T20:04:05.490-04:00  INFO 29756 --- [subscription-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SUBSCRIPTION-SERVICE/host.docker.internal:subscription-service:8089: registering service...
+2026-06-19T20:04:05.514-04:00  INFO 29756 --- [subscription-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8089 (http) with context path '/'
+2026-06-19T20:04:05.516-04:00  INFO 29756 --- [subscription-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8089
+2026-06-19T20:04:05.523-04:00  INFO 29756 --- [subscription-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SUBSCRIPTION-SERVICE/host.docker.internal:subscription-service:8089 - registration status: 204
+2026-06-19T20:04:05.575-04:00  INFO 29756 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Started SubscriptionServiceApplication in 5.727 seconds (process running for 6.234)
+2026-06-19T20:09:05.191-04:00  INFO 29756 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:14:05.197-04:00  INFO 29756 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:19:05.199-04:00  INFO 29756 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:24:05.212-04:00  INFO 29756 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:29:05.217-04:00  INFO 29756 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:34:05.229-04:00  INFO 29756 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:39:05.243-04:00  INFO 29756 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:44:05.254-04:00  INFO 29756 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:49:05.261-04:00  INFO 29756 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:54:05.274-04:00  INFO 29756 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T20:59:05.285-04:00  INFO 29756 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:04:05.287-04:00  INFO 29756 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:04:58.657-04:00  INFO 27544 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Starting SubscriptionServiceApplication using Java 17.0.10 with PID 27544 (C:\WorkSpace\SmallBooksRepository\subscription-service\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\subscription-service)
+2026-06-19T21:04:58.670-04:00 DEBUG 27544 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-19T21:04:58.672-04:00  INFO 27544 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-06-19T21:04:58.769-04:00  INFO 27544 --- [subscription-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-19T21:04:58.771-04:00  INFO 27544 --- [subscription-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=subscription-service, profiles=[default], label=null, version=null, state=null
+2026-06-19T21:05:00.390-04:00  INFO 27544 --- [subscription-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-19T21:05:00.596-04:00  INFO 27544 --- [subscription-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 192 ms. Found 1 JPA repository interface.
+2026-06-19T21:05:00.950-04:00  INFO 27544 --- [subscription-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=bb2a8a78-f7c4-3861-a5b6-4991d91d7b3e
+2026-06-19T21:05:01.404-04:00  INFO 27544 --- [subscription-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8089 (http)
+2026-06-19T21:05:01.419-04:00  INFO 27544 --- [subscription-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-19T21:05:01.420-04:00  INFO 27544 --- [subscription-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-19T21:05:01.499-04:00  INFO 27544 --- [subscription-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-19T21:05:01.500-04:00  INFO 27544 --- [subscription-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2706 ms
+2026-06-19T21:05:01.742-04:00  INFO 27544 --- [subscription-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-19T21:05:01.936-04:00  INFO 27544 --- [subscription-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@492c8137
+2026-06-19T21:05:01.938-04:00  INFO 27544 --- [subscription-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-19T21:05:01.990-04:00  INFO 27544 --- [subscription-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_subscriptions (MySQL 8.4)
+2026-06-19T21:05:02.001-04:00  WARN 27544 --- [subscription-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-19T21:05:02.047-04:00  INFO 27544 --- [subscription-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.037s)
+2026-06-19T21:05:02.065-04:00  INFO 27544 --- [subscription-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_subscriptions`: 1
+2026-06-19T21:05:02.068-04:00  INFO 27544 --- [subscription-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_subscriptions` is up to date. No migration necessary.
+2026-06-19T21:05:02.148-04:00  INFO 27544 --- [subscription-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-19T21:05:02.201-04:00  INFO 27544 --- [subscription-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-19T21:05:02.237-04:00  INFO 27544 --- [subscription-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-19T21:05:02.529-04:00  INFO 27544 --- [subscription-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-19T21:05:02.580-04:00  WARN 27544 --- [subscription-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-19T21:05:03.347-04:00  INFO 27544 --- [subscription-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-19T21:05:03.374-04:00  INFO 27544 --- [subscription-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-19T21:05:03.822-04:00  WARN 27544 --- [subscription-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-19T21:05:04.483-04:00  INFO 27544 --- [subscription-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-19T21:05:04.524-04:00  WARN 27544 --- [subscription-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-19T21:05:04.574-04:00  INFO 27544 --- [subscription-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-19T21:05:04.596-04:00  INFO 27544 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-19T21:05:04.600-04:00  INFO 27544 --- [subscription-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:05:04.611-04:00  INFO 27544 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-19T21:05:04.612-04:00  INFO 27544 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-19T21:05:04.612-04:00  INFO 27544 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-19T21:05:04.612-04:00  INFO 27544 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-19T21:05:04.612-04:00  INFO 27544 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-19T21:05:04.613-04:00  INFO 27544 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-19T21:05:04.613-04:00  INFO 27544 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-19T21:05:04.984-04:00  INFO 27544 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-19T21:05:04.990-04:00  INFO 27544 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-19T21:05:04.994-04:00  INFO 27544 --- [subscription-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-19T21:05:04.997-04:00  INFO 27544 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781917504997 with initial instances count: 11
+2026-06-19T21:05:05.005-04:00  INFO 27544 --- [subscription-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application SUBSCRIPTION-SERVICE with eureka with status UP
+2026-06-19T21:05:05.006-04:00  INFO 27544 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781917505006, current=UP, previous=STARTING]
+2026-06-19T21:05:05.010-04:00  INFO 27544 --- [subscription-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SUBSCRIPTION-SERVICE/host.docker.internal:subscription-service:8089: registering service...
+2026-06-19T21:05:05.048-04:00  INFO 27544 --- [subscription-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8089 (http) with context path '/'
+2026-06-19T21:05:05.049-04:00  INFO 27544 --- [subscription-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8089
+2026-06-19T21:05:05.058-04:00  INFO 27544 --- [subscription-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SUBSCRIPTION-SERVICE/host.docker.internal:subscription-service:8089 - registration status: 204
+2026-06-19T21:05:05.126-04:00  INFO 27544 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Started SubscriptionServiceApplication in 8.67 seconds (process running for 9.602)
+2026-06-19T21:06:57.723-04:00  INFO 27544 --- [subscription-service] [http-nio-8089-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-19T21:06:57.723-04:00  INFO 27544 --- [subscription-service] [http-nio-8089-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-06-19T21:06:57.723-04:00  INFO 27544 --- [subscription-service] [http-nio-8089-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-06-19T21:06:58.258-04:00  INFO 27544 --- [subscription-service] [http-nio-8089-exec-9] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 289 ms
+2026-06-19T21:10:04.627-04:00  INFO 27544 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:15:04.628-04:00  INFO 27544 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:20:04.640-04:00  INFO 27544 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:25:04.644-04:00  INFO 27544 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:30:04.654-04:00  INFO 27544 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:32:43.355-04:00  INFO 30868 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Starting SubscriptionServiceApplication using Java 17.0.10 with PID 30868 (C:\WorkSpace\SmallBooksRepository\subscription-service\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\subscription-service)
+2026-06-19T21:32:43.477-04:00 DEBUG 30868 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-19T21:32:43.545-04:00  INFO 30868 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-06-19T21:32:43.698-04:00  INFO 30868 --- [subscription-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-19T21:32:43.717-04:00  INFO 30868 --- [subscription-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=subscription-service, profiles=[default], label=null, version=null, state=null
+2026-06-19T21:32:45.885-04:00  INFO 30868 --- [subscription-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-19T21:32:46.319-04:00  INFO 30868 --- [subscription-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 285 ms. Found 1 JPA repository interface.
+2026-06-19T21:32:46.890-04:00  INFO 30868 --- [subscription-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=bb2a8a78-f7c4-3861-a5b6-4991d91d7b3e
+2026-06-19T21:32:47.776-04:00  INFO 30868 --- [subscription-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8089 (http)
+2026-06-19T21:32:47.855-04:00  INFO 30868 --- [subscription-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-19T21:32:47.893-04:00  INFO 30868 --- [subscription-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-19T21:32:48.067-04:00  INFO 30868 --- [subscription-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-19T21:32:48.116-04:00  INFO 30868 --- [subscription-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4361 ms
+2026-06-19T21:32:50.170-04:00  INFO 30868 --- [subscription-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-19T21:32:50.756-04:00  INFO 30868 --- [subscription-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@a7bbdbc
+2026-06-19T21:32:50.799-04:00  INFO 30868 --- [subscription-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-19T21:32:50.971-04:00  INFO 30868 --- [subscription-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_subscriptions (MySQL 8.4)
+2026-06-19T21:32:51.041-04:00  WARN 30868 --- [subscription-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-19T21:32:51.155-04:00  INFO 30868 --- [subscription-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.052s)
+2026-06-19T21:32:51.197-04:00  INFO 30868 --- [subscription-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_subscriptions`: 1
+2026-06-19T21:32:51.215-04:00  INFO 30868 --- [subscription-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_subscriptions` is up to date. No migration necessary.
+2026-06-19T21:32:51.507-04:00  INFO 30868 --- [subscription-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-19T21:32:51.709-04:00  INFO 30868 --- [subscription-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-19T21:32:51.814-04:00  INFO 30868 --- [subscription-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-19T21:32:52.956-04:00  INFO 30868 --- [subscription-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-19T21:32:53.086-04:00  WARN 30868 --- [subscription-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-19T21:32:54.495-04:00  INFO 30868 --- [subscription-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-19T21:32:54.534-04:00  INFO 30868 --- [subscription-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-19T21:32:55.153-04:00  WARN 30868 --- [subscription-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-19T21:32:55.895-04:00  INFO 30868 --- [subscription-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-19T21:32:55.944-04:00  WARN 30868 --- [subscription-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-19T21:32:55.999-04:00  INFO 30868 --- [subscription-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-19T21:32:56.034-04:00  INFO 30868 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-19T21:32:56.034-04:00  INFO 30868 --- [subscription-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:32:56.055-04:00  INFO 30868 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-19T21:32:56.055-04:00  INFO 30868 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-19T21:32:56.055-04:00  INFO 30868 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-19T21:32:56.055-04:00  INFO 30868 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-19T21:32:56.055-04:00  INFO 30868 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-19T21:32:56.055-04:00  INFO 30868 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-19T21:32:56.055-04:00  INFO 30868 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-19T21:32:56.429-04:00  INFO 30868 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-19T21:32:56.434-04:00  INFO 30868 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-19T21:32:56.434-04:00  INFO 30868 --- [subscription-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-19T21:32:56.438-04:00  INFO 30868 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781919176438 with initial instances count: 11
+2026-06-19T21:32:56.443-04:00  INFO 30868 --- [subscription-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application SUBSCRIPTION-SERVICE with eureka with status UP
+2026-06-19T21:32:56.443-04:00  INFO 30868 --- [subscription-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781919176443, current=UP, previous=STARTING]
+2026-06-19T21:32:56.445-04:00  INFO 30868 --- [subscription-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SUBSCRIPTION-SERVICE/host.docker.internal:subscription-service:8089: registering service...
+2026-06-19T21:32:56.476-04:00  INFO 30868 --- [subscription-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8089 (http) with context path '/'
+2026-06-19T21:32:56.482-04:00  INFO 30868 --- [subscription-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8089
+2026-06-19T21:32:56.492-04:00  INFO 30868 --- [subscription-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SUBSCRIPTION-SERVICE/host.docker.internal:subscription-service:8089 - registration status: 204
+2026-06-19T21:32:56.578-04:00  INFO 30868 --- [subscription-service] [main] c.s.s.SubscriptionServiceApplication     : Started SubscriptionServiceApplication in 17.167 seconds (process running for 20.098)
+2026-06-19T21:37:56.074-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:42:56.086-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:47:56.092-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:52:17.844-04:00  INFO 30868 --- [subscription-service] [http-nio-8089-exec-3] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-19T21:52:17.844-04:00  INFO 30868 --- [subscription-service] [http-nio-8089-exec-3] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-06-19T21:52:17.844-04:00  INFO 30868 --- [subscription-service] [http-nio-8089-exec-3] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-06-19T21:52:18.327-04:00  INFO 30868 --- [subscription-service] [http-nio-8089-exec-8] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 269 ms
+2026-06-19T21:52:56.097-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T21:57:49.250-04:00  INFO 30868 --- [subscription-service] [http-nio-8089-exec-2] c.s.s.service.SuscripcionService         : Consultando suscripción activa del usuario: admin
+2026-06-19T21:57:56.102-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:02:56.114-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:07:56.115-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:12:56.116-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:17:56.123-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:22:56.133-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:27:56.139-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:32:56.141-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:37:56.155-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:42:56.157-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:47:56.158-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:52:56.161-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T22:57:56.172-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:02:56.173-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:07:56.188-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:12:56.204-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:15:10.677-04:00  INFO 30868 --- [subscription-service] [http-nio-8089-exec-4] c.s.s.service.SuscripcionService         : Consultando suscripción activa del usuario: admin
+2026-06-19T23:17:56.216-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:22:56.228-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:27:56.239-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:32:56.256-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:37:56.265-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:42:56.276-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:47:56.289-04:00  INFO 30868 --- [subscription-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-19T23:51:02.341-04:00  INFO 30868 --- [subscription-service] [DiscoveryClient-HeartbeatExecutor-%d] c.n.d.s.t.d.RedirectingEurekaHttpClient  : Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/} exception=I/O error on PUT request for "http://localhost:8761/eureka/apps/SUBSCRIPTION-SERVICE/host.docker.internal:subscription-service:8089": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information stacktrace=org.springframework.web.client.ResourceAccessException: I/O error on PUT request for "http://localhost:8761/eureka/apps/SUBSCRIPTION-SERVICE/host.docker.internal:subscription-service:8089": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+	at org.springframework.web.client.RestTemplate.createResourceAccessException(RestTemplate.java:915)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:895)
+	at org.springframework.web.client.RestTemplate.execute(RestTemplate.java:830)
+	at org.springframework.web.client.RestTemplate.exchange(RestTemplate.java:691)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.sendHeartBeat(RestTemplateEurekaHttpClient.java:115)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.execute(RedirectingEurekaHttpClient.java:91)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92)
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:120)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92)
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89)
+	at com.netflix.discovery.DiscoveryClient.renew(DiscoveryClient.java:845)
+	at com.netflix.discovery.DiscoveryClient$HeartbeatThread.run(DiscoveryClient.java:1402)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.lambda$connectSocket$0(PlainConnectionSocketFactory.java:91)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:569)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.connectSocket(PlainConnectionSocketFactory.java:90)
+	at org.apache.hc.client5.http.socket.ConnectionSocketFactory.connectSocket(ConnectionSocketFactory.java:123)
+	at org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:189)
+	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:450)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:162)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:172)
+	at org.apache.hc.client5.http.impl.classic.ConnectExec.execute(ConnectExec.java:142)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ProtocolExec.execute(ProtocolExec.java:192)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.HttpRequestRetryExec.execute(HttpRequestRetryExec.java:113)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ContentCompressionExec.execute(ContentCompressionExec.java:152)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.RedirectExec.execute(RedirectExec.java:116)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.InternalHttpClient.doExecute(InternalHttpClient.java:170)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:87)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:55)
+	at org.apache.hc.client5.http.classic.HttpClient.executeOpen(HttpClient.java:183)
+	at org.springframework.http.client.HttpComponentsClientHttpRequest.executeInternal(HttpComponentsClientHttpRequest.java:99)
+	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:70)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:112)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateTransportClientFactory.lambda$restTemplate$3(RestTemplateTransportClientFactory.java:170)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:88)
+	at org.springframework.http.client.InterceptingClientHttpRequest.executeInternal(InterceptingClientHttpRequest.java:72)
+	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:48)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:889)
+	... 19 more
+
+2026-06-19T23:51:02.341-04:00  WARN 30868 --- [subscription-service] [DiscoveryClient-HeartbeatExecutor-%d] c.n.d.s.t.d.RetryableEurekaHttpClient    : Request execution failed with message: I/O error on PUT request for "http://localhost:8761/eureka/apps/SUBSCRIPTION-SERVICE/host.docker.internal:subscription-service:8089": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+2026-06-19T23:51:02.356-04:00  INFO 30868 --- [subscription-service] [DiscoveryClient-HeartbeatExecutor-%d] c.n.d.s.t.d.RedirectingEurekaHttpClient  : Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/}, exception=I/O error on PUT request for "http://localhost:8761/eureka/apps/SUBSCRIPTION-SERVICE/host.docker.internal:subscription-service:8089": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information stacktrace=org.springframework.web.client.ResourceAccessException: I/O error on PUT request for "http://localhost:8761/eureka/apps/SUBSCRIPTION-SERVICE/host.docker.internal:subscription-service:8089": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+	at org.springframework.web.client.RestTemplate.createResourceAccessException(RestTemplate.java:915)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:895)
+	at org.springframework.web.client.RestTemplate.execute(RestTemplate.java:830)
+	at org.springframework.web.client.RestTemplate.exchange(RestTemplate.java:691)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.sendHeartBeat(RestTemplateEurekaHttpClient.java:115)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.executeOnNewServer(RedirectingEurekaHttpClient.java:121)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.execute(RedirectingEurekaHttpClient.java:80)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92)
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:120)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92)
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89)
+	at com.netflix.discovery.DiscoveryClient.renew(DiscoveryClient.java:845)
+	at com.netflix.discovery.DiscoveryClient$HeartbeatThread.run(DiscoveryClient.java:1402)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.lambda$connectSocket$0(PlainConnectionSocketFactory.java:91)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:569)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.connectSocket(PlainConnectionSocketFactory.java:90)
+	at org.apache.hc.client5.http.socket.ConnectionSocketFactory.connectSocket(ConnectionSocketFactory.java:123)
+	at org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:189)
+	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:450)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:162)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:172)
+	at org.apache.hc.client5.http.impl.classic.ConnectExec.execute(ConnectExec.java:142)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ProtocolExec.execute(ProtocolExec.java:192)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.HttpRequestRetryExec.execute(HttpRequestRetryExec.java:113)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ContentCompressionExec.execute(ContentCompressionExec.java:152)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.RedirectExec.execute(RedirectExec.java:116)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.InternalHttpClient.doExecute(InternalHttpClient.java:170)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:87)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:55)
+	at org.apache.hc.client5.http.classic.HttpClient.executeOpen(HttpClient.java:183)
+	at org.springframework.http.client.HttpComponentsClientHttpRequest.executeInternal(HttpComponentsClientHttpRequest.java:99)
+	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:70)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:112)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateTransportClientFactory.lambda$restTemplate$3(RestTemplateTransportClientFactory.java:170)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:88)
+	at org.springframework.http.client.InterceptingClientHttpRequest.executeInternal(InterceptingClientHttpRequest.java:72)
+	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:48)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:889)
+	... 20 more
+
+2026-06-19T23:51:02.356-04:00  WARN 30868 --- [subscription-service] [DiscoveryClient-HeartbeatExecutor-%d] c.n.d.s.t.d.RetryableEurekaHttpClient    : Request execution failed with message: I/O error on PUT request for "http://localhost:8761/eureka/apps/SUBSCRIPTION-SERVICE/host.docker.internal:subscription-service:8089": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+2026-06-19T23:51:02.356-04:00 ERROR 30868 --- [subscription-service] [DiscoveryClient-HeartbeatExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SUBSCRIPTION-SERVICE/host.docker.internal:subscription-service:8089 - was unable to send heartbeat!
+
+com.netflix.discovery.shared.transport.TransportException: Cannot execute request on any known server
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:112) ~[eureka-client-2.0.4.jar:2.0.4]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89) ~[eureka-client-2.0.4.jar:2.0.4]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92) ~[eureka-client-2.0.4.jar:2.0.4]
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76) ~[eureka-client-2.0.4.jar:2.0.4]
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89) ~[eureka-client-2.0.4.jar:2.0.4]
+	at com.netflix.discovery.DiscoveryClient.renew(DiscoveryClient.java:845) ~[eureka-client-2.0.4.jar:2.0.4]
+	at com.netflix.discovery.DiscoveryClient$HeartbeatThread.run(DiscoveryClient.java:1402) ~[eureka-client-2.0.4.jar:2.0.4]
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539) ~[na:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+
+2026-06-19T23:51:02.420-04:00  INFO 30868 --- [subscription-service] [DiscoveryClient-CacheRefreshExecutor-%d] c.n.d.s.t.d.RedirectingEurekaHttpClient  : Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/} exception=I/O error on GET request for "http://localhost:8761/eureka/apps/delta": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information stacktrace=org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8761/eureka/apps/delta": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+	at org.springframework.web.client.RestTemplate.createResourceAccessException(RestTemplate.java:915)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:895)
+	at org.springframework.web.client.RestTemplate.execute(RestTemplate.java:830)
+	at org.springframework.web.client.RestTemplate.exchange(RestTemplate.java:691)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.getApplicationsInternal(RestTemplateEurekaHttpClient.java:170)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.getDelta(RestTemplateEurekaHttpClient.java:182)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.execute(RedirectingEurekaHttpClient.java:91)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:120)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
+	at com.netflix.discovery.DiscoveryClient.getAndUpdateDelta(DiscoveryClient.java:1080)
+	at com.netflix.discovery.DiscoveryClient.fetchRegistry(DiscoveryClient.java:963)
+	at com.netflix.discovery.DiscoveryClient.refreshRegistry(DiscoveryClient.java:1473)
+	at com.netflix.discovery.DiscoveryClient$CacheRefreshThread.run(DiscoveryClient.java:1441)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.lambda$connectSocket$0(PlainConnectionSocketFactory.java:91)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:569)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.connectSocket(PlainConnectionSocketFactory.java:90)
+	at org.apache.hc.client5.http.socket.ConnectionSocketFactory.connectSocket(ConnectionSocketFactory.java:123)
+	at org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:189)
+	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:450)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:162)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:172)
+	at org.apache.hc.client5.http.impl.classic.ConnectExec.execute(ConnectExec.java:142)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ProtocolExec.execute(ProtocolExec.java:192)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.HttpRequestRetryExec.execute(HttpRequestRetryExec.java:113)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ContentCompressionExec.execute(ContentCompressionExec.java:152)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.RedirectExec.execute(RedirectExec.java:116)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.InternalHttpClient.doExecute(InternalHttpClient.java:170)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:87)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:55)
+	at org.apache.hc.client5.http.classic.HttpClient.executeOpen(HttpClient.java:183)
+	at org.springframework.http.client.HttpComponentsClientHttpRequest.executeInternal(HttpComponentsClientHttpRequest.java:99)
+	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:70)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:112)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateTransportClientFactory.lambda$restTemplate$3(RestTemplateTransportClientFactory.java:170)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:88)
+	at org.springframework.http.client.InterceptingClientHttpRequest.executeInternal(InterceptingClientHttpRequest.java:72)
+	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:48)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:889)
+	... 22 more
+
+2026-06-19T23:51:02.420-04:00  WARN 30868 --- [subscription-service] [DiscoveryClient-CacheRefreshExecutor-%d] c.n.d.s.t.d.RetryableEurekaHttpClient    : Request execution failed with message: I/O error on GET request for "http://localhost:8761/eureka/apps/delta": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+2026-06-19T23:51:02.447-04:00  INFO 30868 --- [subscription-service] [DiscoveryClient-CacheRefreshExecutor-%d] c.n.d.s.t.d.RedirectingEurekaHttpClient  : Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/}, exception=I/O error on GET request for "http://localhost:8761/eureka/apps/delta": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information stacktrace=org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8761/eureka/apps/delta": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+	at org.springframework.web.client.RestTemplate.createResourceAccessException(RestTemplate.java:915)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:895)
+	at org.springframework.web.client.RestTemplate.execute(RestTemplate.java:830)
+	at org.springframework.web.client.RestTemplate.exchange(RestTemplate.java:691)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.getApplicationsInternal(RestTemplateEurekaHttpClient.java:170)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.getDelta(RestTemplateEurekaHttpClient.java:182)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.executeOnNewServer(RedirectingEurekaHttpClient.java:121)
+	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.execute(RedirectingEurekaHttpClient.java:80)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:120)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
+	at com.netflix.discovery.DiscoveryClient.getAndUpdateDelta(DiscoveryClient.java:1080)
+	at com.netflix.discovery.DiscoveryClient.fetchRegistry(DiscoveryClient.java:963)
+	at com.netflix.discovery.DiscoveryClient.refreshRegistry(DiscoveryClient.java:1473)
+	at com.netflix.discovery.DiscoveryClient$CacheRefreshThread.run(DiscoveryClient.java:1441)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.lambda$connectSocket$0(PlainConnectionSocketFactory.java:91)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:569)
+	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.connectSocket(PlainConnectionSocketFactory.java:90)
+	at org.apache.hc.client5.http.socket.ConnectionSocketFactory.connectSocket(ConnectionSocketFactory.java:123)
+	at org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:189)
+	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:450)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:162)
+	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:172)
+	at org.apache.hc.client5.http.impl.classic.ConnectExec.execute(ConnectExec.java:142)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ProtocolExec.execute(ProtocolExec.java:192)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.HttpRequestRetryExec.execute(HttpRequestRetryExec.java:113)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.ContentCompressionExec.execute(ContentCompressionExec.java:152)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.RedirectExec.execute(RedirectExec.java:116)
+	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
+	at org.apache.hc.client5.http.impl.classic.InternalHttpClient.doExecute(InternalHttpClient.java:170)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:87)
+	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:55)
+	at org.apache.hc.client5.http.classic.HttpClient.executeOpen(HttpClient.java:183)
+	at org.springframework.http.client.HttpComponentsClientHttpRequest.executeInternal(HttpComponentsClientHttpRequest.java:99)
+	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:70)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:112)
+	at org.springframework.cloud.netflix.eureka.http.RestTemplateTransportClientFactory.lambda$restTemplate$3(RestTemplateTransportClientFactory.java:170)
+	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:88)
+	at org.springframework.http.client.InterceptingClientHttpRequest.executeInternal(InterceptingClientHttpRequest.java:72)
+	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:48)
+	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:889)
+	... 23 more
+
+2026-06-19T23:51:02.447-04:00  WARN 30868 --- [subscription-service] [DiscoveryClient-CacheRefreshExecutor-%d] c.n.d.s.t.d.RetryableEurekaHttpClient    : Request execution failed with message: I/O error on GET request for "http://localhost:8761/eureka/apps/delta": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
+2026-06-19T23:51:02.448-04:00  INFO 30868 --- [subscription-service] [DiscoveryClient-CacheRefreshExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SUBSCRIPTION-SERVICE/host.docker.internal:subscription-service:8089 - was unable to refresh its cache! This periodic background refresh will be retried in 30 seconds. status = Cannot execute request on any known server stacktrace = com.netflix.discovery.shared.transport.TransportException: Cannot execute request on any known server
+	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:112)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
+	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76)
+	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
+	at com.netflix.discovery.DiscoveryClient.getAndUpdateDelta(DiscoveryClient.java:1080)
+	at com.netflix.discovery.DiscoveryClient.fetchRegistry(DiscoveryClient.java:963)
+	at com.netflix.discovery.DiscoveryClient.refreshRegistry(DiscoveryClient.java:1473)
+	at com.netflix.discovery.DiscoveryClient$CacheRefreshThread.run(DiscoveryClient.java:1441)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+
