@@ -174,42 +174,66 @@ ADD COLUMN datos LONGBLOB NULL;
 
 ---
 
-## Pruebas Unitarias
+## Pruebas
 
-Tests unitarios implementados con **JUnit 5 + Mockito** siguiendo el patrón Given/When/Then:
+El proyecto implementa dos tipos de pruebas automatizadas con **JUnit 5 + Mockito**, cubriendo 6 microservicios con un total de 66 tests y 0 fallos.
+
+### Tests Unitarios (Service)
+
+Verifican la lógica de negocio de forma completamente aislada — sin base de datos, sin HTTP, sin Config Server ni Eureka. Los repositorios y clientes Feign se reemplazan con mocks controlados por el test.
 
 | Microservicio | Clase testeada | Tests | Cobertura |
 |---|---|---|---|
-| `catalog-service` | `CatalogService` | 10 | CRUD completo + validaciones |
-| `elending-service` | `PrestamoService` | 10 | Reglas BÁSICO/PREMIUM + casos borde |
-| `identity-service` | `UserService` | 13 | Auth, registro, reset y cambio de contraseña |
+| `catalog-service` | `CatalogService` | 10 | CRUD completo, ISBN duplicado, libro no encontrado |
+| `elending-service` | `PrestamoService` | 10 | Reglas BÁSICO/PREMIUM, copias, duplicados, fallback |
+| `identity-service` | `UserService` | 13 | Registro, login, reset y cambio de contraseña |
 
-**Total: 33 tests — 0 fallos**
-
-### Casos críticos cubiertos en E-Lending
+Casos críticos cubiertos en E-Lending:
 
 ```java
 // Usuario BÁSICO bloqueado al alcanzar límite de 2 préstamos
-@Test
 void crearPrestamo_falla_usuario_BASICO_ya_tiene_2_prestamos_activos()
 
-// Usuario PREMIUM bloqueado al alcanzar límite de 5 préstamos  
-@Test
+// Usuario PREMIUM bloqueado al alcanzar límite de 5 préstamos
 void crearPrestamo_falla_usuario_PREMIUM_ya_tiene_5_prestamos_activos()
 
 // Fallback a plan BÁSICO cuando Subscription Service no responde
-@Test
 void crearPrestamo_aplica_plan_BASICO_por_defecto_si_falla_subscription()
 ```
 
-**Ejecutar tests:**
+### Tests REST con MockMvc (Controller)
+
+Verifican el comportamiento HTTP del Controller — códigos de respuesta (200, 201, 400, 404...), estructura del JSON, presencia de links HATEOAS y funcionamiento de validaciones Bean Validation. No levantan un servidor Tomcat real: MockMvc simula el ciclo HTTP en memoria, lo que hace estos tests extremadamente rápidos (2-4 segundos por clase) sin depender de ningún servicio externo.
+
+| Microservicio | Clase testeada | Tests | Cobertura |
+|---|---|---|---|
+| `license-service` | `LicenseController` | 12 | CRUD, prestar/devolver, validaciones, HATEOAS, 404/422 |
+| `subscription-service` | `SuscripcionController` | 11 | Planes BÁSICO/PREMIUM, token JWT, 400/404, HATEOAS |
+| `notification-service` | `NotificacionController` | 10 | Crear, listar, marcar leída, 400/404, HATEOAS |
+
+### Resumen total
+
+| Tipo | Microservicios | Tests |
+|---|---|---|
+| Unitarios (Service) | 3 | 33 |
+| REST MockMvc (Controller) | 3 | 33 |
+| **Total** | **6** | **66 — 0 fallos** |
+
+### Ejecutar tests
 
 ```bash
-cd {microservicio}
+# Un microservicio a la vez
+cd catalog-service
 .\mvnw test
+
+# El resultado indica: Tests run: N, Failures: 0, Errors: 0
+# BUILD SUCCESS = todos los tests pasaron
 ```
 
+Desde VS Code, el panel de Testing (icono de matraz en la barra lateral) muestra todos los tests organizados por clase y permite ejecutarlos individualmente con un click, sin necesitar la terminal.
+
 ---
+
 
 ## Reglas de Negocio
 
