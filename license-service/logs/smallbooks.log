@@ -1,226 +1,441 @@
-2026-06-19T20:03:11.522-04:00  INFO 25908 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Starting LicenseServiceApplication using Java 17.0.10 with PID 25908 (C:\WorkSpace\SmallBooksRepository\license-service\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\license-service)
-2026-06-19T20:03:11.528-04:00 DEBUG 25908 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-19T20:03:11.528-04:00  INFO 25908 --- [license-service] [main] c.s.license.LicenseServiceApplication    : No active profile set, falling back to 1 default profile: "default"
-2026-06-19T20:03:11.581-04:00  INFO 25908 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-19T20:03:11.581-04:00  INFO 25908 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=license-service, profiles=[default], label=null, version=null, state=null
-2026-06-19T20:03:12.268-04:00  INFO 25908 --- [license-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-19T20:03:12.437-04:00  INFO 25908 --- [license-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 158 ms. Found 1 JPA repository interface.
-2026-06-19T20:03:12.624-04:00  INFO 25908 --- [license-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=faa7db41-f8b3-3de8-bc6f-009ca1a9b23f
-2026-06-19T20:03:13.069-04:00  INFO 25908 --- [license-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8086 (http)
-2026-06-19T20:03:13.083-04:00  INFO 25908 --- [license-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-19T20:03:13.084-04:00  INFO 25908 --- [license-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-19T20:03:13.149-04:00  INFO 25908 --- [license-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-19T20:03:13.149-04:00  INFO 25908 --- [license-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1562 ms
-2026-06-19T20:03:13.335-04:00  INFO 25908 --- [license-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T20:03:13.488-04:00  INFO 25908 --- [license-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@136fece2
-2026-06-19T20:03:13.489-04:00  INFO 25908 --- [license-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-19T20:03:13.551-04:00  INFO 25908 --- [license-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_license (MySQL 8.4)
-2026-06-19T20:03:13.563-04:00  WARN 25908 --- [license-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-06-19T20:03:13.607-04:00  INFO 25908 --- [license-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 3 migrations (execution time 00:00.035s)
-2026-06-19T20:03:13.622-04:00  INFO 25908 --- [license-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_license`: 3
-2026-06-19T20:03:13.622-04:00  WARN 25908 --- [license-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_license` has a version (3) that is newer than the latest available migration (2) !
-2026-06-19T20:03:13.622-04:00  INFO 25908 --- [license-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_license` is up to date. No migration necessary.
-2026-06-19T20:03:13.707-04:00  INFO 25908 --- [license-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-19T20:03:13.768-04:00  INFO 25908 --- [license-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-06-19T20:03:13.801-04:00  INFO 25908 --- [license-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-19T20:03:14.084-04:00  INFO 25908 --- [license-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-19T20:03:14.155-04:00  WARN 25908 --- [license-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-06-19T20:03:14.907-04:00  INFO 25908 --- [license-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-19T20:03:14.935-04:00  INFO 25908 --- [license-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-19T20:03:15.313-04:00  WARN 25908 --- [license-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-19T20:03:15.833-04:00  INFO 25908 --- [license-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-06-19T20:03:15.870-04:00  WARN 25908 --- [license-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-06-19T20:03:15.910-04:00  INFO 25908 --- [license-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-06-19T20:03:15.938-04:00  INFO 25908 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-06-19T20:03:15.941-04:00  INFO 25908 --- [license-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:03:15.956-04:00  INFO 25908 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-19T20:03:15.956-04:00  INFO 25908 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-19T20:03:15.956-04:00  INFO 25908 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-19T20:03:15.956-04:00  INFO 25908 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-19T20:03:15.956-04:00  INFO 25908 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-19T20:03:15.956-04:00  INFO 25908 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-06-19T20:03:15.956-04:00  INFO 25908 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-19T20:03:16.230-04:00  INFO 25908 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-19T20:03:16.232-04:00  INFO 25908 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-06-19T20:03:16.234-04:00  INFO 25908 --- [license-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-06-19T20:03:16.235-04:00  INFO 25908 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781913796235 with initial instances count: 4
-2026-06-19T20:03:16.239-04:00  INFO 25908 --- [license-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application LICENSE-SERVICE with eureka with status UP
-2026-06-19T20:03:16.240-04:00  INFO 25908 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781913796240, current=UP, previous=STARTING]
-2026-06-19T20:03:16.242-04:00  INFO 25908 --- [license-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_LICENSE-SERVICE/host.docker.internal:license-service:8086: registering service...
-2026-06-19T20:03:16.261-04:00  INFO 25908 --- [license-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8086 (http) with context path '/'
-2026-06-19T20:03:16.261-04:00  INFO 25908 --- [license-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8086
-2026-06-19T20:03:16.273-04:00  INFO 25908 --- [license-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_LICENSE-SERVICE/host.docker.internal:license-service:8086 - registration status: 204
-2026-06-19T20:03:16.324-04:00  INFO 25908 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Started LicenseServiceApplication in 5.757 seconds (process running for 6.251)
-2026-06-19T20:08:15.970-04:00  INFO 25908 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:13:15.978-04:00  INFO 25908 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:18:15.988-04:00  INFO 25908 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:23:16.000-04:00  INFO 25908 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:28:16.005-04:00  INFO 25908 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:33:16.018-04:00  INFO 25908 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:38:16.019-04:00  INFO 25908 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:43:16.025-04:00  INFO 25908 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:48:16.031-04:00  INFO 25908 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:48:45.778-04:00  INFO 25908 --- [license-service] [http-nio-8086-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-19T20:48:45.779-04:00  INFO 25908 --- [license-service] [http-nio-8086-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-06-19T20:48:45.785-04:00  INFO 25908 --- [license-service] [http-nio-8086-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 6 ms
-2026-06-19T20:53:16.044-04:00  INFO 25908 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:58:16.046-04:00  INFO 25908 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:02:28.673-04:00  INFO 25908 --- [license-service] [http-nio-8086-exec-4] c.silvio.license.service.LicenseService  : Devolviendo copia — libro id: 1
-2026-06-19T21:02:28.837-04:00  INFO 25908 --- [license-service] [http-nio-8086-exec-4] c.silvio.license.service.LicenseService  : Copia devuelta — libro: 1, disponibles: 5/5
-2026-06-19T21:02:29.287-04:00  INFO 25908 --- [license-service] [http-nio-8086-exec-5] c.silvio.license.service.LicenseService  : Devolviendo copia — libro id: 2
-2026-06-19T21:02:29.292-04:00  INFO 25908 --- [license-service] [http-nio-8086-exec-5] c.silvio.license.service.LicenseService  : Copia devuelta — libro: 2, disponibles: 3/3
-2026-06-19T21:02:29.329-04:00  INFO 25908 --- [license-service] [http-nio-8086-exec-6] c.silvio.license.service.LicenseService  : Devolviendo copia — libro id: 3
-2026-06-19T21:02:29.333-04:00  INFO 25908 --- [license-service] [http-nio-8086-exec-6] c.silvio.license.service.LicenseService  : Copia devuelta — libro: 3, disponibles: 5/5
-2026-06-19T21:03:16.054-04:00  INFO 25908 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:04:24.638-04:00  INFO 22832 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Starting LicenseServiceApplication using Java 17.0.10 with PID 22832 (C:\WorkSpace\SmallBooksRepository\license-service\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\license-service)
-2026-06-19T21:04:24.640-04:00 DEBUG 22832 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-19T21:04:24.640-04:00  INFO 22832 --- [license-service] [main] c.s.license.LicenseServiceApplication    : No active profile set, falling back to 1 default profile: "default"
-2026-06-19T21:04:24.693-04:00  INFO 22832 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-19T21:04:24.694-04:00  INFO 22832 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=license-service, profiles=[default], label=null, version=null, state=null
-2026-06-19T21:04:25.451-04:00  INFO 22832 --- [license-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-19T21:04:25.605-04:00  INFO 22832 --- [license-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 133 ms. Found 1 JPA repository interface.
-2026-06-19T21:04:25.932-04:00  INFO 22832 --- [license-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=c1704575-352a-3831-be52-dfcdf1f2539c
-2026-06-19T21:04:26.363-04:00  INFO 22832 --- [license-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8086 (http)
-2026-06-19T21:04:26.376-04:00  INFO 22832 --- [license-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-19T21:04:26.376-04:00  INFO 22832 --- [license-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-19T21:04:26.453-04:00  INFO 22832 --- [license-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-19T21:04:26.453-04:00  INFO 22832 --- [license-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1758 ms
-2026-06-19T21:04:26.652-04:00  INFO 22832 --- [license-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T21:04:26.820-04:00  INFO 22832 --- [license-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@8d29719
-2026-06-19T21:04:26.823-04:00  INFO 22832 --- [license-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-19T21:04:26.872-04:00  INFO 22832 --- [license-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_license (MySQL 8.4)
-2026-06-19T21:04:26.881-04:00  WARN 22832 --- [license-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-06-19T21:04:26.920-04:00  INFO 22832 --- [license-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 3 migrations (execution time 00:00.032s)
-2026-06-19T21:04:26.937-04:00  INFO 22832 --- [license-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_license`: 3
-2026-06-19T21:04:26.938-04:00  WARN 22832 --- [license-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_license` has a version (3) that is newer than the latest available migration (2) !
-2026-06-19T21:04:26.938-04:00  INFO 22832 --- [license-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_license` is up to date. No migration necessary.
-2026-06-19T21:04:27.009-04:00  INFO 22832 --- [license-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-19T21:04:27.053-04:00  INFO 22832 --- [license-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-06-19T21:04:27.094-04:00  INFO 22832 --- [license-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-19T21:04:27.418-04:00  INFO 22832 --- [license-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-19T21:04:27.477-04:00  WARN 22832 --- [license-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-06-19T21:04:28.476-04:00  INFO 22832 --- [license-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-19T21:04:28.502-04:00  INFO 22832 --- [license-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-19T21:04:29.014-04:00  WARN 22832 --- [license-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-19T21:04:29.791-04:00  INFO 22832 --- [license-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-06-19T21:04:29.845-04:00  WARN 22832 --- [license-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-06-19T21:04:29.934-04:00  INFO 22832 --- [license-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-06-19T21:04:29.972-04:00  INFO 22832 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-06-19T21:04:29.978-04:00  INFO 22832 --- [license-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:04:29.993-04:00  INFO 22832 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-19T21:04:29.995-04:00  INFO 22832 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-19T21:04:29.995-04:00  INFO 22832 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-19T21:04:29.995-04:00  INFO 22832 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-19T21:04:29.995-04:00  INFO 22832 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-19T21:04:29.995-04:00  INFO 22832 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-06-19T21:04:29.995-04:00  INFO 22832 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-19T21:04:30.407-04:00  INFO 22832 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-19T21:04:30.411-04:00  INFO 22832 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-06-19T21:04:30.414-04:00  INFO 22832 --- [license-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-06-19T21:04:30.415-04:00  INFO 22832 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781917470415 with initial instances count: 11
-2026-06-19T21:04:30.421-04:00  INFO 22832 --- [license-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application LICENSE-SERVICE with eureka with status UP
-2026-06-19T21:04:30.421-04:00  INFO 22832 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781917470421, current=UP, previous=STARTING]
-2026-06-19T21:04:30.428-04:00  INFO 22832 --- [license-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_LICENSE-SERVICE/host.docker.internal:license-service:8086: registering service...
-2026-06-19T21:04:30.461-04:00  INFO 22832 --- [license-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8086 (http) with context path '/'
-2026-06-19T21:04:30.463-04:00  INFO 22832 --- [license-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8086
-2026-06-19T21:04:30.471-04:00  INFO 22832 --- [license-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_LICENSE-SERVICE/host.docker.internal:license-service:8086 - registration status: 204
-2026-06-19T21:04:30.548-04:00  INFO 22832 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Started LicenseServiceApplication in 7.325 seconds (process running for 8.023)
-2026-06-19T21:06:24.342-04:00  INFO 22832 --- [license-service] [http-nio-8086-exec-4] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-19T21:06:24.342-04:00  INFO 22832 --- [license-service] [http-nio-8086-exec-4] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-06-19T21:06:24.344-04:00  INFO 22832 --- [license-service] [http-nio-8086-exec-4] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
-2026-06-19T21:06:24.805-04:00  INFO 22832 --- [license-service] [http-nio-8086-exec-8] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 247 ms
-2026-06-19T21:09:29.999-04:00  INFO 22832 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:14:30.001-04:00  INFO 22832 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:19:30.003-04:00  INFO 22832 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:24:30.005-04:00  INFO 22832 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:29:30.011-04:00  INFO 22832 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:32:23.619-04:00  INFO 7512 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Starting LicenseServiceApplication using Java 17.0.10 with PID 7512 (C:\WorkSpace\SmallBooksRepository\license-service\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\license-service)
-2026-06-19T21:32:23.619-04:00 DEBUG 7512 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-19T21:32:23.619-04:00  INFO 7512 --- [license-service] [main] c.s.license.LicenseServiceApplication    : No active profile set, falling back to 1 default profile: "default"
-2026-06-19T21:32:23.660-04:00  INFO 7512 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-19T21:32:23.660-04:00  INFO 7512 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=license-service, profiles=[default], label=null, version=null, state=null
-2026-06-19T21:32:24.574-04:00  INFO 7512 --- [license-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-19T21:32:24.757-04:00  INFO 7512 --- [license-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 174 ms. Found 1 JPA repository interface.
-2026-06-19T21:32:25.178-04:00  INFO 7512 --- [license-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=c1704575-352a-3831-be52-dfcdf1f2539c
-2026-06-19T21:32:25.673-04:00  INFO 7512 --- [license-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8086 (http)
-2026-06-19T21:32:25.692-04:00  INFO 7512 --- [license-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-19T21:32:25.692-04:00  INFO 7512 --- [license-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-19T21:32:25.799-04:00  INFO 7512 --- [license-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-19T21:32:25.799-04:00  INFO 7512 --- [license-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2139 ms
-2026-06-19T21:32:26.137-04:00  INFO 7512 --- [license-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T21:32:26.459-04:00  INFO 7512 --- [license-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@299cab08
-2026-06-19T21:32:26.466-04:00  INFO 7512 --- [license-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-19T21:32:26.530-04:00  INFO 7512 --- [license-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_license (MySQL 8.4)
-2026-06-19T21:32:26.546-04:00  WARN 7512 --- [license-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-06-19T21:32:26.607-04:00  INFO 7512 --- [license-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 3 migrations (execution time 00:00.045s)
-2026-06-19T21:32:26.626-04:00  INFO 7512 --- [license-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_license`: 3
-2026-06-19T21:32:26.627-04:00  WARN 7512 --- [license-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_license` has a version (3) that is newer than the latest available migration (2) !
-2026-06-19T21:32:26.631-04:00  INFO 7512 --- [license-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_license` is up to date. No migration necessary.
-2026-06-19T21:32:26.741-04:00  INFO 7512 --- [license-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-19T21:32:26.820-04:00  INFO 7512 --- [license-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-06-19T21:32:26.905-04:00  INFO 7512 --- [license-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-19T21:32:27.588-04:00  INFO 7512 --- [license-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-19T21:32:27.713-04:00  WARN 7512 --- [license-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-06-19T21:32:30.061-04:00  INFO 7512 --- [license-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-19T21:32:30.279-04:00  INFO 7512 --- [license-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-19T21:32:32.297-04:00  WARN 7512 --- [license-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-19T21:32:35.004-04:00  INFO 7512 --- [license-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-06-19T21:32:35.132-04:00  WARN 7512 --- [license-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-06-19T21:32:35.265-04:00  INFO 7512 --- [license-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-06-19T21:32:35.328-04:00  INFO 7512 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-06-19T21:32:35.340-04:00  INFO 7512 --- [license-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:32:35.360-04:00  INFO 7512 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-19T21:32:35.363-04:00  INFO 7512 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-19T21:32:35.366-04:00  INFO 7512 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-19T21:32:35.372-04:00  INFO 7512 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-19T21:32:35.375-04:00  INFO 7512 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-19T21:32:35.377-04:00  INFO 7512 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-06-19T21:32:35.377-04:00  INFO 7512 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-19T21:32:36.130-04:00  INFO 7512 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-19T21:32:36.146-04:00  INFO 7512 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-06-19T21:32:36.160-04:00  INFO 7512 --- [license-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-06-19T21:32:36.162-04:00  INFO 7512 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781919156162 with initial instances count: 11
-2026-06-19T21:32:36.170-04:00  INFO 7512 --- [license-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application LICENSE-SERVICE with eureka with status UP
-2026-06-19T21:32:36.175-04:00  INFO 7512 --- [license-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781919156175, current=UP, previous=STARTING]
-2026-06-19T21:32:36.393-04:00  INFO 7512 --- [license-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8086 (http) with context path '/'
-2026-06-19T21:32:36.195-04:00  INFO 7512 --- [license-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_LICENSE-SERVICE/host.docker.internal:license-service:8086: registering service...
-2026-06-19T21:32:36.431-04:00  INFO 7512 --- [license-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8086
-2026-06-19T21:32:36.525-04:00  INFO 7512 --- [license-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_LICENSE-SERVICE/host.docker.internal:license-service:8086 - registration status: 204
-2026-06-19T21:32:37.017-04:00  INFO 7512 --- [license-service] [main] c.s.license.LicenseServiceApplication    : Started LicenseServiceApplication in 14.464 seconds (process running for 14.963)
-2026-06-19T21:37:35.388-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:42:35.399-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:47:35.404-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:51:38.032-04:00  INFO 7512 --- [license-service] [http-nio-8086-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-19T21:51:38.032-04:00  INFO 7512 --- [license-service] [http-nio-8086-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-06-19T21:51:38.032-04:00  INFO 7512 --- [license-service] [http-nio-8086-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
-2026-06-19T21:51:38.432-04:00  INFO 7512 --- [license-service] [http-nio-8086-exec-4] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 246 ms
-2026-06-19T21:52:35.410-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:57:35.413-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:57:49.425-04:00  INFO 7512 --- [license-service] [http-nio-8086-exec-1] c.silvio.license.service.LicenseService  : Consultando licencia para libro id: 2
-2026-06-19T21:57:49.586-04:00  INFO 7512 --- [license-service] [http-nio-8086-exec-6] c.silvio.license.service.LicenseService  : Descontando copia — libro id: 2
-2026-06-19T21:57:49.586-04:00  INFO 7512 --- [license-service] [http-nio-8086-exec-6] c.silvio.license.service.LicenseService  : Copia descontada — libro: 2, disponibles: 2/3
-2026-06-19T22:02:35.423-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:07:35.437-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:12:35.441-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:17:35.449-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:22:35.457-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:27:35.467-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:32:35.476-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:37:35.484-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:42:35.488-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:47:35.495-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:52:35.506-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:57:35.508-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:02:35.515-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:07:35.529-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:12:35.534-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:15:10.894-04:00  INFO 7512 --- [license-service] [http-nio-8086-exec-7] c.silvio.license.service.LicenseService  : Consultando licencia para libro id: 1
-2026-06-19T23:15:10.940-04:00  INFO 7512 --- [license-service] [http-nio-8086-exec-4] c.silvio.license.service.LicenseService  : Descontando copia — libro id: 1
-2026-06-19T23:15:10.944-04:00  INFO 7512 --- [license-service] [http-nio-8086-exec-4] c.silvio.license.service.LicenseService  : Copia descontada — libro: 1, disponibles: 4/5
-2026-06-19T23:17:35.547-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:22:35.550-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:27:35.558-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:32:35.563-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:37:35.567-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:42:35.579-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:47:35.589-04:00  INFO 7512 --- [license-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T18:03:01.642-04:00  INFO 7528 --- [license-service] [main] c.s.l.controller.LicenseControllerTest   : Starting LicenseControllerTest using Java 17.0.10 with PID 7528 (started by Silvi in C:\WorkSpace\SmallBooksRepository\license-service)
+2026-06-22T18:03:01.659-04:00 DEBUG 7528 --- [license-service] [main] c.s.l.controller.LicenseControllerTest   : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-22T18:03:01.661-04:00  INFO 7528 --- [license-service] [main] c.s.l.controller.LicenseControllerTest   : No active profile set, falling back to 1 default profile: "default"
+2026-06-22T18:03:01.708-04:00  INFO 7528 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T18:03:01.710-04:00  INFO 7528 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Exception on Url - http://localhost:8888:org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information. Will be trying the next url if available
+2026-06-22T18:03:01.710-04:00  WARN 7528 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Could not locate PropertySource ([ConfigServerConfigDataResource@4c48fe92 uris = array<String>['http://localhost:8888'], optional = true, profiles = 'default']): I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information
+2026-06-22T18:03:01.712-04:00  INFO 7528 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T18:03:01.712-04:00  INFO 7528 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Exception on Url - http://localhost:8888:org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information. Will be trying the next url if available
+2026-06-22T18:03:01.712-04:00  WARN 7528 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Could not locate PropertySource ([ConfigServerConfigDataResource@39e43310 uris = array<String>['http://localhost:8888'], optional = true, profiles = 'default']): I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information
+2026-06-22T18:03:01.712-04:00  INFO 7528 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T18:03:01.712-04:00  INFO 7528 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Exception on Url - http://localhost:8888:org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information. Will be trying the next url if available
+2026-06-22T18:03:01.712-04:00  WARN 7528 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Could not locate PropertySource ([ConfigServerConfigDataResource@eb507b9 uris = array<String>['http://localhost:8888'], optional = true, profiles = 'default']): I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information
+2026-06-22T18:03:05.687-04:00  INFO 7528 --- [license-service] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-06-22T18:03:05.687-04:00  INFO 7528 --- [license-service] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-06-22T18:03:05.690-04:00  INFO 7528 --- [license-service] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 3 ms
+2026-06-22T18:03:05.759-04:00  INFO 7528 --- [license-service] [main] c.s.l.controller.LicenseControllerTest   : Started LicenseControllerTest in 5.759 seconds (process running for 7.44)
+2026-06-22T18:03:06.924-04:00  INFO 7528 --- [license-service] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.silvio.license.LicenceServiceApplicationTests]: LicenceServiceApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-06-22T18:03:06.940-04:00  INFO 7528 --- [license-service] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.silvio.license.LicenseServiceApplication for test class com.silvio.license.LicenceServiceApplicationTests
+2026-06-22T18:03:07.135-04:00  INFO 7528 --- [license-service] [main] c.s.l.LicenceServiceApplicationTests     : Starting LicenceServiceApplicationTests using Java 17.0.10 with PID 7528 (started by Silvi in C:\WorkSpace\SmallBooksRepository\license-service)
+2026-06-22T18:03:07.135-04:00 DEBUG 7528 --- [license-service] [main] c.s.l.LicenceServiceApplicationTests     : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-22T18:03:07.136-04:00  INFO 7528 --- [license-service] [main] c.s.l.LicenceServiceApplicationTests     : No active profile set, falling back to 1 default profile: "default"
+2026-06-22T18:03:07.140-04:00  INFO 7528 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T18:03:07.142-04:00  INFO 7528 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Exception on Url - http://localhost:8888:org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information. Will be trying the next url if available
+2026-06-22T18:03:07.142-04:00  WARN 7528 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Could not locate PropertySource ([ConfigServerConfigDataResource@7c8f803d uris = array<String>['http://localhost:8888'], optional = true, profiles = 'default']): I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information
+2026-06-22T18:03:07.142-04:00  INFO 7528 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T18:03:07.142-04:00  INFO 7528 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Exception on Url - http://localhost:8888:org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information. Will be trying the next url if available
+2026-06-22T18:03:07.142-04:00  WARN 7528 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Could not locate PropertySource ([ConfigServerConfigDataResource@176e839e uris = array<String>['http://localhost:8888'], optional = true, profiles = 'default']): I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information
+2026-06-22T18:03:07.144-04:00  INFO 7528 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T18:03:07.145-04:00  INFO 7528 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Exception on Url - http://localhost:8888:org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information. Will be trying the next url if available
+2026-06-22T18:03:07.146-04:00  WARN 7528 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Could not locate PropertySource ([ConfigServerConfigDataResource@4ac0d49 uris = array<String>['http://localhost:8888'], optional = true, profiles = 'default']): I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information
+2026-06-22T18:03:08.014-04:00  INFO 7528 --- [license-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-22T18:03:08.080-04:00  INFO 7528 --- [license-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 50 ms. Found 1 JPA repository interface.
+2026-06-22T18:03:08.569-04:00  INFO 7528 --- [license-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=cb2047ee-0be7-320f-beb7-e4557e546b94
+2026-06-22T18:03:08.854-04:00  WARN 7528 --- [license-service] [main] o.s.w.c.s.GenericWebApplicationContext   : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Failed to initialize dependency 'flyway' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'flyway' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Failed to instantiate [org.flywaydb.core.Flyway]: Factory method 'flyway' threw exception with message: Error creating bean with name 'dataSource' defined in class path resource [org/springframework/boot/autoconfigure/jdbc/DataSourceConfiguration$Hikari.class]: Failed to instantiate [com.zaxxer.hikari.HikariDataSource]: Factory method 'dataSource' threw exception with message: Failed to determine a suitable driver class
+2026-06-22T18:03:08.893-04:00  INFO 7528 --- [license-service] [main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-22T18:03:08.992-04:00 ERROR 7528 --- [license-service] [main] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Failed to configure a DataSource: 'url' attribute is not specified and no embedded datasource could be configured.
+
+Reason: Failed to determine a suitable driver class
+
+
+Action:
+
+Consider the following:
+	If you want an embedded database (H2, HSQL or Derby), please put it on the classpath.
+	If you have database settings to be loaded from a particular profile you may need to activate it (no profiles are currently active).
+
+2026-06-22T18:03:09.007-04:00  WARN 7528 --- [license-service] [main] o.s.test.context.TestContextManager      : Caught exception while allowing TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener] to prepare test instance [com.silvio.license.LicenceServiceApplicationTests@5a5024eb]
+
+java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMergedContextConfiguration@5fa3df testClass = com.silvio.license.LicenceServiceApplicationTests, locations = [], classes = [com.silvio.license.LicenseServiceApplication], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = ["org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true"], contextCustomizers = [org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@5276d6ee, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@1b919693, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.web.client.TestRestTemplateContextCustomizer@121dac1a, org.springframework.boot.test.web.reactor.netty.DisableReactorResourceFactoryGlobalResourcesContextCustomizerFactory$DisableReactorResourceFactoryGlobalResourcesContextCustomizerCustomizer@6d5620ce, org.springframework.boot.test.autoconfigure.OnFailureConditionReportContextCustomizerFactory$OnFailureConditionReportContextCustomizer@7d322cad, org.springframework.boot.test.autoconfigure.actuate.observability.ObservabilityContextCustomizerFactory$DisableObservabilityContextCustomizer@1f, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizer@478db956, org.springframework.boot.test.context.SpringBootTestAnnotation@9de63969], resourceBasePath = "src/main/webapp", contextLoader = org.springframework.boot.test.context.SpringBootContextLoader, parent = null]
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:180) ~[spring-test-6.1.19.jar:6.1.19]
+	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:130) ~[spring-test-6.1.19.jar:6.1.19]
+	at org.springframework.test.context.web.ServletTestExecutionListener.setUpRequestContextIfNecessary(ServletTestExecutionListener.java:191) ~[spring-test-6.1.19.jar:6.1.19]
+	at org.springframework.test.context.web.ServletTestExecutionListener.prepareTestInstance(ServletTestExecutionListener.java:130) ~[spring-test-6.1.19.jar:6.1.19]
+	at org.springframework.test.context.TestContextManager.prepareTestInstance(TestContextManager.java:260) ~[spring-test-6.1.19.jar:6.1.19]
+	at org.springframework.test.context.junit.jupiter.SpringExtension.postProcessTestInstance(SpringExtension.java:163) ~[spring-test-6.1.19.jar:6.1.19]
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$10(ClassBasedTestDescriptor.java:378) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.executeAndMaskThrowable(ClassBasedTestDescriptor.java:383) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$11(ClassBasedTestDescriptor.java:378) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197) ~[na:na]
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179) ~[na:na]
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1625) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499) ~[na:na]
+	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:310) ~[na:na]
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:735) ~[na:na]
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:734) ~[na:na]
+	at java.base/java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:762) ~[na:na]
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeTestInstancePostProcessors(ClassBasedTestDescriptor.java:377) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$instantiateAndPostProcessTestInstance$6(ClassBasedTestDescriptor.java:290) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.instantiateAndPostProcessTestInstance(ClassBasedTestDescriptor.java:289) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$4(ClassBasedTestDescriptor.java:279) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at java.base/java.util.Optional.orElseGet(Optional.java:364) ~[na:na]
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$5(ClassBasedTestDescriptor.java:278) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.jupiter.engine.execution.TestInstancesProvider.getTestInstances(TestInstancesProvider.java:31) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$prepare$0(TestMethodTestDescriptor.java:106) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:105) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:69) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$prepare$2(NodeTestTask.java:128) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.prepare(NodeTestTask.java:128) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511) ~[na:na]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511) ~[na:na]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198) ~[junit-platform-launcher-1.10.5.jar:1.10.5]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169) ~[junit-platform-launcher-1.10.5.jar:1.10.5]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93) ~[junit-platform-launcher-1.10.5.jar:1.10.5]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58) ~[junit-platform-launcher-1.10.5.jar:1.10.5]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141) ~[junit-platform-launcher-1.10.5.jar:1.10.5]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57) ~[junit-platform-launcher-1.10.5.jar:1.10.5]
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103) ~[junit-platform-launcher-1.10.5.jar:1.10.5]
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:94) ~[junit-platform-launcher-1.10.5.jar:1.10.5]
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:52) ~[junit-platform-launcher-1.10.5.jar:1.10.5]
+	at org.junit.platform.launcher.core.SessionPerRequestLauncher.execute(SessionPerRequestLauncher.java:70) ~[junit-platform-launcher-1.10.5.jar:1.10.5]
+	at org.eclipse.jdt.internal.junit5.runner.JUnit5TestReference.run(JUnit5TestReference.java:100) ~[.cp/:na]
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:40) ~[.cp/:na]
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:596) ~[.cp/:na]
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:824) ~[.cp/:na]
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:494) ~[.cp/:na]
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:225) ~[.cp/:na]
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Failed to initialize dependency 'flyway' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'flyway' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Failed to instantiate [org.flywaydb.core.Flyway]: Factory method 'flyway' threw exception with message: Error creating bean with name 'dataSource' defined in class path resource [org/springframework/boot/autoconfigure/jdbc/DataSourceConfiguration$Hikari.class]: Failed to instantiate [com.zaxxer.hikari.HikariDataSource]: Factory method 'dataSource' threw exception with message: Failed to determine a suitable driver class
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:326) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:954) ~[spring-context-6.1.19.jar:6.1.19]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625) ~[spring-context-6.1.19.jar:6.1.19]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:755) ~[spring-boot-3.3.11.jar:3.3.11]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456) ~[spring-boot-3.3.11.jar:3.3.11]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335) ~[spring-boot-3.3.11.jar:3.3.11]
+	at org.springframework.boot.test.context.SpringBootContextLoader.lambda$loadContext$3(SpringBootContextLoader.java:145) ~[spring-boot-test-3.3.11.jar:3.3.11]
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:58) ~[spring-core-6.1.19.jar:6.1.19]
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:46) ~[spring-core-6.1.19.jar:6.1.19]
+	at org.springframework.boot.SpringApplication.withHook(SpringApplication.java:1464) ~[spring-boot-3.3.11.jar:3.3.11]
+	at org.springframework.boot.test.context.SpringBootContextLoader$ContextLoaderHook.run(SpringBootContextLoader.java:564) ~[spring-boot-test-3.3.11.jar:3.3.11]
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:145) ~[spring-boot-test-3.3.11.jar:3.3.11]
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:116) ~[spring-boot-test-3.3.11.jar:3.3.11]
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:225) ~[spring-test-6.1.19.jar:6.1.19]
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:152) ~[spring-test-6.1.19.jar:6.1.19]
+	... 72 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'flyway' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Failed to instantiate [org.flywaydb.core.Flyway]: Factory method 'flyway' threw exception with message: Error creating bean with name 'dataSource' defined in class path resource [org/springframework/boot/autoconfigure/jdbc/DataSourceConfiguration$Hikari.class]: Failed to instantiate [com.zaxxer.hikari.HikariDataSource]: Factory method 'dataSource' threw exception with message: Failed to determine a suitable driver class
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:648) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:636) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1355) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1185) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:313) ~[spring-beans-6.1.19.jar:6.1.19]
+	... 87 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.flywaydb.core.Flyway]: Factory method 'flyway' threw exception with message: Error creating bean with name 'dataSource' defined in class path resource [org/springframework/boot/autoconfigure/jdbc/DataSourceConfiguration$Hikari.class]: Failed to instantiate [com.zaxxer.hikari.HikariDataSource]: Factory method 'dataSource' threw exception with message: Failed to determine a suitable driver class
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:178) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:644) ~[spring-beans-6.1.19.jar:6.1.19]
+	... 97 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSource' defined in class path resource [org/springframework/boot/autoconfigure/jdbc/DataSourceConfiguration$Hikari.class]: Failed to instantiate [com.zaxxer.hikari.HikariDataSource]: Factory method 'dataSource' threw exception with message: Failed to determine a suitable driver class
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:648) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:636) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1355) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1185) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1448) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory$DependencyObjectProvider.getIfUnique(DefaultListableBeanFactory.java:2167) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration$FlywayConfiguration.flyway(FlywayAutoConfiguration.java:172) ~[spring-boot-autoconfigure-3.3.11.jar:3.3.11]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:146) ~[spring-beans-6.1.19.jar:6.1.19]
+	... 98 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.zaxxer.hikari.HikariDataSource]: Factory method 'dataSource' threw exception with message: Failed to determine a suitable driver class
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:178) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:644) ~[spring-beans-6.1.19.jar:6.1.19]
+	... 116 common frames omitted
+Caused by: org.springframework.boot.autoconfigure.jdbc.DataSourceProperties$DataSourceBeanCreationException: Failed to determine a suitable driver class
+	at org.springframework.boot.autoconfigure.jdbc.DataSourceProperties.determineDriverClassName(DataSourceProperties.java:176) ~[spring-boot-autoconfigure-3.3.11.jar:3.3.11]
+	at org.springframework.boot.autoconfigure.jdbc.PropertiesJdbcConnectionDetails.getDriverClassName(PropertiesJdbcConnectionDetails.java:49) ~[spring-boot-autoconfigure-3.3.11.jar:3.3.11]
+	at org.springframework.boot.autoconfigure.jdbc.DataSourceConfiguration.createDataSource(DataSourceConfiguration.java:62) ~[spring-boot-autoconfigure-3.3.11.jar:3.3.11]
+	at org.springframework.boot.autoconfigure.jdbc.DataSourceConfiguration$Hikari.dataSource(DataSourceConfiguration.java:127) ~[spring-boot-autoconfigure-3.3.11.jar:3.3.11]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:146) ~[spring-beans-6.1.19.jar:6.1.19]
+	... 117 common frames omitted
+
+2026-06-22T18:03:57.118-04:00  INFO 23432 --- [license-service] [main] c.s.l.controller.LicenseControllerTest   : Starting LicenseControllerTest using Java 17.0.10 with PID 23432 (started by Silvi in C:\WorkSpace\SmallBooksRepository\license-service)
+2026-06-22T18:03:57.121-04:00 DEBUG 23432 --- [license-service] [main] c.s.l.controller.LicenseControllerTest   : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-22T18:03:57.123-04:00  INFO 23432 --- [license-service] [main] c.s.l.controller.LicenseControllerTest   : No active profile set, falling back to 1 default profile: "default"
+2026-06-22T18:03:57.151-04:00  INFO 23432 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T18:03:57.152-04:00  INFO 23432 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Exception on Url - http://localhost:8888:org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information. Will be trying the next url if available
+2026-06-22T18:03:57.152-04:00  WARN 23432 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Could not locate PropertySource ([ConfigServerConfigDataResource@618ad2aa uris = array<String>['http://localhost:8888'], optional = true, profiles = 'default']): I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information
+2026-06-22T18:03:57.152-04:00  INFO 23432 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T18:03:57.152-04:00  INFO 23432 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Exception on Url - http://localhost:8888:org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information. Will be trying the next url if available
+2026-06-22T18:03:57.153-04:00  WARN 23432 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Could not locate PropertySource ([ConfigServerConfigDataResource@4d1f1ff5 uris = array<String>['http://localhost:8888'], optional = true, profiles = 'default']): I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information
+2026-06-22T18:03:57.153-04:00  INFO 23432 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T18:03:57.153-04:00  INFO 23432 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Exception on Url - http://localhost:8888:org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information. Will be trying the next url if available
+2026-06-22T18:03:57.154-04:00  WARN 23432 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Could not locate PropertySource ([ConfigServerConfigDataResource@222afc67 uris = array<String>['http://localhost:8888'], optional = true, profiles = 'default']): I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information
+2026-06-22T18:04:00.266-04:00  INFO 23432 --- [license-service] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-06-22T18:04:00.268-04:00  INFO 23432 --- [license-service] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-06-22T18:04:00.271-04:00  INFO 23432 --- [license-service] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 3 ms
+2026-06-22T18:04:00.315-04:00  INFO 23432 --- [license-service] [main] c.s.l.controller.LicenseControllerTest   : Started LicenseControllerTest in 4.495 seconds (process running for 6.041)
+2026-06-22T18:04:01.340-04:00  INFO 23432 --- [license-service] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.silvio.license.LicenceServiceApplicationTests]: LicenceServiceApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-06-22T18:04:01.363-04:00  INFO 23432 --- [license-service] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.silvio.license.LicenseServiceApplication for test class com.silvio.license.LicenceServiceApplicationTests
+2026-06-22T18:04:01.605-04:00  INFO 23432 --- [license-service] [main] c.s.l.LicenceServiceApplicationTests     : Starting LicenceServiceApplicationTests using Java 17.0.10 with PID 23432 (started by Silvi in C:\WorkSpace\SmallBooksRepository\license-service)
+2026-06-22T18:04:01.605-04:00 DEBUG 23432 --- [license-service] [main] c.s.l.LicenceServiceApplicationTests     : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-22T18:04:01.605-04:00  INFO 23432 --- [license-service] [main] c.s.l.LicenceServiceApplicationTests     : No active profile set, falling back to 1 default profile: "default"
+2026-06-22T18:04:01.609-04:00  INFO 23432 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T18:04:01.609-04:00  INFO 23432 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Exception on Url - http://localhost:8888:org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information. Will be trying the next url if available
+2026-06-22T18:04:01.609-04:00  WARN 23432 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Could not locate PropertySource ([ConfigServerConfigDataResource@5759edff uris = array<String>['http://localhost:8888'], optional = true, profiles = 'default']): I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information
+2026-06-22T18:04:01.609-04:00  INFO 23432 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T18:04:01.609-04:00  INFO 23432 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Exception on Url - http://localhost:8888:org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information. Will be trying the next url if available
+2026-06-22T18:04:01.609-04:00  WARN 23432 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Could not locate PropertySource ([ConfigServerConfigDataResource@5703c1fb uris = array<String>['http://localhost:8888'], optional = true, profiles = 'default']): I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information
+2026-06-22T18:04:01.609-04:00  INFO 23432 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T18:04:01.609-04:00  INFO 23432 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Exception on Url - http://localhost:8888:org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information. Will be trying the next url if available
+2026-06-22T18:04:01.609-04:00  WARN 23432 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Could not locate PropertySource ([ConfigServerConfigDataResource@7d2be319 uris = array<String>['http://localhost:8888'], optional = true, profiles = 'default']): I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information
+2026-06-22T18:04:02.315-04:00  INFO 23432 --- [license-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-22T18:04:02.387-04:00  INFO 23432 --- [license-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 61 ms. Found 1 JPA repository interface.
+2026-06-22T18:04:02.662-04:00  INFO 23432 --- [license-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=cb2047ee-0be7-320f-beb7-e4557e546b94
+2026-06-22T18:04:02.903-04:00  WARN 23432 --- [license-service] [main] o.s.w.c.s.GenericWebApplicationContext   : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Failed to initialize dependency 'flyway' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'flyway' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Failed to instantiate [org.flywaydb.core.Flyway]: Factory method 'flyway' threw exception with message: Error creating bean with name 'dataSource' defined in class path resource [org/springframework/boot/autoconfigure/jdbc/DataSourceConfiguration$Hikari.class]: Failed to instantiate [com.zaxxer.hikari.HikariDataSource]: Factory method 'dataSource' threw exception with message: Failed to determine a suitable driver class
+2026-06-22T18:04:02.924-04:00  INFO 23432 --- [license-service] [main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-06-22T18:04:02.990-04:00 ERROR 23432 --- [license-service] [main] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Failed to configure a DataSource: 'url' attribute is not specified and no embedded datasource could be configured.
+
+Reason: Failed to determine a suitable driver class
+
+
+Action:
+
+Consider the following:
+	If you want an embedded database (H2, HSQL or Derby), please put it on the classpath.
+	If you have database settings to be loaded from a particular profile you may need to activate it (no profiles are currently active).
+
+2026-06-22T18:04:02.994-04:00  WARN 23432 --- [license-service] [main] o.s.test.context.TestContextManager      : Caught exception while allowing TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener] to prepare test instance [com.silvio.license.LicenceServiceApplicationTests@30bd6bc8]
+
+java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMergedContextConfiguration@129b0ed testClass = com.silvio.license.LicenceServiceApplicationTests, locations = [], classes = [com.silvio.license.LicenseServiceApplication], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = ["org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true"], contextCustomizers = [org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@3b74ac8, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@2609b277, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.web.client.TestRestTemplateContextCustomizer@54ef9698, org.springframework.boot.test.web.reactor.netty.DisableReactorResourceFactoryGlobalResourcesContextCustomizerFactory$DisableReactorResourceFactoryGlobalResourcesContextCustomizerCustomizer@5e3d57c7, org.springframework.boot.test.autoconfigure.OnFailureConditionReportContextCustomizerFactory$OnFailureConditionReportContextCustomizer@6ee4d9ab, org.springframework.boot.test.autoconfigure.actuate.observability.ObservabilityContextCustomizerFactory$DisableObservabilityContextCustomizer@1f, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizer@3f57bcad, org.springframework.boot.test.context.SpringBootTestAnnotation@f0b5a8ff], resourceBasePath = "src/main/webapp", contextLoader = org.springframework.boot.test.context.SpringBootContextLoader, parent = null]
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:180) ~[spring-test-6.1.19.jar:6.1.19]
+	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:130) ~[spring-test-6.1.19.jar:6.1.19]
+	at org.springframework.test.context.web.ServletTestExecutionListener.setUpRequestContextIfNecessary(ServletTestExecutionListener.java:191) ~[spring-test-6.1.19.jar:6.1.19]
+	at org.springframework.test.context.web.ServletTestExecutionListener.prepareTestInstance(ServletTestExecutionListener.java:130) ~[spring-test-6.1.19.jar:6.1.19]
+	at org.springframework.test.context.TestContextManager.prepareTestInstance(TestContextManager.java:260) ~[spring-test-6.1.19.jar:6.1.19]
+	at org.springframework.test.context.junit.jupiter.SpringExtension.postProcessTestInstance(SpringExtension.java:163) ~[spring-test-6.1.19.jar:6.1.19]
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$10(ClassBasedTestDescriptor.java:378) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.executeAndMaskThrowable(ClassBasedTestDescriptor.java:383) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$11(ClassBasedTestDescriptor.java:378) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197) ~[na:na]
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179) ~[na:na]
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1625) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499) ~[na:na]
+	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:310) ~[na:na]
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:735) ~[na:na]
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:734) ~[na:na]
+	at java.base/java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:762) ~[na:na]
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeTestInstancePostProcessors(ClassBasedTestDescriptor.java:377) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$instantiateAndPostProcessTestInstance$6(ClassBasedTestDescriptor.java:290) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.instantiateAndPostProcessTestInstance(ClassBasedTestDescriptor.java:289) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$4(ClassBasedTestDescriptor.java:279) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at java.base/java.util.Optional.orElseGet(Optional.java:364) ~[na:na]
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$5(ClassBasedTestDescriptor.java:278) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.jupiter.engine.execution.TestInstancesProvider.getTestInstances(TestInstancesProvider.java:31) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$prepare$0(TestMethodTestDescriptor.java:106) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:105) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:69) ~[junit-jupiter-engine-5.10.5.jar:5.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$prepare$2(NodeTestTask.java:128) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.prepare(NodeTestTask.java:128) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511) ~[na:na]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511) ~[na:na]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54) ~[junit-platform-engine-1.10.5.jar:1.10.5]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198) ~[junit-platform-launcher-1.10.5.jar:1.10.5]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169) ~[junit-platform-launcher-1.10.5.jar:1.10.5]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93) ~[junit-platform-launcher-1.10.5.jar:1.10.5]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58) ~[junit-platform-launcher-1.10.5.jar:1.10.5]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141) ~[junit-platform-launcher-1.10.5.jar:1.10.5]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57) ~[junit-platform-launcher-1.10.5.jar:1.10.5]
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103) ~[junit-platform-launcher-1.10.5.jar:1.10.5]
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85) ~[junit-platform-launcher-1.10.5.jar:1.10.5]
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47) ~[junit-platform-launcher-1.10.5.jar:1.10.5]
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56) ~[surefire-junit-platform-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184) ~[surefire-junit-platform-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148) ~[surefire-junit-platform-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122) ~[surefire-junit-platform-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385) ~[surefire-booter-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162) ~[surefire-booter-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507) ~[surefire-booter-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495) ~[surefire-booter-3.2.5.jar:3.2.5]
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Failed to initialize dependency 'flyway' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'flyway' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Failed to instantiate [org.flywaydb.core.Flyway]: Factory method 'flyway' threw exception with message: Error creating bean with name 'dataSource' defined in class path resource [org/springframework/boot/autoconfigure/jdbc/DataSourceConfiguration$Hikari.class]: Failed to instantiate [com.zaxxer.hikari.HikariDataSource]: Factory method 'dataSource' threw exception with message: Failed to determine a suitable driver class
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:326) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:954) ~[spring-context-6.1.19.jar:6.1.19]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625) ~[spring-context-6.1.19.jar:6.1.19]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:755) ~[spring-boot-3.3.11.jar:3.3.11]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456) ~[spring-boot-3.3.11.jar:3.3.11]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335) ~[spring-boot-3.3.11.jar:3.3.11]
+	at org.springframework.boot.test.context.SpringBootContextLoader.lambda$loadContext$3(SpringBootContextLoader.java:145) ~[spring-boot-test-3.3.11.jar:3.3.11]
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:58) ~[spring-core-6.1.19.jar:6.1.19]
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:46) ~[spring-core-6.1.19.jar:6.1.19]
+	at org.springframework.boot.SpringApplication.withHook(SpringApplication.java:1464) ~[spring-boot-3.3.11.jar:3.3.11]
+	at org.springframework.boot.test.context.SpringBootContextLoader$ContextLoaderHook.run(SpringBootContextLoader.java:564) ~[spring-boot-test-3.3.11.jar:3.3.11]
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:145) ~[spring-boot-test-3.3.11.jar:3.3.11]
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:116) ~[spring-boot-test-3.3.11.jar:3.3.11]
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:225) ~[spring-test-6.1.19.jar:6.1.19]
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:152) ~[spring-test-6.1.19.jar:6.1.19]
+	... 73 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'flyway' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Failed to instantiate [org.flywaydb.core.Flyway]: Factory method 'flyway' threw exception with message: Error creating bean with name 'dataSource' defined in class path resource [org/springframework/boot/autoconfigure/jdbc/DataSourceConfiguration$Hikari.class]: Failed to instantiate [com.zaxxer.hikari.HikariDataSource]: Factory method 'dataSource' threw exception with message: Failed to determine a suitable driver class
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:648) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:636) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1355) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1185) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:313) ~[spring-beans-6.1.19.jar:6.1.19]
+	... 88 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.flywaydb.core.Flyway]: Factory method 'flyway' threw exception with message: Error creating bean with name 'dataSource' defined in class path resource [org/springframework/boot/autoconfigure/jdbc/DataSourceConfiguration$Hikari.class]: Failed to instantiate [com.zaxxer.hikari.HikariDataSource]: Factory method 'dataSource' threw exception with message: Failed to determine a suitable driver class
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:178) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:644) ~[spring-beans-6.1.19.jar:6.1.19]
+	... 98 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSource' defined in class path resource [org/springframework/boot/autoconfigure/jdbc/DataSourceConfiguration$Hikari.class]: Failed to instantiate [com.zaxxer.hikari.HikariDataSource]: Factory method 'dataSource' threw exception with message: Failed to determine a suitable driver class
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:648) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:636) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1355) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1185) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1448) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory$DependencyObjectProvider.getIfUnique(DefaultListableBeanFactory.java:2167) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration$FlywayConfiguration.flyway(FlywayAutoConfiguration.java:172) ~[spring-boot-autoconfigure-3.3.11.jar:3.3.11]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:146) ~[spring-beans-6.1.19.jar:6.1.19]
+	... 99 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.zaxxer.hikari.HikariDataSource]: Factory method 'dataSource' threw exception with message: Failed to determine a suitable driver class
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:178) ~[spring-beans-6.1.19.jar:6.1.19]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:644) ~[spring-beans-6.1.19.jar:6.1.19]
+	... 117 common frames omitted
+Caused by: org.springframework.boot.autoconfigure.jdbc.DataSourceProperties$DataSourceBeanCreationException: Failed to determine a suitable driver class
+	at org.springframework.boot.autoconfigure.jdbc.DataSourceProperties.determineDriverClassName(DataSourceProperties.java:176) ~[spring-boot-autoconfigure-3.3.11.jar:3.3.11]
+	at org.springframework.boot.autoconfigure.jdbc.PropertiesJdbcConnectionDetails.getDriverClassName(PropertiesJdbcConnectionDetails.java:49) ~[spring-boot-autoconfigure-3.3.11.jar:3.3.11]
+	at org.springframework.boot.autoconfigure.jdbc.DataSourceConfiguration.createDataSource(DataSourceConfiguration.java:62) ~[spring-boot-autoconfigure-3.3.11.jar:3.3.11]
+	at org.springframework.boot.autoconfigure.jdbc.DataSourceConfiguration$Hikari.dataSource(DataSourceConfiguration.java:127) ~[spring-boot-autoconfigure-3.3.11.jar:3.3.11]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:146) ~[spring-beans-6.1.19.jar:6.1.19]
+	... 118 common frames omitted
+
+2026-06-22T18:14:27.174-04:00  INFO 4092 --- [license-service] [main] c.s.l.controller.LicenseControllerTest   : Starting LicenseControllerTest using Java 17.0.10 with PID 4092 (started by Silvi in C:\WorkSpace\SmallBooksRepository\license-service)
+2026-06-22T18:14:27.174-04:00 DEBUG 4092 --- [license-service] [main] c.s.l.controller.LicenseControllerTest   : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-22T18:14:27.174-04:00  INFO 4092 --- [license-service] [main] c.s.l.controller.LicenseControllerTest   : No active profile set, falling back to 1 default profile: "default"
+2026-06-22T18:14:27.202-04:00  INFO 4092 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T18:14:27.203-04:00  INFO 4092 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Exception on Url - http://localhost:8888:org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information. Will be trying the next url if available
+2026-06-22T18:14:27.203-04:00  WARN 4092 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Could not locate PropertySource ([ConfigServerConfigDataResource@3531f3ca uris = array<String>['http://localhost:8888'], optional = true, profiles = 'default']): I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information
+2026-06-22T18:14:27.203-04:00  INFO 4092 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T18:14:27.203-04:00  INFO 4092 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Exception on Url - http://localhost:8888:org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information. Will be trying the next url if available
+2026-06-22T18:14:27.203-04:00  WARN 4092 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Could not locate PropertySource ([ConfigServerConfigDataResource@4c2fb9dd uris = array<String>['http://localhost:8888'], optional = true, profiles = 'default']): I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information
+2026-06-22T18:14:27.203-04:00  INFO 4092 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T18:14:27.204-04:00  INFO 4092 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Exception on Url - http://localhost:8888:org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information. Will be trying the next url if available
+2026-06-22T18:14:27.204-04:00  WARN 4092 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Could not locate PropertySource ([ConfigServerConfigDataResource@54f4a7f0 uris = array<String>['http://localhost:8888'], optional = true, profiles = 'default']): I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information
+2026-06-22T18:14:29.129-04:00  INFO 4092 --- [license-service] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-06-22T18:14:29.129-04:00  INFO 4092 --- [license-service] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-06-22T18:14:29.130-04:00  INFO 4092 --- [license-service] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-06-22T18:14:29.157-04:00  INFO 4092 --- [license-service] [main] c.s.l.controller.LicenseControllerTest   : Started LicenseControllerTest in 2.821 seconds (process running for 3.704)
+2026-06-22T18:36:53.951-04:00  INFO 22396 --- [license-service] [main] c.s.l.controller.LicenseControllerTest   : Starting LicenseControllerTest using Java 17.0.10 with PID 22396 (started by Silvi in C:\WorkSpace\SmallBooksRepository\license-service)
+2026-06-22T18:36:53.953-04:00 DEBUG 22396 --- [license-service] [main] c.s.l.controller.LicenseControllerTest   : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-22T18:36:53.954-04:00  INFO 22396 --- [license-service] [main] c.s.l.controller.LicenseControllerTest   : No active profile set, falling back to 1 default profile: "default"
+2026-06-22T18:36:53.968-04:00  INFO 22396 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T18:36:53.968-04:00  INFO 22396 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Exception on Url - http://localhost:8888:org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information. Will be trying the next url if available
+2026-06-22T18:36:53.968-04:00  WARN 22396 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Could not locate PropertySource ([ConfigServerConfigDataResource@38320e34 uris = array<String>['http://localhost:8888'], optional = true, profiles = 'default']): I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information
+2026-06-22T18:36:53.969-04:00  INFO 22396 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T18:36:53.969-04:00  INFO 22396 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Exception on Url - http://localhost:8888:org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information. Will be trying the next url if available
+2026-06-22T18:36:53.969-04:00  WARN 22396 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Could not locate PropertySource ([ConfigServerConfigDataResource@390877d2 uris = array<String>['http://localhost:8888'], optional = true, profiles = 'default']): I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information
+2026-06-22T18:36:53.969-04:00  INFO 22396 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T18:36:53.969-04:00  INFO 22396 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Exception on Url - http://localhost:8888:org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information. Will be trying the next url if available
+2026-06-22T18:36:53.969-04:00  WARN 22396 --- [license-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Could not locate PropertySource ([ConfigServerConfigDataResource@86733 uris = array<String>['http://localhost:8888'], optional = true, profiles = 'default']): I/O error on GET request for "http://localhost:8888/license-service/default": Connection refused: no further information
+2026-06-22T18:36:55.952-04:00  INFO 22396 --- [license-service] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-06-22T18:36:55.952-04:00  INFO 22396 --- [license-service] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-06-22T18:36:55.953-04:00  INFO 22396 --- [license-service] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-06-22T18:36:55.980-04:00  INFO 22396 --- [license-service] [main] c.s.l.controller.LicenseControllerTest   : Started LicenseControllerTest in 2.875 seconds (process running for 3.725)
