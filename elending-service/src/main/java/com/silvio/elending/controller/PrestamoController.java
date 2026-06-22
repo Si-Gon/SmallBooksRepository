@@ -2,6 +2,7 @@ package com.silvio.elending.controller;
 
 import com.silvio.elending.dto.PrestamoRequestDTO;
 import com.silvio.elending.dto.PrestamoResponseDTO;
+import com.silvio.elending.security.JwtExtractor;
 import com.silvio.elending.service.PrestamoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,6 +26,7 @@ import java.util.List;
 public class PrestamoController {
 
     private final PrestamoService prestamoService;
+    private final JwtExtractor jwtExtractor;  // inyectado — responsabilidad delegada
 
     @Operation(summary = "Crear préstamo",
                description = "Crea un nuevo préstamo digital. El usuario se identifica desde el token JWT — " +
@@ -42,10 +44,12 @@ public class PrestamoController {
             @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
             @RequestHeader("Authorization") String authHeader) {
 
-        String usuarioId = extraerUsuarioDelToken(authHeader);
+        String usuarioId = jwtExtractor.extraerUsuario(authHeader);
         PrestamoResponseDTO prestamo = prestamoService.crearPrestamo(request, usuarioId);
-        prestamo.add(linkTo(methodOn(PrestamoController.class).obtenerActivos(authHeader)).withRel("mis-activos"));
-        prestamo.add(linkTo(methodOn(PrestamoController.class).obtenerHistorial(authHeader)).withRel("mi-historial"));
+        prestamo.add(linkTo(methodOn(PrestamoController.class)
+                .obtenerActivos(authHeader)).withRel("mis-activos"));
+        prestamo.add(linkTo(methodOn(PrestamoController.class)
+                .obtenerHistorial(authHeader)).withRel("mi-historial"));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(prestamo);
     }
@@ -62,11 +66,12 @@ public class PrestamoController {
             @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
             @RequestHeader("Authorization") String authHeader) {
 
-        String usuarioId = extraerUsuarioDelToken(authHeader);
+        String usuarioId = jwtExtractor.extraerUsuario(authHeader);
         List<PrestamoResponseDTO> prestamos = prestamoService.obtenerPrestamosActivos(usuarioId);
 
         prestamos.forEach(p ->
-        p.add(linkTo(methodOn(PrestamoController.class).obtenerHistorial(authHeader)).withRel("mi-historial")));
+            p.add(linkTo(methodOn(PrestamoController.class)
+                    .obtenerHistorial(authHeader)).withRel("mi-historial")));
 
         return ResponseEntity.ok(prestamos);
     }
@@ -82,13 +87,14 @@ public class PrestamoController {
             @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
             @RequestHeader("Authorization") String authHeader) {
 
-        String usuarioId = extraerUsuarioDelToken(authHeader);
+        String usuarioId = jwtExtractor.extraerUsuario(authHeader);
         List<PrestamoResponseDTO> prestamos = prestamoService.obtenerHistorial(usuarioId);
 
-    prestamos.forEach(p ->
-        p.add(linkTo(methodOn(PrestamoController.class).obtenerActivos(authHeader)).withRel("mis-activos")));
+        prestamos.forEach(p ->
+            p.add(linkTo(methodOn(PrestamoController.class)
+                    .obtenerActivos(authHeader)).withRel("mis-activos")));
 
-    return ResponseEntity.ok(prestamos);
+        return ResponseEntity.ok(prestamos);
     }
 
     @Operation(summary = "Obtener todos los préstamos",
@@ -101,7 +107,8 @@ public class PrestamoController {
     public ResponseEntity<List<PrestamoResponseDTO>> obtenerTodos() {
         List<PrestamoResponseDTO> prestamos = prestamoService.obtenerTodos();
         prestamos.forEach(p ->
-        p.add(linkTo(methodOn(PrestamoController.class).obtenerTodos()).withSelfRel()));
+            p.add(linkTo(methodOn(PrestamoController.class)
+                    .obtenerTodos()).withSelfRel()));
         return ResponseEntity.ok(prestamos);
     }
 
@@ -118,21 +125,8 @@ public class PrestamoController {
             @PathVariable String usuarioId) {
         List<PrestamoResponseDTO> prestamos = prestamoService.obtenerHistorial(usuarioId);
         prestamos.forEach(p ->
-        p.add(linkTo(methodOn(PrestamoController.class).obtenerHistorialPorId(usuarioId)).withSelfRel())
-    );
+            p.add(linkTo(methodOn(PrestamoController.class)
+                    .obtenerHistorialPorId(usuarioId)).withSelfRel()));
         return ResponseEntity.ok(prestamos);
-    }
-
-    private String extraerUsuarioDelToken(String authHeader) {
-        try {
-            String token = authHeader.substring(7);
-            String payload = token.split("\\.")[1];
-            String decodedPayload = new String(
-                    java.util.Base64.getUrlDecoder().decode(payload));
-            String sub = decodedPayload.split("\"sub\":\"")[1].split("\"")[0];
-            return sub;
-        } catch (Exception e) {
-            throw new RuntimeException("No se pudo extraer el usuario del token");
-        }
     }
 }

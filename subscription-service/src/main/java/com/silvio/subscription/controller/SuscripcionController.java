@@ -2,6 +2,7 @@ package com.silvio.subscription.controller;
 
 import com.silvio.subscription.dto.SuscripcionRequestDTO;
 import com.silvio.subscription.dto.SuscripcionResponseDTO;
+import com.silvio.subscription.security.JwtExtractor;
 import com.silvio.subscription.service.SuscripcionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,6 +24,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 public class SuscripcionController {
 
     private final SuscripcionService suscripcionService;
+    private final JwtExtractor jwtExtractor;  // inyectado — responsabilidad delegada
 
     @Operation(summary = "Consultar mi plan actual",
                description = "Devuelve la suscripción activa del usuario autenticado")
@@ -35,7 +37,7 @@ public class SuscripcionController {
     public ResponseEntity<SuscripcionResponseDTO> miPlan(
             @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
             @RequestHeader("Authorization") String authHeader) {
-        String usuarioId = extraerUsuario(authHeader);
+        String usuarioId = jwtExtractor.extraerUsuario(authHeader);
         SuscripcionResponseDTO dto = suscripcionService.obtenerPorUsuario(usuarioId);
 
         dto.add(linkTo(methodOn(SuscripcionController.class)
@@ -76,7 +78,7 @@ public class SuscripcionController {
             @Valid @RequestBody SuscripcionRequestDTO request,
             @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
             @RequestHeader("Authorization") String authHeader) {
-        String usuarioId = extraerUsuario(authHeader);
+        String usuarioId = jwtExtractor.extraerUsuario(authHeader);
         SuscripcionResponseDTO dto = suscripcionService.crear(request, usuarioId);
 
         dto.add(linkTo(methodOn(SuscripcionController.class)
@@ -98,24 +100,12 @@ public class SuscripcionController {
     public ResponseEntity<SuscripcionResponseDTO> cancelar(
             @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
             @RequestHeader("Authorization") String authHeader) {
-        String usuarioId = extraerUsuario(authHeader);
+        String usuarioId = jwtExtractor.extraerUsuario(authHeader);
         SuscripcionResponseDTO dto = suscripcionService.cancelar(usuarioId);
 
         dto.add(linkTo(methodOn(SuscripcionController.class)
                 .miPlan(authHeader)).withRel("mi-plan"));
 
         return ResponseEntity.ok(dto);
-    }
-
-    private String extraerUsuario(String authHeader) {
-        try {
-            String token = authHeader.substring(7);
-            String payload = token.split("\\.")[1];
-            String decodedPayload = new String(
-                    java.util.Base64.getUrlDecoder().decode(payload));
-            return decodedPayload.split("\"sub\":\"")[1].split("\"")[0];
-        } catch (Exception e) {
-            throw new RuntimeException("No se pudo extraer el usuario del token");
-        }
     }
 }
