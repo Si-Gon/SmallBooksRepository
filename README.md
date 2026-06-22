@@ -1,251 +1,336 @@
-# SmallBooks — Plataforma de Biblioteca Digital Online
+# SmallBooks — Plataforma de Biblioteca Digital
 
-Sistema de biblioteca digital construido con arquitectura de microservicios usando Spring Boot 3.x, Spring Cloud y MySQL. Permite gestionar catálogos de libros, préstamos digitales, suscripciones, notificaciones y entrega de archivos PDF/EPUB.
+> Proyecto académico desarrollado en **Duoc UC** · Ingeniería Informática · DSY1103 Desarrollo FullStack 1  
+> Arquitectura de microservicios con Spring Boot 3.3.11 y Spring Cloud 2023.0.5
 
-\---
+---
 
 ## Equipo de Desarrollo
 
-|Nombre|Rol|
-|-|-|
-|Silvio Gonzalves|Líder técnico / Backend|
-|Oscar Garrido|Backend|
-|Juan Ortega|QA|
+| Nombre | Rol |
+|---|---|
+| Silvio Gonzalves | Lider tecnico / Backend |
+| Oscar Garrido | Backend |
+| Juan Ortega | QA |
 
+---
 
+## Descripción
 
-**Asignatura:** DSY1103 — Desarrollo FullStack 1  
-**Institución:** Duoc UC — Sede Recoleta  
-**Año:** 2026
+SmallBooks es una plataforma de biblioteca digital que permite a los usuarios explorar un catálogo de libros, solicitar préstamos digitales según su plan de suscripción (BÁSICO o PREMIUM), y acceder al contenido desde cualquier lugar. El sistema está construido sobre una arquitectura de **13 microservicios independientes** orquestados con Spring Cloud.
 
-\---
+---
 
-## Arquitectura del Sistema
-
-El sistema está compuesto por **13 microservicios independientes**, cada uno con su propia base de datos y responsabilidad única.
-
-|Servicio|Puerto|Base de datos|Descripción|
-|-|-|-|-|
-|Config Server|8888|—|Configuración centralizada para todos los MS|
-|Eureka Server|8761|—|Registro y descubrimiento de servicios|
-|API Gateway|8080|—|Punto de entrada único. Valida JWT|
-|Identity Service|8084|db\_identity|Autenticación y gestión de usuarios|
-|Catalog Service|8085|db\_catalog|Catálogo de libros disponibles|
-|License Service|8086|db\_license|Control de copias por libro|
-|E-Lending Service|8087|db\_lending|Préstamos digitales con vencimiento automático|
-|Notification Service|8088|db\_notifications|Notificaciones a usuarios|
-|Subscription Service|8089|db\_subscriptions|Planes BASICO y PREMIUM|
-|Search Service|8090|—|Búsqueda de libros (sin BD propia)|
-|Analytics Service|8091|—|Estadísticas del sistema (sin BD propia)|
-|Ingestion Service|8092|db\_ingestion|Subida de archivos PDF/EPUB|
-|Content Delivery|8093|—|Entrega de archivos verificando préstamo activo|
-
-\---
-
-## Requisitos Previos
-
-* Java 17
-* Maven 3.8+
-* Laragon (MySQL 8.4)
-* VSCode o IntelliJ IDEA
-* Postman (para pruebas)
-
-\---
-
-## Configuración Inicial
-
-### 1\. Crear las bases de datos en MySQL
-
-```sql
-CREATE DATABASE db\\\_identity;
-CREATE DATABASE db\\\_catalog;
-CREATE DATABASE db\\\_license;
-CREATE DATABASE db\\\_lending;
-CREATE DATABASE db\\\_notifications;
-CREATE DATABASE db\\\_subscriptions;
-CREATE DATABASE db\\\_ingestion;
-```
-
-> Las migraciones de tablas e inserción de datos iniciales las ejecuta \\\*\\\*Flyway automáticamente\\\*\\\* al arrancar cada servicio.
-
-### 2\. Crear carpeta para archivos
+## Arquitectura
 
 ```
-C:\\\\smallbooks\\\\archivos\\\\
+                        ┌─────────────────┐
+                        │  Config Server  │ :8888
+                        │  (Git-backed)   │
+                        └────────┬────────┘
+                                 │ configuración centralizada
+                        ┌────────▼────────┐
+                        │  Eureka Server  │ :8761
+                        │  (Discovery)    │
+                        └────────┬────────┘
+                                 │ registro de servicios
+                        ┌────────▼────────┐
+                        │  API Gateway    │ :8080
+                        │  (Spring Cloud) │
+                        └────────┬────────┘
+                                 │
+          ┌──────────────────────┼──────────────────────┐
+          │                      │                      │
+   ┌──────▼──────┐      ┌───────▼───────┐     ┌───────▼───────┐
+   │  Identity   │      │    Catalog    │     │   E-Lending   │
+   │   :8084     │      │    :8085      │     │    :8087      │
+   └─────────────┘      └───────────────┘     └───────────────┘
+          │                      │                      │
+   ┌──────▼──────┐      ┌───────▼───────┐     ┌───────▼───────┐
+   │  License    │      │ Subscription  │     │ Notification  │
+   │   :8086     │      │    :8089      │     │    :8088      │
+   └─────────────┘      └───────────────┘     └───────────────┘
+          │                      │                      │
+   ┌──────▼──────┐      ┌───────▼───────┐     ┌───────▼───────┐
+   │  Ingestion  │      │    Search     │     │   Analytics   │
+   │   :8092     │      │    :8090      │     │    :8091      │
+   └─────────────┘      └───────────────┘     └───────────────┘
+          │
+   ┌──────▼──────┐
+   │   Content   │
+   │  Delivery   │
+   │   :8093     │
+   └─────────────┘
 ```
 
-Esta carpeta es donde Ingestion Service guarda los archivos PDF/EPUB subidos.
+---
 
-### 3\. Verificar configuración JWT
+## Microservicios
 
-El secret JWT está definido en `microservice-config/src/main/resources/configurations/identity-service.yml`:
+| Microservicio | Puerto | Descripción |
+|---|---|---|
+| `microservice-config` | 8888 | Servidor de configuración centralizada |
+| `microservice-eureka` | 8761 | Registro y descubrimiento de servicios |
+| `microservice-gateway` | 8080 | API Gateway — punto de entrada único |
+| `identity-services` | 8084 | Autenticación JWT, registro y gestión de contraseñas |
+| `catalog-service` | 8085 | Catálogo de libros (CRUD completo) |
+| `license-service` | 8086 | Control de copias disponibles por libro |
+| `elending-service` | 8087 | Préstamos digitales con reglas BÁSICO/PREMIUM |
+| `notification-service` | 8088 | Gestión de notificaciones a usuarios |
+| `subscription-service` | 8089 | Planes de suscripción BÁSICO y PREMIUM |
+| `search-service` | 8090 | Búsqueda y descubrimiento de libros |
+| `analytics-service` | 8091 | Métricas y estadísticas de uso |
+| `ingestion-service` | 8092 | Carga de archivos PDF/EPUB → MySQL BLOB |
+| `content-service` | 8093 | Entrega de archivos a usuarios con préstamo activo |
 
-```yaml
-jwt:
-  secret: Duoc.1983Duoc.1983Duoc.1983Duoc.1983
-  access-token-expiration: 1800000    # 30 minutos
-  refresh-token-expiration: 604800000 # 7 días
-```
-
-\---
-
-## Orden de Arranque
-
-Los servicios **deben arrancarse en este orden**. Cada uno lee su configuración del Config Server al iniciar.
-
-```
-1. microservice-config    → http://localhost:8888
-2. microservice-eureka    → http://localhost:8761
-3. identity-service       → http://localhost:8084
-4. microservice-gateway   → http://localhost:8080
-5. catalog-service        → http://localhost:8085
-6. license-service        → http://localhost:8086
-7. elending-service       → http://localhost:8087
-8. notification-service   → http://localhost:8088
-9. subscription-service   → http://localhost:8089
-10. search-service        → http://localhost:8090
-11. analytics-service     → http://localhost:8091
-12. ingestion-service     → http://localhost:8092
-13. content-service       → http://localhost:8093
-```
-
-Para verificar que todos están registrados: `http://localhost:8761`
-
-\---
-
-## Autenticación
-
-Todos los endpoints excepto `/auth/\\\*\\\*` requieren token JWT.
-
-```http
-POST http://localhost:8080/auth/login
-Content-Type: application/json
-
-{
-  "username": "admin",
-  "password": "admin123"
-}
-```
-
-Copia el `accessToken` de la respuesta y úsalo en Postman:  
-`Authorization: Bearer <accessToken>`
-
-**Usuarios por defecto:**
-
-|Usuario|Contraseña|Roles|
-|-|-|-|
-|admin|admin123|ROLE\_ADMIN, ROLE\_USER|
-|user1|user123|ROLE\_USER|
-
-\---
-
-## Endpoints Principales
-
-Todos los endpoints se acceden a través del Gateway en `http://localhost:8080`.
-
-### Catálogo
-
-```
-GET    /api/catalog                        → Listar todos los libros
-GET    /api/catalog/buscar?titulo=quijote  → Buscar por título
-POST   /api/catalog                        → Agregar libro
-```
-
-### Préstamos
-
-```
-POST   /api/lending/prestamos              → Crear préstamo
-GET    /api/lending/prestamos/activos      → Mis préstamos activos
-GET    /api/lending/prestamos/historial    → Mi historial
-```
-
-### Suscripciones
-
-```
-POST   /api/subscriptions                  → Crear suscripción
-GET    /api/subscriptions/mi-plan          → Ver mi plan activo
-```
-
-### Búsqueda
-
-```
-GET    /api/search/disponibles             → Libros disponibles para prestar
-GET    /api/search/buscar?autor=tolkien    → Buscar por autor
-```
-
-### Archivos
-
-```
-POST   /api/ingestion/upload/{libroId}    → Subir PDF/EPUB (form-data)
-GET    /api/content/{libroId}             → Descargar libro (requiere préstamo activo)
-```
-
-### Estadísticas
-
-```
-GET    /api/analytics/estadisticas        → Métricas globales del sistema
-```
-
-\---
-
-## Flujo Principal del Sistema
-
-```
-1. Login → obtener JWT
-2. Crear suscripción PREMIUM o BASICO
-3. Buscar libro disponible en /api/search/disponibles
-4. Crear préstamo → sistema verifica copias, descuenta licencia y notifica
-5. Subir archivo PDF del libro (admin) → /api/ingestion/upload/{id}
-6. Descargar libro → /api/content/{id} (verifica préstamo activo)
-7. Ver estadísticas → /api/analytics/estadisticas
-```
-
-\---
+---
 
 ## Stack Tecnológico
 
-|Tecnología|Uso|
-|-|-|
-|Spring Boot 3.3.11|Framework base de cada microservicio|
-|Spring Cloud 2023.0.5|Config Server, Eureka, Gateway, Feign|
-|Spring Security + JWT|Autenticación stateless|
-|Spring Data JPA + Hibernate|Persistencia de datos|
-|Flyway|Migraciones de base de datos|
-|MySQL 8.4|Base de datos relacional|
-|Lombok|Reducción de código boilerplate|
-|Bean Validation (JSR 380)|Validación de entrada|
-|SLF4J|Logs estructurados con trazabilidad|
-|Postman|Pruebas de integración REST|
+| Categoría | Tecnología |
+|---|---|
+| **Framework** | Spring Boot 3.3.11 |
+| **Cloud** | Spring Cloud 2023.0.5 |
+| **Base de datos** | MySQL 8.4 (Laragon) |
+| **Migraciones** | Flyway |
+| **ORM** | Spring Data JPA + Hibernate 6.5 |
+| **Seguridad** | Spring Security + JWT |
+| **Comunicación inter-servicio** | OpenFeign + Eureka Load Balancer |
+| **Documentación API** | SpringDoc OpenAPI 2.5.0 (Swagger UI) |
+| **Hipermedia** | Spring HATEOAS |
+| **Build** | Maven multi-módulo |
+| **Utilidades** | Lombok, SLF4J, Bean Validation |
+| **Testing** | JUnit 5 + Mockito |
+| **IDE** | VSCode + Spring Boot Dashboard |
 
-\---
+---
 
-## Reglas de Negocio Destacadas
+## Nuevas integraciones v2.0
 
-* **Planes de suscripción:** BASICO (2 préstamos, 7 días) / PREMIUM (5 préstamos, 14 días)
-* **Control de copias:** cada libro tiene un número limitado de copias prestables simultáneamente gestionado por License Service
-* **Vencimiento automático:** scheduler ejecuta cada hora cerrando préstamos vencidos y devolviendo copias
-* **Notificaciones automáticas:** al crear préstamo, 2 días antes de vencer y al vencer
-* **Historial permanente:** los préstamos vencidos no se eliminan — quedan como historial clínico para Analytics
-* **Entrega segura:** Content Delivery verifica préstamo activo antes de entregar el archivo
+### Swagger / OpenAPI
 
-\---
+Todos los microservicios con endpoints REST cuentan con documentación interactiva generada automáticamente. La interfaz permite explorar y probar los endpoints directamente desde el navegador.
 
-## 📁 Estructura del Proyecto
+**Acceso a Swagger UI** (con el microservicio corriendo):
 
 ```
-SmallBooks/
-├── microservice-config/       # Config Server — configuración centralizada
-├── microservice-eureka/       # Eureka Server — registro de servicios
-├── microservice-gateway/      # API Gateway — entrada única + JWT
-├── identity-service/          # Autenticación y usuarios
-├── catalog-service/           # Catálogo de libros
-├── license-service/           # Control de copias
-├── elending-service/          # Préstamos digitales
-├── notification-service/      # Notificaciones
-├── subscription-service/      # Planes de suscripción
-├── search-service/            # Búsqueda
-├── analytics-service/         # Estadísticas
-├── ingestion-service/         # Subida de archivos
-└── content-service/           # Entrega de archivos
+http://localhost:{puerto}/swagger-ui/index.html
 ```
+
+Cada endpoint está documentado con `@Tag`, `@Operation` y `@ApiResponse`, incluyendo descripciones de parámetros, códigos de respuesta esperados y ejemplos de uso.
+
+> **Nota:** `identity-service` requiere que las rutas de Swagger estén permitidas en `SecurityConfig` para acceso sin autenticación.
+
+---
+
+### HATEOAS
+
+Las respuestas de la API incluyen enlaces hipermedia (`_links`) que permiten navegar el sistema sin conocer las URLs de antemano. Cada DTO de respuesta extiende `RepresentationModel<>` de Spring HATEOAS.
+
+**Ejemplo de respuesta con HATEOAS:**
+
+```json
+{
+  "id": 1,
+  "titulo": "Don Quijote de la Mancha",
+  "autor": "Miguel de Cervantes",
+  "disponible": true,
+  "_links": {
+    "self":        { "href": "http://localhost:8085/api/catalog/1" },
+    "todos":       { "href": "http://localhost:8085/api/catalog" },
+    "disponibles": { "href": "http://localhost:8085/api/catalog/disponibles" },
+    "eliminar":    { "href": "http://localhost:8085/api/catalog/1" }
+  }
+}
+```
+
+> Los clientes Feign entre microservicios usan `@JsonIgnoreProperties(ignoreUnknown = true)` en sus DTOs para ignorar el campo `_links` sin romper la deserialización.
+
+---
+
+### Almacenamiento MySQL BLOB
+
+`ingestion-service` migró de almacenamiento en disco local a MySQL usando columnas `LONGBLOB`. Los archivos PDF y EPUB se guardan directamente en la base de datos junto con su metadata.
+
+**Patrón Strategy aplicado:**
+
+```
+StorageService (interfaz)
+    ├── LocalStorageService    → guarda en disco  (legacy, sin @Primary)
+    └── DatabaseStorageService → guarda en MySQL  (@Primary — activo)
+```
+
+El cambio de implementación requirió únicamente mover `@Primary` de una clase a otra — sin modificar controladores ni otros servicios.
+
+**Migración Flyway:**
+
+```sql
+-- V2__add_datos_blob.sql
+ALTER TABLE archivos_libros
+ADD COLUMN datos LONGBLOB NULL;
+```
+
+> Para consultar archivos en HeidiSQL usar `LENGTH(datos)` en vez de `SELECT *` — evita congelar el cliente al cargar BLOBs grandes.
+
+---
+
+## Pruebas Unitarias
+
+Tests unitarios implementados con **JUnit 5 + Mockito** siguiendo el patrón Given/When/Then:
+
+| Microservicio | Clase testeada | Tests | Cobertura |
+|---|---|---|---|
+| `catalog-service` | `CatalogService` | 10 | CRUD completo + validaciones |
+| `elending-service` | `PrestamoService` | 10 | Reglas BÁSICO/PREMIUM + casos borde |
+| `identity-service` | `UserService` | 13 | Auth, registro, reset y cambio de contraseña |
+
+**Total: 33 tests — 0 fallos**
+
+### Casos críticos cubiertos en E-Lending
+
+```java
+// Usuario BÁSICO bloqueado al alcanzar límite de 2 préstamos
+@Test
+void crearPrestamo_falla_usuario_BASICO_ya_tiene_2_prestamos_activos()
+
+// Usuario PREMIUM bloqueado al alcanzar límite de 5 préstamos  
+@Test
+void crearPrestamo_falla_usuario_PREMIUM_ya_tiene_5_prestamos_activos()
+
+// Fallback a plan BÁSICO cuando Subscription Service no responde
+@Test
+void crearPrestamo_aplica_plan_BASICO_por_defecto_si_falla_subscription()
+```
+
+**Ejecutar tests:**
+
+```bash
+cd {microservicio}
+.\mvnw test
+```
+
+---
+
+## Reglas de Negocio
+
+### Planes de Suscripción
+
+| Plan | Préstamos simultáneos | Duración del préstamo |
+|---|---|---|
+| **BÁSICO** | 2 | 7 días |
+| **PREMIUM** | 5 | 14 días |
+
+### Flujo de creación de préstamo
+
+```
+1. Verificar plan del usuario (Subscription Service via Feign)
+2. Verificar límite de préstamos activos según plan
+3. Verificar que el usuario no tenga ya ese libro en préstamo
+4. Verificar copias disponibles (License Service via Feign)
+5. Descontar 1 copia (License Service via Feign)
+6. Crear registro de préstamo en BD
+7. Notificar al usuario (Notification Service via Feign — silencioso si falla)
+```
+
+---
+
+## Configuración y arranque
+
+### Prerrequisitos
+
+- Java 17
+- Maven (o usar `mvnw` incluido)
+- MySQL 8.4 (Laragon recomendado en Windows)
+- Laragon o MySQL Server activo
+
+### Orden de arranque
+
+```
+1. microservice-config   :8888  ← primero siempre
+2. microservice-eureka   :8761
+3. identity-services     :8084
+4. microservice-gateway  :8080
+5. Resto de microservicios (cualquier orden)
+```
+
+### Variables de entorno requeridas
+
+Cada microservicio se conecta al Config Server en `http://localhost:8888`. Las configuraciones de base de datos, JWT secret y puertos se gestionan centralmente desde el repositorio de configuración.
+
+### Problema común: conflicto de puerto JMX en VS Code
+
+Si al arrancar múltiples microservicios aparece `Port already in use: 49734`, agregar en `launch.json` de cada microservicio:
+
+```json
+"vmArgs": "-Dcom.sun.management.jmxremote.port=0 ..."
+```
+
+El `0` asigna un puerto dinámico libre, evitando conflictos entre instancias JVM.
+
+---
+
+## Estructura del proyecto
+
+```
+SmallBooksRepository/
+├── pom.xml                          ← pom raíz (dependencias compartidas)
+├── microservice-config/
+├── microservice-eureka/
+├── microservice-gateway/
+├── identity-services/
+│   └── src/
+│       ├── main/java/com/silvio/identity/
+│       │   ├── controller/          ← AuthController
+│       │   ├── service/             ← UserService
+│       │   ├── security/            ← JwtUtil, JwtAuthenticationFilter
+│       │   ├── config/              ← SecurityConfig, SwaggerConfig
+│       │   └── repository/
+│       └── test/java/com/silvio/identity/
+│           └── service/             ← UserServiceTest (13 tests)
+├── catalog-service/
+│   └── src/
+│       ├── main/java/com/silvio/catalog/
+│       └── test/java/com/silvio/catalog/
+│           └── service/             ← CatalogServiceTest (10 tests)
+├── elending-service/
+│   └── src/
+│       ├── main/java/com/silvio/elending/
+│       └── test/java/com/silvio/elending/
+│           └── service/             ← PrestamoServiceTest (10 tests)
+├── license-service/
+├── ingestion-service/               ← contiene DatabaseStorageService
+├── content-service/
+├── notification-service/
+├── subscription-service/
+├── search-service/
+└── analytics-service/
+```
+
+---
+
+## Autenticación
+
+El sistema usa **JWT (JSON Web Tokens)** con dos tipos de token:
+
+- **Access Token** — corta duración (30 min en desarrollo), requerido en `Authorization: Bearer {token}`
+- **Refresh Token** — larga duración, usado para renovar el access token sin re-login
+
+Los microservicios que requieren identificación del usuario extraen el `username` del payload del JWT sin necesidad de consultar `identity-service` en cada petición.
+
+---
+
+## Swagger UI por microservicio
+
+| Microservicio | URL Swagger |
+|---|---|
+| Identity | http://localhost:8084/swagger-ui/index.html |
+| Catalog | http://localhost:8085/swagger-ui/index.html |
+| License | http://localhost:8086/swagger-ui/index.html |
+| E-Lending | http://localhost:8087/swagger-ui/index.html |
+| Notification | http://localhost:8088/swagger-ui/index.html |
+| Subscription | http://localhost:8089/swagger-ui/index.html |
+| Search | http://localhost:8090/swagger-ui/index.html |
+| Analytics | http://localhost:8091/swagger-ui/index.html |
+| Ingestion | http://localhost:8092/swagger-ui/index.html |
+| Content Delivery | http://localhost:8093/swagger-ui/index.html |
 
