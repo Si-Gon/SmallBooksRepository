@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 @Tag(name = "Notifications", description = "Gestión de notificaciones — creadas por E-Lending via Feign al crear o vencer préstamos")
 @RestController
 @RequestMapping("/api/notifications")
@@ -25,8 +27,7 @@ public class NotificacionController {
     private final NotificacionService notificacionService;
 
     @Operation(summary = "Crear notificación",
-               description = "Crea una nueva notificación para un usuario. " +
-                             "Endpoint interno usado por E-Lending Service via Feign")
+               description = "Endpoint interno usado por E-Lending Service via Feign")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Notificación creada exitosamente"),
         @ApiResponse(responseCode = "400", description = "Datos de notificación inválidos")
@@ -34,12 +35,19 @@ public class NotificacionController {
     @PostMapping
     public ResponseEntity<NotificacionDTO> crear(
             @Valid @RequestBody NotificacionRequestDTO request) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(notificacionService.crear(request));
+        NotificacionDTO dto = notificacionService.crear(request);
+
+        dto.add(linkTo(methodOn(NotificacionController.class)
+                .obtenerPorUsuario(dto.getUsuarioId())).withRel("mis-notificaciones"));
+        dto.add(linkTo(methodOn(NotificacionController.class)
+                .obtenerNoLeidas(dto.getUsuarioId())).withRel("no-leidas"));
+        dto.add(linkTo(methodOn(NotificacionController.class)
+                .marcarLeida(dto.getId())).withRel("marcar-leida"));
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
-    @Operation(summary = "Obtener notificaciones por usuario",
-               description = "Devuelve todas las notificaciones (leídas y no leídas) de un usuario")
+    @Operation(summary = "Obtener notificaciones por usuario")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista de notificaciones obtenida"),
         @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
@@ -48,11 +56,19 @@ public class NotificacionController {
     public ResponseEntity<List<NotificacionDTO>> obtenerPorUsuario(
             @Parameter(description = "ID del usuario (username)", required = true)
             @PathVariable String usuarioId) {
-        return ResponseEntity.ok(notificacionService.obtenerPorUsuario(usuarioId));
+        List<NotificacionDTO> lista = notificacionService.obtenerPorUsuario(usuarioId);
+
+        lista.forEach(dto -> {
+            dto.add(linkTo(methodOn(NotificacionController.class)
+                    .marcarLeida(dto.getId())).withRel("marcar-leida"));
+            dto.add(linkTo(methodOn(NotificacionController.class)
+                    .obtenerNoLeidas(usuarioId)).withRel("no-leidas"));
+        });
+
+        return ResponseEntity.ok(lista);
     }
 
-    @Operation(summary = "Obtener notificaciones no leídas",
-               description = "Devuelve solo las notificaciones pendientes de leer de un usuario")
+    @Operation(summary = "Obtener notificaciones no leídas")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista de notificaciones no leídas"),
         @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
@@ -61,11 +77,17 @@ public class NotificacionController {
     public ResponseEntity<List<NotificacionDTO>> obtenerNoLeidas(
             @Parameter(description = "ID del usuario (username)", required = true)
             @PathVariable String usuarioId) {
-        return ResponseEntity.ok(notificacionService.obtenerNoLeidas(usuarioId));
+        List<NotificacionDTO> lista = notificacionService.obtenerNoLeidas(usuarioId);
+
+        lista.forEach(dto ->
+            dto.add(linkTo(methodOn(NotificacionController.class)
+                    .marcarLeida(dto.getId())).withRel("marcar-leida"))
+        );
+
+        return ResponseEntity.ok(lista);
     }
 
-    @Operation(summary = "Marcar notificación como leída",
-               description = "Actualiza el estado de una notificación específica a leída")
+    @Operation(summary = "Marcar notificación como leída")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Notificación marcada como leída"),
         @ApiResponse(responseCode = "404", description = "Notificación no encontrada")
@@ -74,13 +96,19 @@ public class NotificacionController {
     public ResponseEntity<NotificacionDTO> marcarLeida(
             @Parameter(description = "ID de la notificación", required = true)
             @PathVariable Long id) {
-        return ResponseEntity.ok(notificacionService.marcarLeida(id));
+        NotificacionDTO dto = notificacionService.marcarLeida(id);
+
+        dto.add(linkTo(methodOn(NotificacionController.class)
+                .obtenerPorUsuario(dto.getUsuarioId())).withRel("mis-notificaciones"));
+        dto.add(linkTo(methodOn(NotificacionController.class)
+                .marcarTodasLeidas(dto.getUsuarioId())).withRel("marcar-todas-leidas"));
+
+        return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Marcar todas las notificaciones como leídas",
-               description = "Marca todas las notificaciones pendientes de un usuario como leídas de una vez")
+    @Operation(summary = "Marcar todas las notificaciones como leídas")
     @ApiResponses({
-        @ApiResponse(responseCode = "204", description = "Todas las notificaciones marcadas como leídas"),
+        @ApiResponse(responseCode = "204", description = "Todas marcadas como leídas"),
         @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     @PatchMapping("/usuario/{usuarioId}/leer-todas")

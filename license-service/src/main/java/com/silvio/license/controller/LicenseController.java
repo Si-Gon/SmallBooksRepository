@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 @Tag(name = "Licenses", description = "Gestión de licencias y control de copias disponibles por libro")
 @RestController
 @RequestMapping("/api/licenses")
@@ -32,7 +34,14 @@ public class LicenseController {
     })
     @GetMapping
     public ResponseEntity<List<LicenseResponseDTO>> obtenerTodas() {
-        return ResponseEntity.ok(licenseService.obtenerTodas());
+        List<LicenseResponseDTO> lista = licenseService.obtenerTodas();
+
+        lista.forEach(dto ->
+            dto.add(linkTo(methodOn(LicenseController.class)
+                    .obtenerPorLibroId(dto.getLibroId())).withSelfRel())
+        );
+
+        return ResponseEntity.ok(lista);
     }
 
     @Operation(summary = "Obtener licencia por libro",
@@ -47,11 +56,21 @@ public class LicenseController {
     public ResponseEntity<LicenseResponseDTO> obtenerPorLibroId(
             @Parameter(description = "ID del libro", required = true)
             @PathVariable Long libroId) {
-        return ResponseEntity.ok(licenseService.obtenerPorLibroId(libroId));
+        LicenseResponseDTO dto = licenseService.obtenerPorLibroId(libroId);
+
+        dto.add(linkTo(methodOn(LicenseController.class)
+                .obtenerPorLibroId(libroId)).withSelfRel());
+        dto.add(linkTo(methodOn(LicenseController.class)
+                .obtenerTodas()).withRel("todas"));
+        dto.add(linkTo(methodOn(LicenseController.class)
+                .prestar(libroId)).withRel("prestar"));
+        dto.add(linkTo(methodOn(LicenseController.class)
+                .devolver(libroId)).withRel("devolver"));
+
+        return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Registrar nueva licencia",
-               description = "Crea una nueva licencia para un libro con el total de copias adquiridas")
+    @Operation(summary = "Registrar nueva licencia")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Licencia creada exitosamente"),
         @ApiResponse(responseCode = "400", description = "Datos de licencia inválidos"),
@@ -60,15 +79,19 @@ public class LicenseController {
     @PostMapping
     public ResponseEntity<LicenseResponseDTO> crear(
             @Valid @RequestBody LicenseRequestDTO request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(licenseService.crear(request));
+        LicenseResponseDTO dto = licenseService.crear(request);
+
+        dto.add(linkTo(methodOn(LicenseController.class)
+                .obtenerPorLibroId(dto.getLibroId())).withSelfRel());
+        dto.add(linkTo(methodOn(LicenseController.class)
+                .obtenerTodas()).withRel("todas"));
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
-    @Operation(summary = "Actualizar licencia",
-               description = "Actualiza el total de copias de la licencia de un libro " +
-                             "(por ejemplo al adquirir más copias)")
+    @Operation(summary = "Actualizar licencia")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Licencia actualizada exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Datos inválidos"),
         @ApiResponse(responseCode = "404", description = "Licencia no encontrada")
     })
     @PutMapping("/{libroId}")
@@ -76,27 +99,36 @@ public class LicenseController {
             @Parameter(description = "ID del libro", required = true)
             @PathVariable Long libroId,
             @Valid @RequestBody LicenseRequestDTO request) {
-        return ResponseEntity.ok(licenseService.actualizar(libroId, request));
+        LicenseResponseDTO dto = licenseService.actualizar(libroId, request);
+
+        dto.add(linkTo(methodOn(LicenseController.class)
+                .obtenerPorLibroId(libroId)).withSelfRel());
+        dto.add(linkTo(methodOn(LicenseController.class)
+                .obtenerTodas()).withRel("todas"));
+
+        return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Descontar copia al prestar",
-               description = "Descuenta 1 copia disponible cuando se crea un préstamo. " +
-                             "Endpoint interno llamado por E-Lending Service via Feign")
+    @Operation(summary = "Descontar copia al prestar")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Copia descontada exitosamente"),
-        @ApiResponse(responseCode = "400", description = "No hay copias disponibles para prestar"),
         @ApiResponse(responseCode = "404", description = "Licencia no encontrada")
     })
     @PutMapping("/{libroId}/prestar")
     public ResponseEntity<LicenseResponseDTO> prestar(
             @Parameter(description = "ID del libro", required = true)
             @PathVariable Long libroId) {
-        return ResponseEntity.ok(licenseService.prestar(libroId));
+        LicenseResponseDTO dto = licenseService.prestar(libroId);
+
+        dto.add(linkTo(methodOn(LicenseController.class)
+                .obtenerPorLibroId(libroId)).withSelfRel());
+        dto.add(linkTo(methodOn(LicenseController.class)
+                .devolver(libroId)).withRel("devolver"));
+
+        return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Sumar copia al devolver",
-               description = "Suma 1 copia disponible cuando vence o se cierra un préstamo. " +
-                             "Endpoint interno llamado por E-Lending Service via Feign")
+    @Operation(summary = "Sumar copia al devolver")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Copia devuelta exitosamente"),
         @ApiResponse(responseCode = "404", description = "Licencia no encontrada")
@@ -105,6 +137,13 @@ public class LicenseController {
     public ResponseEntity<LicenseResponseDTO> devolver(
             @Parameter(description = "ID del libro", required = true)
             @PathVariable Long libroId) {
-        return ResponseEntity.ok(licenseService.devolver(libroId));
+        LicenseResponseDTO dto = licenseService.devolver(libroId);
+
+        dto.add(linkTo(methodOn(LicenseController.class)
+                .obtenerPorLibroId(libroId)).withSelfRel());
+        dto.add(linkTo(methodOn(LicenseController.class)
+                .prestar(libroId)).withRel("prestar"));
+
+        return ResponseEntity.ok(dto);
     }
 }

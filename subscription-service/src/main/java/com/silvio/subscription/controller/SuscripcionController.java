@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 @Tag(name = "Subscriptions", description = "Gestión de suscripciones — planes BASICO y PREMIUM que determinan límites de préstamo")
 @RestController
 @RequestMapping("/api/subscriptions")
@@ -23,8 +25,7 @@ public class SuscripcionController {
     private final SuscripcionService suscripcionService;
 
     @Operation(summary = "Consultar mi plan actual",
-               description = "Devuelve la suscripción activa del usuario autenticado. " +
-                             "El usuario se identifica desde el token JWT")
+               description = "Devuelve la suscripción activa del usuario autenticado")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Plan obtenido exitosamente"),
         @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
@@ -35,13 +36,18 @@ public class SuscripcionController {
             @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
             @RequestHeader("Authorization") String authHeader) {
         String usuarioId = extraerUsuario(authHeader);
-        return ResponseEntity.ok(suscripcionService.obtenerPorUsuario(usuarioId));
+        SuscripcionResponseDTO dto = suscripcionService.obtenerPorUsuario(usuarioId);
+
+        dto.add(linkTo(methodOn(SuscripcionController.class)
+                .miPlan(authHeader)).withSelfRel());
+        dto.add(linkTo(methodOn(SuscripcionController.class)
+                .cancelar(authHeader)).withRel("cancelar"));
+
+        return ResponseEntity.ok(dto);
     }
 
     @Operation(summary = "Obtener plan por usuario",
-               description = "Endpoint interno usado por E-Lending Service via Feign. " +
-                             "Consulta el plan de un usuario para validar límites de préstamo " +
-                             "(BASICO: 2 préstamos / 7 días — PREMIUM: 5 préstamos / 14 días)")
+               description = "Endpoint interno usado por E-Lending Service via Feign")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Suscripción obtenida exitosamente"),
         @ApiResponse(responseCode = "404", description = "Usuario sin suscripción activa")
@@ -50,12 +56,16 @@ public class SuscripcionController {
     public ResponseEntity<SuscripcionResponseDTO> obtenerPorUsuarioId(
             @Parameter(description = "ID del usuario (username)", required = true)
             @PathVariable String usuarioId) {
-        return ResponseEntity.ok(suscripcionService.obtenerPorUsuario(usuarioId));
+        SuscripcionResponseDTO dto = suscripcionService.obtenerPorUsuario(usuarioId);
+
+        dto.add(linkTo(methodOn(SuscripcionController.class)
+                .obtenerPorUsuarioId(usuarioId)).withSelfRel());
+
+        return ResponseEntity.ok(dto);
     }
 
     @Operation(summary = "Crear o cambiar suscripción",
-               description = "Crea una nueva suscripción o cambia el plan actual del usuario. " +
-                             "Planes disponibles: BASICO (gratuito) y PREMIUM (pagado)")
+               description = "Crea una nueva suscripción o cambia el plan actual del usuario")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Suscripción creada exitosamente"),
         @ApiResponse(responseCode = "400", description = "Plan inválido o datos incorrectos"),
@@ -67,13 +77,18 @@ public class SuscripcionController {
             @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
             @RequestHeader("Authorization") String authHeader) {
         String usuarioId = extraerUsuario(authHeader);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(suscripcionService.crear(request, usuarioId));
+        SuscripcionResponseDTO dto = suscripcionService.crear(request, usuarioId);
+
+        dto.add(linkTo(methodOn(SuscripcionController.class)
+                .miPlan(authHeader)).withRel("mi-plan"));
+        dto.add(linkTo(methodOn(SuscripcionController.class)
+                .cancelar(authHeader)).withRel("cancelar"));
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @Operation(summary = "Cancelar suscripción",
-               description = "Cancela la suscripción activa del usuario autenticado. " +
-                             "El usuario vuelve al plan BASICO por defecto")
+               description = "Cancela la suscripción activa — el usuario vuelve al plan BASICO")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Suscripción cancelada exitosamente"),
         @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
@@ -84,7 +99,12 @@ public class SuscripcionController {
             @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
             @RequestHeader("Authorization") String authHeader) {
         String usuarioId = extraerUsuario(authHeader);
-        return ResponseEntity.ok(suscripcionService.cancelar(usuarioId));
+        SuscripcionResponseDTO dto = suscripcionService.cancelar(usuarioId);
+
+        dto.add(linkTo(methodOn(SuscripcionController.class)
+                .miPlan(authHeader)).withRel("mi-plan"));
+
+        return ResponseEntity.ok(dto);
     }
 
     private String extraerUsuario(String authHeader) {

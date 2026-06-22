@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 @Tag(name = "Ingestion", description = "Carga y gestión de archivos PDF/EPUB — almacenamiento en MySQL como BLOB")
 @RestController
 @RequestMapping("/api/ingestion")
@@ -39,8 +41,14 @@ public class IngestionController {
             @Parameter(description = "Archivo PDF o EPUB a subir", required = true)
             @RequestParam("archivo") MultipartFile archivo) {
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ingestionService.subirArchivo(libroId, archivo));
+        ArchivoLibroDTO dto = ingestionService.subirArchivo(libroId, archivo);
+
+    dto.add(linkTo(methodOn(IngestionController.class)
+            .obtenerInfo(libroId)).withSelfRel());
+    dto.add(linkTo(methodOn(IngestionController.class)
+            .eliminar(libroId)).withRel("eliminar"));
+
+    return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @Operation(summary = "Obtener información del archivo",
@@ -53,7 +61,14 @@ public class IngestionController {
     public ResponseEntity<ArchivoLibroDTO> obtenerInfo(
             @Parameter(description = "ID del libro", required = true)
             @PathVariable Long libroId) {
-        return ResponseEntity.ok(ingestionService.obtenerInfo(libroId));
+        ArchivoLibroDTO dto = ingestionService.obtenerInfo(libroId);
+
+    dto.add(linkTo(methodOn(IngestionController.class)
+            .obtenerInfo(libroId)).withSelfRel());
+    dto.add(linkTo(methodOn(IngestionController.class)
+            .eliminar(libroId)).withRel("eliminar"));
+
+    return ResponseEntity.ok(dto);
     }
 
     @Operation(summary = "Obtener bytes del archivo",

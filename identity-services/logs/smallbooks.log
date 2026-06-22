@@ -1,515 +1,111 @@
-2026-06-19T19:43:14.525-04:00  INFO 20244 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Starting IdentityServiceApplication using Java 17.0.10 with PID 20244 (C:\WorkSpace\SmallBooksRepository\identity-services\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\identity-services)
-2026-06-19T19:43:14.532-04:00 DEBUG 20244 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-19T19:43:14.533-04:00  INFO 20244 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : No active profile set, falling back to 1 default profile: "default"
-2026-06-19T19:43:14.580-04:00  INFO 20244 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-19T19:43:14.581-04:00  INFO 20244 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=identity-service, profiles=[default], label=null, version=null, state=null
-2026-06-19T19:43:15.548-04:00  INFO 20244 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-19T19:43:15.671-04:00  INFO 20244 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 115 ms. Found 1 JPA repository interface.
-2026-06-19T19:43:15.931-04:00  INFO 20244 --- [identity-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=44dc5615-74d8-38f8-b942-50b251caca18
-2026-06-19T19:43:16.331-04:00  INFO 20244 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8084 (http)
-2026-06-19T19:43:16.345-04:00  INFO 20244 --- [identity-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-19T19:43:16.346-04:00  INFO 20244 --- [identity-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-19T19:43:16.418-04:00  INFO 20244 --- [identity-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-19T19:43:16.418-04:00  INFO 20244 --- [identity-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1835 ms
-2026-06-19T19:43:16.462-04:00 DEBUG 20244 --- [identity-service] [main] c.s.i.security.JwtAuthenticationFilter   : Filter 'jwtAuthenticationFilter' configured for use
-2026-06-19T19:43:16.610-04:00  INFO 20244 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T19:43:17.713-04:00  INFO 20244 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T19:43:18.758-04:00  INFO 20244 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T19:43:19.788-04:00  INFO 20244 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T19:43:20.821-04:00  WARN 20244 --- [identity-service] [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Failed to initialize dependency 'flywayInitializer' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'flywayInitializer' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Unable to obtain connection from database: Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-SQL State  : 08S01
-Error Code : 0
-Message    : Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
-
-2026-06-19T19:43:20.824-04:00  INFO 20244 --- [identity-service] [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
-2026-06-19T19:43:20.836-04:00  INFO 20244 --- [identity-service] [main] .s.b.a.l.ConditionEvaluationReportLogger : 
-
-Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
-2026-06-19T19:43:20.854-04:00 ERROR 20244 --- [identity-service] [main] o.s.boot.SpringApplication               : Application run failed
-
-org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Failed to initialize dependency 'flywayInitializer' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'flywayInitializer' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Unable to obtain connection from database: Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-SQL State  : 08S01
-Error Code : 0
-Message    : Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
-
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:326) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:954) ~[spring-context-6.1.19.jar:6.1.19]
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625) ~[spring-context-6.1.19.jar:6.1.19]
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.3.11.jar:3.3.11]
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:755) ~[spring-boot-3.3.11.jar:3.3.11]
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456) ~[spring-boot-3.3.11.jar:3.3.11]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335) ~[spring-boot-3.3.11.jar:3.3.11]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1364) ~[spring-boot-3.3.11.jar:3.3.11]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1353) ~[spring-boot-3.3.11.jar:3.3.11]
-	at com.silvio.identity.IdentityServiceApplication.main(IdentityServiceApplication.java:12) ~[classes/:na]
-Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'flywayInitializer' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Unable to obtain connection from database: Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-SQL State  : 08S01
-Error Code : 0
-Message    : Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
-
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1806) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:313) ~[spring-beans-6.1.19.jar:6.1.19]
-	... 10 common frames omitted
-Caused by: org.flywaydb.core.internal.exception.FlywaySqlException: Unable to obtain connection from database: Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-SQL State  : 08S01
-Error Code : 0
-Message    : Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
-
-	at org.flywaydb.core.internal.jdbc.JdbcUtils.openConnection(JdbcUtils.java:60) ~[flyway-core-10.10.0.jar:na]
-	at org.flywaydb.core.internal.jdbc.JdbcConnectionFactory.<init>(JdbcConnectionFactory.java:72) ~[flyway-core-10.10.0.jar:na]
-	at org.flywaydb.core.FlywayExecutor.execute(FlywayExecutor.java:134) ~[flyway-core-10.10.0.jar:na]
-	at org.flywaydb.core.Flyway.migrate(Flyway.java:147) ~[flyway-core-10.10.0.jar:na]
-	at org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer.afterPropertiesSet(FlywayMigrationInitializer.java:66) ~[spring-boot-autoconfigure-3.3.11.jar:3.3.11]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1853) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1802) ~[spring-beans-6.1.19.jar:6.1.19]
-	... 17 common frames omitted
-Caused by: com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
-	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:137) ~[HikariCP-5.1.0.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:360) ~[HikariCP-5.1.0.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:202) ~[HikariCP-5.1.0.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:461) ~[HikariCP-5.1.0.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:550) ~[HikariCP-5.1.0.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:98) ~[HikariCP-5.1.0.jar:na]
-	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:111) ~[HikariCP-5.1.0.jar:na]
-	at org.flywaydb.core.internal.jdbc.JdbcUtils.openConnection(JdbcUtils.java:48) ~[flyway-core-10.10.0.jar:na]
-	... 23 common frames omitted
-Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
-	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method) ~[na:na]
-	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77) ~[na:na]
-	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45) ~[na:na]
-	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499) ~[na:na]
-	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:480) ~[na:na]
-	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.NativeSession.connect(NativeSession.java:120) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	... 34 common frames omitted
-Caused by: java.net.ConnectException: Connection refused: no further information
-	at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
-	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672) ~[na:na]
-	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547) ~[na:na]
-	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602) ~[na:na]
-	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
-	at java.base/java.net.Socket.connect(Socket.java:633) ~[na:na]
-	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	... 37 common frames omitted
-
-2026-06-19T19:44:02.270-04:00  INFO 20476 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Starting IdentityServiceApplication using Java 17.0.10 with PID 20476 (C:\WorkSpace\SmallBooksRepository\identity-services\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\identity-services)
-2026-06-19T19:44:02.272-04:00 DEBUG 20476 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-19T19:44:02.273-04:00  INFO 20476 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : No active profile set, falling back to 1 default profile: "default"
-2026-06-19T19:44:02.321-04:00  INFO 20476 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-19T19:44:02.321-04:00  INFO 20476 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=identity-service, profiles=[default], label=null, version=null, state=null
-2026-06-19T19:44:03.086-04:00  INFO 20476 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-19T19:44:03.240-04:00  INFO 20476 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 141 ms. Found 1 JPA repository interface.
-2026-06-19T19:44:03.492-04:00  INFO 20476 --- [identity-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=44dc5615-74d8-38f8-b942-50b251caca18
-2026-06-19T19:44:03.880-04:00  INFO 20476 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8084 (http)
-2026-06-19T19:44:03.896-04:00  INFO 20476 --- [identity-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-19T19:44:03.897-04:00  INFO 20476 --- [identity-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-19T19:44:03.966-04:00  INFO 20476 --- [identity-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-19T19:44:03.967-04:00  INFO 20476 --- [identity-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1644 ms
-2026-06-19T19:44:04.014-04:00 DEBUG 20476 --- [identity-service] [main] c.s.i.security.JwtAuthenticationFilter   : Filter 'jwtAuthenticationFilter' configured for use
-2026-06-19T19:44:04.148-04:00  INFO 20476 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T19:44:05.228-04:00  INFO 20476 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T19:44:06.267-04:00  INFO 20476 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T19:44:07.298-04:00  INFO 20476 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T19:44:08.340-04:00  WARN 20476 --- [identity-service] [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Failed to initialize dependency 'flywayInitializer' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'flywayInitializer' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Unable to obtain connection from database: Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-SQL State  : 08S01
-Error Code : 0
-Message    : Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
-
-2026-06-19T19:44:08.343-04:00  INFO 20476 --- [identity-service] [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
-2026-06-19T19:44:08.353-04:00  INFO 20476 --- [identity-service] [main] .s.b.a.l.ConditionEvaluationReportLogger : 
-
-Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
-2026-06-19T19:44:08.369-04:00 ERROR 20476 --- [identity-service] [main] o.s.boot.SpringApplication               : Application run failed
-
-org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Failed to initialize dependency 'flywayInitializer' of LoadTimeWeaverAware bean 'entityManagerFactory': Error creating bean with name 'flywayInitializer' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Unable to obtain connection from database: Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-SQL State  : 08S01
-Error Code : 0
-Message    : Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
-
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:326) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:954) ~[spring-context-6.1.19.jar:6.1.19]
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625) ~[spring-context-6.1.19.jar:6.1.19]
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.3.11.jar:3.3.11]
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:755) ~[spring-boot-3.3.11.jar:3.3.11]
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456) ~[spring-boot-3.3.11.jar:3.3.11]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335) ~[spring-boot-3.3.11.jar:3.3.11]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1364) ~[spring-boot-3.3.11.jar:3.3.11]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1353) ~[spring-boot-3.3.11.jar:3.3.11]
-	at com.silvio.identity.IdentityServiceApplication.main(IdentityServiceApplication.java:12) ~[classes/:na]
-Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'flywayInitializer' defined in class path resource [org/springframework/boot/autoconfigure/flyway/FlywayAutoConfiguration$FlywayConfiguration.class]: Unable to obtain connection from database: Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-SQL State  : 08S01
-Error Code : 0
-Message    : Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
-
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1806) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:313) ~[spring-beans-6.1.19.jar:6.1.19]
-	... 10 common frames omitted
-Caused by: org.flywaydb.core.internal.exception.FlywaySqlException: Unable to obtain connection from database: Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-SQL State  : 08S01
-Error Code : 0
-Message    : Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
-
-	at org.flywaydb.core.internal.jdbc.JdbcUtils.openConnection(JdbcUtils.java:60) ~[flyway-core-10.10.0.jar:na]
-	at org.flywaydb.core.internal.jdbc.JdbcConnectionFactory.<init>(JdbcConnectionFactory.java:72) ~[flyway-core-10.10.0.jar:na]
-	at org.flywaydb.core.FlywayExecutor.execute(FlywayExecutor.java:134) ~[flyway-core-10.10.0.jar:na]
-	at org.flywaydb.core.Flyway.migrate(Flyway.java:147) ~[flyway-core-10.10.0.jar:na]
-	at org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer.afterPropertiesSet(FlywayMigrationInitializer.java:66) ~[spring-boot-autoconfigure-3.3.11.jar:3.3.11]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1853) ~[spring-beans-6.1.19.jar:6.1.19]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1802) ~[spring-beans-6.1.19.jar:6.1.19]
-	... 17 common frames omitted
-Caused by: com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
-	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:137) ~[HikariCP-5.1.0.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:360) ~[HikariCP-5.1.0.jar:na]
-	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:202) ~[HikariCP-5.1.0.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:461) ~[HikariCP-5.1.0.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:550) ~[HikariCP-5.1.0.jar:na]
-	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:98) ~[HikariCP-5.1.0.jar:na]
-	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:111) ~[HikariCP-5.1.0.jar:na]
-	at org.flywaydb.core.internal.jdbc.JdbcUtils.openConnection(JdbcUtils.java:48) ~[flyway-core-10.10.0.jar:na]
-	... 23 common frames omitted
-Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
-	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method) ~[na:na]
-	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77) ~[na:na]
-	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45) ~[na:na]
-	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499) ~[na:na]
-	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:480) ~[na:na]
-	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.NativeSession.connect(NativeSession.java:120) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	... 34 common frames omitted
-Caused by: java.net.ConnectException: Connection refused: no further information
-	at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
-	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672) ~[na:na]
-	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547) ~[na:na]
-	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602) ~[na:na]
-	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
-	at java.base/java.net.Socket.connect(Socket.java:633) ~[na:na]
-	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62) ~[mysql-connector-j-8.3.0.jar:8.3.0]
-	... 37 common frames omitted
-
-2026-06-19T19:44:39.899-04:00  INFO 9168 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Starting IdentityServiceApplication using Java 17.0.10 with PID 9168 (C:\WorkSpace\SmallBooksRepository\identity-services\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\identity-services)
-2026-06-19T19:44:39.901-04:00 DEBUG 9168 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-19T19:44:39.902-04:00  INFO 9168 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : No active profile set, falling back to 1 default profile: "default"
-2026-06-19T19:44:39.949-04:00  INFO 9168 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-19T19:44:39.949-04:00  INFO 9168 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=identity-service, profiles=[default], label=null, version=null, state=null
-2026-06-19T19:44:40.564-04:00  INFO 9168 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-19T19:44:40.718-04:00  INFO 9168 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 146 ms. Found 1 JPA repository interface.
-2026-06-19T19:44:40.979-04:00  INFO 9168 --- [identity-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=44dc5615-74d8-38f8-b942-50b251caca18
-2026-06-19T19:44:41.366-04:00  INFO 9168 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8084 (http)
-2026-06-19T19:44:41.377-04:00  INFO 9168 --- [identity-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-19T19:44:41.377-04:00  INFO 9168 --- [identity-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-19T19:44:41.456-04:00  INFO 9168 --- [identity-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-19T19:44:41.457-04:00  INFO 9168 --- [identity-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1505 ms
-2026-06-19T19:44:41.503-04:00 DEBUG 9168 --- [identity-service] [main] c.s.i.security.JwtAuthenticationFilter   : Filter 'jwtAuthenticationFilter' configured for use
-2026-06-19T19:44:41.636-04:00  INFO 9168 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T19:44:41.775-04:00  INFO 9168 --- [identity-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2e0fdc83
-2026-06-19T19:44:41.777-04:00  INFO 9168 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-19T19:44:41.831-04:00  INFO 9168 --- [identity-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_identity (MySQL 8.4)
-2026-06-19T19:44:41.846-04:00  WARN 9168 --- [identity-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-06-19T19:44:41.899-04:00  INFO 9168 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_identity`: 3
-2026-06-19T19:44:41.903-04:00  INFO 9168 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_identity` is up to date. No migration necessary.
-2026-06-19T19:44:41.997-04:00  INFO 9168 --- [identity-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-19T19:44:42.075-04:00  INFO 9168 --- [identity-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-06-19T19:44:42.121-04:00  INFO 9168 --- [identity-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-19T19:44:42.453-04:00  INFO 9168 --- [identity-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-19T19:44:43.419-04:00  INFO 9168 --- [identity-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-19T19:44:43.451-04:00  INFO 9168 --- [identity-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-19T19:44:43.797-04:00  INFO 9168 --- [identity-service] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userService
-2026-06-19T19:44:43.820-04:00  WARN 9168 --- [identity-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-19T19:44:44.424-04:00  INFO 9168 --- [identity-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-06-19T19:44:44.457-04:00  WARN 9168 --- [identity-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-06-19T19:44:44.505-04:00  INFO 9168 --- [identity-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-06-19T19:44:44.531-04:00  INFO 9168 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-06-19T19:44:44.536-04:00  INFO 9168 --- [identity-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T19:44:44.547-04:00  INFO 9168 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-19T19:44:44.547-04:00  INFO 9168 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-19T19:44:44.547-04:00  INFO 9168 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-19T19:44:44.547-04:00  INFO 9168 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-19T19:44:44.547-04:00  INFO 9168 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-19T19:44:44.548-04:00  INFO 9168 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-06-19T19:44:44.548-04:00  INFO 9168 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-19T19:44:44.840-04:00  INFO 9168 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-19T19:44:44.843-04:00  INFO 9168 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-06-19T19:44:44.845-04:00  INFO 9168 --- [identity-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-06-19T19:44:44.847-04:00  INFO 9168 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781912684846 with initial instances count: 1
-2026-06-19T19:44:44.850-04:00  INFO 9168 --- [identity-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application IDENTITY-SERVICE with eureka with status UP
-2026-06-19T19:44:44.851-04:00  INFO 9168 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781912684851, current=UP, previous=STARTING]
-2026-06-19T19:44:44.853-04:00  INFO 9168 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084: registering service...
-2026-06-19T19:44:44.875-04:00  INFO 9168 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8084 (http) with context path '/'
-2026-06-19T19:44:44.876-04:00  INFO 9168 --- [identity-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8084
-2026-06-19T19:44:44.886-04:00  INFO 9168 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084 - registration status: 204
-2026-06-19T19:44:44.942-04:00  INFO 9168 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Started IdentityServiceApplication in 5.95 seconds (process running for 6.47)
-2026-06-19T19:49:44.564-04:00  INFO 9168 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T19:55:13.554-04:00  INFO 11924 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Starting IdentityServiceApplication using Java 17.0.10 with PID 11924 (C:\WorkSpace\SmallBooksRepository\identity-services\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\identity-services)
-2026-06-19T19:55:13.557-04:00 DEBUG 11924 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-19T19:55:13.558-04:00  INFO 11924 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : No active profile set, falling back to 1 default profile: "default"
-2026-06-19T19:55:13.601-04:00  INFO 11924 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-19T19:55:13.601-04:00  INFO 11924 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=identity-service, profiles=[default], label=null, version=null, state=null
-2026-06-19T19:55:14.230-04:00  INFO 11924 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-19T19:55:14.376-04:00  INFO 11924 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 138 ms. Found 1 JPA repository interface.
-2026-06-19T19:55:14.621-04:00  INFO 11924 --- [identity-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=44dc5615-74d8-38f8-b942-50b251caca18
-2026-06-19T19:55:15.032-04:00  INFO 11924 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8084 (http)
-2026-06-19T19:55:15.045-04:00  INFO 11924 --- [identity-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-19T19:55:15.045-04:00  INFO 11924 --- [identity-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-19T19:55:15.120-04:00  INFO 11924 --- [identity-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-19T19:55:15.120-04:00  INFO 11924 --- [identity-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1505 ms
-2026-06-19T19:55:15.176-04:00 DEBUG 11924 --- [identity-service] [main] c.s.i.security.JwtAuthenticationFilter   : Filter 'jwtAuthenticationFilter' configured for use
-2026-06-19T19:55:15.326-04:00  INFO 11924 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T19:55:15.476-04:00  INFO 11924 --- [identity-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7c206b14
-2026-06-19T19:55:15.476-04:00  INFO 11924 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-19T19:55:15.521-04:00  INFO 11924 --- [identity-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_identity (MySQL 8.4)
-2026-06-19T19:55:15.538-04:00  WARN 11924 --- [identity-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-06-19T19:55:15.575-04:00  INFO 11924 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_identity`: 3
-2026-06-19T19:55:15.581-04:00  INFO 11924 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_identity` is up to date. No migration necessary.
-2026-06-19T19:55:15.667-04:00  INFO 11924 --- [identity-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-19T19:55:15.730-04:00  INFO 11924 --- [identity-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-06-19T19:55:15.762-04:00  INFO 11924 --- [identity-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-19T19:55:16.036-04:00  INFO 11924 --- [identity-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-19T19:55:16.877-04:00  INFO 11924 --- [identity-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-19T19:55:16.900-04:00  INFO 11924 --- [identity-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-19T19:55:17.221-04:00  INFO 11924 --- [identity-service] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userService
-2026-06-19T19:55:17.250-04:00  WARN 11924 --- [identity-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-19T19:55:17.846-04:00  INFO 11924 --- [identity-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-06-19T19:55:17.881-04:00  WARN 11924 --- [identity-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-06-19T19:55:17.925-04:00  INFO 11924 --- [identity-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-06-19T19:55:17.962-04:00  INFO 11924 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-06-19T19:55:17.962-04:00  INFO 11924 --- [identity-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T19:55:17.975-04:00  INFO 11924 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-19T19:55:17.975-04:00  INFO 11924 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-19T19:55:17.976-04:00  INFO 11924 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-19T19:55:17.976-04:00  INFO 11924 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-19T19:55:17.976-04:00  INFO 11924 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-19T19:55:17.976-04:00  INFO 11924 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-06-19T19:55:17.976-04:00  INFO 11924 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-19T19:55:18.227-04:00  INFO 11924 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-19T19:55:18.227-04:00  INFO 11924 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-06-19T19:55:18.232-04:00  INFO 11924 --- [identity-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-06-19T19:55:18.232-04:00  INFO 11924 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781913318232 with initial instances count: 0
-2026-06-19T19:55:18.232-04:00  INFO 11924 --- [identity-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application IDENTITY-SERVICE with eureka with status UP
-2026-06-19T19:55:18.238-04:00  INFO 11924 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781913318238, current=UP, previous=STARTING]
-2026-06-19T19:55:18.240-04:00  INFO 11924 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084: registering service...
-2026-06-19T19:55:18.258-04:00  INFO 11924 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8084 (http) with context path '/'
-2026-06-19T19:55:18.258-04:00  INFO 11924 --- [identity-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8084
-2026-06-19T19:55:18.272-04:00  INFO 11924 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084 - registration status: 204
-2026-06-19T19:55:18.332-04:00  INFO 11924 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Started IdentityServiceApplication in 5.713 seconds (process running for 6.18)
-2026-06-19T20:01:31.974-04:00  INFO 16044 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Starting IdentityServiceApplication using Java 17.0.10 with PID 16044 (C:\WorkSpace\SmallBooksRepository\identity-services\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\identity-services)
-2026-06-19T20:01:31.976-04:00 DEBUG 16044 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-19T20:01:31.977-04:00  INFO 16044 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : No active profile set, falling back to 1 default profile: "default"
-2026-06-19T20:01:32.030-04:00  INFO 16044 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-19T20:01:32.030-04:00  INFO 16044 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=identity-service, profiles=[default], label=null, version=null, state=null
-2026-06-19T20:01:32.670-04:00  INFO 16044 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-19T20:01:32.825-04:00  INFO 16044 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 145 ms. Found 1 JPA repository interface.
-2026-06-19T20:01:33.086-04:00  INFO 16044 --- [identity-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=44dc5615-74d8-38f8-b942-50b251caca18
-2026-06-19T20:01:33.471-04:00  INFO 16044 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8084 (http)
-2026-06-19T20:01:33.484-04:00  INFO 16044 --- [identity-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-19T20:01:33.485-04:00  INFO 16044 --- [identity-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-19T20:01:33.556-04:00  INFO 16044 --- [identity-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-19T20:01:33.556-04:00  INFO 16044 --- [identity-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1523 ms
-2026-06-19T20:01:33.608-04:00 DEBUG 16044 --- [identity-service] [main] c.s.i.security.JwtAuthenticationFilter   : Filter 'jwtAuthenticationFilter' configured for use
-2026-06-19T20:01:33.741-04:00  INFO 16044 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T20:01:33.886-04:00  INFO 16044 --- [identity-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@a1cb94
-2026-06-19T20:01:33.888-04:00  INFO 16044 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-19T20:01:33.929-04:00  INFO 16044 --- [identity-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_identity (MySQL 8.4)
-2026-06-19T20:01:33.944-04:00  WARN 16044 --- [identity-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-06-19T20:01:33.982-04:00  INFO 16044 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_identity`: 3
-2026-06-19T20:01:33.982-04:00  INFO 16044 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_identity` is up to date. No migration necessary.
-2026-06-19T20:01:34.075-04:00  INFO 16044 --- [identity-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-19T20:01:34.135-04:00  INFO 16044 --- [identity-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-06-19T20:01:34.169-04:00  INFO 16044 --- [identity-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-19T20:01:34.448-04:00  INFO 16044 --- [identity-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-19T20:01:35.290-04:00  INFO 16044 --- [identity-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-19T20:01:35.316-04:00  INFO 16044 --- [identity-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-19T20:01:35.618-04:00  INFO 16044 --- [identity-service] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userService
-2026-06-19T20:01:35.640-04:00  WARN 16044 --- [identity-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-19T20:01:36.209-04:00  INFO 16044 --- [identity-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-06-19T20:01:36.253-04:00  WARN 16044 --- [identity-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-06-19T20:01:36.290-04:00  INFO 16044 --- [identity-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-06-19T20:01:36.323-04:00  INFO 16044 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-06-19T20:01:36.327-04:00  INFO 16044 --- [identity-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:01:36.335-04:00  INFO 16044 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-19T20:01:36.335-04:00  INFO 16044 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-19T20:01:36.335-04:00  INFO 16044 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-19T20:01:36.335-04:00  INFO 16044 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-19T20:01:36.336-04:00  INFO 16044 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-19T20:01:36.336-04:00  INFO 16044 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-06-19T20:01:36.336-04:00  INFO 16044 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-19T20:01:36.747-04:00  INFO 16044 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-19T20:01:36.747-04:00  INFO 16044 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-06-19T20:01:36.747-04:00  INFO 16044 --- [identity-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-06-19T20:01:36.756-04:00  INFO 16044 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781913696756 with initial instances count: 0
-2026-06-19T20:01:36.760-04:00  INFO 16044 --- [identity-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application IDENTITY-SERVICE with eureka with status UP
-2026-06-19T20:01:36.761-04:00  INFO 16044 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781913696761, current=UP, previous=STARTING]
-2026-06-19T20:01:36.763-04:00  INFO 16044 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084: registering service...
-2026-06-19T20:01:36.782-04:00  INFO 16044 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8084 (http) with context path '/'
-2026-06-19T20:01:36.783-04:00  INFO 16044 --- [identity-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8084
-2026-06-19T20:01:36.842-04:00  INFO 16044 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084 - registration status: 204
-2026-06-19T20:01:36.859-04:00  INFO 16044 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Started IdentityServiceApplication in 5.725 seconds (process running for 6.276)
-2026-06-19T20:02:06.763-04:00  INFO 16044 --- [identity-service] [DiscoveryClient-CacheRefreshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-19T20:02:06.764-04:00  INFO 16044 --- [identity-service] [DiscoveryClient-CacheRefreshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-19T20:02:06.764-04:00  INFO 16044 --- [identity-service] [DiscoveryClient-CacheRefreshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-19T20:02:06.764-04:00  INFO 16044 --- [identity-service] [DiscoveryClient-CacheRefreshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-19T20:02:06.764-04:00  INFO 16044 --- [identity-service] [DiscoveryClient-CacheRefreshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-19T20:02:06.764-04:00  INFO 16044 --- [identity-service] [DiscoveryClient-CacheRefreshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Application version is -1: false
-2026-06-19T20:02:06.764-04:00  INFO 16044 --- [identity-service] [DiscoveryClient-CacheRefreshExecutor-%d] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-19T20:02:06.786-04:00  INFO 16044 --- [identity-service] [DiscoveryClient-CacheRefreshExecutor-%d] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-19T20:06:36.349-04:00  INFO 16044 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:11:02.076-04:00  INFO 16044 --- [identity-service] [http-nio-8084-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-19T20:11:02.076-04:00  INFO 16044 --- [identity-service] [http-nio-8084-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-06-19T20:11:02.076-04:00  INFO 16044 --- [identity-service] [http-nio-8084-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
-2026-06-19T20:11:02.256-04:00  INFO 16044 --- [identity-service] [http-nio-8084-exec-1] c.silvio.identity.service.UserService    : Cargando usuario para autenticación: admin
-2026-06-19T20:11:36.357-04:00  INFO 16044 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:16:36.358-04:00  INFO 16044 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:21:36.359-04:00  INFO 16044 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:26:36.367-04:00  INFO 16044 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:31:20.800-04:00  INFO 16044 --- [identity-service] [http-nio-8084-exec-5] c.silvio.identity.service.UserService    : Cargando usuario para autenticación: admin
-2026-06-19T20:31:36.376-04:00  INFO 16044 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:36:36.383-04:00  INFO 16044 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:41:36.390-04:00  INFO 16044 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:46:36.402-04:00  INFO 16044 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:51:36.419-04:00  INFO 16044 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:56:36.431-04:00  INFO 16044 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:01:36.447-04:00  INFO 16044 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:04:41.417-04:00  INFO 10424 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Starting IdentityServiceApplication using Java 17.0.10 with PID 10424 (C:\WorkSpace\SmallBooksRepository\identity-services\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\identity-services)
-2026-06-19T21:04:41.427-04:00 DEBUG 10424 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-19T21:04:41.429-04:00  INFO 10424 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : No active profile set, falling back to 1 default profile: "default"
-2026-06-19T21:04:41.489-04:00  INFO 10424 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-19T21:04:41.491-04:00  INFO 10424 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=identity-service, profiles=[default], label=null, version=null, state=null
-2026-06-19T21:04:42.702-04:00  INFO 10424 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-19T21:04:42.876-04:00  INFO 10424 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 165 ms. Found 1 JPA repository interface.
-2026-06-19T21:04:43.221-04:00  INFO 10424 --- [identity-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=1947a981-b2ac-3bfb-bdc9-bbf2794cbb0e
-2026-06-19T21:04:43.753-04:00  INFO 10424 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8084 (http)
-2026-06-19T21:04:43.792-04:00  INFO 10424 --- [identity-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-19T21:04:43.804-04:00  INFO 10424 --- [identity-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-19T21:04:43.940-04:00  INFO 10424 --- [identity-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-19T21:04:43.948-04:00  INFO 10424 --- [identity-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2455 ms
-2026-06-19T21:04:44.067-04:00 DEBUG 10424 --- [identity-service] [main] c.s.i.security.JwtAuthenticationFilter   : Filter 'jwtAuthenticationFilter' configured for use
-2026-06-19T21:04:44.332-04:00  INFO 10424 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T21:04:44.575-04:00  INFO 10424 --- [identity-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2299f6d7
-2026-06-19T21:04:44.577-04:00  INFO 10424 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-19T21:04:44.654-04:00  INFO 10424 --- [identity-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_identity (MySQL 8.4)
-2026-06-19T21:04:44.674-04:00  WARN 10424 --- [identity-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-06-19T21:04:44.754-04:00  INFO 10424 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_identity`: 3
-2026-06-19T21:04:44.762-04:00  INFO 10424 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_identity` is up to date. No migration necessary.
-2026-06-19T21:04:44.918-04:00  INFO 10424 --- [identity-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-19T21:04:45.012-04:00  INFO 10424 --- [identity-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-06-19T21:04:45.082-04:00  INFO 10424 --- [identity-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-19T21:04:45.477-04:00  INFO 10424 --- [identity-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-19T21:04:46.499-04:00  INFO 10424 --- [identity-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-19T21:04:46.527-04:00  INFO 10424 --- [identity-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-19T21:04:46.993-04:00  INFO 10424 --- [identity-service] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userService
-2026-06-19T21:04:47.108-04:00  WARN 10424 --- [identity-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-19T21:04:47.917-04:00  INFO 10424 --- [identity-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-06-19T21:04:47.953-04:00  WARN 10424 --- [identity-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-06-19T21:04:48.006-04:00  INFO 10424 --- [identity-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-06-19T21:04:48.039-04:00  INFO 10424 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-06-19T21:04:48.047-04:00  INFO 10424 --- [identity-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:04:48.058-04:00  INFO 10424 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-19T21:04:48.058-04:00  INFO 10424 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-19T21:04:48.058-04:00  INFO 10424 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-19T21:04:48.059-04:00  INFO 10424 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-19T21:04:48.059-04:00  INFO 10424 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-19T21:04:48.059-04:00  INFO 10424 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-06-19T21:04:48.059-04:00  INFO 10424 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-19T21:04:48.356-04:00  INFO 10424 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-19T21:04:48.359-04:00  INFO 10424 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-06-19T21:04:48.361-04:00  INFO 10424 --- [identity-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-06-19T21:04:48.362-04:00  INFO 10424 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781917488362 with initial instances count: 11
-2026-06-19T21:04:48.366-04:00  INFO 10424 --- [identity-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application IDENTITY-SERVICE with eureka with status UP
-2026-06-19T21:04:48.367-04:00  INFO 10424 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781917488367, current=UP, previous=STARTING]
-2026-06-19T21:04:48.368-04:00  INFO 10424 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084: registering service...
-2026-06-19T21:04:48.396-04:00  INFO 10424 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8084 (http) with context path '/'
-2026-06-19T21:04:48.397-04:00  INFO 10424 --- [identity-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8084
-2026-06-19T21:04:48.406-04:00  INFO 10424 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084 - registration status: 204
-2026-06-19T21:04:48.462-04:00  INFO 10424 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Started IdentityServiceApplication in 8.254 seconds (process running for 9.008)
-2026-06-19T21:09:48.077-04:00  INFO 10424 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:14:48.088-04:00  INFO 10424 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:17:25.638-04:00  INFO 10424 --- [identity-service] [http-nio-8084-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-19T21:17:25.638-04:00  INFO 10424 --- [identity-service] [http-nio-8084-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-06-19T21:17:25.638-04:00  INFO 10424 --- [identity-service] [http-nio-8084-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2026-06-22T06:06:04.119-04:00  INFO 10812 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Starting IdentityServiceApplication using Java 17.0.10 with PID 10812 (C:\WorkSpace\SmallBooksRepository\identity-services\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\identity-services)
+2026-06-22T06:06:04.126-04:00 DEBUG 10812 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-22T06:06:04.127-04:00  INFO 10812 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : No active profile set, falling back to 1 default profile: "default"
+2026-06-22T06:06:04.185-04:00  INFO 10812 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T06:06:04.185-04:00  INFO 10812 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=identity-service, profiles=[default], label=null, version=null, state=null
+2026-06-22T06:06:05.055-04:00  INFO 10812 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-22T06:06:05.183-04:00  INFO 10812 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 120 ms. Found 1 JPA repository interface.
+2026-06-22T06:06:05.547-04:00  INFO 10812 --- [identity-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=dabd8b19-5336-3e73-b935-87d6e237e7d4
+2026-06-22T06:06:05.957-04:00  INFO 10812 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8084 (http)
+2026-06-22T06:06:05.969-04:00  INFO 10812 --- [identity-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-22T06:06:05.970-04:00  INFO 10812 --- [identity-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-22T06:06:06.054-04:00  INFO 10812 --- [identity-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-22T06:06:06.055-04:00  INFO 10812 --- [identity-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1866 ms
+2026-06-22T06:06:06.115-04:00 DEBUG 10812 --- [identity-service] [main] c.s.i.security.JwtAuthenticationFilter   : Filter 'jwtAuthenticationFilter' configured for use
+2026-06-22T06:06:06.266-04:00  INFO 10812 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-22T06:06:06.410-04:00  INFO 10812 --- [identity-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@614d7fbf
+2026-06-22T06:06:06.412-04:00  INFO 10812 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-22T06:06:06.459-04:00  INFO 10812 --- [identity-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_identity (MySQL 8.4)
+2026-06-22T06:06:06.469-04:00  WARN 10812 --- [identity-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-22T06:06:06.519-04:00  INFO 10812 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_identity`: 3
+2026-06-22T06:06:06.522-04:00  INFO 10812 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_identity` is up to date. No migration necessary.
+2026-06-22T06:06:06.596-04:00  INFO 10812 --- [identity-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-22T06:06:06.646-04:00  INFO 10812 --- [identity-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-22T06:06:06.677-04:00  INFO 10812 --- [identity-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-22T06:06:06.986-04:00  INFO 10812 --- [identity-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-22T06:06:07.820-04:00  INFO 10812 --- [identity-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-22T06:06:07.844-04:00  INFO 10812 --- [identity-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-22T06:06:08.185-04:00  INFO 10812 --- [identity-service] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userService
+2026-06-22T06:06:08.265-04:00  WARN 10812 --- [identity-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-22T06:06:09.037-04:00  INFO 10812 --- [identity-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-22T06:06:09.073-04:00  WARN 10812 --- [identity-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-22T06:06:09.122-04:00  INFO 10812 --- [identity-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-22T06:06:09.146-04:00  INFO 10812 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-22T06:06:09.150-04:00  INFO 10812 --- [identity-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T06:06:09.160-04:00  INFO 10812 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-22T06:06:09.160-04:00  INFO 10812 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-22T06:06:09.160-04:00  INFO 10812 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-22T06:06:09.160-04:00  INFO 10812 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-22T06:06:09.160-04:00  INFO 10812 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-22T06:06:09.161-04:00  INFO 10812 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-22T06:06:09.161-04:00  INFO 10812 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-22T06:06:09.419-04:00  INFO 10812 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-22T06:06:09.421-04:00  INFO 10812 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-22T06:06:09.423-04:00  INFO 10812 --- [identity-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-22T06:06:09.425-04:00  INFO 10812 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1782122769424 with initial instances count: 3
+2026-06-22T06:06:09.428-04:00  INFO 10812 --- [identity-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application IDENTITY-SERVICE with eureka with status UP
+2026-06-22T06:06:09.429-04:00  INFO 10812 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782122769429, current=UP, previous=STARTING]
+2026-06-22T06:06:09.431-04:00  INFO 10812 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084: registering service...
+2026-06-22T06:06:09.457-04:00  INFO 10812 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8084 (http) with context path '/'
+2026-06-22T06:06:09.458-04:00  INFO 10812 --- [identity-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8084
+2026-06-22T06:06:09.463-04:00  INFO 10812 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084 - registration status: 204
+2026-06-22T06:06:09.517-04:00  INFO 10812 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Started IdentityServiceApplication in 6.266 seconds (process running for 6.782)
+2026-06-22T06:06:41.728-04:00  INFO 13060 --- [identity-service] [main] c.s.i.AuthServiceApplicationTests        : Starting AuthServiceApplicationTests using Java 17.0.10 with PID 13060 (started by Silvi in C:\WorkSpace\SmallBooksRepository\identity-services)
+2026-06-22T06:06:41.730-04:00 DEBUG 13060 --- [identity-service] [main] c.s.i.AuthServiceApplicationTests        : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-22T06:06:41.732-04:00  INFO 13060 --- [identity-service] [main] c.s.i.AuthServiceApplicationTests        : No active profile set, falling back to 1 default profile: "default"
+2026-06-22T06:06:41.770-04:00  INFO 13060 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T06:06:41.770-04:00  INFO 13060 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=identity-service, profiles=[default], label=null, version=null, state=null
+2026-06-22T06:06:42.593-04:00  INFO 13060 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-22T06:06:42.721-04:00  INFO 13060 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 119 ms. Found 1 JPA repository interface.
+2026-06-22T06:06:43.070-04:00  INFO 13060 --- [identity-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=dd0e5533-53ef-3dfe-bf4d-ee938d8276a8
+2026-06-22T06:06:43.432-04:00  INFO 13060 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-22T06:06:43.582-04:00  INFO 13060 --- [identity-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@125a8ab6
+2026-06-22T06:06:43.584-04:00  INFO 13060 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-22T06:06:43.628-04:00  INFO 13060 --- [identity-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_identity (MySQL 8.4)
+2026-06-22T06:06:43.640-04:00  WARN 13060 --- [identity-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-22T06:06:43.683-04:00  INFO 13060 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_identity`: 3
+2026-06-22T06:06:43.686-04:00  INFO 13060 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_identity` is up to date. No migration necessary.
+2026-06-22T06:06:43.756-04:00  INFO 13060 --- [identity-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-22T06:06:43.830-04:00  INFO 13060 --- [identity-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-22T06:06:43.871-04:00  INFO 13060 --- [identity-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-22T06:06:44.003-04:00  INFO 13060 --- [identity-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-22T06:06:44.723-04:00  INFO 13060 --- [identity-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-22T06:06:44.753-04:00  INFO 13060 --- [identity-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-22T06:06:45.165-04:00  INFO 13060 --- [identity-service] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userService
+2026-06-22T06:06:45.258-04:00  WARN 13060 --- [identity-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-22T06:06:46.094-04:00  INFO 13060 --- [identity-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-22T06:06:46.132-04:00  WARN 13060 --- [identity-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-22T06:06:46.154-04:00  INFO 13060 --- [identity-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-22T06:06:46.179-04:00  INFO 13060 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-22T06:06:46.182-04:00  INFO 13060 --- [identity-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T06:06:46.189-04:00  INFO 13060 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-22T06:06:46.190-04:00  INFO 13060 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-22T06:06:46.190-04:00  INFO 13060 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-22T06:06:46.190-04:00  INFO 13060 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-22T06:06:46.190-04:00  INFO 13060 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-22T06:06:46.190-04:00  INFO 13060 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-22T06:06:46.190-04:00  INFO 13060 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-22T06:06:46.472-04:00  INFO 13060 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-22T06:06:46.475-04:00  INFO 13060 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-22T06:06:46.477-04:00  INFO 13060 --- [identity-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-22T06:06:46.479-04:00  INFO 13060 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1782122806478 with initial instances count: 4
+2026-06-22T06:06:46.482-04:00  INFO 13060 --- [identity-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application IDENTITY-SERVICE with eureka with status UP
+2026-06-22T06:06:46.482-04:00  INFO 13060 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782122806482, current=UP, previous=STARTING]
+2026-06-22T06:06:46.484-04:00  INFO 13060 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084: registering service...
+2026-06-22T06:06:46.501-04:00  INFO 13060 --- [identity-service] [main] c.s.i.AuthServiceApplicationTests        : Started AuthServiceApplicationTests in 5.624 seconds (process running for 7.78)
+2026-06-22T06:06:46.513-04:00  INFO 13060 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084 - registration status: 204
+2026-06-22T06:06:46.536-04:00  INFO 13060 --- [identity-service] [SpringApplicationShutdownHook] o.s.c.n.e.s.EurekaServiceRegistry        : Unregistering application IDENTITY-SERVICE with eureka with status DOWN
+2026-06-22T06:06:46.536-04:00  INFO 13060 --- [identity-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782122806536, current=DOWN, previous=UP]
+2026-06-22T06:06:46.536-04:00  INFO 13060 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084: registering service...
+2026-06-22T06:06:46.541-04:00  INFO 13060 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084 - registration status: 204
+2026-06-22T06:06:46.544-04:00  INFO 13060 --- [identity-service] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-06-22T06:06:46.546-04:00  INFO 13060 --- [identity-service] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-06-22T06:06:46.552-04:00  INFO 13060 --- [identity-service] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-06-22T06:06:46.553-04:00  INFO 13060 --- [identity-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Shutting down DiscoveryClient ...
+2026-06-22T06:06:49.566-04:00  INFO 13060 --- [identity-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Unregistering ...
+2026-06-22T06:06:49.583-04:00  INFO 13060 --- [identity-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084 - deregister  status: 200
+2026-06-22T06:06:49.584-04:00  INFO 13060 --- [identity-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Completed shut down of DiscoveryClient
+2026-06-22T06:07:09.466-04:00  INFO 10812 --- [identity-service] [DiscoveryClient-HeartbeatExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084 - Re-registering apps/IDENTITY-SERVICE
+2026-06-22T06:07:09.467-04:00  INFO 10812 --- [identity-service] [DiscoveryClient-HeartbeatExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084: registering service...
+2026-06-22T06:07:09.473-04:00  INFO 10812 --- [identity-service] [DiscoveryClient-HeartbeatExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084 - registration status: 204
+2026-06-22T06:11:09.171-04:00  INFO 10812 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

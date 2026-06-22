@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 @Tag(name = "Search", description = "Búsqueda y descubrimiento de libros — consulta el catálogo via Feign desde Catalog Service")
 @RestController
 @RequestMapping("/api/search")
@@ -29,7 +31,14 @@ public class SearchController {
     })
     @GetMapping
     public ResponseEntity<List<SearchResultDTO>> obtenerTodos() {
-        return ResponseEntity.ok(searchService.obtenerTodos());
+        List<SearchResultDTO> lista = searchService.obtenerTodos();
+
+        lista.forEach(dto ->
+            dto.add(linkTo(methodOn(SearchController.class)
+                    .obtenerTodos()).withSelfRel())
+        );
+
+        return ResponseEntity.ok(lista);
     }
 
     @Operation(summary = "Listar libros disponibles",
@@ -39,12 +48,19 @@ public class SearchController {
     })
     @GetMapping("/disponibles")
     public ResponseEntity<List<SearchResultDTO>> disponibles() {
-        return ResponseEntity.ok(searchService.buscarDisponibles());
+        List<SearchResultDTO> lista = searchService.buscarDisponibles();
+
+        lista.forEach(dto ->
+            dto.add(linkTo(methodOn(SearchController.class)
+                    .disponibles()).withSelfRel())
+        );
+
+        return ResponseEntity.ok(lista);
     }
 
     @Operation(summary = "Buscar libros",
                description = "Búsqueda combinable por título, autor o género. " +
-                             "Todos los parámetros son opcionales — se pueden usar individualmente o combinados. " +
+                             "Todos los parámetros son opcionales. " +
                              "Ejemplo: /api/search/buscar?titulo=harry&genero=fantasia")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Resultados de búsqueda obtenidos"),
@@ -58,6 +74,13 @@ public class SearchController {
             @RequestParam(required = false) String autor,
             @Parameter(description = "Género literario")
             @RequestParam(required = false) String genero) {
-        return ResponseEntity.ok(searchService.buscar(titulo, autor, genero));
+        List<SearchResultDTO> lista = searchService.buscar(titulo, autor, genero);
+
+        lista.forEach(dto ->
+            dto.add(linkTo(methodOn(SearchController.class)
+                    .buscar(titulo, autor, genero)).withSelfRel())
+        );
+
+        return ResponseEntity.ok(lista);
     }
 }

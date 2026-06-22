@@ -1,875 +1,104 @@
-2026-06-19T20:32:18.926-04:00  INFO 19552 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Starting IngestionServiceApplication using Java 17.0.10 with PID 19552 (C:\WorkSpace\SmallBooksRepository\ingestion-service\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository)
-2026-06-19T20:32:18.927-04:00 DEBUG 19552 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-19T20:32:18.927-04:00  INFO 19552 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : No active profile set, falling back to 1 default profile: "default"
-2026-06-19T20:32:18.981-04:00  INFO 19552 --- [ingestion-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-19T20:32:18.981-04:00  INFO 19552 --- [ingestion-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=ingestion-service, profiles=[default], label=null, version=null, state=null
-2026-06-19T20:32:19.951-04:00  INFO 19552 --- [ingestion-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-19T20:32:20.108-04:00  INFO 19552 --- [ingestion-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 138 ms. Found 1 JPA repository interface.
-2026-06-19T20:32:20.319-04:00  INFO 19552 --- [ingestion-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=333799b7-8372-3125-a91e-c78e791f0554
-2026-06-19T20:32:20.792-04:00  INFO 19552 --- [ingestion-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8092 (http)
-2026-06-19T20:32:20.809-04:00  INFO 19552 --- [ingestion-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-19T20:32:20.810-04:00  INFO 19552 --- [ingestion-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-19T20:32:20.884-04:00  INFO 19552 --- [ingestion-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-19T20:32:20.884-04:00  INFO 19552 --- [ingestion-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1903 ms
-2026-06-19T20:32:21.067-04:00  INFO 19552 --- [ingestion-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T20:32:21.237-04:00  INFO 19552 --- [ingestion-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@3d71e10b
-2026-06-19T20:32:21.237-04:00  INFO 19552 --- [ingestion-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-19T20:32:21.296-04:00  INFO 19552 --- [ingestion-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_ingestion (MySQL 8.4)
-2026-06-19T20:32:21.311-04:00  WARN 19552 --- [ingestion-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-06-19T20:32:21.368-04:00  INFO 19552 --- [ingestion-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.037s)
-2026-06-19T20:32:21.368-04:00  INFO 19552 --- [ingestion-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_ingestion`: 2
-2026-06-19T20:32:21.384-04:00  INFO 19552 --- [ingestion-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_ingestion` is up to date. No migration necessary.
-2026-06-19T20:32:21.448-04:00  INFO 19552 --- [ingestion-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-19T20:32:21.499-04:00  INFO 19552 --- [ingestion-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-06-19T20:32:21.538-04:00  INFO 19552 --- [ingestion-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-19T20:32:21.884-04:00  INFO 19552 --- [ingestion-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-19T20:32:21.948-04:00  WARN 19552 --- [ingestion-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-06-19T20:32:22.681-04:00  INFO 19552 --- [ingestion-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-19T20:32:22.698-04:00  INFO 19552 --- [ingestion-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-19T20:32:23.065-04:00  WARN 19552 --- [ingestion-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-19T20:32:23.567-04:00  INFO 19552 --- [ingestion-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-06-19T20:32:23.621-04:00  WARN 19552 --- [ingestion-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-06-19T20:32:23.650-04:00  INFO 19552 --- [ingestion-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-06-19T20:32:23.690-04:00  INFO 19552 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-06-19T20:32:23.695-04:00  INFO 19552 --- [ingestion-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:32:23.707-04:00  INFO 19552 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-19T20:32:23.707-04:00  INFO 19552 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-19T20:32:23.707-04:00  INFO 19552 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-19T20:32:23.707-04:00  INFO 19552 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-19T20:32:23.707-04:00  INFO 19552 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-19T20:32:23.707-04:00  INFO 19552 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-06-19T20:32:23.707-04:00  INFO 19552 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-19T20:32:24.010-04:00  INFO 19552 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-19T20:32:24.010-04:00  INFO 19552 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-06-19T20:32:24.014-04:00  INFO 19552 --- [ingestion-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-06-19T20:32:24.017-04:00  INFO 19552 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781915544017 with initial instances count: 11
-2026-06-19T20:32:24.018-04:00  INFO 19552 --- [ingestion-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application INGESTION-SERVICE with eureka with status UP
-2026-06-19T20:32:24.018-04:00  INFO 19552 --- [ingestion-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781915544018, current=UP, previous=STARTING]
-2026-06-19T20:32:24.023-04:00  INFO 19552 --- [ingestion-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_INGESTION-SERVICE/host.docker.internal:ingestion-service:8092: registering service...
-2026-06-19T20:32:24.049-04:00  INFO 19552 --- [ingestion-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8092 (http) with context path '/'
-2026-06-19T20:32:24.050-04:00  INFO 19552 --- [ingestion-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8092
-2026-06-19T20:32:24.057-04:00  INFO 19552 --- [ingestion-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_INGESTION-SERVICE/host.docker.internal:ingestion-service:8092 - registration status: 204
-2026-06-19T20:32:24.098-04:00  INFO 19552 --- [ingestion-service] [main] c.s.i.IngestionServiceApplication        : Started IngestionServiceApplication in 6.189 seconds (process running for 6.618)
-2026-06-19T20:32:28.219-04:00  INFO 19552 --- [ingestion-service] [http-nio-8092-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-19T20:32:28.220-04:00  INFO 19552 --- [ingestion-service] [http-nio-8092-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-06-19T20:32:28.221-04:00  INFO 19552 --- [ingestion-service] [http-nio-8092-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-2026-06-19T20:32:28.396-04:00  INFO 19552 --- [ingestion-service] [http-nio-8092-exec-1] c.s.ingestion.service.IngestionService   : Subiendo archivo para libro id: 99, nombre: Cuentos que cuidan.pdf, tamaño: 11202128 bytes
-2026-06-19T20:32:29.034-04:00  INFO 19552 --- [ingestion-service] [http-nio-8092-exec-1] c.s.ingestion.service.IngestionService   : Archivo subido exitosamente — id: 16, libro: 99, formato: PDF, ruta: db:99
-2026-06-19T20:37:23.713-04:00  INFO 19552 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:42:23.724-04:00  INFO 19552 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:47:23.725-04:00  INFO 19552 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:52:23.740-04:00  INFO 19552 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T20:57:23.754-04:00  INFO 19552 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:02:23.756-04:00  INFO 19552 --- [ingestion-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:12:14.342-04:00  INFO 3680 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Starting CatalogServiceApplication using Java 17.0.10 with PID 3680 (C:\WorkSpace\SmallBooksRepository\catalog-service\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository)
-2026-06-19T21:12:14.342-04:00 DEBUG 3680 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-19T21:12:14.342-04:00  INFO 3680 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : No active profile set, falling back to 1 default profile: "default"
-2026-06-19T21:12:14.406-04:00  INFO 3680 --- [catalog-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-19T21:12:14.406-04:00  INFO 3680 --- [catalog-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=catalog-service, profiles=[default], label=null, version=null, state=null
-2026-06-19T21:12:15.329-04:00  INFO 3680 --- [catalog-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-19T21:12:15.477-04:00  INFO 3680 --- [catalog-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 134 ms. Found 1 JPA repository interface.
-2026-06-19T21:12:15.741-04:00  INFO 3680 --- [catalog-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=d818dd8a-961e-3de2-9b57-40bb76090bf4
-2026-06-19T21:12:16.124-04:00  INFO 3680 --- [catalog-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8085 (http)
-2026-06-19T21:12:16.148-04:00  INFO 3680 --- [catalog-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-19T21:12:16.148-04:00  INFO 3680 --- [catalog-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-19T21:12:16.242-04:00  INFO 3680 --- [catalog-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-19T21:12:16.242-04:00  INFO 3680 --- [catalog-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1829 ms
-2026-06-19T21:12:16.451-04:00  INFO 3680 --- [catalog-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T21:12:16.611-04:00  INFO 3680 --- [catalog-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@42238078
-2026-06-19T21:12:16.611-04:00  INFO 3680 --- [catalog-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-19T21:12:16.659-04:00  INFO 3680 --- [catalog-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_catalog (MySQL 8.4)
-2026-06-19T21:12:16.670-04:00  WARN 3680 --- [catalog-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-06-19T21:12:16.704-04:00  INFO 3680 --- [catalog-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.033s)
-2026-06-19T21:12:16.728-04:00  INFO 3680 --- [catalog-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_catalog`: 2
-2026-06-19T21:12:16.731-04:00  INFO 3680 --- [catalog-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_catalog` is up to date. No migration necessary.
-2026-06-19T21:12:16.793-04:00  INFO 3680 --- [catalog-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-19T21:12:16.867-04:00  INFO 3680 --- [catalog-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-06-19T21:12:16.904-04:00  INFO 3680 --- [catalog-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-19T21:12:17.259-04:00  INFO 3680 --- [catalog-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-19T21:12:17.330-04:00  WARN 3680 --- [catalog-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-06-19T21:12:18.170-04:00  INFO 3680 --- [catalog-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-19T21:12:18.203-04:00  INFO 3680 --- [catalog-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-19T21:12:18.620-04:00  WARN 3680 --- [catalog-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-19T21:12:19.305-04:00  INFO 3680 --- [catalog-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-06-19T21:12:19.350-04:00  WARN 3680 --- [catalog-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-06-19T21:12:19.402-04:00  INFO 3680 --- [catalog-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-06-19T21:12:19.427-04:00  INFO 3680 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-06-19T21:12:19.447-04:00  INFO 3680 --- [catalog-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:12:19.484-04:00  INFO 3680 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-19T21:12:19.484-04:00  INFO 3680 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-19T21:12:19.486-04:00  INFO 3680 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-19T21:12:19.486-04:00  INFO 3680 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-19T21:12:19.486-04:00  INFO 3680 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-19T21:12:19.486-04:00  INFO 3680 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-06-19T21:12:19.486-04:00  INFO 3680 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-19T21:12:19.784-04:00  INFO 3680 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-19T21:12:19.784-04:00  INFO 3680 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-06-19T21:12:19.789-04:00  INFO 3680 --- [catalog-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-06-19T21:12:19.791-04:00  INFO 3680 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781917939791 with initial instances count: 11
-2026-06-19T21:12:19.797-04:00  INFO 3680 --- [catalog-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application CATALOG-SERVICE with eureka with status UP
-2026-06-19T21:12:19.797-04:00  INFO 3680 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781917939797, current=UP, previous=STARTING]
-2026-06-19T21:12:19.800-04:00  INFO 3680 --- [catalog-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_CATALOG-SERVICE/host.docker.internal:catalog-service:8085: registering service...
-2026-06-19T21:12:19.830-04:00  INFO 3680 --- [catalog-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8085 (http) with context path '/'
-2026-06-19T21:12:19.830-04:00  INFO 3680 --- [catalog-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8085
-2026-06-19T21:12:19.837-04:00  INFO 3680 --- [catalog-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_CATALOG-SERVICE/host.docker.internal:catalog-service:8085 - registration status: 204
-2026-06-19T21:12:19.901-04:00  INFO 3680 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Started CatalogServiceApplication in 6.521 seconds (process running for 7.106)
-2026-06-19T21:12:30.948-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-19T21:12:30.954-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-06-19T21:12:30.954-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
-2026-06-19T21:12:31.668-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-8] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 457 ms
-2026-06-19T21:13:35.415-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-6] c.silvio.catalog.service.CatalogService  : Búsqueda — titulo: quijote, autor: null, genero: null
-2026-06-19T21:13:54.642-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-3] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 1
-2026-06-19T21:14:02.832-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-4] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 16
-2026-06-19T21:14:02.836-04:00  WARN 3680 --- [catalog-service] [http-nio-8085-exec-4] c.silvio.catalog.service.CatalogService  : Libro no encontrado con id: 16
-2026-06-19T21:14:06.449-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-7] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 99
-2026-06-19T21:14:06.449-04:00  WARN 3680 --- [catalog-service] [http-nio-8085-exec-7] c.silvio.catalog.service.CatalogService  : Libro no encontrado con id: 99
-2026-06-19T21:14:09.487-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-8] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 6
-2026-06-19T21:14:09.490-04:00  WARN 3680 --- [catalog-service] [http-nio-8085-exec-8] c.silvio.catalog.service.CatalogService  : Libro no encontrado con id: 6
-2026-06-19T21:14:11.232-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-1] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 7
-2026-06-19T21:14:11.235-04:00  WARN 3680 --- [catalog-service] [http-nio-8085-exec-1] c.silvio.catalog.service.CatalogService  : Libro no encontrado con id: 7
-2026-06-19T21:14:12.602-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-9] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 8
-2026-06-19T21:14:12.602-04:00  WARN 3680 --- [catalog-service] [http-nio-8085-exec-9] c.silvio.catalog.service.CatalogService  : Libro no encontrado con id: 8
-2026-06-19T21:14:13.963-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-2] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 9
-2026-06-19T21:14:13.963-04:00  WARN 3680 --- [catalog-service] [http-nio-8085-exec-2] c.silvio.catalog.service.CatalogService  : Libro no encontrado con id: 9
-2026-06-19T21:14:18.320-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-10] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 10
-2026-06-19T21:14:18.320-04:00  WARN 3680 --- [catalog-service] [http-nio-8085-exec-10] c.silvio.catalog.service.CatalogService  : Libro no encontrado con id: 10
-2026-06-19T21:14:20.401-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-5] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 11
-2026-06-19T21:14:20.401-04:00  WARN 3680 --- [catalog-service] [http-nio-8085-exec-5] c.silvio.catalog.service.CatalogService  : Libro no encontrado con id: 11
-2026-06-19T21:14:22.490-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-6] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 12
-2026-06-19T21:14:22.494-04:00  WARN 3680 --- [catalog-service] [http-nio-8085-exec-6] c.silvio.catalog.service.CatalogService  : Libro no encontrado con id: 12
-2026-06-19T21:14:24.636-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-3] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 13
-2026-06-19T21:14:24.640-04:00  WARN 3680 --- [catalog-service] [http-nio-8085-exec-3] c.silvio.catalog.service.CatalogService  : Libro no encontrado con id: 13
-2026-06-19T21:14:26.685-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-4] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 14
-2026-06-19T21:14:26.685-04:00  WARN 3680 --- [catalog-service] [http-nio-8085-exec-4] c.silvio.catalog.service.CatalogService  : Libro no encontrado con id: 14
-2026-06-19T21:14:28.830-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-7] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 15
-2026-06-19T21:14:28.830-04:00  WARN 3680 --- [catalog-service] [http-nio-8085-exec-7] c.silvio.catalog.service.CatalogService  : Libro no encontrado con id: 15
-2026-06-19T21:14:31.004-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-8] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 16
-2026-06-19T21:14:31.004-04:00  WARN 3680 --- [catalog-service] [http-nio-8085-exec-8] c.silvio.catalog.service.CatalogService  : Libro no encontrado con id: 16
-2026-06-19T21:14:32.530-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-1] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 17
-2026-06-19T21:14:32.530-04:00  WARN 3680 --- [catalog-service] [http-nio-8085-exec-1] c.silvio.catalog.service.CatalogService  : Libro no encontrado con id: 17
-2026-06-19T21:14:34.659-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-9] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 18
-2026-06-19T21:14:34.659-04:00  WARN 3680 --- [catalog-service] [http-nio-8085-exec-9] c.silvio.catalog.service.CatalogService  : Libro no encontrado con id: 18
-2026-06-19T21:14:36.408-04:00  INFO 3680 --- [catalog-service] [http-nio-8085-exec-2] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 2
-2026-06-19T21:16:31.724-04:00  INFO 15420 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : Starting PrestamoServiceApplication using Java 17.0.10 with PID 15420 (C:\WorkSpace\SmallBooksRepository\elending-service\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository)
-2026-06-19T21:16:31.727-04:00 DEBUG 15420 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-19T21:16:31.728-04:00  INFO 15420 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : No active profile set, falling back to 1 default profile: "default"
-2026-06-19T21:16:31.779-04:00  INFO 15420 --- [elending-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-19T21:16:31.779-04:00  INFO 15420 --- [elending-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=elending-service, profiles=[default], label=null, version=null, state=null
-2026-06-19T21:16:32.736-04:00  INFO 15420 --- [elending-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-19T21:16:32.924-04:00  INFO 15420 --- [elending-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 166 ms. Found 1 JPA repository interface.
-2026-06-19T21:16:33.219-04:00  INFO 15420 --- [elending-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=1a5f9d9e-0fa3-31c4-9d04-b70135b2d217
-2026-06-19T21:16:33.674-04:00  INFO 15420 --- [elending-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8087 (http)
-2026-06-19T21:16:33.692-04:00  INFO 15420 --- [elending-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-19T21:16:33.692-04:00  INFO 15420 --- [elending-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-19T21:16:33.778-04:00  INFO 15420 --- [elending-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-19T21:16:33.778-04:00  INFO 15420 --- [elending-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1996 ms
-2026-06-19T21:16:33.993-04:00  INFO 15420 --- [elending-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T21:16:34.186-04:00  INFO 15420 --- [elending-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@265287ec
-2026-06-19T21:16:34.188-04:00  INFO 15420 --- [elending-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-19T21:16:34.246-04:00  INFO 15420 --- [elending-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_lending (MySQL 8.4)
-2026-06-19T21:16:34.256-04:00  WARN 15420 --- [elending-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-06-19T21:16:34.302-04:00  INFO 15420 --- [elending-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.035s)
-2026-06-19T21:16:34.319-04:00  INFO 15420 --- [elending-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_lending`: 1
-2026-06-19T21:16:34.323-04:00  INFO 15420 --- [elending-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_lending` is up to date. No migration necessary.
-2026-06-19T21:16:34.395-04:00  INFO 15420 --- [elending-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-19T21:16:34.457-04:00  INFO 15420 --- [elending-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-06-19T21:16:34.496-04:00  INFO 15420 --- [elending-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-19T21:16:34.811-04:00  INFO 15420 --- [elending-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-19T21:16:34.868-04:00  WARN 15420 --- [elending-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-06-19T21:16:35.566-04:00  INFO 15420 --- [elending-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-19T21:16:35.588-04:00  INFO 15420 --- [elending-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-19T21:16:36.051-04:00  WARN 15420 --- [elending-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-19T21:16:36.241-04:00  INFO 15420 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'license-service' URL not provided. Will try picking an instance via load-balancing.
-2026-06-19T21:16:36.310-04:00  INFO 15420 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'subscription-service' URL not provided. Will try picking an instance via load-balancing.
-2026-06-19T21:16:36.335-04:00  INFO 15420 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'notification-service' URL not provided. Will try picking an instance via load-balancing.
-2026-06-19T21:16:36.901-04:00  INFO 15420 --- [elending-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-06-19T21:16:36.925-04:00  WARN 15420 --- [elending-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-06-19T21:16:36.979-04:00  INFO 15420 --- [elending-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-06-19T21:16:37.009-04:00  INFO 15420 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-06-19T21:16:37.013-04:00  INFO 15420 --- [elending-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:16:37.022-04:00  INFO 15420 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-19T21:16:37.022-04:00  INFO 15420 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-19T21:16:37.022-04:00  INFO 15420 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-19T21:16:37.023-04:00  INFO 15420 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-19T21:16:37.023-04:00  INFO 15420 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-19T21:16:37.023-04:00  INFO 15420 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-06-19T21:16:37.023-04:00  INFO 15420 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-19T21:16:37.301-04:00  INFO 15420 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-19T21:16:37.304-04:00  INFO 15420 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-06-19T21:16:37.306-04:00  INFO 15420 --- [elending-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-06-19T21:16:37.308-04:00  INFO 15420 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781918197308 with initial instances count: 11
-2026-06-19T21:16:37.315-04:00  INFO 15420 --- [elending-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application ELENDING-SERVICE with eureka with status UP
-2026-06-19T21:16:37.316-04:00  INFO 15420 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781918197316, current=UP, previous=STARTING]
-2026-06-19T21:16:37.319-04:00  INFO 15420 --- [elending-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/host.docker.internal:elending-service:8087: registering service...
-2026-06-19T21:16:37.356-04:00  INFO 15420 --- [elending-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8087 (http) with context path '/'
-2026-06-19T21:16:37.357-04:00  INFO 15420 --- [elending-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8087
-2026-06-19T21:16:37.360-04:00  INFO 15420 --- [elending-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/host.docker.internal:elending-service:8087 - registration status: 204
-2026-06-19T21:16:37.439-04:00  INFO 15420 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : Started PrestamoServiceApplication in 6.682 seconds (process running for 7.208)
-2026-06-19T21:16:37.447-04:00  INFO 15420 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Scheduler ejecutado — verificando préstamos vencidos a las 2026-06-19T21:16:37.447412100
-2026-06-19T21:16:37.579-04:00  INFO 15420 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Préstamos vencidos encontrados: 0
-2026-06-19T21:16:37.582-04:00  INFO 15420 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Préstamos próximos a vencer (2 días): 0
-2026-06-19T21:17:19.497-04:00  INFO 3680 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:17:50.446-04:00  INFO 15420 --- [elending-service] [http-nio-8087-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-19T21:17:50.446-04:00  INFO 15420 --- [elending-service] [http-nio-8087-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-06-19T21:17:50.446-04:00  INFO 15420 --- [elending-service] [http-nio-8087-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
-2026-06-19T21:17:51.060-04:00  INFO 15420 --- [elending-service] [http-nio-8087-exec-10] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 322 ms
-2026-06-19T21:18:54.925-04:00  INFO 13084 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Starting IdentityServiceApplication using Java 17.0.10 with PID 13084 (C:\WorkSpace\SmallBooksRepository\identity-services\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository)
-2026-06-19T21:18:54.928-04:00 DEBUG 13084 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-19T21:18:54.929-04:00  INFO 13084 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : No active profile set, falling back to 1 default profile: "default"
-2026-06-19T21:18:54.981-04:00  INFO 13084 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-19T21:18:54.981-04:00  INFO 13084 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=identity-service, profiles=[default], label=null, version=null, state=null
-2026-06-19T21:18:55.873-04:00  INFO 13084 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-19T21:18:56.011-04:00  INFO 13084 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 122 ms. Found 1 JPA repository interface.
-2026-06-19T21:18:56.273-04:00  INFO 13084 --- [identity-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=1947a981-b2ac-3bfb-bdc9-bbf2794cbb0e
-2026-06-19T21:18:56.743-04:00  INFO 13084 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8084 (http)
-2026-06-19T21:18:56.763-04:00  INFO 13084 --- [identity-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-19T21:18:56.763-04:00  INFO 13084 --- [identity-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-19T21:18:56.855-04:00  INFO 13084 --- [identity-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-19T21:18:56.864-04:00  INFO 13084 --- [identity-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1879 ms
-2026-06-19T21:18:56.919-04:00 DEBUG 13084 --- [identity-service] [main] c.s.i.security.JwtAuthenticationFilter   : Filter 'jwtAuthenticationFilter' configured for use
-2026-06-19T21:18:57.071-04:00  INFO 13084 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T21:18:57.233-04:00  INFO 13084 --- [identity-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7252bdb
-2026-06-19T21:18:57.235-04:00  INFO 13084 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-19T21:18:57.281-04:00  INFO 13084 --- [identity-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_identity (MySQL 8.4)
-2026-06-19T21:18:57.294-04:00  WARN 13084 --- [identity-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-06-19T21:18:57.343-04:00  INFO 13084 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_identity`: 3
-2026-06-19T21:18:57.349-04:00  INFO 13084 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_identity` is up to date. No migration necessary.
-2026-06-19T21:18:57.434-04:00  INFO 13084 --- [identity-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-19T21:18:57.498-04:00  INFO 13084 --- [identity-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-06-19T21:18:57.545-04:00  INFO 13084 --- [identity-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-19T21:18:57.914-04:00  INFO 13084 --- [identity-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-19T21:18:58.950-04:00  INFO 13084 --- [identity-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-19T21:18:58.978-04:00  INFO 13084 --- [identity-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-19T21:18:59.354-04:00  INFO 13084 --- [identity-service] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userService
-2026-06-19T21:18:59.441-04:00  WARN 13084 --- [identity-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-19T21:19:00.186-04:00  INFO 13084 --- [identity-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-06-19T21:19:00.237-04:00  WARN 13084 --- [identity-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-06-19T21:19:00.293-04:00  INFO 13084 --- [identity-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-06-19T21:19:00.324-04:00  INFO 13084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-06-19T21:19:00.330-04:00  INFO 13084 --- [identity-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:19:00.338-04:00  INFO 13084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-19T21:19:00.338-04:00  INFO 13084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-19T21:19:00.338-04:00  INFO 13084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-19T21:19:00.338-04:00  INFO 13084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-19T21:19:00.338-04:00  INFO 13084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-19T21:19:00.338-04:00  INFO 13084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-06-19T21:19:00.338-04:00  INFO 13084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-19T21:19:00.725-04:00  INFO 13084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-19T21:19:00.729-04:00  INFO 13084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-06-19T21:19:00.731-04:00  INFO 13084 --- [identity-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-06-19T21:19:00.732-04:00  INFO 13084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781918340732 with initial instances count: 11
-2026-06-19T21:19:00.737-04:00  INFO 13084 --- [identity-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application IDENTITY-SERVICE with eureka with status UP
-2026-06-19T21:19:00.737-04:00  INFO 13084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781918340737, current=UP, previous=STARTING]
-2026-06-19T21:19:00.740-04:00  INFO 13084 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084: registering service...
-2026-06-19T21:19:00.764-04:00  INFO 13084 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8084 (http) with context path '/'
-2026-06-19T21:19:00.766-04:00  INFO 13084 --- [identity-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8084
-2026-06-19T21:19:00.773-04:00  INFO 13084 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084 - registration status: 204
-2026-06-19T21:19:00.849-04:00  INFO 13084 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Started IdentityServiceApplication in 6.878 seconds (process running for 7.395)
-2026-06-19T21:19:24.378-04:00  INFO 13084 --- [identity-service] [http-nio-8084-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-19T21:19:24.378-04:00  INFO 13084 --- [identity-service] [http-nio-8084-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-06-19T21:19:24.381-04:00  INFO 13084 --- [identity-service] [http-nio-8084-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
-2026-06-19T21:21:37.026-04:00  INFO 15420 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:21:59.545-04:00  INFO 30908 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Starting IdentityServiceApplication using Java 17.0.10 with PID 30908 (C:\WorkSpace\SmallBooksRepository\identity-services\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository)
-2026-06-19T21:21:59.547-04:00 DEBUG 30908 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-19T21:21:59.547-04:00  INFO 30908 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : No active profile set, falling back to 1 default profile: "default"
-2026-06-19T21:21:59.600-04:00  INFO 30908 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-19T21:21:59.602-04:00  INFO 30908 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=identity-service, profiles=[default], label=null, version=null, state=null
-2026-06-19T21:22:00.470-04:00  INFO 30908 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-19T21:22:00.620-04:00  INFO 30908 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 143 ms. Found 1 JPA repository interface.
-2026-06-19T21:22:00.875-04:00  INFO 30908 --- [identity-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=1947a981-b2ac-3bfb-bdc9-bbf2794cbb0e
-2026-06-19T21:22:01.342-04:00  INFO 30908 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8084 (http)
-2026-06-19T21:22:01.359-04:00  INFO 30908 --- [identity-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-19T21:22:01.359-04:00  INFO 30908 --- [identity-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-19T21:22:01.446-04:00  INFO 30908 --- [identity-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-19T21:22:01.446-04:00  INFO 30908 --- [identity-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1844 ms
-2026-06-19T21:22:01.503-04:00 DEBUG 30908 --- [identity-service] [main] c.s.i.security.JwtAuthenticationFilter   : Filter 'jwtAuthenticationFilter' configured for use
-2026-06-19T21:22:01.650-04:00  INFO 30908 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T21:22:01.806-04:00  INFO 30908 --- [identity-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2d3eecda
-2026-06-19T21:22:01.808-04:00  INFO 30908 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-19T21:22:01.860-04:00  INFO 30908 --- [identity-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_identity (MySQL 8.4)
-2026-06-19T21:22:01.871-04:00  WARN 30908 --- [identity-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-06-19T21:22:01.922-04:00  INFO 30908 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_identity`: 3
-2026-06-19T21:22:01.927-04:00  INFO 30908 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_identity` is up to date. No migration necessary.
-2026-06-19T21:22:01.997-04:00  INFO 30908 --- [identity-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-19T21:22:02.067-04:00  INFO 30908 --- [identity-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-06-19T21:22:02.101-04:00  INFO 30908 --- [identity-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-19T21:22:02.429-04:00  INFO 30908 --- [identity-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-19T21:22:03.340-04:00  INFO 30908 --- [identity-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-19T21:22:03.368-04:00  INFO 30908 --- [identity-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-19T21:22:03.706-04:00  INFO 30908 --- [identity-service] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userService
-2026-06-19T21:22:03.806-04:00  WARN 30908 --- [identity-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-19T21:22:04.567-04:00  INFO 30908 --- [identity-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-06-19T21:22:04.608-04:00  WARN 30908 --- [identity-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-06-19T21:22:04.660-04:00  INFO 30908 --- [identity-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-06-19T21:22:04.683-04:00  INFO 30908 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-06-19T21:22:04.688-04:00  INFO 30908 --- [identity-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:22:04.700-04:00  INFO 30908 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-19T21:22:04.701-04:00  INFO 30908 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-19T21:22:04.701-04:00  INFO 30908 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-19T21:22:04.701-04:00  INFO 30908 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-19T21:22:04.701-04:00  INFO 30908 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-19T21:22:04.702-04:00  INFO 30908 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-06-19T21:22:04.702-04:00  INFO 30908 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-19T21:22:05.006-04:00  INFO 30908 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-19T21:22:05.009-04:00  INFO 30908 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-06-19T21:22:05.010-04:00  INFO 30908 --- [identity-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-06-19T21:22:05.012-04:00  INFO 30908 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781918525011 with initial instances count: 11
-2026-06-19T21:22:05.015-04:00  INFO 30908 --- [identity-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application IDENTITY-SERVICE with eureka with status UP
-2026-06-19T21:22:05.016-04:00  INFO 30908 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781918525016, current=UP, previous=STARTING]
-2026-06-19T21:22:05.018-04:00  INFO 30908 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084: registering service...
-2026-06-19T21:22:05.041-04:00  INFO 30908 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8084 (http) with context path '/'
-2026-06-19T21:22:05.042-04:00  INFO 30908 --- [identity-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8084
-2026-06-19T21:22:05.049-04:00  INFO 30908 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084 - registration status: 204
-2026-06-19T21:22:05.111-04:00  INFO 30908 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Started IdentityServiceApplication in 6.611 seconds (process running for 7.14)
-2026-06-19T21:22:15.039-04:00  INFO 30908 --- [identity-service] [http-nio-8084-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-19T21:22:15.039-04:00  INFO 30908 --- [identity-service] [http-nio-8084-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-06-19T21:22:15.047-04:00  INFO 30908 --- [identity-service] [http-nio-8084-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
-2026-06-19T21:22:19.503-04:00  INFO 3680 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:24:52.051-04:00  INFO 21084 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Starting IdentityServiceApplication using Java 17.0.10 with PID 21084 (C:\WorkSpace\SmallBooksRepository\identity-services\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository)
-2026-06-19T21:24:52.064-04:00 DEBUG 21084 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-19T21:24:52.064-04:00  INFO 21084 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : No active profile set, falling back to 1 default profile: "default"
-2026-06-19T21:24:52.113-04:00  INFO 21084 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-19T21:24:52.114-04:00  INFO 21084 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=identity-service, profiles=[default], label=null, version=null, state=null
-2026-06-19T21:24:53.158-04:00  INFO 21084 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-19T21:24:53.296-04:00  INFO 21084 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 125 ms. Found 1 JPA repository interface.
-2026-06-19T21:24:53.578-04:00  INFO 21084 --- [identity-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=1947a981-b2ac-3bfb-bdc9-bbf2794cbb0e
-2026-06-19T21:24:54.119-04:00  INFO 21084 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8084 (http)
-2026-06-19T21:24:54.135-04:00  INFO 21084 --- [identity-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-19T21:24:54.135-04:00  INFO 21084 --- [identity-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-19T21:24:54.219-04:00  INFO 21084 --- [identity-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-19T21:24:54.219-04:00  INFO 21084 --- [identity-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2102 ms
-2026-06-19T21:24:54.283-04:00 DEBUG 21084 --- [identity-service] [main] c.s.i.security.JwtAuthenticationFilter   : Filter 'jwtAuthenticationFilter' configured for use
-2026-06-19T21:24:54.456-04:00  INFO 21084 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T21:24:54.632-04:00  INFO 21084 --- [identity-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5bad555b
-2026-06-19T21:24:54.639-04:00  INFO 21084 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-19T21:24:54.701-04:00  INFO 21084 --- [identity-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_identity (MySQL 8.4)
-2026-06-19T21:24:54.712-04:00  WARN 21084 --- [identity-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-06-19T21:24:54.796-04:00  INFO 21084 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_identity`: 3
-2026-06-19T21:24:54.799-04:00  INFO 21084 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_identity` is up to date. No migration necessary.
-2026-06-19T21:24:54.896-04:00  INFO 21084 --- [identity-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-19T21:24:54.975-04:00  INFO 21084 --- [identity-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-06-19T21:24:55.024-04:00  INFO 21084 --- [identity-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-19T21:24:55.366-04:00  INFO 21084 --- [identity-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-19T21:24:56.465-04:00  INFO 21084 --- [identity-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-19T21:24:56.492-04:00  INFO 21084 --- [identity-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-19T21:24:56.920-04:00  INFO 21084 --- [identity-service] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userService
-2026-06-19T21:24:57.032-04:00  WARN 21084 --- [identity-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-19T21:24:58.056-04:00  INFO 21084 --- [identity-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-06-19T21:24:58.112-04:00  WARN 21084 --- [identity-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-06-19T21:24:58.170-04:00  INFO 21084 --- [identity-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-06-19T21:24:58.200-04:00  INFO 21084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-06-19T21:24:58.209-04:00  INFO 21084 --- [identity-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:24:58.221-04:00  INFO 21084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-19T21:24:58.221-04:00  INFO 21084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-19T21:24:58.221-04:00  INFO 21084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-19T21:24:58.221-04:00  INFO 21084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-19T21:24:58.221-04:00  INFO 21084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-19T21:24:58.221-04:00  INFO 21084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-06-19T21:24:58.221-04:00  INFO 21084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-19T21:24:58.536-04:00  INFO 21084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-19T21:24:58.540-04:00  INFO 21084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-06-19T21:24:58.542-04:00  INFO 21084 --- [identity-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-06-19T21:24:58.546-04:00  INFO 21084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781918698544 with initial instances count: 11
-2026-06-19T21:24:58.551-04:00  INFO 21084 --- [identity-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application IDENTITY-SERVICE with eureka with status UP
-2026-06-19T21:24:58.551-04:00  INFO 21084 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781918698551, current=UP, previous=STARTING]
-2026-06-19T21:24:58.554-04:00  INFO 21084 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084: registering service...
-2026-06-19T21:24:58.584-04:00  INFO 21084 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8084 (http) with context path '/'
-2026-06-19T21:24:58.586-04:00  INFO 21084 --- [identity-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8084
-2026-06-19T21:24:58.592-04:00  INFO 21084 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084 - registration status: 204
-2026-06-19T21:24:58.657-04:00  INFO 21084 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Started IdentityServiceApplication in 7.62 seconds (process running for 8.181)
-2026-06-19T21:24:59.528-04:00  INFO 21084 --- [identity-service] [http-nio-8084-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-19T21:24:59.528-04:00  INFO 21084 --- [identity-service] [http-nio-8084-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-06-19T21:24:59.530-04:00  INFO 21084 --- [identity-service] [http-nio-8084-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
-2026-06-19T21:25:00.188-04:00  INFO 21084 --- [identity-service] [http-nio-8084-exec-10] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 331 ms
-2026-06-19T21:26:37.040-04:00  INFO 15420 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:27:19.509-04:00  INFO 3680 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:29:58.233-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:31:37.041-04:00  INFO 15420 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:32:19.524-04:00  INFO 3680 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:34:58.236-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:37:19.530-04:00  INFO 3680 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:39:58.250-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:42:19.532-04:00  INFO 3680 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:44:58.272-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:47:19.536-04:00  INFO 3680 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:49:58.280-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:52:19.550-04:00  INFO 3680 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:54:58.287-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:56:37.386-04:00  INFO 21084 --- [identity-service] [http-nio-8084-exec-6] c.silvio.identity.service.UserService    : Cargando usuario para autenticación: admin
-2026-06-19T21:57:19.554-04:00  INFO 3680 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T21:59:58.302-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:02:19.558-04:00  INFO 3680 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:04:58.305-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:07:19.575-04:00  INFO 3680 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:09:58.309-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:12:19.582-04:00  INFO 3680 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:14:58.317-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:17:19.596-04:00  INFO 3680 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:19:58.324-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:22:19.605-04:00  INFO 3680 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:23:59.442-04:00  INFO 29000 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Starting CatalogServiceApplication using Java 17.0.10 with PID 29000 (C:\WorkSpace\SmallBooksRepository\catalog-service\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository)
-2026-06-19T22:23:59.442-04:00 DEBUG 29000 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-19T22:23:59.442-04:00  INFO 29000 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : No active profile set, falling back to 1 default profile: "default"
-2026-06-19T22:23:59.492-04:00  INFO 29000 --- [catalog-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-19T22:23:59.492-04:00  INFO 29000 --- [catalog-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=catalog-service, profiles=[default], label=null, version=null, state=null
-2026-06-19T22:24:00.496-04:00  INFO 29000 --- [catalog-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-19T22:24:00.754-04:00  INFO 29000 --- [catalog-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 246 ms. Found 1 JPA repository interface.
-2026-06-19T22:24:01.113-04:00  INFO 29000 --- [catalog-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=419a1b69-e779-390c-a146-38a5291b5045
-2026-06-19T22:24:01.514-04:00  INFO 29000 --- [catalog-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8085 (http)
-2026-06-19T22:24:01.529-04:00  INFO 29000 --- [catalog-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-19T22:24:01.529-04:00  INFO 29000 --- [catalog-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-19T22:24:01.616-04:00  INFO 29000 --- [catalog-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-19T22:24:01.618-04:00  INFO 29000 --- [catalog-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2126 ms
-2026-06-19T22:24:01.824-04:00  INFO 29000 --- [catalog-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T22:24:02.021-04:00  INFO 29000 --- [catalog-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@48f4f03e
-2026-06-19T22:24:02.025-04:00  INFO 29000 --- [catalog-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-19T22:24:02.081-04:00  INFO 29000 --- [catalog-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_catalog (MySQL 8.4)
-2026-06-19T22:24:02.098-04:00  WARN 29000 --- [catalog-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-06-19T22:24:02.213-04:00  INFO 29000 --- [catalog-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.093s)
-2026-06-19T22:24:02.263-04:00  INFO 29000 --- [catalog-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_catalog`: 2
-2026-06-19T22:24:02.282-04:00  INFO 29000 --- [catalog-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_catalog` is up to date. No migration necessary.
-2026-06-19T22:24:02.716-04:00  INFO 29000 --- [catalog-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-19T22:24:02.796-04:00  INFO 29000 --- [catalog-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-06-19T22:24:02.846-04:00  INFO 29000 --- [catalog-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-19T22:24:03.169-04:00  INFO 29000 --- [catalog-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-19T22:24:03.247-04:00  WARN 29000 --- [catalog-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-06-19T22:24:04.177-04:00  INFO 29000 --- [catalog-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-19T22:24:04.213-04:00  INFO 29000 --- [catalog-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-19T22:24:04.924-04:00  WARN 29000 --- [catalog-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-19T22:24:05.703-04:00  INFO 29000 --- [catalog-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-06-19T22:24:05.743-04:00  WARN 29000 --- [catalog-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-06-19T22:24:05.818-04:00  INFO 29000 --- [catalog-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-06-19T22:24:05.870-04:00  INFO 29000 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-06-19T22:24:05.880-04:00  INFO 29000 --- [catalog-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:24:05.921-04:00  INFO 29000 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-19T22:24:05.921-04:00  INFO 29000 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-19T22:24:05.921-04:00  INFO 29000 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-19T22:24:05.921-04:00  INFO 29000 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-19T22:24:05.921-04:00  INFO 29000 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-19T22:24:05.923-04:00  INFO 29000 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-06-19T22:24:05.923-04:00  INFO 29000 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-19T22:24:06.346-04:00  INFO 29000 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-19T22:24:06.373-04:00  INFO 29000 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-06-19T22:24:06.382-04:00  INFO 29000 --- [catalog-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-06-19T22:24:06.389-04:00  INFO 29000 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781922246389 with initial instances count: 11
-2026-06-19T22:24:06.402-04:00  INFO 29000 --- [catalog-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application CATALOG-SERVICE with eureka with status UP
-2026-06-19T22:24:06.408-04:00  INFO 29000 --- [catalog-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781922246408, current=UP, previous=STARTING]
-2026-06-19T22:24:06.415-04:00  INFO 29000 --- [catalog-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_CATALOG-SERVICE/host.docker.internal:catalog-service:8085: registering service...
-2026-06-19T22:24:06.472-04:00  INFO 29000 --- [catalog-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_CATALOG-SERVICE/host.docker.internal:catalog-service:8085 - registration status: 204
-2026-06-19T22:24:06.505-04:00  INFO 29000 --- [catalog-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8085 (http) with context path '/'
-2026-06-19T22:24:06.507-04:00  INFO 29000 --- [catalog-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8085
-2026-06-19T22:24:06.617-04:00  INFO 29000 --- [catalog-service] [main] c.s.catalog.CatalogServiceApplication    : Started CatalogServiceApplication in 8.442 seconds (process running for 9.049)
-2026-06-19T22:24:23.057-04:00  INFO 29000 --- [catalog-service] [http-nio-8085-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-19T22:24:23.057-04:00  INFO 29000 --- [catalog-service] [http-nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-06-19T22:24:23.057-04:00  INFO 29000 --- [catalog-service] [http-nio-8085-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
-2026-06-19T22:24:23.095-04:00  INFO 29000 --- [catalog-service] [http-nio-8085-exec-1] c.silvio.catalog.service.CatalogService  : Consultando todos los libros del catálogo
-2026-06-19T22:24:32.442-04:00  INFO 29000 --- [catalog-service] [http-nio-8085-exec-5] c.silvio.catalog.service.CatalogService  : Consultando libro con id: 1
-2026-06-19T22:24:58.328-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:29:05.939-04:00  INFO 29000 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:29:58.331-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:34:05.947-04:00  INFO 29000 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:34:58.341-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:39:05.971-04:00  INFO 29000 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:39:58.346-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:44:05.974-04:00  INFO 29000 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:44:58.350-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:49:05.983-04:00  INFO 29000 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:49:58.360-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:54:05.990-04:00  INFO 29000 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:54:58.368-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:59:05.996-04:00  INFO 29000 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T22:59:58.375-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:04:05.997-04:00  INFO 29000 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:04:58.381-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:09:06.003-04:00  INFO 29000 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:09:58.394-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:14:06.004-04:00  INFO 29000 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:14:42.309-04:00  INFO 15900 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : Starting PrestamoServiceApplication using Java 17.0.10 with PID 15900 (C:\WorkSpace\SmallBooksRepository\elending-service\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository)
-2026-06-19T23:14:42.313-04:00 DEBUG 15900 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : Running with Spring Boot v3.3.11, Spring v6.1.19
-2026-06-19T23:14:42.314-04:00  INFO 15900 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : No active profile set, falling back to 1 default profile: "default"
-2026-06-19T23:14:42.362-04:00  INFO 15900 --- [elending-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
-2026-06-19T23:14:42.362-04:00  INFO 15900 --- [elending-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=elending-service, profiles=[default], label=null, version=null, state=null
-2026-06-19T23:14:43.482-04:00  INFO 15900 --- [elending-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-06-19T23:14:43.595-04:00  INFO 15900 --- [elending-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 105 ms. Found 1 JPA repository interface.
-2026-06-19T23:14:43.857-04:00  INFO 15900 --- [elending-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=224862b0-739c-356d-934c-a80b3f99bdfa
-2026-06-19T23:14:44.291-04:00  INFO 15900 --- [elending-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8087 (http)
-2026-06-19T23:14:44.304-04:00  INFO 15900 --- [elending-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-06-19T23:14:44.305-04:00  INFO 15900 --- [elending-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
-2026-06-19T23:14:44.386-04:00  INFO 15900 --- [elending-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-06-19T23:14:44.386-04:00  INFO 15900 --- [elending-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2022 ms
-2026-06-19T23:14:44.615-04:00  INFO 15900 --- [elending-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-06-19T23:14:44.845-04:00  INFO 15900 --- [elending-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5d3634c8
-2026-06-19T23:14:44.851-04:00  INFO 15900 --- [elending-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-06-19T23:14:44.927-04:00  INFO 15900 --- [elending-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_lending (MySQL 8.4)
-2026-06-19T23:14:44.945-04:00  WARN 15900 --- [elending-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
-2026-06-19T23:14:45.000-04:00  INFO 15900 --- [elending-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.042s)
-2026-06-19T23:14:45.024-04:00  INFO 15900 --- [elending-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_lending`: 1
-2026-06-19T23:14:45.028-04:00  INFO 15900 --- [elending-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_lending` is up to date. No migration necessary.
-2026-06-19T23:14:45.130-04:00  INFO 15900 --- [elending-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-06-19T23:14:45.204-04:00  INFO 15900 --- [elending-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2026-06-19T23:14:45.245-04:00  INFO 15900 --- [elending-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-06-19T23:14:45.547-04:00  INFO 15900 --- [elending-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-06-19T23:14:45.603-04:00  WARN 15900 --- [elending-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-06-19T23:14:46.407-04:00  INFO 15900 --- [elending-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-06-19T23:14:46.439-04:00  INFO 15900 --- [elending-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-06-19T23:14:47.212-04:00  WARN 15900 --- [elending-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-06-19T23:14:47.446-04:00  INFO 15900 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'license-service' URL not provided. Will try picking an instance via load-balancing.
-2026-06-19T23:14:47.500-04:00  INFO 15900 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'subscription-service' URL not provided. Will try picking an instance via load-balancing.
-2026-06-19T23:14:47.514-04:00  INFO 15900 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'notification-service' URL not provided. Will try picking an instance via load-balancing.
-2026-06-19T23:14:48.128-04:00  INFO 15900 --- [elending-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
-2026-06-19T23:14:48.154-04:00  WARN 15900 --- [elending-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
-2026-06-19T23:14:48.188-04:00  INFO 15900 --- [elending-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
-2026-06-19T23:14:48.217-04:00  INFO 15900 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
-2026-06-19T23:14:48.220-04:00  INFO 15900 --- [elending-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:14:48.230-04:00  INFO 15900 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
-2026-06-19T23:14:48.230-04:00  INFO 15900 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
-2026-06-19T23:14:48.230-04:00  INFO 15900 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
-2026-06-19T23:14:48.230-04:00  INFO 15900 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
-2026-06-19T23:14:48.231-04:00  INFO 15900 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
-2026-06-19T23:14:48.231-04:00  INFO 15900 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
-2026-06-19T23:14:48.231-04:00  INFO 15900 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
-2026-06-19T23:14:48.588-04:00  INFO 15900 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
-2026-06-19T23:14:48.600-04:00  INFO 15900 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
-2026-06-19T23:14:48.608-04:00  INFO 15900 --- [elending-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
-2026-06-19T23:14:48.616-04:00  INFO 15900 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1781925288616 with initial instances count: 11
-2026-06-19T23:14:48.636-04:00  INFO 15900 --- [elending-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application ELENDING-SERVICE with eureka with status UP
-2026-06-19T23:14:48.640-04:00  INFO 15900 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1781925288640, current=UP, previous=STARTING]
-2026-06-19T23:14:48.655-04:00  INFO 15900 --- [elending-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/host.docker.internal:elending-service:8087: registering service...
-2026-06-19T23:14:48.710-04:00  INFO 15900 --- [elending-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8087 (http) with context path '/'
-2026-06-19T23:14:48.716-04:00  INFO 15900 --- [elending-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8087
-2026-06-19T23:14:48.774-04:00  INFO 15900 --- [elending-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/host.docker.internal:elending-service:8087 - registration status: 204
-2026-06-19T23:14:48.942-04:00  INFO 15900 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : Started PrestamoServiceApplication in 7.568 seconds (process running for 7.974)
-2026-06-19T23:14:48.954-04:00  INFO 15900 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Scheduler ejecutado — verificando préstamos vencidos a las 2026-06-19T23:14:48.953706500
-2026-06-19T23:14:49.101-04:00  INFO 15900 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Préstamos vencidos encontrados: 0
-2026-06-19T23:14:49.104-04:00  INFO 15900 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Préstamos próximos a vencer (2 días): 0
-2026-06-19T23:14:55.172-04:00  INFO 21084 --- [identity-service] [http-nio-8084-exec-7] c.silvio.identity.service.UserService    : Cargando usuario para autenticación: admin
-2026-06-19T23:14:58.410-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:15:10.457-04:00  INFO 15900 --- [elending-service] [http-nio-8087-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-06-19T23:15:10.457-04:00  INFO 15900 --- [elending-service] [http-nio-8087-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-06-19T23:15:10.457-04:00  INFO 15900 --- [elending-service] [http-nio-8087-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
-2026-06-19T23:15:10.536-04:00  INFO 15900 --- [elending-service] [http-nio-8087-exec-1] c.s.elending.service.PrestamoService     : Iniciando creación de préstamo — usuario: admin, libro: 1
-2026-06-19T23:15:10.740-04:00  INFO 15900 --- [elending-service] [http-nio-8087-exec-1] c.s.elending.service.PrestamoService     : Plan activo para usuario admin: PREMIUM — max: 5 préstamos, 14 días
-2026-06-19T23:15:10.919-04:00  INFO 15900 --- [elending-service] [http-nio-8087-exec-1] c.s.elending.service.PrestamoService     : Licencia libro 1: 5/5 copias disponibles
-2026-06-19T23:15:10.959-04:00  INFO 15900 --- [elending-service] [http-nio-8087-exec-1] c.s.elending.service.PrestamoService     : Copia descontada exitosamente — libro: 1
-2026-06-19T23:15:11.030-04:00  INFO 15900 --- [elending-service] [http-nio-8087-exec-1] c.s.elending.service.PrestamoService     : Préstamo creado exitosamente — id: 5, usuario: admin, libro: 1, vence: 2026-07-03T23:15:10.966749700
-2026-06-19T23:15:11.131-04:00  INFO 15900 --- [elending-service] [http-nio-8087-exec-1] c.s.elending.service.PrestamoService     : Notificación PRESTAMO_CREADO enviada al usuario admin
-2026-06-19T23:15:33.113-04:00  WARN 15900 --- [elending-service] [http-nio-8087-exec-7] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.bind.MissingRequestHeaderException: Required request header 'Authorization' for method parameter type String is not present]
-2026-06-19T23:15:39.340-04:00  INFO 15900 --- [elending-service] [http-nio-8087-exec-3] c.s.elending.service.PrestamoService     : Consultando préstamos activos del usuario: admin
-2026-06-19T23:15:57.448-04:00  INFO 15900 --- [elending-service] [http-nio-8087-exec-5] c.s.elending.service.PrestamoService     : Consultando historial completo del usuario: admin
-2026-06-19T23:19:06.020-04:00  INFO 29000 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:19:48.245-04:00  INFO 15900 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:19:58.432-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:24:06.022-04:00  INFO 29000 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:24:48.254-04:00  INFO 15900 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:24:58.433-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:29:06.030-04:00  INFO 29000 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:29:48.265-04:00  INFO 15900 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:29:58.440-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:34:06.041-04:00  INFO 29000 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:34:48.267-04:00  INFO 15900 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:34:58.443-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:39:06.046-04:00  INFO 29000 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:39:48.270-04:00  INFO 15900 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:39:58.457-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:44:06.060-04:00  INFO 29000 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:44:48.276-04:00  INFO 15900 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:44:58.461-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:49:06.072-04:00  INFO 29000 --- [catalog-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:49:48.288-04:00  INFO 15900 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:49:58.465-04:00  INFO 21084 --- [identity-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
-2026-06-19T23:51:20.205-04:00  INFO 15900 --- [elending-service] [DiscoveryClient-CacheRefreshExecutor-%d] c.n.d.s.t.d.RedirectingEurekaHttpClient  : Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/} exception=I/O error on GET request for "http://localhost:8761/eureka/apps/delta": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information stacktrace=org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8761/eureka/apps/delta": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
-	at org.springframework.web.client.RestTemplate.createResourceAccessException(RestTemplate.java:915)
-	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:895)
-	at org.springframework.web.client.RestTemplate.execute(RestTemplate.java:830)
-	at org.springframework.web.client.RestTemplate.exchange(RestTemplate.java:691)
-	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.getApplicationsInternal(RestTemplateEurekaHttpClient.java:170)
-	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.getDelta(RestTemplateEurekaHttpClient.java:182)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
-	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.execute(RedirectingEurekaHttpClient.java:91)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
-	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:120)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
-	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
-	at com.netflix.discovery.DiscoveryClient.getAndUpdateDelta(DiscoveryClient.java:1080)
-	at com.netflix.discovery.DiscoveryClient.fetchRegistry(DiscoveryClient.java:963)
-	at com.netflix.discovery.DiscoveryClient.refreshRegistry(DiscoveryClient.java:1473)
-	at com.netflix.discovery.DiscoveryClient$CacheRefreshThread.run(DiscoveryClient.java:1441)
-	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
-	at java.base/java.lang.Thread.run(Thread.java:842)
-Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
-	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
-	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
-	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
-	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
-	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
-	at java.base/java.net.Socket.connect(Socket.java:633)
-	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.lambda$connectSocket$0(PlainConnectionSocketFactory.java:91)
-	at java.base/java.security.AccessController.doPrivileged(AccessController.java:569)
-	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.connectSocket(PlainConnectionSocketFactory.java:90)
-	at org.apache.hc.client5.http.socket.ConnectionSocketFactory.connectSocket(ConnectionSocketFactory.java:123)
-	at org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:189)
-	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:450)
-	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:162)
-	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:172)
-	at org.apache.hc.client5.http.impl.classic.ConnectExec.execute(ConnectExec.java:142)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.ProtocolExec.execute(ProtocolExec.java:192)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.HttpRequestRetryExec.execute(HttpRequestRetryExec.java:113)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.ContentCompressionExec.execute(ContentCompressionExec.java:152)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.RedirectExec.execute(RedirectExec.java:116)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.InternalHttpClient.doExecute(InternalHttpClient.java:170)
-	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:87)
-	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:55)
-	at org.apache.hc.client5.http.classic.HttpClient.executeOpen(HttpClient.java:183)
-	at org.springframework.http.client.HttpComponentsClientHttpRequest.executeInternal(HttpComponentsClientHttpRequest.java:99)
-	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:70)
-	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
-	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:112)
-	at org.springframework.cloud.netflix.eureka.http.RestTemplateTransportClientFactory.lambda$restTemplate$3(RestTemplateTransportClientFactory.java:170)
-	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:88)
-	at org.springframework.http.client.InterceptingClientHttpRequest.executeInternal(InterceptingClientHttpRequest.java:72)
-	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:48)
-	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
-	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:889)
-	... 22 more
-
-2026-06-19T23:51:20.205-04:00  INFO 15900 --- [elending-service] [DiscoveryClient-HeartbeatExecutor-%d] c.n.d.s.t.d.RedirectingEurekaHttpClient  : Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/} exception=I/O error on PUT request for "http://localhost:8761/eureka/apps/ELENDING-SERVICE/host.docker.internal:elending-service:8087": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information stacktrace=org.springframework.web.client.ResourceAccessException: I/O error on PUT request for "http://localhost:8761/eureka/apps/ELENDING-SERVICE/host.docker.internal:elending-service:8087": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
-	at org.springframework.web.client.RestTemplate.createResourceAccessException(RestTemplate.java:915)
-	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:895)
-	at org.springframework.web.client.RestTemplate.execute(RestTemplate.java:830)
-	at org.springframework.web.client.RestTemplate.exchange(RestTemplate.java:691)
-	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.sendHeartBeat(RestTemplateEurekaHttpClient.java:115)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92)
-	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.execute(RedirectingEurekaHttpClient.java:91)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92)
-	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:120)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92)
-	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89)
-	at com.netflix.discovery.DiscoveryClient.renew(DiscoveryClient.java:845)
-	at com.netflix.discovery.DiscoveryClient$HeartbeatThread.run(DiscoveryClient.java:1402)
-	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
-	at java.base/java.lang.Thread.run(Thread.java:842)
-Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
-	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
-	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
-	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
-	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
-	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
-	at java.base/java.net.Socket.connect(Socket.java:633)
-	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.lambda$connectSocket$0(PlainConnectionSocketFactory.java:91)
-	at java.base/java.security.AccessController.doPrivileged(AccessController.java:569)
-	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.connectSocket(PlainConnectionSocketFactory.java:90)
-	at org.apache.hc.client5.http.socket.ConnectionSocketFactory.connectSocket(ConnectionSocketFactory.java:123)
-	at org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:189)
-	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:450)
-	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:162)
-	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:172)
-	at org.apache.hc.client5.http.impl.classic.ConnectExec.execute(ConnectExec.java:142)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.ProtocolExec.execute(ProtocolExec.java:192)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.HttpRequestRetryExec.execute(HttpRequestRetryExec.java:113)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.ContentCompressionExec.execute(ContentCompressionExec.java:152)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.RedirectExec.execute(RedirectExec.java:116)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.InternalHttpClient.doExecute(InternalHttpClient.java:170)
-	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:87)
-	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:55)
-	at org.apache.hc.client5.http.classic.HttpClient.executeOpen(HttpClient.java:183)
-	at org.springframework.http.client.HttpComponentsClientHttpRequest.executeInternal(HttpComponentsClientHttpRequest.java:99)
-	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:70)
-	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
-	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:112)
-	at org.springframework.cloud.netflix.eureka.http.RestTemplateTransportClientFactory.lambda$restTemplate$3(RestTemplateTransportClientFactory.java:170)
-	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:88)
-	at org.springframework.http.client.InterceptingClientHttpRequest.executeInternal(InterceptingClientHttpRequest.java:72)
-	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:48)
-	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
-	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:889)
-	... 19 more
-
-2026-06-19T23:51:20.206-04:00  WARN 15900 --- [elending-service] [DiscoveryClient-CacheRefreshExecutor-%d] c.n.d.s.t.d.RetryableEurekaHttpClient    : Request execution failed with message: I/O error on GET request for "http://localhost:8761/eureka/apps/delta": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
-2026-06-19T23:51:20.206-04:00  WARN 15900 --- [elending-service] [DiscoveryClient-HeartbeatExecutor-%d] c.n.d.s.t.d.RetryableEurekaHttpClient    : Request execution failed with message: I/O error on PUT request for "http://localhost:8761/eureka/apps/ELENDING-SERVICE/host.docker.internal:elending-service:8087": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
-2026-06-19T23:51:20.211-04:00  INFO 15900 --- [elending-service] [DiscoveryClient-HeartbeatExecutor-%d] c.n.d.s.t.d.RedirectingEurekaHttpClient  : Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/}, exception=I/O error on PUT request for "http://localhost:8761/eureka/apps/ELENDING-SERVICE/host.docker.internal:elending-service:8087": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information stacktrace=org.springframework.web.client.ResourceAccessException: I/O error on PUT request for "http://localhost:8761/eureka/apps/ELENDING-SERVICE/host.docker.internal:elending-service:8087": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
-	at org.springframework.web.client.RestTemplate.createResourceAccessException(RestTemplate.java:915)
-	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:895)
-	at org.springframework.web.client.RestTemplate.execute(RestTemplate.java:830)
-	at org.springframework.web.client.RestTemplate.exchange(RestTemplate.java:691)
-	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.sendHeartBeat(RestTemplateEurekaHttpClient.java:115)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92)
-	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.executeOnNewServer(RedirectingEurekaHttpClient.java:121)
-	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.execute(RedirectingEurekaHttpClient.java:80)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92)
-	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:120)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92)
-	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89)
-	at com.netflix.discovery.DiscoveryClient.renew(DiscoveryClient.java:845)
-	at com.netflix.discovery.DiscoveryClient$HeartbeatThread.run(DiscoveryClient.java:1402)
-	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
-	at java.base/java.lang.Thread.run(Thread.java:842)
-Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
-	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
-	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
-	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
-	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
-	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
-	at java.base/java.net.Socket.connect(Socket.java:633)
-	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.lambda$connectSocket$0(PlainConnectionSocketFactory.java:91)
-	at java.base/java.security.AccessController.doPrivileged(AccessController.java:569)
-	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.connectSocket(PlainConnectionSocketFactory.java:90)
-	at org.apache.hc.client5.http.socket.ConnectionSocketFactory.connectSocket(ConnectionSocketFactory.java:123)
-	at org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:189)
-	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:450)
-	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:162)
-	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:172)
-	at org.apache.hc.client5.http.impl.classic.ConnectExec.execute(ConnectExec.java:142)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.ProtocolExec.execute(ProtocolExec.java:192)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.HttpRequestRetryExec.execute(HttpRequestRetryExec.java:113)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.ContentCompressionExec.execute(ContentCompressionExec.java:152)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.RedirectExec.execute(RedirectExec.java:116)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.InternalHttpClient.doExecute(InternalHttpClient.java:170)
-	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:87)
-	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:55)
-	at org.apache.hc.client5.http.classic.HttpClient.executeOpen(HttpClient.java:183)
-	at org.springframework.http.client.HttpComponentsClientHttpRequest.executeInternal(HttpComponentsClientHttpRequest.java:99)
-	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:70)
-	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
-	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:112)
-	at org.springframework.cloud.netflix.eureka.http.RestTemplateTransportClientFactory.lambda$restTemplate$3(RestTemplateTransportClientFactory.java:170)
-	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:88)
-	at org.springframework.http.client.InterceptingClientHttpRequest.executeInternal(InterceptingClientHttpRequest.java:72)
-	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:48)
-	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
-	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:889)
-	... 20 more
-
-2026-06-19T23:51:20.211-04:00  WARN 15900 --- [elending-service] [DiscoveryClient-HeartbeatExecutor-%d] c.n.d.s.t.d.RetryableEurekaHttpClient    : Request execution failed with message: I/O error on PUT request for "http://localhost:8761/eureka/apps/ELENDING-SERVICE/host.docker.internal:elending-service:8087": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
-2026-06-19T23:51:20.211-04:00 ERROR 15900 --- [elending-service] [DiscoveryClient-HeartbeatExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/host.docker.internal:elending-service:8087 - was unable to send heartbeat!
-
-com.netflix.discovery.shared.transport.TransportException: Cannot execute request on any known server
-	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:112) ~[eureka-client-2.0.4.jar:2.0.4]
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89) ~[eureka-client-2.0.4.jar:2.0.4]
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$3.execute(EurekaHttpClientDecorator.java:92) ~[eureka-client-2.0.4.jar:2.0.4]
-	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76) ~[eureka-client-2.0.4.jar:2.0.4]
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.sendHeartBeat(EurekaHttpClientDecorator.java:89) ~[eureka-client-2.0.4.jar:2.0.4]
-	at com.netflix.discovery.DiscoveryClient.renew(DiscoveryClient.java:845) ~[eureka-client-2.0.4.jar:2.0.4]
-	at com.netflix.discovery.DiscoveryClient$HeartbeatThread.run(DiscoveryClient.java:1402) ~[eureka-client-2.0.4.jar:2.0.4]
-	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539) ~[na:na]
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[na:na]
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[na:na]
-	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
-
-2026-06-19T23:51:20.229-04:00  INFO 15900 --- [elending-service] [DiscoveryClient-CacheRefreshExecutor-%d] c.n.d.s.t.d.RedirectingEurekaHttpClient  : Request execution error. endpoint=DefaultEndpoint{ serviceUrl='http://localhost:8761/eureka/}, exception=I/O error on GET request for "http://localhost:8761/eureka/apps/delta": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information stacktrace=org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:8761/eureka/apps/delta": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
-	at org.springframework.web.client.RestTemplate.createResourceAccessException(RestTemplate.java:915)
-	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:895)
-	at org.springframework.web.client.RestTemplate.execute(RestTemplate.java:830)
-	at org.springframework.web.client.RestTemplate.exchange(RestTemplate.java:691)
-	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.getApplicationsInternal(RestTemplateEurekaHttpClient.java:170)
-	at org.springframework.cloud.netflix.eureka.http.RestTemplateEurekaHttpClient.getDelta(RestTemplateEurekaHttpClient.java:182)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
-	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.executeOnNewServer(RedirectingEurekaHttpClient.java:121)
-	at com.netflix.discovery.shared.transport.decorator.RedirectingEurekaHttpClient.execute(RedirectingEurekaHttpClient.java:80)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
-	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:120)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
-	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
-	at com.netflix.discovery.DiscoveryClient.getAndUpdateDelta(DiscoveryClient.java:1080)
-	at com.netflix.discovery.DiscoveryClient.fetchRegistry(DiscoveryClient.java:963)
-	at com.netflix.discovery.DiscoveryClient.refreshRegistry(DiscoveryClient.java:1473)
-	at com.netflix.discovery.DiscoveryClient$CacheRefreshThread.run(DiscoveryClient.java:1441)
-	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
-	at java.base/java.lang.Thread.run(Thread.java:842)
-Caused by: org.apache.hc.client5.http.HttpHostConnectException: Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
-	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
-	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672)
-	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547)
-	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602)
-	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
-	at java.base/java.net.Socket.connect(Socket.java:633)
-	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.lambda$connectSocket$0(PlainConnectionSocketFactory.java:91)
-	at java.base/java.security.AccessController.doPrivileged(AccessController.java:569)
-	at org.apache.hc.client5.http.socket.PlainConnectionSocketFactory.connectSocket(PlainConnectionSocketFactory.java:90)
-	at org.apache.hc.client5.http.socket.ConnectionSocketFactory.connectSocket(ConnectionSocketFactory.java:123)
-	at org.apache.hc.client5.http.impl.io.DefaultHttpClientConnectionOperator.connect(DefaultHttpClientConnectionOperator.java:189)
-	at org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager.connect(PoolingHttpClientConnectionManager.java:450)
-	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:162)
-	at org.apache.hc.client5.http.impl.classic.InternalExecRuntime.connectEndpoint(InternalExecRuntime.java:172)
-	at org.apache.hc.client5.http.impl.classic.ConnectExec.execute(ConnectExec.java:142)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.ProtocolExec.execute(ProtocolExec.java:192)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.HttpRequestRetryExec.execute(HttpRequestRetryExec.java:113)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.ContentCompressionExec.execute(ContentCompressionExec.java:152)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.RedirectExec.execute(RedirectExec.java:116)
-	at org.apache.hc.client5.http.impl.classic.ExecChainElement.execute(ExecChainElement.java:51)
-	at org.apache.hc.client5.http.impl.classic.InternalHttpClient.doExecute(InternalHttpClient.java:170)
-	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:87)
-	at org.apache.hc.client5.http.impl.classic.CloseableHttpClient.execute(CloseableHttpClient.java:55)
-	at org.apache.hc.client5.http.classic.HttpClient.executeOpen(HttpClient.java:183)
-	at org.springframework.http.client.HttpComponentsClientHttpRequest.executeInternal(HttpComponentsClientHttpRequest.java:99)
-	at org.springframework.http.client.AbstractStreamingClientHttpRequest.executeInternal(AbstractStreamingClientHttpRequest.java:70)
-	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
-	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:112)
-	at org.springframework.cloud.netflix.eureka.http.RestTemplateTransportClientFactory.lambda$restTemplate$3(RestTemplateTransportClientFactory.java:170)
-	at org.springframework.http.client.InterceptingClientHttpRequest$InterceptingRequestExecution.execute(InterceptingClientHttpRequest.java:88)
-	at org.springframework.http.client.InterceptingClientHttpRequest.executeInternal(InterceptingClientHttpRequest.java:72)
-	at org.springframework.http.client.AbstractBufferingClientHttpRequest.executeInternal(AbstractBufferingClientHttpRequest.java:48)
-	at org.springframework.http.client.AbstractClientHttpRequest.execute(AbstractClientHttpRequest.java:66)
-	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:889)
-	... 23 more
-
-2026-06-19T23:51:20.229-04:00  WARN 15900 --- [elending-service] [DiscoveryClient-CacheRefreshExecutor-%d] c.n.d.s.t.d.RetryableEurekaHttpClient    : Request execution failed with message: I/O error on GET request for "http://localhost:8761/eureka/apps/delta": Connect to http://localhost:8761 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused: no further information
-2026-06-19T23:51:20.229-04:00  INFO 15900 --- [elending-service] [DiscoveryClient-CacheRefreshExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/host.docker.internal:elending-service:8087 - was unable to refresh its cache! This periodic background refresh will be retried in 30 seconds. status = Cannot execute request on any known server stacktrace = com.netflix.discovery.shared.transport.TransportException: Cannot execute request on any known server
-	at com.netflix.discovery.shared.transport.decorator.RetryableEurekaHttpClient.execute(RetryableEurekaHttpClient.java:112)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator$7.execute(EurekaHttpClientDecorator.java:152)
-	at com.netflix.discovery.shared.transport.decorator.SessionedEurekaHttpClient.execute(SessionedEurekaHttpClient.java:76)
-	at com.netflix.discovery.shared.transport.decorator.EurekaHttpClientDecorator.getDelta(EurekaHttpClientDecorator.java:149)
-	at com.netflix.discovery.DiscoveryClient.getAndUpdateDelta(DiscoveryClient.java:1080)
-	at com.netflix.discovery.DiscoveryClient.fetchRegistry(DiscoveryClient.java:963)
-	at com.netflix.discovery.DiscoveryClient.refreshRegistry(DiscoveryClient.java:1473)
-	at com.netflix.discovery.DiscoveryClient$CacheRefreshThread.run(DiscoveryClient.java:1441)
-	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
-	at java.base/java.lang.Thread.run(Thread.java:842)
-
+2026-06-22T06:11:48.762-04:00  INFO 23228 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Starting IdentityServiceApplication using Java 17.0.10 with PID 23228 (C:\WorkSpace\SmallBooksRepository\identity-services\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository)
+2026-06-22T06:11:48.771-04:00 DEBUG 23228 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-22T06:11:48.772-04:00  INFO 23228 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : No active profile set, falling back to 1 default profile: "default"
+2026-06-22T06:11:48.819-04:00  INFO 23228 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T06:11:48.819-04:00  INFO 23228 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=identity-service, profiles=[default], label=null, version=null, state=null
+2026-06-22T06:11:49.610-04:00  INFO 23228 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-22T06:11:49.738-04:00  INFO 23228 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 120 ms. Found 1 JPA repository interface.
+2026-06-22T06:11:50.022-04:00  INFO 23228 --- [identity-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=dabd8b19-5336-3e73-b935-87d6e237e7d4
+2026-06-22T06:11:50.383-04:00  INFO 23228 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8084 (http)
+2026-06-22T06:11:50.400-04:00  INFO 23228 --- [identity-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-22T06:11:50.400-04:00  INFO 23228 --- [identity-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-22T06:11:50.497-04:00  INFO 23228 --- [identity-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-22T06:11:50.498-04:00  INFO 23228 --- [identity-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1675 ms
+2026-06-22T06:11:50.547-04:00 DEBUG 23228 --- [identity-service] [main] c.s.i.security.JwtAuthenticationFilter   : Filter 'jwtAuthenticationFilter' configured for use
+2026-06-22T06:11:50.693-04:00  INFO 23228 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-22T06:11:50.862-04:00  INFO 23228 --- [identity-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5e9ea380
+2026-06-22T06:11:50.872-04:00  INFO 23228 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-22T06:11:50.915-04:00  INFO 23228 --- [identity-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_identity (MySQL 8.4)
+2026-06-22T06:11:50.927-04:00  WARN 23228 --- [identity-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-22T06:11:50.972-04:00  INFO 23228 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_identity`: 3
+2026-06-22T06:11:50.976-04:00  INFO 23228 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_identity` is up to date. No migration necessary.
+2026-06-22T06:11:51.041-04:00  INFO 23228 --- [identity-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-22T06:11:51.104-04:00  INFO 23228 --- [identity-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-22T06:11:51.130-04:00  INFO 23228 --- [identity-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-22T06:11:51.410-04:00  INFO 23228 --- [identity-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-22T06:11:52.277-04:00  INFO 23228 --- [identity-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-22T06:11:52.305-04:00  INFO 23228 --- [identity-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-22T06:11:52.614-04:00  INFO 23228 --- [identity-service] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userService
+2026-06-22T06:11:52.689-04:00  WARN 23228 --- [identity-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-22T06:11:53.396-04:00  INFO 23228 --- [identity-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-22T06:11:53.443-04:00  WARN 23228 --- [identity-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-22T06:11:53.495-04:00  INFO 23228 --- [identity-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-22T06:11:53.518-04:00  INFO 23228 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-22T06:11:53.523-04:00  INFO 23228 --- [identity-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T06:11:53.533-04:00  INFO 23228 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-22T06:11:53.534-04:00  INFO 23228 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-22T06:11:53.534-04:00  INFO 23228 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-22T06:11:53.534-04:00  INFO 23228 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-22T06:11:53.534-04:00  INFO 23228 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-22T06:11:53.534-04:00  INFO 23228 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-22T06:11:53.534-04:00  INFO 23228 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-22T06:11:53.797-04:00  INFO 23228 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-22T06:11:53.801-04:00  INFO 23228 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-22T06:11:53.801-04:00  INFO 23228 --- [identity-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-22T06:11:53.801-04:00  INFO 23228 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1782123113801 with initial instances count: 4
+2026-06-22T06:11:53.807-04:00  INFO 23228 --- [identity-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application IDENTITY-SERVICE with eureka with status UP
+2026-06-22T06:11:53.808-04:00  INFO 23228 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782123113808, current=UP, previous=STARTING]
+2026-06-22T06:11:53.810-04:00  INFO 23228 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084: registering service...
+2026-06-22T06:11:53.836-04:00  INFO 23228 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8084 (http) with context path '/'
+2026-06-22T06:11:53.837-04:00  INFO 23228 --- [identity-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8084
+2026-06-22T06:11:53.842-04:00  INFO 23228 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084 - registration status: 204
+2026-06-22T06:11:53.907-04:00  INFO 23228 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Started IdentityServiceApplication in 6.005 seconds (process running for 6.492)
+2026-06-22T06:13:01.808-04:00  INFO 9396 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Starting IdentityServiceApplication using Java 17.0.10 with PID 9396 (C:\WorkSpace\SmallBooksRepository\identity-services\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository)
+2026-06-22T06:13:01.808-04:00 DEBUG 9396 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-22T06:13:01.808-04:00  INFO 9396 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : No active profile set, falling back to 1 default profile: "default"
+2026-06-22T06:13:01.860-04:00  INFO 9396 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T06:13:01.860-04:00  INFO 9396 --- [identity-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=identity-service, profiles=[default], label=null, version=null, state=null
+2026-06-22T06:13:02.686-04:00  INFO 9396 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-22T06:13:02.806-04:00  INFO 9396 --- [identity-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 111 ms. Found 1 JPA repository interface.
+2026-06-22T06:13:03.098-04:00  INFO 9396 --- [identity-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=dabd8b19-5336-3e73-b935-87d6e237e7d4
+2026-06-22T06:13:03.504-04:00  INFO 9396 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8084 (http)
+2026-06-22T06:13:03.520-04:00  INFO 9396 --- [identity-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-22T06:13:03.520-04:00  INFO 9396 --- [identity-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-22T06:13:03.595-04:00  INFO 9396 --- [identity-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-22T06:13:03.595-04:00  INFO 9396 --- [identity-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1732 ms
+2026-06-22T06:13:03.652-04:00 DEBUG 9396 --- [identity-service] [main] c.s.i.security.JwtAuthenticationFilter   : Filter 'jwtAuthenticationFilter' configured for use
+2026-06-22T06:13:03.780-04:00  INFO 9396 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-22T06:13:03.933-04:00  INFO 9396 --- [identity-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@432f4626
+2026-06-22T06:13:03.935-04:00  INFO 9396 --- [identity-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-22T06:13:03.986-04:00  INFO 9396 --- [identity-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_identity (MySQL 8.4)
+2026-06-22T06:13:03.997-04:00  WARN 9396 --- [identity-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-22T06:13:04.047-04:00  INFO 9396 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_identity`: 3
+2026-06-22T06:13:04.051-04:00  INFO 9396 --- [identity-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_identity` is up to date. No migration necessary.
+2026-06-22T06:13:04.141-04:00  INFO 9396 --- [identity-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-22T06:13:04.207-04:00  INFO 9396 --- [identity-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-22T06:13:04.242-04:00  INFO 9396 --- [identity-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-22T06:13:04.528-04:00  INFO 9396 --- [identity-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-22T06:13:05.273-04:00  INFO 9396 --- [identity-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-22T06:13:05.302-04:00  INFO 9396 --- [identity-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-22T06:13:05.649-04:00  INFO 9396 --- [identity-service] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userService
+2026-06-22T06:13:05.743-04:00  WARN 9396 --- [identity-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-22T06:13:06.611-04:00  INFO 9396 --- [identity-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-22T06:13:06.655-04:00  WARN 9396 --- [identity-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-22T06:13:06.706-04:00  INFO 9396 --- [identity-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-22T06:13:06.730-04:00  INFO 9396 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-22T06:13:06.734-04:00  INFO 9396 --- [identity-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T06:13:06.744-04:00  INFO 9396 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-22T06:13:06.744-04:00  INFO 9396 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-22T06:13:06.745-04:00  INFO 9396 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-22T06:13:06.745-04:00  INFO 9396 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-22T06:13:06.745-04:00  INFO 9396 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-22T06:13:06.745-04:00  INFO 9396 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-22T06:13:06.745-04:00  INFO 9396 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-22T06:13:07.007-04:00  INFO 9396 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-22T06:13:07.010-04:00  INFO 9396 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-22T06:13:07.012-04:00  INFO 9396 --- [identity-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-22T06:13:07.014-04:00  INFO 9396 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1782123187014 with initial instances count: 4
+2026-06-22T06:13:07.017-04:00  INFO 9396 --- [identity-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application IDENTITY-SERVICE with eureka with status UP
+2026-06-22T06:13:07.017-04:00  INFO 9396 --- [identity-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782123187017, current=UP, previous=STARTING]
+2026-06-22T06:13:07.019-04:00  INFO 9396 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084: registering service...
+2026-06-22T06:13:07.036-04:00  INFO 9396 --- [identity-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8084 (http) with context path '/'
+2026-06-22T06:13:07.036-04:00  INFO 9396 --- [identity-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8084
+2026-06-22T06:13:07.053-04:00  INFO 9396 --- [identity-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_IDENTITY-SERVICE/host.docker.internal:identity-service:8084 - registration status: 204
+2026-06-22T06:13:07.105-04:00  INFO 9396 --- [identity-service] [main] c.s.identity.IdentityServiceApplication  : Started IdentityServiceApplication in 6.271 seconds (process running for 6.788)

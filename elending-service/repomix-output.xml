@@ -1,0 +1,1554 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.gitattributes
+.gitignore
+.mvn/wrapper/maven-wrapper.properties
+mvnw
+mvnw.cmd
+pom.xml
+src/main/java/com/silvio/elending/client/LicenseClient.java
+src/main/java/com/silvio/elending/client/NotificationClient.java
+src/main/java/com/silvio/elending/client/SubscriptionClient.java
+src/main/java/com/silvio/elending/config/SwaggerConfig.java
+src/main/java/com/silvio/elending/controller/PrestamoController.java
+src/main/java/com/silvio/elending/dto/LicenciaDTO.java
+src/main/java/com/silvio/elending/dto/NotificacionRequestDTO.java
+src/main/java/com/silvio/elending/dto/NotificacionResponseDTO.java
+src/main/java/com/silvio/elending/dto/PrestamoRequestDTO.java
+src/main/java/com/silvio/elending/dto/PrestamoResponseDTO.java
+src/main/java/com/silvio/elending/dto/SuscripcionDTO.java
+src/main/java/com/silvio/elending/exception/GlobalExceptionHandler.java
+src/main/java/com/silvio/elending/model/Prestamo.java
+src/main/java/com/silvio/elending/PrestamoServiceApplication.java
+src/main/java/com/silvio/elending/repository/PrestamoRepository.java
+src/main/java/com/silvio/elending/service/PrestamoService.java
+src/main/resources/application.yml
+src/main/resources/banner.txt
+src/main/resources/db/migration/V1__crear_tabla_prestamos.sql
+src/test/java/com/silvio/elending/ElendingServiceApplicationTests.java
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".gitattributes">
+/mvnw text eol=lf
+*.cmd text eol=crlf
+</file>
+
+<file path=".gitignore">
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+</file>
+
+<file path=".mvn/wrapper/maven-wrapper.properties">
+wrapperVersion=3.3.4
+distributionType=only-script
+distributionUrl=https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.15/apache-maven-3.9.15-bin.zip
+</file>
+
+<file path="mvnw">
+#!/bin/sh
+# ----------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+# ----------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------
+# Apache Maven Wrapper startup batch script, version 3.3.4
+#
+# Optional ENV vars
+# -----------------
+#   JAVA_HOME - location of a JDK home dir, required when download maven via java source
+#   MVNW_REPOURL - repo url base for downloading maven distribution
+#   MVNW_USERNAME/MVNW_PASSWORD - user and password for downloading maven
+#   MVNW_VERBOSE - true: enable verbose log; debug: trace the mvnw script; others: silence the output
+# ----------------------------------------------------------------------------
+
+set -euf
+[ "${MVNW_VERBOSE-}" != debug ] || set -x
+
+# OS specific support.
+native_path() { printf %s\\n "$1"; }
+case "$(uname)" in
+CYGWIN* | MINGW*)
+  [ -z "${JAVA_HOME-}" ] || JAVA_HOME="$(cygpath --unix "$JAVA_HOME")"
+  native_path() { cygpath --path --windows "$1"; }
+  ;;
+esac
+
+# set JAVACMD and JAVACCMD
+set_java_home() {
+  # For Cygwin and MinGW, ensure paths are in Unix format before anything is touched
+  if [ -n "${JAVA_HOME-}" ]; then
+    if [ -x "$JAVA_HOME/jre/sh/java" ]; then
+      # IBM's JDK on AIX uses strange locations for the executables
+      JAVACMD="$JAVA_HOME/jre/sh/java"
+      JAVACCMD="$JAVA_HOME/jre/sh/javac"
+    else
+      JAVACMD="$JAVA_HOME/bin/java"
+      JAVACCMD="$JAVA_HOME/bin/javac"
+
+      if [ ! -x "$JAVACMD" ] || [ ! -x "$JAVACCMD" ]; then
+        echo "The JAVA_HOME environment variable is not defined correctly, so mvnw cannot run." >&2
+        echo "JAVA_HOME is set to \"$JAVA_HOME\", but \"\$JAVA_HOME/bin/java\" or \"\$JAVA_HOME/bin/javac\" does not exist." >&2
+        return 1
+      fi
+    fi
+  else
+    JAVACMD="$(
+      'set' +e
+      'unset' -f command 2>/dev/null
+      'command' -v java
+    )" || :
+    JAVACCMD="$(
+      'set' +e
+      'unset' -f command 2>/dev/null
+      'command' -v javac
+    )" || :
+
+    if [ ! -x "${JAVACMD-}" ] || [ ! -x "${JAVACCMD-}" ]; then
+      echo "The java/javac command does not exist in PATH nor is JAVA_HOME set, so mvnw cannot run." >&2
+      return 1
+    fi
+  fi
+}
+
+# hash string like Java String::hashCode
+hash_string() {
+  str="${1:-}" h=0
+  while [ -n "$str" ]; do
+    char="${str%"${str#?}"}"
+    h=$(((h * 31 + $(LC_CTYPE=C printf %d "'$char")) % 4294967296))
+    str="${str#?}"
+  done
+  printf %x\\n $h
+}
+
+verbose() { :; }
+[ "${MVNW_VERBOSE-}" != true ] || verbose() { printf %s\\n "${1-}"; }
+
+die() {
+  printf %s\\n "$1" >&2
+  exit 1
+}
+
+trim() {
+  # MWRAPPER-139:
+  #   Trims trailing and leading whitespace, carriage returns, tabs, and linefeeds.
+  #   Needed for removing poorly interpreted newline sequences when running in more
+  #   exotic environments such as mingw bash on Windows.
+  printf "%s" "${1}" | tr -d '[:space:]'
+}
+
+scriptDir="$(dirname "$0")"
+scriptName="$(basename "$0")"
+
+# parse distributionUrl and optional distributionSha256Sum, requires .mvn/wrapper/maven-wrapper.properties
+while IFS="=" read -r key value; do
+  case "${key-}" in
+  distributionUrl) distributionUrl=$(trim "${value-}") ;;
+  distributionSha256Sum) distributionSha256Sum=$(trim "${value-}") ;;
+  esac
+done <"$scriptDir/.mvn/wrapper/maven-wrapper.properties"
+[ -n "${distributionUrl-}" ] || die "cannot read distributionUrl property in $scriptDir/.mvn/wrapper/maven-wrapper.properties"
+
+case "${distributionUrl##*/}" in
+maven-mvnd-*bin.*)
+  MVN_CMD=mvnd.sh _MVNW_REPO_PATTERN=/maven/mvnd/
+  case "${PROCESSOR_ARCHITECTURE-}${PROCESSOR_ARCHITEW6432-}:$(uname -a)" in
+  *AMD64:CYGWIN* | *AMD64:MINGW*) distributionPlatform=windows-amd64 ;;
+  :Darwin*x86_64) distributionPlatform=darwin-amd64 ;;
+  :Darwin*arm64) distributionPlatform=darwin-aarch64 ;;
+  :Linux*x86_64*) distributionPlatform=linux-amd64 ;;
+  *)
+    echo "Cannot detect native platform for mvnd on $(uname)-$(uname -m), use pure java version" >&2
+    distributionPlatform=linux-amd64
+    ;;
+  esac
+  distributionUrl="${distributionUrl%-bin.*}-$distributionPlatform.zip"
+  ;;
+maven-mvnd-*) MVN_CMD=mvnd.sh _MVNW_REPO_PATTERN=/maven/mvnd/ ;;
+*) MVN_CMD="mvn${scriptName#mvnw}" _MVNW_REPO_PATTERN=/org/apache/maven/ ;;
+esac
+
+# apply MVNW_REPOURL and calculate MAVEN_HOME
+# maven home pattern: ~/.m2/wrapper/dists/{apache-maven-<version>,maven-mvnd-<version>-<platform>}/<hash>
+[ -z "${MVNW_REPOURL-}" ] || distributionUrl="$MVNW_REPOURL$_MVNW_REPO_PATTERN${distributionUrl#*"$_MVNW_REPO_PATTERN"}"
+distributionUrlName="${distributionUrl##*/}"
+distributionUrlNameMain="${distributionUrlName%.*}"
+distributionUrlNameMain="${distributionUrlNameMain%-bin}"
+MAVEN_USER_HOME="${MAVEN_USER_HOME:-${HOME}/.m2}"
+MAVEN_HOME="${MAVEN_USER_HOME}/wrapper/dists/${distributionUrlNameMain-}/$(hash_string "$distributionUrl")"
+
+exec_maven() {
+  unset MVNW_VERBOSE MVNW_USERNAME MVNW_PASSWORD MVNW_REPOURL || :
+  exec "$MAVEN_HOME/bin/$MVN_CMD" "$@" || die "cannot exec $MAVEN_HOME/bin/$MVN_CMD"
+}
+
+if [ -d "$MAVEN_HOME" ]; then
+  verbose "found existing MAVEN_HOME at $MAVEN_HOME"
+  exec_maven "$@"
+fi
+
+case "${distributionUrl-}" in
+*?-bin.zip | *?maven-mvnd-?*-?*.zip) ;;
+*) die "distributionUrl is not valid, must match *-bin.zip or maven-mvnd-*.zip, but found '${distributionUrl-}'" ;;
+esac
+
+# prepare tmp dir
+if TMP_DOWNLOAD_DIR="$(mktemp -d)" && [ -d "$TMP_DOWNLOAD_DIR" ]; then
+  clean() { rm -rf -- "$TMP_DOWNLOAD_DIR"; }
+  trap clean HUP INT TERM EXIT
+else
+  die "cannot create temp dir"
+fi
+
+mkdir -p -- "${MAVEN_HOME%/*}"
+
+# Download and Install Apache Maven
+verbose "Couldn't find MAVEN_HOME, downloading and installing it ..."
+verbose "Downloading from: $distributionUrl"
+verbose "Downloading to: $TMP_DOWNLOAD_DIR/$distributionUrlName"
+
+# select .zip or .tar.gz
+if ! command -v unzip >/dev/null; then
+  distributionUrl="${distributionUrl%.zip}.tar.gz"
+  distributionUrlName="${distributionUrl##*/}"
+fi
+
+# verbose opt
+__MVNW_QUIET_WGET=--quiet __MVNW_QUIET_CURL=--silent __MVNW_QUIET_UNZIP=-q __MVNW_QUIET_TAR=''
+[ "${MVNW_VERBOSE-}" != true ] || __MVNW_QUIET_WGET='' __MVNW_QUIET_CURL='' __MVNW_QUIET_UNZIP='' __MVNW_QUIET_TAR=v
+
+# normalize http auth
+case "${MVNW_PASSWORD:+has-password}" in
+'') MVNW_USERNAME='' MVNW_PASSWORD='' ;;
+has-password) [ -n "${MVNW_USERNAME-}" ] || MVNW_USERNAME='' MVNW_PASSWORD='' ;;
+esac
+
+if [ -z "${MVNW_USERNAME-}" ] && command -v wget >/dev/null; then
+  verbose "Found wget ... using wget"
+  wget ${__MVNW_QUIET_WGET:+"$__MVNW_QUIET_WGET"} "$distributionUrl" -O "$TMP_DOWNLOAD_DIR/$distributionUrlName" || die "wget: Failed to fetch $distributionUrl"
+elif [ -z "${MVNW_USERNAME-}" ] && command -v curl >/dev/null; then
+  verbose "Found curl ... using curl"
+  curl ${__MVNW_QUIET_CURL:+"$__MVNW_QUIET_CURL"} -f -L -o "$TMP_DOWNLOAD_DIR/$distributionUrlName" "$distributionUrl" || die "curl: Failed to fetch $distributionUrl"
+elif set_java_home; then
+  verbose "Falling back to use Java to download"
+  javaSource="$TMP_DOWNLOAD_DIR/Downloader.java"
+  targetZip="$TMP_DOWNLOAD_DIR/$distributionUrlName"
+  cat >"$javaSource" <<-END
+	public class Downloader extends java.net.Authenticator
+	{
+	  protected java.net.PasswordAuthentication getPasswordAuthentication()
+	  {
+	    return new java.net.PasswordAuthentication( System.getenv( "MVNW_USERNAME" ), System.getenv( "MVNW_PASSWORD" ).toCharArray() );
+	  }
+	  public static void main( String[] args ) throws Exception
+	  {
+	    setDefault( new Downloader() );
+	    java.nio.file.Files.copy( java.net.URI.create( args[0] ).toURL().openStream(), java.nio.file.Paths.get( args[1] ).toAbsolutePath().normalize() );
+	  }
+	}
+	END
+  # For Cygwin/MinGW, switch paths to Windows format before running javac and java
+  verbose " - Compiling Downloader.java ..."
+  "$(native_path "$JAVACCMD")" "$(native_path "$javaSource")" || die "Failed to compile Downloader.java"
+  verbose " - Running Downloader.java ..."
+  "$(native_path "$JAVACMD")" -cp "$(native_path "$TMP_DOWNLOAD_DIR")" Downloader "$distributionUrl" "$(native_path "$targetZip")"
+fi
+
+# If specified, validate the SHA-256 sum of the Maven distribution zip file
+if [ -n "${distributionSha256Sum-}" ]; then
+  distributionSha256Result=false
+  if [ "$MVN_CMD" = mvnd.sh ]; then
+    echo "Checksum validation is not supported for maven-mvnd." >&2
+    echo "Please disable validation by removing 'distributionSha256Sum' from your maven-wrapper.properties." >&2
+    exit 1
+  elif command -v sha256sum >/dev/null; then
+    if echo "$distributionSha256Sum  $TMP_DOWNLOAD_DIR/$distributionUrlName" | sha256sum -c - >/dev/null 2>&1; then
+      distributionSha256Result=true
+    fi
+  elif command -v shasum >/dev/null; then
+    if echo "$distributionSha256Sum  $TMP_DOWNLOAD_DIR/$distributionUrlName" | shasum -a 256 -c >/dev/null 2>&1; then
+      distributionSha256Result=true
+    fi
+  else
+    echo "Checksum validation was requested but neither 'sha256sum' or 'shasum' are available." >&2
+    echo "Please install either command, or disable validation by removing 'distributionSha256Sum' from your maven-wrapper.properties." >&2
+    exit 1
+  fi
+  if [ $distributionSha256Result = false ]; then
+    echo "Error: Failed to validate Maven distribution SHA-256, your Maven distribution might be compromised." >&2
+    echo "If you updated your Maven version, you need to update the specified distributionSha256Sum property." >&2
+    exit 1
+  fi
+fi
+
+# unzip and move
+if command -v unzip >/dev/null; then
+  unzip ${__MVNW_QUIET_UNZIP:+"$__MVNW_QUIET_UNZIP"} "$TMP_DOWNLOAD_DIR/$distributionUrlName" -d "$TMP_DOWNLOAD_DIR" || die "failed to unzip"
+else
+  tar xzf${__MVNW_QUIET_TAR:+"$__MVNW_QUIET_TAR"} "$TMP_DOWNLOAD_DIR/$distributionUrlName" -C "$TMP_DOWNLOAD_DIR" || die "failed to untar"
+fi
+
+# Find the actual extracted directory name (handles snapshots where filename != directory name)
+actualDistributionDir=""
+
+# First try the expected directory name (for regular distributions)
+if [ -d "$TMP_DOWNLOAD_DIR/$distributionUrlNameMain" ]; then
+  if [ -f "$TMP_DOWNLOAD_DIR/$distributionUrlNameMain/bin/$MVN_CMD" ]; then
+    actualDistributionDir="$distributionUrlNameMain"
+  fi
+fi
+
+# If not found, search for any directory with the Maven executable (for snapshots)
+if [ -z "$actualDistributionDir" ]; then
+  # enable globbing to iterate over items
+  set +f
+  for dir in "$TMP_DOWNLOAD_DIR"/*; do
+    if [ -d "$dir" ]; then
+      if [ -f "$dir/bin/$MVN_CMD" ]; then
+        actualDistributionDir="$(basename "$dir")"
+        break
+      fi
+    fi
+  done
+  set -f
+fi
+
+if [ -z "$actualDistributionDir" ]; then
+  verbose "Contents of $TMP_DOWNLOAD_DIR:"
+  verbose "$(ls -la "$TMP_DOWNLOAD_DIR")"
+  die "Could not find Maven distribution directory in extracted archive"
+fi
+
+verbose "Found extracted Maven distribution directory: $actualDistributionDir"
+printf %s\\n "$distributionUrl" >"$TMP_DOWNLOAD_DIR/$actualDistributionDir/mvnw.url"
+mv -- "$TMP_DOWNLOAD_DIR/$actualDistributionDir" "$MAVEN_HOME" || [ -d "$MAVEN_HOME" ] || die "fail to move MAVEN_HOME"
+
+clean || :
+exec_maven "$@"
+</file>
+
+<file path="mvnw.cmd">
+<# : batch portion
+@REM ----------------------------------------------------------------------------
+@REM Licensed to the Apache Software Foundation (ASF) under one
+@REM or more contributor license agreements.  See the NOTICE file
+@REM distributed with this work for additional information
+@REM regarding copyright ownership.  The ASF licenses this file
+@REM to you under the Apache License, Version 2.0 (the
+@REM "License"); you may not use this file except in compliance
+@REM with the License.  You may obtain a copy of the License at
+@REM
+@REM    http://www.apache.org/licenses/LICENSE-2.0
+@REM
+@REM Unless required by applicable law or agreed to in writing,
+@REM software distributed under the License is distributed on an
+@REM "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+@REM KIND, either express or implied.  See the License for the
+@REM specific language governing permissions and limitations
+@REM under the License.
+@REM ----------------------------------------------------------------------------
+
+@REM ----------------------------------------------------------------------------
+@REM Apache Maven Wrapper startup batch script, version 3.3.4
+@REM
+@REM Optional ENV vars
+@REM   MVNW_REPOURL - repo url base for downloading maven distribution
+@REM   MVNW_USERNAME/MVNW_PASSWORD - user and password for downloading maven
+@REM   MVNW_VERBOSE - true: enable verbose log; others: silence the output
+@REM ----------------------------------------------------------------------------
+
+@IF "%__MVNW_ARG0_NAME__%"=="" (SET __MVNW_ARG0_NAME__=%~nx0)
+@SET __MVNW_CMD__=
+@SET __MVNW_ERROR__=
+@SET __MVNW_PSMODULEP_SAVE=%PSModulePath%
+@SET PSModulePath=
+@FOR /F "usebackq tokens=1* delims==" %%A IN (`powershell -noprofile "& {$scriptDir='%~dp0'; $script='%__MVNW_ARG0_NAME__%'; icm -ScriptBlock ([Scriptblock]::Create((Get-Content -Raw '%~f0'))) -NoNewScope}"`) DO @(
+  IF "%%A"=="MVN_CMD" (set __MVNW_CMD__=%%B) ELSE IF "%%B"=="" (echo %%A) ELSE (echo %%A=%%B)
+)
+@SET PSModulePath=%__MVNW_PSMODULEP_SAVE%
+@SET __MVNW_PSMODULEP_SAVE=
+@SET __MVNW_ARG0_NAME__=
+@SET MVNW_USERNAME=
+@SET MVNW_PASSWORD=
+@IF NOT "%__MVNW_CMD__%"=="" ("%__MVNW_CMD__%" %*)
+@echo Cannot start maven from wrapper >&2 && exit /b 1
+@GOTO :EOF
+: end batch / begin powershell #>
+
+$ErrorActionPreference = "Stop"
+if ($env:MVNW_VERBOSE -eq "true") {
+  $VerbosePreference = "Continue"
+}
+
+# calculate distributionUrl, requires .mvn/wrapper/maven-wrapper.properties
+$distributionUrl = (Get-Content -Raw "$scriptDir/.mvn/wrapper/maven-wrapper.properties" | ConvertFrom-StringData).distributionUrl
+if (!$distributionUrl) {
+  Write-Error "cannot read distributionUrl property in $scriptDir/.mvn/wrapper/maven-wrapper.properties"
+}
+
+switch -wildcard -casesensitive ( $($distributionUrl -replace '^.*/','') ) {
+  "maven-mvnd-*" {
+    $USE_MVND = $true
+    $distributionUrl = $distributionUrl -replace '-bin\.[^.]*$',"-windows-amd64.zip"
+    $MVN_CMD = "mvnd.cmd"
+    break
+  }
+  default {
+    $USE_MVND = $false
+    $MVN_CMD = $script -replace '^mvnw','mvn'
+    break
+  }
+}
+
+# apply MVNW_REPOURL and calculate MAVEN_HOME
+# maven home pattern: ~/.m2/wrapper/dists/{apache-maven-<version>,maven-mvnd-<version>-<platform>}/<hash>
+if ($env:MVNW_REPOURL) {
+  $MVNW_REPO_PATTERN = if ($USE_MVND -eq $False) { "/org/apache/maven/" } else { "/maven/mvnd/" }
+  $distributionUrl = "$env:MVNW_REPOURL$MVNW_REPO_PATTERN$($distributionUrl -replace "^.*$MVNW_REPO_PATTERN",'')"
+}
+$distributionUrlName = $distributionUrl -replace '^.*/',''
+$distributionUrlNameMain = $distributionUrlName -replace '\.[^.]*$','' -replace '-bin$',''
+
+$MAVEN_M2_PATH = "$HOME/.m2"
+if ($env:MAVEN_USER_HOME) {
+  $MAVEN_M2_PATH = "$env:MAVEN_USER_HOME"
+}
+
+if (-not (Test-Path -Path $MAVEN_M2_PATH)) {
+    New-Item -Path $MAVEN_M2_PATH -ItemType Directory | Out-Null
+}
+
+$MAVEN_WRAPPER_DISTS = $null
+if ((Get-Item $MAVEN_M2_PATH).Target[0] -eq $null) {
+  $MAVEN_WRAPPER_DISTS = "$MAVEN_M2_PATH/wrapper/dists"
+} else {
+  $MAVEN_WRAPPER_DISTS = (Get-Item $MAVEN_M2_PATH).Target[0] + "/wrapper/dists"
+}
+
+$MAVEN_HOME_PARENT = "$MAVEN_WRAPPER_DISTS/$distributionUrlNameMain"
+$MAVEN_HOME_NAME = ([System.Security.Cryptography.SHA256]::Create().ComputeHash([byte[]][char[]]$distributionUrl) | ForEach-Object {$_.ToString("x2")}) -join ''
+$MAVEN_HOME = "$MAVEN_HOME_PARENT/$MAVEN_HOME_NAME"
+
+if (Test-Path -Path "$MAVEN_HOME" -PathType Container) {
+  Write-Verbose "found existing MAVEN_HOME at $MAVEN_HOME"
+  Write-Output "MVN_CMD=$MAVEN_HOME/bin/$MVN_CMD"
+  exit $?
+}
+
+if (! $distributionUrlNameMain -or ($distributionUrlName -eq $distributionUrlNameMain)) {
+  Write-Error "distributionUrl is not valid, must end with *-bin.zip, but found $distributionUrl"
+}
+
+# prepare tmp dir
+$TMP_DOWNLOAD_DIR_HOLDER = New-TemporaryFile
+$TMP_DOWNLOAD_DIR = New-Item -Itemtype Directory -Path "$TMP_DOWNLOAD_DIR_HOLDER.dir"
+$TMP_DOWNLOAD_DIR_HOLDER.Delete() | Out-Null
+trap {
+  if ($TMP_DOWNLOAD_DIR.Exists) {
+    try { Remove-Item $TMP_DOWNLOAD_DIR -Recurse -Force | Out-Null }
+    catch { Write-Warning "Cannot remove $TMP_DOWNLOAD_DIR" }
+  }
+}
+
+New-Item -Itemtype Directory -Path "$MAVEN_HOME_PARENT" -Force | Out-Null
+
+# Download and Install Apache Maven
+Write-Verbose "Couldn't find MAVEN_HOME, downloading and installing it ..."
+Write-Verbose "Downloading from: $distributionUrl"
+Write-Verbose "Downloading to: $TMP_DOWNLOAD_DIR/$distributionUrlName"
+
+$webclient = New-Object System.Net.WebClient
+if ($env:MVNW_USERNAME -and $env:MVNW_PASSWORD) {
+  $webclient.Credentials = New-Object System.Net.NetworkCredential($env:MVNW_USERNAME, $env:MVNW_PASSWORD)
+}
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+$webclient.DownloadFile($distributionUrl, "$TMP_DOWNLOAD_DIR/$distributionUrlName") | Out-Null
+
+# If specified, validate the SHA-256 sum of the Maven distribution zip file
+$distributionSha256Sum = (Get-Content -Raw "$scriptDir/.mvn/wrapper/maven-wrapper.properties" | ConvertFrom-StringData).distributionSha256Sum
+if ($distributionSha256Sum) {
+  if ($USE_MVND) {
+    Write-Error "Checksum validation is not supported for maven-mvnd. `nPlease disable validation by removing 'distributionSha256Sum' from your maven-wrapper.properties."
+  }
+  Import-Module $PSHOME\Modules\Microsoft.PowerShell.Utility -Function Get-FileHash
+  if ((Get-FileHash "$TMP_DOWNLOAD_DIR/$distributionUrlName" -Algorithm SHA256).Hash.ToLower() -ne $distributionSha256Sum) {
+    Write-Error "Error: Failed to validate Maven distribution SHA-256, your Maven distribution might be compromised. If you updated your Maven version, you need to update the specified distributionSha256Sum property."
+  }
+}
+
+# unzip and move
+Expand-Archive "$TMP_DOWNLOAD_DIR/$distributionUrlName" -DestinationPath "$TMP_DOWNLOAD_DIR" | Out-Null
+
+# Find the actual extracted directory name (handles snapshots where filename != directory name)
+$actualDistributionDir = ""
+
+# First try the expected directory name (for regular distributions)
+$expectedPath = Join-Path "$TMP_DOWNLOAD_DIR" "$distributionUrlNameMain"
+$expectedMvnPath = Join-Path "$expectedPath" "bin/$MVN_CMD"
+if ((Test-Path -Path $expectedPath -PathType Container) -and (Test-Path -Path $expectedMvnPath -PathType Leaf)) {
+  $actualDistributionDir = $distributionUrlNameMain
+}
+
+# If not found, search for any directory with the Maven executable (for snapshots)
+if (!$actualDistributionDir) {
+  Get-ChildItem -Path "$TMP_DOWNLOAD_DIR" -Directory | ForEach-Object {
+    $testPath = Join-Path $_.FullName "bin/$MVN_CMD"
+    if (Test-Path -Path $testPath -PathType Leaf) {
+      $actualDistributionDir = $_.Name
+    }
+  }
+}
+
+if (!$actualDistributionDir) {
+  Write-Error "Could not find Maven distribution directory in extracted archive"
+}
+
+Write-Verbose "Found extracted Maven distribution directory: $actualDistributionDir"
+Rename-Item -Path "$TMP_DOWNLOAD_DIR/$actualDistributionDir" -NewName $MAVEN_HOME_NAME | Out-Null
+try {
+  Move-Item -Path "$TMP_DOWNLOAD_DIR/$MAVEN_HOME_NAME" -Destination $MAVEN_HOME_PARENT | Out-Null
+} catch {
+  if (! (Test-Path -Path "$MAVEN_HOME" -PathType Container)) {
+    Write-Error "fail to move MAVEN_HOME"
+  }
+} finally {
+  try { Remove-Item $TMP_DOWNLOAD_DIR -Recurse -Force | Out-Null }
+  catch { Write-Warning "Cannot remove $TMP_DOWNLOAD_DIR" }
+}
+
+Write-Output "MVN_CMD=$MAVEN_HOME/bin/$MVN_CMD"
+</file>
+
+<file path="pom.xml">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+    <groupId>com.mycompany.app</groupId>
+    <artifactId>SpringMicroService</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</parent>
+	<groupId>com.silvio.elending</groupId>
+	<artifactId>elending-service</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name/>
+	<description/>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	<properties>
+		<java.version>17</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-mysql</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<annotationProcessorPaths>
+								<path>
+									<groupId>org.projectlombok</groupId>
+									<artifactId>lombok</artifactId>
+								</path>
+							</annotationProcessorPaths>
+						</configuration>
+					</execution>
+					<execution>
+						<id>default-testCompile</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+						<configuration>
+							<annotationProcessorPaths>
+								<path>
+									<groupId>org.projectlombok</groupId>
+									<artifactId>lombok</artifactId>
+								</path>
+							</annotationProcessorPaths>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+</file>
+
+<file path="src/main/java/com/silvio/elending/client/LicenseClient.java">
+package com.silvio.elending.client;
+
+import com.silvio.elending.dto.LicenciaDTO;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+
+// lb://license-service → Feign usa Eureka para encontrar la URL real
+// No necesitamos saber el puerto — Eureka lo resuelve por nombre
+@FeignClient(name = "license-service")
+public interface LicenseClient {
+
+    // Consultar copias disponibles de un libro
+    @GetMapping("/api/licenses/{libroId}")
+    LicenciaDTO obtenerLicencia(@PathVariable("libroId") Long libroId);
+
+    // Descontar 1 copia al crear préstamo
+    @PutMapping("/api/licenses/{libroId}/prestar")
+    LicenciaDTO prestar(@PathVariable("libroId") Long libroId);
+
+    // Devolver 1 copia al vencer préstamo
+    @PutMapping("/api/licenses/{libroId}/devolver")
+    LicenciaDTO devolver(@PathVariable("libroId") Long libroId);
+}
+</file>
+
+<file path="src/main/java/com/silvio/elending/client/NotificationClient.java">
+package com.silvio.elending.client;
+
+import com.silvio.elending.dto.NotificacionRequestDTO;
+import com.silvio.elending.dto.NotificacionResponseDTO;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+@FeignClient(name = "notification-service")
+public interface NotificationClient {
+
+    @PostMapping("/api/notifications")
+    NotificacionResponseDTO crear(@RequestBody NotificacionRequestDTO request);
+}
+</file>
+
+<file path="src/main/java/com/silvio/elending/client/SubscriptionClient.java">
+package com.silvio.elending.client;
+
+import com.silvio.elending.dto.SuscripcionDTO;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+@FeignClient(name = "subscription-service")
+public interface SubscriptionClient {
+
+    // Consultar plan activo del usuario
+    // E-Lending usa maxPrestamos y diasPrestamo para aplicar las reglas
+    @GetMapping("/api/subscriptions/usuario/{usuarioId}")
+    SuscripcionDTO obtenerSuscripcion(@PathVariable("usuarioId") String usuarioId);
+}
+</file>
+
+<file path="src/main/java/com/silvio/elending/config/SwaggerConfig.java">
+package com.silvio.elending.config;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class SwaggerConfig {
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI().info(new Info()
+                .title("SmallBooks - E-Lending Service")
+                .version("1.0.0")
+                .description("Gestión de préstamos digitales con reglas BASICO y PREMIUM"));
+    }
+}
+</file>
+
+<file path="src/main/java/com/silvio/elending/controller/PrestamoController.java">
+package com.silvio.elending.controller;
+
+import com.silvio.elending.dto.PrestamoRequestDTO;
+import com.silvio.elending.dto.PrestamoResponseDTO;
+import com.silvio.elending.service.PrestamoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
+import java.util.List;
+
+@Tag(name = "E-Lending", description = "Gestión de préstamos digitales — reglas BASICO (2 préstamos, 7 días) y PREMIUM (5 préstamos, 14 días)")
+@RestController
+@RequestMapping("/api/lending")
+@RequiredArgsConstructor
+public class PrestamoController {
+
+    private final PrestamoService prestamoService;
+
+    @Operation(summary = "Crear préstamo",
+               description = "Crea un nuevo préstamo digital. El usuario se identifica desde el token JWT — " +
+                             "no es necesario enviar el usuarioId en el body. " +
+                             "Valida límites de plan: BASICO (máx 2 activos), PREMIUM (máx 5 activos)")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Préstamo creado exitosamente"),
+        @ApiResponse(responseCode = "400", description = "Límite de préstamos alcanzado según el plan"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "404", description = "Libro no encontrado o no disponible")
+    })
+    @PostMapping("/prestamos")
+    public ResponseEntity<PrestamoResponseDTO> crearPrestamo(
+            @Valid @RequestBody PrestamoRequestDTO request,
+            @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
+            @RequestHeader("Authorization") String authHeader) {
+
+        String usuarioId = extraerUsuarioDelToken(authHeader);
+        PrestamoResponseDTO prestamo = prestamoService.crearPrestamo(request, usuarioId);
+        prestamo.add(linkTo(methodOn(PrestamoController.class).obtenerActivos(authHeader)).withRel("mis-activos"));
+        prestamo.add(linkTo(methodOn(PrestamoController.class).obtenerHistorial(authHeader)).withRel("mi-historial"));
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(prestamo);
+    }
+
+    @Operation(summary = "Obtener préstamos activos",
+               description = "Lista los préstamos activos del usuario autenticado. " +
+                             "El usuario se identifica desde el token JWT")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista de préstamos activos"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente")
+    })
+    @GetMapping("/prestamos/activos")
+    public ResponseEntity<List<PrestamoResponseDTO>> obtenerActivos(
+            @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
+            @RequestHeader("Authorization") String authHeader) {
+
+        String usuarioId = extraerUsuarioDelToken(authHeader);
+        List<PrestamoResponseDTO> prestamos = prestamoService.obtenerPrestamosActivos(usuarioId);
+
+        prestamos.forEach(p ->
+        p.add(linkTo(methodOn(PrestamoController.class).obtenerHistorial(authHeader)).withRel("mi-historial")));
+
+        return ResponseEntity.ok(prestamos);
+    }
+
+    @Operation(summary = "Obtener historial de préstamos",
+               description = "Lista todos los préstamos (activos y vencidos) del usuario autenticado")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Historial completo obtenido"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente")
+    })
+    @GetMapping("/prestamos/historial")
+    public ResponseEntity<List<PrestamoResponseDTO>> obtenerHistorial(
+            @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
+            @RequestHeader("Authorization") String authHeader) {
+
+        String usuarioId = extraerUsuarioDelToken(authHeader);
+        List<PrestamoResponseDTO> prestamos = prestamoService.obtenerHistorial(usuarioId);
+
+    prestamos.forEach(p ->
+        p.add(linkTo(methodOn(PrestamoController.class).obtenerActivos(authHeader)).withRel("mis-activos")));
+
+    return ResponseEntity.ok(prestamos);
+    }
+
+    @Operation(summary = "Obtener todos los préstamos",
+               description = "Endpoint interno usado por Analytics Service via Feign. " +
+                             "Devuelve todos los préstamos del sistema para cálculo de estadísticas globales")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista completa de préstamos")
+    })
+    @GetMapping("/prestamos/todos")
+    public ResponseEntity<List<PrestamoResponseDTO>> obtenerTodos() {
+        List<PrestamoResponseDTO> prestamos = prestamoService.obtenerTodos();
+        prestamos.forEach(p ->
+        p.add(linkTo(methodOn(PrestamoController.class).obtenerTodos()).withSelfRel()));
+        return ResponseEntity.ok(prestamos);
+    }
+
+    @Operation(summary = "Obtener historial por usuario",
+               description = "Endpoint interno usado por Analytics Service via Feign. " +
+                             "Devuelve el historial de préstamos de un usuario específico")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Historial obtenido exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+    @GetMapping("/prestamos/historial/{usuarioId}")
+    public ResponseEntity<List<PrestamoResponseDTO>> obtenerHistorialPorId(
+            @Parameter(description = "ID del usuario (username)", required = true)
+            @PathVariable String usuarioId) {
+        List<PrestamoResponseDTO> prestamos = prestamoService.obtenerHistorial(usuarioId);
+        prestamos.forEach(p ->
+        p.add(linkTo(methodOn(PrestamoController.class).obtenerHistorialPorId(usuarioId)).withSelfRel())
+    );
+        return ResponseEntity.ok(prestamos);
+    }
+
+    private String extraerUsuarioDelToken(String authHeader) {
+        try {
+            String token = authHeader.substring(7);
+            String payload = token.split("\\.")[1];
+            String decodedPayload = new String(
+                    java.util.Base64.getUrlDecoder().decode(payload));
+            String sub = decodedPayload.split("\"sub\":\"")[1].split("\"")[0];
+            return sub;
+        } catch (Exception e) {
+            throw new RuntimeException("No se pudo extraer el usuario del token");
+        }
+    }
+}
+</file>
+
+<file path="src/main/java/com/silvio/elending/dto/LicenciaDTO.java">
+package com.silvio.elending.dto;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import lombok.Data;
+
+// Representa la respuesta que devuelve License Service
+// Solo los campos que E-Lending necesita conocer
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class LicenciaDTO {
+
+    private Long id;
+    private Long libroId;
+    private Integer totalCopias;
+    private Integer copiasDisponibles;
+
+    
+}
+</file>
+
+<file path="src/main/java/com/silvio/elending/dto/NotificacionRequestDTO.java">
+package com.silvio.elending.dto;
+
+import lombok.Data;
+
+// DTO que E-Lending envía a Notification Service via Feign
+// El tipo debe coincidir con TipoNotificacion del notification-service
+@Data
+public class NotificacionRequestDTO {
+
+    private String usuarioId;
+    private String tipo;    // "PRESTAMO_CREADO", "PROXIMO_VENCER", "VENCIDO"
+    private String mensaje;
+
+    // Constructor estático para crear notificaciones fácilmente
+    public static NotificacionRequestDTO prestamoCreado(String usuarioId, Long libroId) {
+        NotificacionRequestDTO dto = new NotificacionRequestDTO();
+        dto.setUsuarioId(usuarioId);
+        dto.setTipo("PRESTAMO_CREADO");
+        dto.setMensaje("Tu préstamo del libro " + libroId +
+                " ha sido creado exitosamente. Tienes 14 días para leerlo.");
+        return dto;
+    }
+
+    public static NotificacionRequestDTO prestamoVencido(String usuarioId, Long libroId) {
+        NotificacionRequestDTO dto = new NotificacionRequestDTO();
+        dto.setUsuarioId(usuarioId);
+        dto.setTipo("VENCIDO");
+        dto.setMensaje("Tu préstamo del libro " + libroId +
+                " ha vencido y ha sido cerrado automáticamente.");
+        return dto;
+    }
+
+    public static NotificacionRequestDTO proximoVencer(String usuarioId, Long libroId) {
+        NotificacionRequestDTO dto = new NotificacionRequestDTO();
+        dto.setUsuarioId(usuarioId);
+        dto.setTipo("PROXIMO_VENCER");
+        dto.setMensaje("Tu préstamo del libro " + libroId +
+                " vence en 2 días. Aprovecha el tiempo restante.");
+        return dto;
+    }
+}
+</file>
+
+<file path="src/main/java/com/silvio/elending/dto/NotificacionResponseDTO.java">
+package com.silvio.elending.dto;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import lombok.Data;
+
+// Respuesta mínima que E-Lending necesita de Notification Service
+// Solo para confirmar que la notificación fue creada
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class NotificacionResponseDTO {
+    private Long id;
+    private String usuarioId;
+    private String tipo;
+    private String mensaje;
+}
+</file>
+
+<file path="src/main/java/com/silvio/elending/dto/PrestamoRequestDTO.java">
+package com.silvio.elending.dto;
+
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
+@Data
+public class PrestamoRequestDTO {
+
+    // El usuarioId viene del token JWT en el service
+    // El cliente solo necesita enviar el libroId
+    @NotNull(message = "El ID del libro es obligatorio")
+    private Long libroId;
+}
+</file>
+
+<file path="src/main/java/com/silvio/elending/dto/PrestamoResponseDTO.java">
+package com.silvio.elending.dto;
+
+import com.silvio.elending.model.Prestamo.EstadoPrestamo;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.time.LocalDateTime;
+
+import org.springframework.hateoas.RepresentationModel;
+
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class PrestamoResponseDTO extends RepresentationModel<PrestamoResponseDTO>{
+
+    private Long id;
+    private String usuarioId;
+    private Long libroId;
+    private LocalDateTime fechaInicio;
+    private LocalDateTime fechaVencimiento;
+    private EstadoPrestamo estado;
+}
+</file>
+
+<file path="src/main/java/com/silvio/elending/dto/SuscripcionDTO.java">
+package com.silvio.elending.dto;
+
+import lombok.Data;
+
+// Representa la respuesta de Subscription Service
+// Solo los campos que E-Lending necesita para aplicar las reglas del plan
+@Data
+public class SuscripcionDTO {
+
+    private String usuarioId;
+    private String plan;          // "BASICO" o "PREMIUM"
+    private Integer maxPrestamos; // 2 para BASICO, 5 para PREMIUM
+    private Integer diasPrestamo; // 7 para BASICO, 14 para PREMIUM
+    private Boolean activa;
+}
+</file>
+
+<file path="src/main/java/com/silvio/elending/exception/GlobalExceptionHandler.java">
+package com.silvio.elending.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> manejarValidacion(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errores = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errores.put(error.getField(), error.getDefaultMessage())
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errores);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Map<String, String>> manejarRuntimeException(
+            RuntimeException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        if (ex.getMessage() != null) {
+            if (ex.getMessage().contains("No hay copias")) {
+                status = HttpStatus.UNPROCESSABLE_ENTITY; // 422
+            } else if (ex.getMessage().contains("límite")) {
+                status = HttpStatus.UNPROCESSABLE_ENTITY; // 422
+            } else if (ex.getMessage().contains("Ya tienes")) {
+                status = HttpStatus.CONFLICT;             // 409
+            } else if (ex.getMessage().contains("No se pudo verificar")) {
+                status = HttpStatus.SERVICE_UNAVAILABLE;  // 503
+            }
+        }
+
+        return ResponseEntity.status(status).body(error);
+    }
+}
+</file>
+
+<file path="src/main/java/com/silvio/elending/model/Prestamo.java">
+package com.silvio.elending.model;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.time.LocalDateTime;
+
+@Data
+@Entity
+@Table(name = "prestamos")
+public class Prestamo {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    // ID del usuario extraído del token JWT
+    // No se consulta a otro MS — viene directo del token
+    @Column(name = "usuario_id", nullable = false, length = 100)
+    private String usuarioId;
+
+    // Referencia al libro en catalog-service
+    @Column(name = "libro_id", nullable = false)
+    private Long libroId;
+
+    @Column(name = "fecha_inicio", nullable = false)
+    private LocalDateTime fechaInicio;
+
+    // fechaInicio + 14 días — calculado al crear, nunca cambia
+    @Column(name = "fecha_vencimiento", nullable = false)
+    private LocalDateTime fechaVencimiento;
+
+    // ACTIVO → préstamo vigente
+    // VENCIDO → plazo expirado, cerrado por el scheduler
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private EstadoPrestamo estado;
+
+    public enum EstadoPrestamo {
+        ACTIVO,
+        VENCIDO
+    }
+}
+</file>
+
+<file path="src/main/java/com/silvio/elending/PrestamoServiceApplication.java">
+package com.silvio.elending;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+// @EnableFeignClients  → activa los clientes Feign (LicenseClient)
+// @EnableScheduling    → activa el scheduler que cierra préstamos vencidos
+//                        Sin esta anotación, @Scheduled no funciona
+
+@SpringBootApplication
+@EnableFeignClients
+@EnableScheduling
+public class PrestamoServiceApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(PrestamoServiceApplication.class, args);
+    }
+}
+</file>
+
+<file path="src/main/java/com/silvio/elending/repository/PrestamoRepository.java">
+package com.silvio.elending.repository;
+
+import com.silvio.elending.model.Prestamo;
+import com.silvio.elending.model.Prestamo.EstadoPrestamo;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Repository
+public interface PrestamoRepository extends JpaRepository<Prestamo, Long> {
+
+    // Préstamos activos de un usuario — para verificar límite de 5
+    List<Prestamo> findByUsuarioIdAndEstado(String usuarioId, EstadoPrestamo estado);
+
+    // Préstamos activos de un libro — para verificar si el usuario ya tiene ese libro
+    List<Prestamo> findByLibroIdAndEstado(Long libroId, EstadoPrestamo estado);
+
+    // Préstamos vencidos que el scheduler debe cerrar
+    // SELECT * FROM prestamos WHERE estado = 'ACTIVO' AND fecha_vencimiento < ahora
+    List<Prestamo> findByEstadoAndFechaVencimientoBefore(
+            EstadoPrestamo estado, LocalDateTime ahora);
+
+    // Historial completo de un usuario — para Analytics
+    List<Prestamo> findByUsuarioId(String usuarioId);
+}
+</file>
+
+<file path="src/main/java/com/silvio/elending/service/PrestamoService.java">
+package com.silvio.elending.service;
+
+import com.silvio.elending.client.LicenseClient;
+import com.silvio.elending.client.NotificationClient;
+import com.silvio.elending.client.SubscriptionClient;
+import com.silvio.elending.dto.LicenciaDTO;
+import com.silvio.elending.dto.NotificacionRequestDTO;
+import com.silvio.elending.dto.PrestamoRequestDTO;
+import com.silvio.elending.dto.PrestamoResponseDTO;
+import com.silvio.elending.dto.SuscripcionDTO;
+import com.silvio.elending.model.Prestamo;
+import com.silvio.elending.model.Prestamo.EstadoPrestamo;
+import com.silvio.elending.repository.PrestamoRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class PrestamoService {
+
+    private final PrestamoRepository prestamoRepository;
+    private final LicenseClient licenseClient;
+    private final SubscriptionClient subscriptionClient;
+    private final NotificationClient notificationClient;
+
+    @Transactional
+    public PrestamoResponseDTO crearPrestamo(PrestamoRequestDTO request, String usuarioId) {
+        log.info("Iniciando creación de préstamo — usuario: {}, libro: {}", 
+                usuarioId, request.getLibroId());
+
+        // Paso 1: Consultar plan del usuario
+        SuscripcionDTO suscripcion;
+        try {
+            suscripcion = subscriptionClient.obtenerSuscripcion(usuarioId);
+            log.info("Plan activo para usuario {}: {} — max: {} préstamos, {} días",
+                    usuarioId, suscripcion.getPlan(),
+                    suscripcion.getMaxPrestamos(), suscripcion.getDiasPrestamo());
+        } catch (Exception e) {
+            log.warn("No se encontró suscripción activa para usuario {}. Aplicando plan BASICO por defecto.", 
+                    usuarioId);
+            suscripcion = new SuscripcionDTO();
+            suscripcion.setMaxPrestamos(2);
+            suscripcion.setDiasPrestamo(7);
+            suscripcion.setPlan("BASICO");
+        }
+
+        // Paso 2: Verificar límite de préstamos
+        List<Prestamo> prestamosActivos = prestamoRepository
+                .findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO);
+
+        if (prestamosActivos.size() >= suscripcion.getMaxPrestamos()) {
+            log.warn("Usuario {} alcanzó límite de préstamos activos: {}/{}",
+                    usuarioId, prestamosActivos.size(), suscripcion.getMaxPrestamos());
+            throw new RuntimeException(
+                    "Has alcanzado el límite de " + suscripcion.getMaxPrestamos() +
+                    " préstamos activos para tu plan " + suscripcion.getPlan());
+        }
+
+        // Paso 3: Verificar duplicado
+        boolean yaLoTiene = prestamoRepository
+                .findByLibroIdAndEstado(request.getLibroId(), EstadoPrestamo.ACTIVO)
+                .stream()
+                .anyMatch(p -> p.getUsuarioId().equals(usuarioId));
+
+        if (yaLoTiene) {
+            log.warn("Usuario {} ya tiene préstamo activo del libro {}", 
+                    usuarioId, request.getLibroId());
+            throw new RuntimeException("Ya tienes este libro en préstamo activo");
+        }
+
+        // Paso 4: Verificar copias disponibles
+        LicenciaDTO licencia;
+        try {
+            licencia = licenseClient.obtenerLicencia(request.getLibroId());
+            log.info("Licencia libro {}: {}/{} copias disponibles",
+                    request.getLibroId(), licencia.getCopiasDisponibles(), licencia.getTotalCopias());
+        } catch (Exception e) {
+            log.error("Error al consultar licencia del libro {}: {}", 
+                    request.getLibroId(), e.getMessage());
+            throw new RuntimeException(
+                    "No se pudo verificar disponibilidad del libro con id: " + request.getLibroId());
+        }
+
+        if (licencia.getCopiasDisponibles() == null || licencia.getCopiasDisponibles() <= 0) {
+            log.warn("No hay copias disponibles del libro {}", request.getLibroId());
+            throw new RuntimeException(
+                    "No hay copias disponibles del libro con id: " + request.getLibroId());
+        }
+
+        // Paso 5: Descontar copia
+        try {
+            licenseClient.prestar(request.getLibroId());
+            log.info("Copia descontada exitosamente — libro: {}", request.getLibroId());
+        } catch (Exception e) {
+            log.error("Error al descontar copia en License Service — libro: {}: {}",
+                    request.getLibroId(), e.getMessage());
+            throw new RuntimeException("Error al registrar el préstamo en License Service");
+        }
+
+        // Paso 6: Crear préstamo
+        LocalDateTime ahora = LocalDateTime.now();
+        Prestamo prestamo = new Prestamo();
+        prestamo.setUsuarioId(usuarioId);
+        prestamo.setLibroId(request.getLibroId());
+        prestamo.setFechaInicio(ahora);
+        prestamo.setFechaVencimiento(ahora.plusDays(suscripcion.getDiasPrestamo()));
+        prestamo.setEstado(EstadoPrestamo.ACTIVO);
+
+        Prestamo guardado = prestamoRepository.save(prestamo);
+        log.info("Préstamo creado exitosamente — id: {}, usuario: {}, libro: {}, vence: {}",
+                guardado.getId(), usuarioId, request.getLibroId(), guardado.getFechaVencimiento());
+
+        // Paso 7: Notificar
+        try {
+            notificationClient.crear(
+                NotificacionRequestDTO.prestamoCreado(usuarioId, request.getLibroId()));
+            log.info("Notificación PRESTAMO_CREADO enviada al usuario {}", usuarioId);
+        } catch (Exception e) {
+            log.warn("No se pudo enviar notificación de préstamo creado para usuario {}: {}",
+                    usuarioId, e.getMessage());
+        }
+
+        return mapearADto(guardado);
+    }
+
+    public List<PrestamoResponseDTO> obtenerPrestamosActivos(String usuarioId) {
+        log.info("Consultando préstamos activos del usuario: {}", usuarioId);
+        return prestamoRepository
+                .findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO)
+                .stream()
+                .map(this::mapearADto)
+                .collect(Collectors.toList());
+    }
+
+    public List<PrestamoResponseDTO> obtenerHistorial(String usuarioId) {
+        log.info("Consultando historial completo del usuario: {}", usuarioId);
+        return prestamoRepository
+                .findByUsuarioId(usuarioId)
+                .stream()
+                .map(this::mapearADto)
+                .collect(Collectors.toList());
+    }
+
+    public List<PrestamoResponseDTO> obtenerTodos() {
+        log.info("Consultando todos los préstamos para Analytics");
+        return prestamoRepository.findAll()
+                .stream()
+                .map(this::mapearADto)
+                .collect(Collectors.toList());
+    }
+
+    @Scheduled(fixedRate = 3600000)
+    @Transactional
+    public void cerrarPrestamosVencidos() {
+        LocalDateTime ahora = LocalDateTime.now();
+        log.info("Scheduler ejecutado — verificando préstamos vencidos a las {}", ahora);
+
+        List<Prestamo> vencidos = prestamoRepository
+                .findByEstadoAndFechaVencimientoBefore(EstadoPrestamo.ACTIVO, ahora);
+
+        log.info("Préstamos vencidos encontrados: {}", vencidos.size());
+
+        for (Prestamo prestamo : vencidos) {
+            try {
+                licenseClient.devolver(prestamo.getLibroId());
+                prestamo.setEstado(EstadoPrestamo.VENCIDO);
+                prestamoRepository.save(prestamo);
+
+                log.info("Préstamo cerrado — id: {}, usuario: {}, libro: {}",
+                        prestamo.getId(), prestamo.getUsuarioId(), prestamo.getLibroId());
+
+                try {
+                    notificationClient.crear(
+                        NotificacionRequestDTO.prestamoVencido(
+                            prestamo.getUsuarioId(), prestamo.getLibroId()));
+                } catch (Exception e) {
+                    log.warn("No se pudo notificar vencimiento — préstamo {}: {}",
+                            prestamo.getId(), e.getMessage());
+                }
+
+            } catch (Exception e) {
+                log.error("Error al cerrar préstamo id: {} — {}", 
+                        prestamo.getId(), e.getMessage());
+            }
+        }
+
+        // Avisar próximos a vencer
+        LocalDateTime en2Dias = ahora.plusDays(2);
+        List<Prestamo> proximosAVencer = prestamoRepository
+                .findByEstadoAndFechaVencimientoBefore(EstadoPrestamo.ACTIVO, en2Dias)
+                .stream()
+                .filter(p -> p.getFechaVencimiento().isAfter(ahora))
+                .collect(Collectors.toList());
+
+        log.info("Préstamos próximos a vencer (2 días): {}", proximosAVencer.size());
+
+        for (Prestamo prestamo : proximosAVencer) {
+            try {
+                notificationClient.crear(
+                    NotificacionRequestDTO.proximoVencer(
+                        prestamo.getUsuarioId(), prestamo.getLibroId()));
+            } catch (Exception e) {
+                log.warn("No se pudo notificar próximo vencimiento — préstamo {}: {}",
+                        prestamo.getId(), e.getMessage());
+            }
+        }
+    }
+
+    private PrestamoResponseDTO mapearADto(Prestamo prestamo) {
+        PrestamoResponseDTO dto = new PrestamoResponseDTO();
+        dto.setId(prestamo.getId());
+        dto.setUsuarioId(prestamo.getUsuarioId());
+        dto.setLibroId(prestamo.getLibroId());
+        dto.setFechaInicio(prestamo.getFechaInicio());
+        dto.setFechaVencimiento(prestamo.getFechaVencimiento());
+        dto.setEstado(prestamo.getEstado());
+        return dto;
+    }
+}
+</file>
+
+<file path="src/main/resources/application.yml">
+spring:
+  application:
+    name: elending-service
+  config:
+    import: optional:configserver:http://localhost:8888
+
+logging:
+  file:
+    name: logs/smallbooks.log
+  level:
+    root: INFO
+    com.silvio: DEBUG
+</file>
+
+<file path="src/main/resources/banner.txt">
+8888888888 888                        888 d8b                                                             d8b                  
+888        888                        888 Y8P                                                             Y8P                  
+888        888                        888                                                                                      
+8888888    888  .d88b.  88888b.   .d88888 888 88888b.   .d88b.         .d8888b   .d88b.  888d888 888  888 888  .d8888b .d88b.  
+888        888 d8P  Y8b 888 "88b d88" 888 888 888 "88b d88P"88b        88K      d8P  Y8b 888P"   888  888 888 d88P"   d8P  Y8b 
+888        888 88888888 888  888 888  888 888 888  888 888  888 888888 "Y8888b. 88888888 888     Y88  88P 888 888     88888888 
+888        888 Y8b.     888  888 Y88b 888 888 888  888 Y88b 888             X88 Y8b.     888      Y8bd8P  888 Y88b.   Y8b.     
+8888888888 888  "Y8888  888  888  "Y88888 888 888  888  "Y88888         88888P'  "Y8888  888       Y88P   888  "Y8888P "Y8888  
+                                                            888                                                                
+                                                       Y8b d88P                                                                
+                                                        "Y88P"
+</file>
+
+<file path="src/main/resources/db/migration/V1__crear_tabla_prestamos.sql">
+CREATE TABLE prestamos (
+    id                  BIGINT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id          VARCHAR(100)    NOT NULL,
+    libro_id            BIGINT          NOT NULL,
+    fecha_inicio        DATETIME        NOT NULL,
+    fecha_vencimiento   DATETIME        NOT NULL,
+    estado              VARCHAR(20)     NOT NULL DEFAULT 'ACTIVO'
+);
+
+-- Índices para las queries más frecuentes del scheduler y del service
+CREATE INDEX idx_estado ON prestamos(estado);
+CREATE INDEX idx_usuario_estado ON prestamos(usuario_id, estado);
+CREATE INDEX idx_vencimiento ON prestamos(fecha_vencimiento, estado);
+</file>
+
+<file path="src/test/java/com/silvio/elending/ElendingServiceApplicationTests.java">
+package com.silvio.elending;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class ElendingServiceApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
+</file>
+
+</files>

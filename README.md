@@ -10,7 +10,6 @@ Sistema de biblioteca digital construido con arquitectura de microservicios usan
 |-|-|
 |Silvio Gonzalves|Líder técnico / Backend|
 |Oscar Garrido|Backend|
-|Yeannette Vera|Frontend|
 |Juan Ortega|QA|
 
 

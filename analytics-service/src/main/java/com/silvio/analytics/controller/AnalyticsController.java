@@ -12,8 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @Tag(name = "Analytics", description = "Métricas y estadísticas globales de uso de la plataforma SmallBooks")
 @RestController
@@ -32,7 +33,12 @@ public class AnalyticsController {
     })
     @GetMapping("/estadisticas")
     public ResponseEntity<EstadisticasDTO> obtenerEstadisticas() {
-        return ResponseEntity.ok(analyticsService.obtenerEstadisticas());
+        EstadisticasDTO dto = analyticsService.obtenerEstadisticas();
+
+        dto.add(linkTo(methodOn(AnalyticsController.class)
+                .obtenerEstadisticas()).withSelfRel());
+
+        return ResponseEntity.ok(dto);
     }
 
     @Operation(summary = "Historial de préstamos por usuario",
@@ -46,6 +52,11 @@ public class AnalyticsController {
     public ResponseEntity<List<PrestamoAnalyticsDTO>> historialUsuario(
             @Parameter(description = "ID del usuario (username)", required = true)
             @PathVariable String usuarioId) {
-        return ResponseEntity.ok(analyticsService.historialUsuario(usuarioId));
+        List<PrestamoAnalyticsDTO> lista = analyticsService.historialUsuario(usuarioId);
+
+        lista.forEach(p ->
+            p.add(linkTo(methodOn(AnalyticsController.class).historialUsuario(usuarioId)).withSelfRel()));
+
+        return ResponseEntity.ok(lista);
     }
 }

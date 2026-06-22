@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import java.util.Map;
 
 @Tag(name = "Identity", description = "Autenticación, registro y gestión de contraseñas — genera tokens JWT para acceso al sistema")
@@ -46,12 +47,18 @@ public class AuthController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String accessToken = jwtUtil.generateAccessToken(userDetails);
         String refreshToken = jwtUtil.generateRefreshToken(userDetails.getUsername());
-        return ResponseEntity.ok(new AuthResponse(
-            accessToken,
-            refreshToken,
-            " Login exitoso. Bienvenido " + userDetails.getUsername(),
-            userDetails.getUsername()
-        ));
+        AuthResponse response = new AuthResponse(
+        accessToken, refreshToken,
+        " Login exitoso. Bienvenido " + userDetails.getUsername(),
+        userDetails.getUsername()
+    );
+
+    response.add(linkTo(methodOn(AuthController.class)
+        .refreshToken(null)).withRel("refresh-token"));
+    response.add(linkTo(methodOn(AuthController.class)
+        .changePassword(null, null)).withRel("change-password"));
+
+    return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Registrar usuario",
@@ -97,12 +104,14 @@ public class AuthController {
         UserDetails userDetails = userService.loadUserByUsername(username);
         String newAccessToken = jwtUtil.generateAccessToken(userDetails);
         String newRefreshToken = jwtUtil.generateRefreshToken(username);
-        return ResponseEntity.ok(new AuthResponse(
-            newAccessToken,
-            newRefreshToken,
-            " Token refrescado exitosamente",
-            username
-        ));
+        AuthResponse response = new AuthResponse(
+        newAccessToken, newRefreshToken,
+        " Token refrescado exitosamente", username
+    );
+
+    response.add(linkTo(methodOn(AuthController.class).login(null)).withRel("login"));
+
+    return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Solicitar recuperación de contraseña",
