@@ -3,3 +3,40 @@
 2026-06-22T19:28:35.642-04:00  INFO 27128 --- [content-service] [main] c.s.content.ContentServiceApplication    : No active profile set, falling back to 1 default profile: "default"
 2026-06-22T19:28:35.693-04:00  INFO 27128 --- [content-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
 2026-06-22T19:28:35.693-04:00  INFO 27128 --- [content-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=content-service, profiles=[default], label=null, version=null, state=null
+2026-06-22T19:28:36.780-04:00  INFO 27128 --- [content-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=64f8b188-0d51-37b3-a890-8ccf38aa3ac5
+2026-06-22T19:28:37.181-04:00  INFO 27128 --- [content-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8093 (http)
+2026-06-22T19:28:37.198-04:00  INFO 27128 --- [content-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-22T19:28:37.199-04:00  INFO 27128 --- [content-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-22T19:28:37.283-04:00  INFO 27128 --- [content-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-22T19:28:37.284-04:00  INFO 27128 --- [content-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1587 ms
+2026-06-22T19:28:37.793-04:00  INFO 27128 --- [content-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'elending-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-22T19:28:37.847-04:00  INFO 27128 --- [content-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'ingestion-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-22T19:28:37.901-04:00  INFO 27128 --- [content-service] [main] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Bean Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2026-06-22T19:28:38.454-04:00  INFO 27128 --- [content-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-22T19:28:38.478-04:00  WARN 27128 --- [content-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-22T19:28:38.535-04:00  INFO 27128 --- [content-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-22T19:28:38.562-04:00  INFO 27128 --- [content-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-22T19:28:38.569-04:00  INFO 27128 --- [content-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T19:28:38.580-04:00  INFO 27128 --- [content-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-22T19:28:38.581-04:00  INFO 27128 --- [content-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-22T19:28:38.581-04:00  INFO 27128 --- [content-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-22T19:28:38.581-04:00  INFO 27128 --- [content-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-22T19:28:38.581-04:00  INFO 27128 --- [content-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-22T19:28:38.582-04:00  INFO 27128 --- [content-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-22T19:28:38.582-04:00  INFO 27128 --- [content-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-22T19:28:38.935-04:00  INFO 27128 --- [content-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-22T19:28:38.939-04:00  INFO 27128 --- [content-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-22T19:28:38.942-04:00  INFO 27128 --- [content-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-22T19:28:38.944-04:00  INFO 27128 --- [content-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1782170918943 with initial instances count: 9
+2026-06-22T19:28:38.947-04:00  INFO 27128 --- [content-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application CONTENT-SERVICE with eureka with status UP
+2026-06-22T19:28:38.947-04:00  INFO 27128 --- [content-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782170918947, current=UP, previous=STARTING]
+2026-06-22T19:28:38.949-04:00  INFO 27128 --- [content-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_CONTENT-SERVICE/host.docker.internal:content-service:8093: registering service...
+2026-06-22T19:28:38.974-04:00  INFO 27128 --- [content-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8093 (http) with context path '/'
+2026-06-22T19:28:38.976-04:00  INFO 27128 --- [content-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8093
+2026-06-22T19:28:38.994-04:00  INFO 27128 --- [content-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_CONTENT-SERVICE/host.docker.internal:content-service:8093 - registration status: 204
+2026-06-22T19:28:39.038-04:00  INFO 27128 --- [content-service] [main] c.s.content.ContentServiceApplication    : Started ContentServiceApplication in 4.393 seconds (process running for 4.91)
+2026-06-22T19:33:38.591-04:00  INFO 27128 --- [content-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T19:38:38.606-04:00  INFO 27128 --- [content-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T19:43:38.615-04:00  INFO 27128 --- [content-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T19:48:38.617-04:00  INFO 27128 --- [content-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T19:53:38.628-04:00  INFO 27128 --- [content-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
