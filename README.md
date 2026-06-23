@@ -85,6 +85,19 @@ SmallBooks es una plataforma de biblioteca digital que permite a los usuarios ex
 
 ---
 
+## Database Requerido
+| `CREATE DATABASE db_catalog;
+| `CREATE DATABASE db_lending;
+| `CREATE DATABASE db_identity;
+| `CREATE DATABASE db_license;
+| `CREATE DATABASE db_subscription;
+| `CREATE DATABASE db_notification;
+| `CREATE DATABASE db_ingestion;
+| `CREATE DATABASE db_search;
+| `CREATE DATABASE db_analytics;
+
+---
+
 ## Stack Tecnológico
 
 | Categoría | Tecnología |

@@ -446,3 +446,100 @@ Caused by: org.springframework.boot.autoconfigure.jdbc.DataSourceProperties$Data
 2026-06-22T06:04:26.327-04:00  INFO 4532 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-06-22T06:09:26.333-04:00  INFO 4532 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-06-22T06:14:26.347-04:00  INFO 4532 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T19:26:43.980-04:00  INFO 26400 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : Starting PrestamoServiceApplication using Java 17.0.10 with PID 26400 (C:\WorkSpace\SmallBooksRepository\elending-service\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\elending-service)
+2026-06-22T19:26:43.986-04:00 DEBUG 26400 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-22T19:26:43.987-04:00  INFO 26400 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : No active profile set, falling back to 1 default profile: "default"
+2026-06-22T19:26:44.042-04:00  INFO 26400 --- [elending-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T19:26:44.043-04:00  INFO 26400 --- [elending-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=elending-service, profiles=[default], label=null, version=null, state=null
+2026-06-22T19:26:44.866-04:00  INFO 26400 --- [elending-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-22T19:26:45.010-04:00  INFO 26400 --- [elending-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 136 ms. Found 1 JPA repository interface.
+2026-06-22T19:26:45.298-04:00  INFO 26400 --- [elending-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=7b484f36-6d31-32f3-80fa-8f0b02441651
+2026-06-22T19:26:45.721-04:00  INFO 26400 --- [elending-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8087 (http)
+2026-06-22T19:26:45.742-04:00  INFO 26400 --- [elending-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-22T19:26:45.743-04:00  INFO 26400 --- [elending-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-22T19:26:45.824-04:00  INFO 26400 --- [elending-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-22T19:26:45.825-04:00  INFO 26400 --- [elending-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1779 ms
+2026-06-22T19:26:46.003-04:00  INFO 26400 --- [elending-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-22T19:26:46.146-04:00  INFO 26400 --- [elending-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@54b2d002
+2026-06-22T19:26:46.148-04:00  INFO 26400 --- [elending-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-22T19:26:46.195-04:00  INFO 26400 --- [elending-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_lending (MySQL 8.4)
+2026-06-22T19:26:46.208-04:00  WARN 26400 --- [elending-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-22T19:26:46.265-04:00  INFO 26400 --- [elending-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.048s)
+2026-06-22T19:26:46.280-04:00  INFO 26400 --- [elending-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_lending`: 1
+2026-06-22T19:26:46.283-04:00  INFO 26400 --- [elending-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_lending` is up to date. No migration necessary.
+2026-06-22T19:26:46.358-04:00  INFO 26400 --- [elending-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-22T19:26:46.408-04:00  INFO 26400 --- [elending-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-22T19:26:46.436-04:00  INFO 26400 --- [elending-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-22T19:26:46.722-04:00  INFO 26400 --- [elending-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-22T19:26:46.776-04:00  WARN 26400 --- [elending-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-22T19:26:47.432-04:00  INFO 26400 --- [elending-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-22T19:26:47.461-04:00  INFO 26400 --- [elending-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-22T19:26:47.923-04:00  WARN 26400 --- [elending-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-22T19:26:48.165-04:00  INFO 26400 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'license-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-22T19:26:48.219-04:00  INFO 26400 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'subscription-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-22T19:26:48.235-04:00  INFO 26400 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'notification-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-22T19:26:48.775-04:00  INFO 26400 --- [elending-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-22T19:26:48.800-04:00  WARN 26400 --- [elending-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-22T19:26:48.863-04:00  INFO 26400 --- [elending-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-22T19:26:48.883-04:00  INFO 26400 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-22T19:26:48.888-04:00  INFO 26400 --- [elending-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T19:26:48.898-04:00  INFO 26400 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-22T19:26:48.898-04:00  INFO 26400 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-22T19:26:48.899-04:00  INFO 26400 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-22T19:26:48.899-04:00  INFO 26400 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-22T19:26:48.899-04:00  INFO 26400 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-22T19:26:48.899-04:00  INFO 26400 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-22T19:26:48.899-04:00  INFO 26400 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-22T19:26:49.159-04:00  INFO 26400 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-22T19:26:49.161-04:00  INFO 26400 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-22T19:26:49.163-04:00  INFO 26400 --- [elending-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-22T19:26:49.165-04:00  INFO 26400 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1782170809165 with initial instances count: 2
+2026-06-22T19:26:49.169-04:00  INFO 26400 --- [elending-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application ELENDING-SERVICE with eureka with status UP
+2026-06-22T19:26:49.170-04:00  INFO 26400 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782170809170, current=UP, previous=STARTING]
+2026-06-22T19:26:49.172-04:00  INFO 26400 --- [elending-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/host.docker.internal:elending-service:8087: registering service...
+2026-06-22T19:26:49.198-04:00  INFO 26400 --- [elending-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8087 (http) with context path '/'
+2026-06-22T19:26:49.200-04:00  INFO 26400 --- [elending-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8087
+2026-06-22T19:26:49.207-04:00  INFO 26400 --- [elending-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/host.docker.internal:elending-service:8087 - registration status: 204
+2026-06-22T19:26:49.263-04:00  INFO 26400 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : Started PrestamoServiceApplication in 6.242 seconds (process running for 6.73)
+2026-06-22T19:26:49.275-04:00  INFO 26400 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Scheduler ejecutado — verificando préstamos vencidos a las 2026-06-22T19:26:49.275399400
+2026-06-22T19:26:49.429-04:00  INFO 26400 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Préstamos vencidos encontrados: 0
+2026-06-22T19:26:49.432-04:00  INFO 26400 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Préstamos próximos a vencer (2 días): 0
+2026-06-22T19:29:35.079-04:00  INFO 26400 --- [elending-service] [http-nio-8087-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-22T19:29:35.079-04:00  INFO 26400 --- [elending-service] [http-nio-8087-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-06-22T19:29:35.086-04:00  INFO 26400 --- [elending-service] [http-nio-8087-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 7 ms
+2026-06-22T19:29:35.158-04:00  INFO 26400 --- [elending-service] [http-nio-8087-exec-1] c.s.elending.service.PrestamoService     : Iniciando creación de préstamo — usuario: admin, libro: 1
+2026-06-22T19:29:35.695-04:00  INFO 26400 --- [elending-service] [http-nio-8087-exec-1] c.s.elending.service.PrestamoService     : Plan activo para usuario admin: PREMIUM — max: 5 préstamos, 14 días
+2026-06-22T19:29:35.728-04:00  WARN 26400 --- [elending-service] [http-nio-8087-exec-1] c.s.elending.service.PrestamoService     : Usuario admin ya tiene préstamo activo del libro 1
+2026-06-22T19:29:42.287-04:00  INFO 26400 --- [elending-service] [http-nio-8087-exec-3] c.s.elending.service.PrestamoService     : Iniciando creación de préstamo — usuario: admin, libro: 2
+2026-06-22T19:29:42.298-04:00  INFO 26400 --- [elending-service] [http-nio-8087-exec-3] c.s.elending.service.PrestamoService     : Plan activo para usuario admin: PREMIUM — max: 5 préstamos, 14 días
+2026-06-22T19:29:42.306-04:00  WARN 26400 --- [elending-service] [http-nio-8087-exec-3] c.s.elending.service.PrestamoService     : Usuario admin ya tiene préstamo activo del libro 2
+2026-06-22T19:29:47.483-04:00  INFO 26400 --- [elending-service] [http-nio-8087-exec-4] c.s.elending.service.PrestamoService     : Iniciando creación de préstamo — usuario: admin, libro: 4
+2026-06-22T19:29:47.493-04:00  INFO 26400 --- [elending-service] [http-nio-8087-exec-4] c.s.elending.service.PrestamoService     : Plan activo para usuario admin: PREMIUM — max: 5 préstamos, 14 días
+2026-06-22T19:29:47.870-04:00  INFO 26400 --- [elending-service] [http-nio-8087-exec-4] c.s.elending.service.PrestamoService     : Licencia libro 4: 3/3 copias disponibles
+2026-06-22T19:29:47.949-04:00  INFO 26400 --- [elending-service] [http-nio-8087-exec-4] c.s.elending.service.PrestamoService     : Copia descontada exitosamente — libro: 4
+2026-06-22T19:29:47.982-04:00  INFO 26400 --- [elending-service] [http-nio-8087-exec-4] c.s.elending.service.PrestamoService     : Préstamo creado exitosamente — id: 6, usuario: admin, libro: 4, vence: 2026-07-06T19:29:47.950302100
+2026-06-22T19:29:48.527-04:00  INFO 26400 --- [elending-service] [http-nio-8087-exec-4] c.s.elending.service.PrestamoService     : Notificación PRESTAMO_CREADO enviada al usuario admin
+2026-06-22T19:30:26.787-04:00  INFO 26400 --- [elending-service] [http-nio-8087-exec-5] c.s.elending.service.PrestamoService     : Consultando préstamos activos del usuario: admin
+2026-06-22T19:30:43.595-04:00  INFO 26400 --- [elending-service] [http-nio-8087-exec-2] c.s.elending.service.PrestamoService     : Consultando historial completo del usuario: admin
+2026-06-22T19:31:48.907-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T19:36:48.915-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T19:41:48.919-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T19:46:48.929-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T19:51:48.943-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T19:56:48.956-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:01:48.957-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:06:48.960-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:11:48.965-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:16:48.989-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:21:49.003-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:26:49.018-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:26:49.269-04:00  INFO 26400 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Scheduler ejecutado — verificando préstamos vencidos a las 2026-06-22T20:26:49.269461400
+2026-06-22T20:26:49.269-04:00  INFO 26400 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Préstamos vencidos encontrados: 0
+2026-06-22T20:26:49.269-04:00  INFO 26400 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Préstamos próximos a vencer (2 días): 0
+2026-06-22T20:31:49.019-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:36:49.032-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:41:49.043-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:46:49.052-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:51:49.062-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:56:49.075-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T21:01:49.076-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

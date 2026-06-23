@@ -46,3 +46,79 @@
 2026-06-22T18:37:16.677-04:00  INFO 14344 --- [notification-service] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
 2026-06-22T18:37:16.677-04:00  INFO 14344 --- [notification-service] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
 2026-06-22T18:37:16.713-04:00  INFO 14344 --- [notification-service] [main] c.s.n.c.NotificacionControllerTest       : Started NotificacionControllerTest in 2.845 seconds (process running for 3.778)
+2026-06-22T19:27:27.605-04:00  INFO 5088 --- [notification-service] [main] c.s.n.NotificationServiceApplication     : Starting NotificationServiceApplication using Java 17.0.10 with PID 5088 (C:\WorkSpace\SmallBooksRepository\notification-service\target\classes started by Silvi in C:\WorkSpace\SmallBooksRepository\notification-service)
+2026-06-22T19:27:27.608-04:00 DEBUG 5088 --- [notification-service] [main] c.s.n.NotificationServiceApplication     : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-22T19:27:27.608-04:00  INFO 5088 --- [notification-service] [main] c.s.n.NotificationServiceApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-06-22T19:27:27.650-04:00  INFO 5088 --- [notification-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-22T19:27:27.650-04:00  INFO 5088 --- [notification-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=notification-service, profiles=[default], label=null, version=null, state=null
+2026-06-22T19:27:28.603-04:00  INFO 5088 --- [notification-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-22T19:27:28.750-04:00  INFO 5088 --- [notification-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 139 ms. Found 1 JPA repository interface.
+2026-06-22T19:27:29.037-04:00  INFO 5088 --- [notification-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=915b611f-687c-33bc-98a8-f44bb99aee90
+2026-06-22T19:27:29.444-04:00  INFO 5088 --- [notification-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8088 (http)
+2026-06-22T19:27:29.461-04:00  INFO 5088 --- [notification-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-22T19:27:29.462-04:00  INFO 5088 --- [notification-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-22T19:27:29.536-04:00  INFO 5088 --- [notification-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-22T19:27:29.536-04:00  INFO 5088 --- [notification-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1883 ms
+2026-06-22T19:27:29.722-04:00  INFO 5088 --- [notification-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-22T19:27:29.888-04:00  INFO 5088 --- [notification-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@63d0e8d
+2026-06-22T19:27:29.890-04:00  INFO 5088 --- [notification-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-22T19:27:29.951-04:00  INFO 5088 --- [notification-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_notifications (MySQL 8.4)
+2026-06-22T19:27:29.962-04:00  WARN 5088 --- [notification-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-22T19:27:30.008-04:00  INFO 5088 --- [notification-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.036s)
+2026-06-22T19:27:30.024-04:00  INFO 5088 --- [notification-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_notifications`: 1
+2026-06-22T19:27:30.027-04:00  INFO 5088 --- [notification-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_notifications` is up to date. No migration necessary.
+2026-06-22T19:27:30.111-04:00  INFO 5088 --- [notification-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-22T19:27:30.163-04:00  INFO 5088 --- [notification-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-22T19:27:30.197-04:00  INFO 5088 --- [notification-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-22T19:27:30.507-04:00  INFO 5088 --- [notification-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-22T19:27:30.568-04:00  WARN 5088 --- [notification-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-22T19:27:31.310-04:00  INFO 5088 --- [notification-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-22T19:27:31.334-04:00  INFO 5088 --- [notification-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-22T19:27:31.696-04:00  WARN 5088 --- [notification-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-22T19:27:32.426-04:00  INFO 5088 --- [notification-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-22T19:27:32.471-04:00  WARN 5088 --- [notification-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-22T19:27:32.524-04:00  INFO 5088 --- [notification-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-22T19:27:32.546-04:00  INFO 5088 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-22T19:27:32.552-04:00  INFO 5088 --- [notification-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T19:27:32.560-04:00  INFO 5088 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-22T19:27:32.561-04:00  INFO 5088 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-22T19:27:32.561-04:00  INFO 5088 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-22T19:27:32.561-04:00  INFO 5088 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-22T19:27:32.561-04:00  INFO 5088 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-22T19:27:32.561-04:00  INFO 5088 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-22T19:27:32.561-04:00  INFO 5088 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-22T19:27:32.829-04:00  INFO 5088 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-22T19:27:32.832-04:00  INFO 5088 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-22T19:27:32.834-04:00  INFO 5088 --- [notification-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-22T19:27:32.835-04:00  INFO 5088 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1782170852835 with initial instances count: 6
+2026-06-22T19:27:32.840-04:00  INFO 5088 --- [notification-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application NOTIFICATION-SERVICE with eureka with status UP
+2026-06-22T19:27:32.841-04:00  INFO 5088 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782170852841, current=UP, previous=STARTING]
+2026-06-22T19:27:32.844-04:00  INFO 5088 --- [notification-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_NOTIFICATION-SERVICE/host.docker.internal:notification-service:8088: registering service...
+2026-06-22T19:27:32.874-04:00  INFO 5088 --- [notification-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8088 (http) with context path '/'
+2026-06-22T19:27:32.875-04:00  INFO 5088 --- [notification-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8088
+2026-06-22T19:27:32.884-04:00  INFO 5088 --- [notification-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_NOTIFICATION-SERVICE/host.docker.internal:notification-service:8088 - registration status: 204
+2026-06-22T19:27:32.939-04:00  INFO 5088 --- [notification-service] [main] c.s.n.NotificationServiceApplication     : Started NotificationServiceApplication in 6.233 seconds (process running for 6.737)
+2026-06-22T19:29:48.074-04:00  INFO 5088 --- [notification-service] [http-nio-8088-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-22T19:29:48.074-04:00  INFO 5088 --- [notification-service] [http-nio-8088-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-06-22T19:29:48.079-04:00  INFO 5088 --- [notification-service] [http-nio-8088-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 5 ms
+2026-06-22T19:29:48.177-04:00  INFO 5088 --- [notification-service] [http-nio-8088-exec-1] c.s.n.service.NotificacionService        : Creando notificación tipo PRESTAMO_CREADO para usuario: admin
+2026-06-22T19:29:48.338-04:00  INFO 5088 --- [notification-service] [http-nio-8088-exec-1] c.s.n.service.NotificacionService        : Notificación creada — id: 7, usuario: admin, tipo: PRESTAMO_CREADO
+2026-06-22T19:32:32.568-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T19:37:32.577-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T19:42:32.580-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T19:47:32.583-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T19:52:32.590-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T19:57:32.605-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:02:32.618-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:07:32.624-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:12:32.646-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:17:32.657-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:22:32.674-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:27:32.676-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:32:32.688-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:37:32.698-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:42:32.709-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:47:32.711-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:52:32.712-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T20:57:32.725-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-22T21:02:32.736-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
