@@ -4,22 +4,27 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.silvio.subscription.dto.SuscripcionRequestDTO;
 import com.silvio.subscription.dto.SuscripcionResponseDTO;
 import com.silvio.subscription.model.Suscripcion.PlanSuscripcion;
+import com.silvio.subscription.security.JwtExtractor;
 import com.silvio.subscription.service.SuscripcionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.Base64;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SuscripcionController.class)
+@Import(JwtExtractor.class) 
 class SuscripcionControllerTest {
 
     @Autowired

@@ -53,3 +53,129 @@
 2026-06-22T20:52:53.189-04:00  INFO 28348 --- [search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-06-22T20:57:53.199-04:00  INFO 28348 --- [search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-06-22T21:02:53.212-04:00  INFO 28348 --- [search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-24T15:04:38.200-04:00  INFO 29212 --- [search-service] [main] c.s.search.SearchServiceApplication      : Starting SearchServiceApplication using Java 17.0.12 with PID 29212 (C:\workspace\SmallBooksRepository\search-service\target\classes started by PN-Alumno in C:\workspace\SmallBooksRepository\search-service)
+2026-06-24T15:04:38.204-04:00 DEBUG 29212 --- [search-service] [main] c.s.search.SearchServiceApplication      : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-24T15:04:38.206-04:00  INFO 29212 --- [search-service] [main] c.s.search.SearchServiceApplication      : No active profile set, falling back to 1 default profile: "default"
+2026-06-24T15:04:38.256-04:00  INFO 29212 --- [search-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-24T15:04:38.257-04:00  INFO 29212 --- [search-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=search-service, profiles=[default], label=null, version=null, state=null
+2026-06-24T15:04:39.693-04:00  INFO 29212 --- [search-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=290ba5ec-d61b-328f-9eb9-4dd63069c640
+2026-06-24T15:04:40.178-04:00  INFO 29212 --- [search-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8090 (http)
+2026-06-24T15:04:40.194-04:00  INFO 29212 --- [search-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-24T15:04:40.196-04:00  INFO 29212 --- [search-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-24T15:04:40.315-04:00  INFO 29212 --- [search-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-24T15:04:40.316-04:00  INFO 29212 --- [search-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2056 ms
+2026-06-24T15:04:42.827-04:00  INFO 29212 --- [search-service] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-06-24T15:04:42.871-04:00  INFO 29212 --- [search-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'catalog-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-24T15:04:43.039-04:00  INFO 29212 --- [search-service] [main] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Bean Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2026-06-24T15:04:45.202-04:00  INFO 29212 --- [search-service] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-06-24T15:04:45.230-04:00  INFO 29212 --- [search-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-24T15:04:45.261-04:00  WARN 29212 --- [search-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-24T15:04:45.454-04:00  INFO 29212 --- [search-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-24T15:04:45.498-04:00  INFO 29212 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-24T15:04:45.509-04:00  INFO 29212 --- [search-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-24T15:04:45.536-04:00  INFO 29212 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-24T15:04:45.537-04:00  INFO 29212 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-24T15:04:45.537-04:00  INFO 29212 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-24T15:04:45.538-04:00  INFO 29212 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-24T15:04:45.539-04:00  INFO 29212 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-24T15:04:45.541-04:00  INFO 29212 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-24T15:04:45.542-04:00  INFO 29212 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-24T15:04:45.930-04:00  INFO 29212 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-24T15:04:45.934-04:00  INFO 29212 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-24T15:04:45.937-04:00  INFO 29212 --- [search-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-24T15:04:45.939-04:00  INFO 29212 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1782327885939 with initial instances count: 5
+2026-06-24T15:04:45.943-04:00  INFO 29212 --- [search-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application SEARCH-SERVICE with eureka with status UP
+2026-06-24T15:04:45.945-04:00  INFO 29212 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782327885945, current=UP, previous=STARTING]
+2026-06-24T15:04:45.947-04:00  INFO 29212 --- [search-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SEARCH-SERVICE/localhost:search-service:8090: registering service...
+2026-06-24T15:04:45.988-04:00  INFO 29212 --- [search-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8090 (http) with context path '/'
+2026-06-24T15:04:45.989-04:00  INFO 29212 --- [search-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8090
+2026-06-24T15:04:46.002-04:00  INFO 29212 --- [search-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SEARCH-SERVICE/localhost:search-service:8090 - registration status: 204
+2026-06-24T15:04:47.477-04:00  INFO 29212 --- [search-service] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-06-24T15:04:47.485-04:00  INFO 29212 --- [search-service] [main] c.s.search.SearchServiceApplication      : Started SearchServiceApplication in 11.896 seconds (process running for 12.564)
+2026-06-24T15:07:12.877-04:00  INFO 26552 --- [search-service] [main] c.s.s.SearchServiceApplicationTests      : Starting SearchServiceApplicationTests using Java 17.0.12 with PID 26552 (started by PN-Alumno in C:\workspace\SmallBooksRepository\search-service)
+2026-06-24T15:07:12.878-04:00 DEBUG 26552 --- [search-service] [main] c.s.s.SearchServiceApplicationTests      : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-24T15:07:12.879-04:00  INFO 26552 --- [search-service] [main] c.s.s.SearchServiceApplicationTests      : No active profile set, falling back to 1 default profile: "default"
+2026-06-24T15:07:12.901-04:00  INFO 26552 --- [search-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-24T15:07:12.901-04:00  INFO 26552 --- [search-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=search-service, profiles=[default], label=null, version=null, state=null
+2026-06-24T15:07:13.513-04:00  INFO 26552 --- [search-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=fd44b625-bbe0-3fbe-bcc3-5f80a389fbc7
+2026-06-24T15:07:15.099-04:00  INFO 26552 --- [search-service] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-06-24T15:07:15.135-04:00  INFO 26552 --- [search-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'catalog-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-24T15:07:15.338-04:00  INFO 26552 --- [search-service] [main] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Bean Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2026-06-24T15:07:16.905-04:00  INFO 26552 --- [search-service] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-06-24T15:07:16.926-04:00  INFO 26552 --- [search-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-24T15:07:16.950-04:00  WARN 26552 --- [search-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-24T15:07:16.967-04:00  INFO 26552 --- [search-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-24T15:07:16.984-04:00  INFO 26552 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-24T15:07:16.988-04:00  INFO 26552 --- [search-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-24T15:07:16.993-04:00  INFO 26552 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-24T15:07:16.994-04:00  INFO 26552 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-24T15:07:16.994-04:00  INFO 26552 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-24T15:07:16.994-04:00  INFO 26552 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-24T15:07:16.994-04:00  INFO 26552 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-24T15:07:16.994-04:00  INFO 26552 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-24T15:07:16.994-04:00  INFO 26552 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-24T15:07:17.228-04:00  INFO 26552 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-24T15:07:17.229-04:00  INFO 26552 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-24T15:07:17.234-04:00  INFO 26552 --- [search-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-24T15:07:17.235-04:00  INFO 26552 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1782328037235 with initial instances count: 11
+2026-06-24T15:07:17.237-04:00  INFO 26552 --- [search-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application SEARCH-SERVICE with eureka with status UP
+2026-06-24T15:07:17.237-04:00  INFO 26552 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782328037237, current=UP, previous=STARTING]
+2026-06-24T15:07:17.238-04:00  INFO 26552 --- [search-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SEARCH-SERVICE/localhost:search-service:8090: registering service...
+2026-06-24T15:07:17.257-04:00  INFO 26552 --- [search-service] [main] c.s.s.SearchServiceApplicationTests      : Started SearchServiceApplicationTests in 6.219 seconds (process running for 6.903)
+2026-06-24T15:07:17.270-04:00  INFO 26552 --- [search-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SEARCH-SERVICE/localhost:search-service:8090 - registration status: 204
+2026-06-24T15:07:17.779-04:00  INFO 26552 --- [search-service] [SpringApplicationShutdownHook] o.s.c.n.e.s.EurekaServiceRegistry        : Unregistering application SEARCH-SERVICE with eureka with status DOWN
+2026-06-24T15:07:17.779-04:00  INFO 26552 --- [search-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782328037779, current=DOWN, previous=UP]
+2026-06-24T15:07:17.779-04:00  INFO 26552 --- [search-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SEARCH-SERVICE/localhost:search-service:8090: registering service...
+2026-06-24T15:07:17.782-04:00  INFO 26552 --- [search-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SEARCH-SERVICE/localhost:search-service:8090 - registration status: 204
+2026-06-24T15:07:17.783-04:00  INFO 26552 --- [search-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Shutting down DiscoveryClient ...
+2026-06-24T15:07:20.790-04:00  INFO 26552 --- [search-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Unregistering ...
+2026-06-24T15:07:20.808-04:00  INFO 26552 --- [search-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SEARCH-SERVICE/localhost:search-service:8090 - deregister  status: 200
+2026-06-24T15:07:20.809-04:00  INFO 26552 --- [search-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Completed shut down of DiscoveryClient
+2026-06-24T15:07:46.104-04:00  INFO 29212 --- [search-service] [DiscoveryClient-HeartbeatExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SEARCH-SERVICE/localhost:search-service:8090 - Re-registering apps/SEARCH-SERVICE
+2026-06-24T15:07:46.105-04:00  INFO 29212 --- [search-service] [DiscoveryClient-HeartbeatExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SEARCH-SERVICE/localhost:search-service:8090: registering service...
+2026-06-24T15:07:46.107-04:00  INFO 29212 --- [search-service] [DiscoveryClient-HeartbeatExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SEARCH-SERVICE/localhost:search-service:8090 - registration status: 204
+2026-06-24T15:09:45.557-04:00  INFO 29212 --- [search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-24T15:14:45.567-04:00  INFO 29212 --- [search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-24T15:19:02.632-04:00  INFO 30256 --- [search-service] [main] c.s.s.SearchServiceApplicationTests      : Starting SearchServiceApplicationTests using Java 17.0.12 with PID 30256 (started by PN-Alumno in C:\workspace\SmallBooksRepository\search-service)
+2026-06-24T15:19:02.634-04:00 DEBUG 30256 --- [search-service] [main] c.s.s.SearchServiceApplicationTests      : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-24T15:19:02.635-04:00  INFO 30256 --- [search-service] [main] c.s.s.SearchServiceApplicationTests      : No active profile set, falling back to 1 default profile: "default"
+2026-06-24T15:19:02.672-04:00  INFO 30256 --- [search-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-24T15:19:02.672-04:00  INFO 30256 --- [search-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=search-service, profiles=[default], label=null, version=null, state=null
+2026-06-24T15:19:03.413-04:00  INFO 30256 --- [search-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=fd44b625-bbe0-3fbe-bcc3-5f80a389fbc7
+2026-06-24T15:19:04.962-04:00  INFO 30256 --- [search-service] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-06-24T15:19:05.020-04:00  INFO 30256 --- [search-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'catalog-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-24T15:19:05.409-04:00  INFO 30256 --- [search-service] [main] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Bean Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2026-06-24T15:19:07.849-04:00  INFO 30256 --- [search-service] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-06-24T15:19:07.945-04:00  INFO 30256 --- [search-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-24T15:19:08.032-04:00  WARN 30256 --- [search-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-24T15:19:08.090-04:00  INFO 30256 --- [search-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-24T15:19:08.168-04:00  INFO 30256 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-24T15:19:08.177-04:00  INFO 30256 --- [search-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-24T15:19:08.209-04:00  INFO 30256 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-24T15:19:08.210-04:00  INFO 30256 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-24T15:19:08.211-04:00  INFO 30256 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-24T15:19:08.211-04:00  INFO 30256 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-24T15:19:08.211-04:00  INFO 30256 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-24T15:19:08.211-04:00  INFO 30256 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-24T15:19:08.212-04:00  INFO 30256 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-24T15:19:08.852-04:00  INFO 30256 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-24T15:19:08.855-04:00  INFO 30256 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-24T15:19:08.858-04:00  INFO 30256 --- [search-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-24T15:19:08.859-04:00  INFO 30256 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1782328748859 with initial instances count: 11
+2026-06-24T15:19:08.863-04:00  INFO 30256 --- [search-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application SEARCH-SERVICE with eureka with status UP
+2026-06-24T15:19:08.864-04:00  INFO 30256 --- [search-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782328748864, current=UP, previous=STARTING]
+2026-06-24T15:19:08.867-04:00  INFO 30256 --- [search-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SEARCH-SERVICE/localhost:search-service:8090: registering service...
+2026-06-24T15:19:08.888-04:00  INFO 30256 --- [search-service] [main] c.s.s.SearchServiceApplicationTests      : Started SearchServiceApplicationTests in 8.863 seconds (process running for 10.418)
+2026-06-24T15:19:08.937-04:00  INFO 30256 --- [search-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SEARCH-SERVICE/localhost:search-service:8090 - registration status: 204
+2026-06-24T15:19:10.183-04:00  INFO 30256 --- [search-service] [SpringApplicationShutdownHook] o.s.c.n.e.s.EurekaServiceRegistry        : Unregistering application SEARCH-SERVICE with eureka with status DOWN
+2026-06-24T15:19:10.183-04:00  INFO 30256 --- [search-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782328750183, current=DOWN, previous=UP]
+2026-06-24T15:19:10.184-04:00  INFO 30256 --- [search-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SEARCH-SERVICE/localhost:search-service:8090: registering service...
+2026-06-24T15:19:10.188-04:00  INFO 30256 --- [search-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SEARCH-SERVICE/localhost:search-service:8090 - registration status: 204
+2026-06-24T15:19:10.191-04:00  INFO 30256 --- [search-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Shutting down DiscoveryClient ...
+2026-06-24T15:19:13.202-04:00  INFO 30256 --- [search-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Unregistering ...
+2026-06-24T15:19:13.224-04:00  INFO 30256 --- [search-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SEARCH-SERVICE/localhost:search-service:8090 - deregister  status: 200
+2026-06-24T15:19:13.224-04:00  INFO 30256 --- [search-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Completed shut down of DiscoveryClient
+2026-06-24T15:19:16.734-04:00  INFO 29212 --- [search-service] [DiscoveryClient-HeartbeatExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SEARCH-SERVICE/localhost:search-service:8090 - Re-registering apps/SEARCH-SERVICE
+2026-06-24T15:19:16.735-04:00  INFO 29212 --- [search-service] [DiscoveryClient-HeartbeatExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SEARCH-SERVICE/localhost:search-service:8090: registering service...
+2026-06-24T15:19:16.739-04:00  INFO 29212 --- [search-service] [DiscoveryClient-HeartbeatExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_SEARCH-SERVICE/localhost:search-service:8090 - registration status: 204
+2026-06-24T15:19:45.577-04:00  INFO 29212 --- [search-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

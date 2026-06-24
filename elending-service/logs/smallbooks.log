@@ -543,3 +543,201 @@ Caused by: org.springframework.boot.autoconfigure.jdbc.DataSourceProperties$Data
 2026-06-22T20:51:49.062-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-06-22T20:56:49.075-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-06-22T21:01:49.076-04:00  INFO 26400 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-24T15:04:38.421-04:00  INFO 29476 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : Starting PrestamoServiceApplication using Java 17.0.12 with PID 29476 (C:\workspace\SmallBooksRepository\elending-service\target\classes started by PN-Alumno in C:\workspace\SmallBooksRepository\elending-service)
+2026-06-24T15:04:38.427-04:00 DEBUG 29476 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-24T15:04:38.428-04:00  INFO 29476 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : No active profile set, falling back to 1 default profile: "default"
+2026-06-24T15:04:38.520-04:00  INFO 29476 --- [elending-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-24T15:04:38.521-04:00  INFO 29476 --- [elending-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=elending-service, profiles=[default], label=null, version=null, state=null
+2026-06-24T15:04:39.926-04:00  INFO 29476 --- [elending-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-24T15:04:40.146-04:00  INFO 29476 --- [elending-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 198 ms. Found 1 JPA repository interface.
+2026-06-24T15:04:40.612-04:00  INFO 29476 --- [elending-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=7b484f36-6d31-32f3-80fa-8f0b02441651
+2026-06-24T15:04:41.637-04:00  INFO 29476 --- [elending-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8087 (http)
+2026-06-24T15:04:41.699-04:00  INFO 29476 --- [elending-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-24T15:04:41.701-04:00  INFO 29476 --- [elending-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-24T15:04:42.121-04:00  INFO 29476 --- [elending-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-24T15:04:42.124-04:00  INFO 29476 --- [elending-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3597 ms
+2026-06-24T15:04:42.759-04:00  INFO 29476 --- [elending-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-24T15:04:43.358-04:00  INFO 29476 --- [elending-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@c83ed77
+2026-06-24T15:04:43.362-04:00  INFO 29476 --- [elending-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-24T15:04:43.408-04:00  INFO 29476 --- [elending-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_lending (MySQL 8.4)
+2026-06-24T15:04:43.420-04:00  WARN 29476 --- [elending-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-24T15:04:43.475-04:00  INFO 29476 --- [elending-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.048s)
+2026-06-24T15:04:43.496-04:00  INFO 29476 --- [elending-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_lending`: 1
+2026-06-24T15:04:43.499-04:00  INFO 29476 --- [elending-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_lending` is up to date. No migration necessary.
+2026-06-24T15:04:43.696-04:00  INFO 29476 --- [elending-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-24T15:04:43.926-04:00  INFO 29476 --- [elending-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-24T15:04:43.991-04:00  INFO 29476 --- [elending-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-24T15:04:44.231-04:00  INFO 29476 --- [elending-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-24T15:04:44.275-04:00  WARN 29476 --- [elending-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-24T15:04:45.312-04:00  INFO 29476 --- [elending-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-24T15:04:45.351-04:00  INFO 29476 --- [elending-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-24T15:04:46.102-04:00  WARN 29476 --- [elending-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-24T15:04:47.664-04:00  INFO 29476 --- [elending-service] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-06-24T15:04:47.684-04:00  INFO 29476 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'license-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-24T15:04:47.740-04:00  INFO 29476 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'subscription-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-24T15:04:47.753-04:00  INFO 29476 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'notification-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-24T15:04:49.796-04:00  INFO 29476 --- [elending-service] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-06-24T15:04:49.815-04:00  INFO 29476 --- [elending-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-24T15:04:49.837-04:00  WARN 29476 --- [elending-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-24T15:04:49.908-04:00  INFO 29476 --- [elending-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-24T15:04:49.921-04:00  INFO 29476 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-24T15:04:49.924-04:00  INFO 29476 --- [elending-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-24T15:04:49.930-04:00  INFO 29476 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-24T15:04:49.931-04:00  INFO 29476 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-24T15:04:49.931-04:00  INFO 29476 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-24T15:04:49.931-04:00  INFO 29476 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-24T15:04:49.931-04:00  INFO 29476 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-24T15:04:49.932-04:00  INFO 29476 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-24T15:04:49.932-04:00  INFO 29476 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-24T15:04:50.149-04:00  INFO 29476 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-24T15:04:50.151-04:00  INFO 29476 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-24T15:04:50.153-04:00  INFO 29476 --- [elending-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-24T15:04:50.154-04:00  INFO 29476 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1782327890154 with initial instances count: 5
+2026-06-24T15:04:50.157-04:00  INFO 29476 --- [elending-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application ELENDING-SERVICE with eureka with status UP
+2026-06-24T15:04:50.158-04:00  INFO 29476 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782327890158, current=UP, previous=STARTING]
+2026-06-24T15:04:50.159-04:00  INFO 29476 --- [elending-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/localhost:elending-service:8087: registering service...
+2026-06-24T15:04:50.188-04:00  INFO 29476 --- [elending-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8087 (http) with context path '/'
+2026-06-24T15:04:50.189-04:00  INFO 29476 --- [elending-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8087
+2026-06-24T15:04:50.191-04:00  INFO 29476 --- [elending-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/localhost:elending-service:8087 - registration status: 204
+2026-06-24T15:04:51.389-04:00  INFO 29476 --- [elending-service] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-06-24T15:04:51.398-04:00  INFO 29476 --- [elending-service] [main] c.s.elending.PrestamoServiceApplication  : Started PrestamoServiceApplication in 15.542 seconds (process running for 16.294)
+2026-06-24T15:04:51.404-04:00  INFO 29476 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Scheduler ejecutado � verificando pr�stamos vencidos a las 2026-06-24T15:04:51.404482100
+2026-06-24T15:04:51.478-04:00  INFO 29476 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Pr�stamos vencidos encontrados: 0
+2026-06-24T15:04:51.480-04:00  INFO 29476 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Pr�stamos pr�ximos a vencer (2 d�as): 0
+2026-06-24T15:05:48.255-04:00  INFO 27436 --- [elending-service] [main] c.s.e.ElendingServiceApplicationTests    : Starting ElendingServiceApplicationTests using Java 17.0.12 with PID 27436 (started by PN-Alumno in C:\workspace\SmallBooksRepository\elending-service)
+2026-06-24T15:05:48.256-04:00 DEBUG 27436 --- [elending-service] [main] c.s.e.ElendingServiceApplicationTests    : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-24T15:05:48.257-04:00  INFO 27436 --- [elending-service] [main] c.s.e.ElendingServiceApplicationTests    : No active profile set, falling back to 1 default profile: "default"
+2026-06-24T15:05:48.279-04:00  INFO 27436 --- [elending-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-24T15:05:48.279-04:00  INFO 27436 --- [elending-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=elending-service, profiles=[default], label=null, version=null, state=null
+2026-06-24T15:05:48.952-04:00  INFO 27436 --- [elending-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-24T15:05:49.041-04:00  INFO 27436 --- [elending-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 81 ms. Found 1 JPA repository interface.
+2026-06-24T15:05:49.296-04:00  INFO 27436 --- [elending-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=3ca6ef5b-d1fb-3b1a-846d-745ae18565c2
+2026-06-24T15:05:49.715-04:00  INFO 27436 --- [elending-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-24T15:05:49.833-04:00  INFO 27436 --- [elending-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4601a148
+2026-06-24T15:05:49.835-04:00  INFO 27436 --- [elending-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-24T15:05:49.864-04:00  INFO 27436 --- [elending-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_lending (MySQL 8.4)
+2026-06-24T15:05:49.873-04:00  WARN 27436 --- [elending-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-24T15:05:49.902-04:00  INFO 27436 --- [elending-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.020s)
+2026-06-24T15:05:49.912-04:00  INFO 27436 --- [elending-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_lending`: 1
+2026-06-24T15:05:49.914-04:00  INFO 27436 --- [elending-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_lending` is up to date. No migration necessary.
+2026-06-24T15:05:50.019-04:00  INFO 27436 --- [elending-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-24T15:05:50.094-04:00  INFO 27436 --- [elending-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-24T15:05:50.130-04:00  INFO 27436 --- [elending-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-24T15:05:50.226-04:00  INFO 27436 --- [elending-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-24T15:05:50.265-04:00  WARN 27436 --- [elending-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-24T15:05:50.724-04:00  INFO 27436 --- [elending-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-24T15:05:50.744-04:00  INFO 27436 --- [elending-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-24T15:05:51.190-04:00  WARN 27436 --- [elending-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-24T15:05:52.578-04:00  INFO 27436 --- [elending-service] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-06-24T15:05:52.606-04:00  INFO 27436 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'license-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-24T15:05:52.651-04:00  INFO 27436 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'subscription-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-24T15:05:52.666-04:00  INFO 27436 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'notification-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-24T15:05:54.552-04:00  INFO 27436 --- [elending-service] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-06-24T15:05:54.575-04:00  INFO 27436 --- [elending-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-24T15:05:54.596-04:00  WARN 27436 --- [elending-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-24T15:05:54.617-04:00  INFO 27436 --- [elending-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-24T15:05:54.632-04:00  INFO 27436 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-24T15:05:54.634-04:00  INFO 27436 --- [elending-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-24T15:05:54.639-04:00  INFO 27436 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-24T15:05:54.639-04:00  INFO 27436 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-24T15:05:54.639-04:00  INFO 27436 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-24T15:05:54.639-04:00  INFO 27436 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-24T15:05:54.639-04:00  INFO 27436 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-24T15:05:54.639-04:00  INFO 27436 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-24T15:05:54.639-04:00  INFO 27436 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-24T15:05:54.830-04:00  INFO 27436 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-24T15:05:54.832-04:00  INFO 27436 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-24T15:05:54.833-04:00  INFO 27436 --- [elending-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-24T15:05:54.834-04:00  INFO 27436 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1782327954834 with initial instances count: 10
+2026-06-24T15:05:54.835-04:00  INFO 27436 --- [elending-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application ELENDING-SERVICE with eureka with status UP
+2026-06-24T15:05:54.836-04:00  INFO 27436 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782327954836, current=UP, previous=STARTING]
+2026-06-24T15:05:54.837-04:00  INFO 27436 --- [elending-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/localhost:elending-service:8087: registering service...
+2026-06-24T15:05:54.860-04:00  INFO 27436 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Scheduler ejecutado — verificando préstamos vencidos a las 2026-06-24T15:05:54.860238200
+2026-06-24T15:05:54.862-04:00  INFO 27436 --- [elending-service] [main] c.s.e.ElendingServiceApplicationTests    : Started ElendingServiceApplicationTests in 8.392 seconds (process running for 9.92)
+2026-06-24T15:05:54.868-04:00  INFO 27436 --- [elending-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/localhost:elending-service:8087 - registration status: 204
+2026-06-24T15:05:54.903-04:00  INFO 27436 --- [elending-service] [SpringApplicationShutdownHook] o.s.c.n.e.s.EurekaServiceRegistry        : Unregistering application ELENDING-SERVICE with eureka with status DOWN
+2026-06-24T15:05:54.904-04:00  INFO 27436 --- [elending-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782327954904, current=DOWN, previous=UP]
+2026-06-24T15:05:54.905-04:00  INFO 27436 --- [elending-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/localhost:elending-service:8087: registering service...
+2026-06-24T15:05:54.910-04:00  INFO 27436 --- [elending-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/localhost:elending-service:8087 - registration status: 204
+2026-06-24T15:05:55.028-04:00  INFO 27436 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Préstamos vencidos encontrados: 0
+2026-06-24T15:05:55.030-04:00  INFO 27436 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Préstamos próximos a vencer (2 días): 0
+2026-06-24T15:05:55.035-04:00  INFO 27436 --- [elending-service] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-06-24T15:05:55.037-04:00  INFO 27436 --- [elending-service] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-06-24T15:05:55.043-04:00  INFO 27436 --- [elending-service] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-06-24T15:05:55.044-04:00  INFO 27436 --- [elending-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Shutting down DiscoveryClient ...
+2026-06-24T15:05:58.049-04:00  INFO 27436 --- [elending-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Unregistering ...
+2026-06-24T15:05:58.067-04:00  INFO 27436 --- [elending-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/localhost:elending-service:8087 - deregister  status: 200
+2026-06-24T15:05:58.067-04:00  INFO 27436 --- [elending-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Completed shut down of DiscoveryClient
+2026-06-24T15:06:20.240-04:00  INFO 29476 --- [elending-service] [DiscoveryClient-HeartbeatExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/localhost:elending-service:8087 - Re-registering apps/ELENDING-SERVICE
+2026-06-24T15:06:20.240-04:00  INFO 29476 --- [elending-service] [DiscoveryClient-HeartbeatExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/localhost:elending-service:8087: registering service...
+2026-06-24T15:06:20.243-04:00  INFO 29476 --- [elending-service] [DiscoveryClient-HeartbeatExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/localhost:elending-service:8087 - registration status: 204
+2026-06-24T15:09:49.936-04:00  INFO 29476 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-24T15:14:49.948-04:00  INFO 29476 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-24T15:17:20.071-04:00  INFO 4752 --- [elending-service] [main] c.s.e.ElendingServiceApplicationTests    : Starting ElendingServiceApplicationTests using Java 17.0.12 with PID 4752 (started by PN-Alumno in C:\workspace\SmallBooksRepository\elending-service)
+2026-06-24T15:17:20.072-04:00 DEBUG 4752 --- [elending-service] [main] c.s.e.ElendingServiceApplicationTests    : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-24T15:17:20.073-04:00  INFO 4752 --- [elending-service] [main] c.s.e.ElendingServiceApplicationTests    : No active profile set, falling back to 1 default profile: "default"
+2026-06-24T15:17:20.110-04:00  INFO 4752 --- [elending-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-24T15:17:20.110-04:00  INFO 4752 --- [elending-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=elending-service, profiles=[default], label=null, version=null, state=null
+2026-06-24T15:17:20.921-04:00  INFO 4752 --- [elending-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-24T15:17:21.097-04:00  INFO 4752 --- [elending-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 159 ms. Found 1 JPA repository interface.
+2026-06-24T15:17:21.388-04:00  INFO 4752 --- [elending-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=3ca6ef5b-d1fb-3b1a-846d-745ae18565c2
+2026-06-24T15:17:21.838-04:00  INFO 4752 --- [elending-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-24T15:17:21.981-04:00  INFO 4752 --- [elending-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@27353d1c
+2026-06-24T15:17:21.982-04:00  INFO 4752 --- [elending-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-24T15:17:22.020-04:00  INFO 4752 --- [elending-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_lending (MySQL 8.4)
+2026-06-24T15:17:22.031-04:00  WARN 4752 --- [elending-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-24T15:17:22.072-04:00  INFO 4752 --- [elending-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.032s)
+2026-06-24T15:17:22.090-04:00  INFO 4752 --- [elending-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_lending`: 1
+2026-06-24T15:17:22.091-04:00  INFO 4752 --- [elending-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_lending` is up to date. No migration necessary.
+2026-06-24T15:17:22.173-04:00  INFO 4752 --- [elending-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-24T15:17:22.241-04:00  INFO 4752 --- [elending-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-24T15:17:22.276-04:00  INFO 4752 --- [elending-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-24T15:17:22.394-04:00  INFO 4752 --- [elending-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-24T15:17:22.439-04:00  WARN 4752 --- [elending-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-24T15:17:23.044-04:00  INFO 4752 --- [elending-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-24T15:17:23.070-04:00  INFO 4752 --- [elending-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-24T15:17:23.460-04:00  WARN 4752 --- [elending-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-24T15:17:24.764-04:00  INFO 4752 --- [elending-service] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-06-24T15:17:24.787-04:00  INFO 4752 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'license-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-24T15:17:24.833-04:00  INFO 4752 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'subscription-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-24T15:17:24.847-04:00  INFO 4752 --- [elending-service] [main] o.s.c.openfeign.FeignClientFactoryBean   : For 'notification-service' URL not provided. Will try picking an instance via load-balancing.
+2026-06-24T15:17:26.526-04:00  INFO 4752 --- [elending-service] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-06-24T15:17:26.545-04:00  INFO 4752 --- [elending-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-24T15:17:26.567-04:00  WARN 4752 --- [elending-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-24T15:17:26.591-04:00  INFO 4752 --- [elending-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-24T15:17:26.609-04:00  INFO 4752 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-24T15:17:26.613-04:00  INFO 4752 --- [elending-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-24T15:17:26.620-04:00  INFO 4752 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-24T15:17:26.620-04:00  INFO 4752 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-24T15:17:26.620-04:00  INFO 4752 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-24T15:17:26.620-04:00  INFO 4752 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-24T15:17:26.620-04:00  INFO 4752 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-24T15:17:26.620-04:00  INFO 4752 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-24T15:17:26.620-04:00  INFO 4752 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-24T15:17:26.830-04:00  INFO 4752 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-24T15:17:26.832-04:00  INFO 4752 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-24T15:17:26.833-04:00  INFO 4752 --- [elending-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-24T15:17:26.834-04:00  INFO 4752 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1782328646834 with initial instances count: 10
+2026-06-24T15:17:26.836-04:00  INFO 4752 --- [elending-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application ELENDING-SERVICE with eureka with status UP
+2026-06-24T15:17:26.836-04:00  INFO 4752 --- [elending-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782328646836, current=UP, previous=STARTING]
+2026-06-24T15:17:26.837-04:00  INFO 4752 --- [elending-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/localhost:elending-service:8087: registering service...
+2026-06-24T15:17:26.852-04:00  INFO 4752 --- [elending-service] [main] c.s.e.ElendingServiceApplicationTests    : Started ElendingServiceApplicationTests in 8.801 seconds (process running for 11.324)
+2026-06-24T15:17:26.854-04:00  INFO 4752 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Scheduler ejecutado — verificando préstamos vencidos a las 2026-06-24T15:17:26.854707700
+2026-06-24T15:17:26.861-04:00  INFO 4752 --- [elending-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/localhost:elending-service:8087 - registration status: 204
+2026-06-24T15:17:26.876-04:00  INFO 4752 --- [elending-service] [SpringApplicationShutdownHook] o.s.c.n.e.s.EurekaServiceRegistry        : Unregistering application ELENDING-SERVICE with eureka with status DOWN
+2026-06-24T15:17:26.877-04:00  INFO 4752 --- [elending-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782328646877, current=DOWN, previous=UP]
+2026-06-24T15:17:26.877-04:00  INFO 4752 --- [elending-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/localhost:elending-service:8087: registering service...
+2026-06-24T15:17:26.881-04:00  INFO 4752 --- [elending-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/localhost:elending-service:8087 - registration status: 204
+2026-06-24T15:17:27.124-04:00  INFO 4752 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Préstamos vencidos encontrados: 0
+2026-06-24T15:17:27.126-04:00  INFO 4752 --- [elending-service] [scheduling-1] c.s.elending.service.PrestamoService     : Préstamos próximos a vencer (2 días): 0
+2026-06-24T15:17:27.131-04:00  INFO 4752 --- [elending-service] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-06-24T15:17:27.133-04:00  INFO 4752 --- [elending-service] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-06-24T15:17:27.137-04:00  INFO 4752 --- [elending-service] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-06-24T15:17:27.138-04:00  INFO 4752 --- [elending-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Shutting down DiscoveryClient ...
+2026-06-24T15:17:30.149-04:00  INFO 4752 --- [elending-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Unregistering ...
+2026-06-24T15:17:30.166-04:00  INFO 4752 --- [elending-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/localhost:elending-service:8087 - deregister  status: 200
+2026-06-24T15:17:30.166-04:00  INFO 4752 --- [elending-service] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Completed shut down of DiscoveryClient
+2026-06-24T15:17:50.837-04:00  INFO 29476 --- [elending-service] [DiscoveryClient-HeartbeatExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/localhost:elending-service:8087 - Re-registering apps/ELENDING-SERVICE
+2026-06-24T15:17:50.838-04:00  INFO 29476 --- [elending-service] [DiscoveryClient-HeartbeatExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/localhost:elending-service:8087: registering service...
+2026-06-24T15:17:50.840-04:00  INFO 29476 --- [elending-service] [DiscoveryClient-HeartbeatExecutor-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_ELENDING-SERVICE/localhost:elending-service:8087 - registration status: 204
+2026-06-24T15:19:49.957-04:00  INFO 29476 --- [elending-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

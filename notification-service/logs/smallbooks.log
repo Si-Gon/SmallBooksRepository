@@ -122,3 +122,79 @@
 2026-06-22T20:52:32.712-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-06-22T20:57:32.725-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2026-06-22T21:02:32.736-04:00  INFO 5088 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-24T15:04:38.456-04:00  INFO 29484 --- [notification-service] [main] c.s.n.NotificationServiceApplication     : Starting NotificationServiceApplication using Java 17.0.12 with PID 29484 (C:\workspace\SmallBooksRepository\notification-service\target\classes started by PN-Alumno in C:\workspace\SmallBooksRepository\notification-service)
+2026-06-24T15:04:38.462-04:00 DEBUG 29484 --- [notification-service] [main] c.s.n.NotificationServiceApplication     : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-24T15:04:38.465-04:00  INFO 29484 --- [notification-service] [main] c.s.n.NotificationServiceApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-06-24T15:04:38.545-04:00  INFO 29484 --- [notification-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-24T15:04:38.546-04:00  INFO 29484 --- [notification-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=notification-service, profiles=[default], label=null, version=null, state=null
+2026-06-24T15:04:39.883-04:00  INFO 29484 --- [notification-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-24T15:04:40.112-04:00  INFO 29484 --- [notification-service] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 208 ms. Found 1 JPA repository interface.
+2026-06-24T15:04:40.573-04:00  INFO 29484 --- [notification-service] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=915b611f-687c-33bc-98a8-f44bb99aee90
+2026-06-24T15:04:41.493-04:00  INFO 29484 --- [notification-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8088 (http)
+2026-06-24T15:04:41.526-04:00  INFO 29484 --- [notification-service] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-24T15:04:41.528-04:00  INFO 29484 --- [notification-service] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-06-24T15:04:41.746-04:00  INFO 29484 --- [notification-service] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-06-24T15:04:41.749-04:00  INFO 29484 --- [notification-service] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3197 ms
+2026-06-24T15:04:42.275-04:00  INFO 29484 --- [notification-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-24T15:04:42.601-04:00  INFO 29484 --- [notification-service] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2299f6d7
+2026-06-24T15:04:42.606-04:00  INFO 29484 --- [notification-service] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-24T15:04:42.712-04:00  INFO 29484 --- [notification-service] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/db_notifications (MySQL 8.4)
+2026-06-24T15:04:42.740-04:00  WARN 29484 --- [notification-service] [main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-06-24T15:04:42.810-04:00  INFO 29484 --- [notification-service] [main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.054s)
+2026-06-24T15:04:42.834-04:00  INFO 29484 --- [notification-service] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `db_notifications`: 1
+2026-06-24T15:04:42.839-04:00  INFO 29484 --- [notification-service] [main] o.f.core.internal.command.DbMigrate      : Schema `db_notifications` is up to date. No migration necessary.
+2026-06-24T15:04:43.016-04:00  INFO 29484 --- [notification-service] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-06-24T15:04:43.107-04:00  INFO 29484 --- [notification-service] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-06-24T15:04:43.167-04:00  INFO 29484 --- [notification-service] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-06-24T15:04:43.456-04:00  INFO 29484 --- [notification-service] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-24T15:04:43.507-04:00  WARN 29484 --- [notification-service] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-24T15:04:44.210-04:00  INFO 29484 --- [notification-service] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-24T15:04:44.231-04:00  INFO 29484 --- [notification-service] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-24T15:04:44.773-04:00  WARN 29484 --- [notification-service] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-06-24T15:04:47.633-04:00  INFO 29484 --- [notification-service] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-06-24T15:04:48.877-04:00  INFO 29484 --- [notification-service] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-06-24T15:04:48.891-04:00  INFO 29484 --- [notification-service] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2026-06-24T15:04:48.931-04:00  WARN 29484 --- [notification-service] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-24T15:04:49.040-04:00  INFO 29484 --- [notification-service] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-06-24T15:04:49.058-04:00  INFO 29484 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-06-24T15:04:49.061-04:00  INFO 29484 --- [notification-service] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-24T15:04:49.068-04:00  INFO 29484 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-06-24T15:04:49.068-04:00  INFO 29484 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-06-24T15:04:49.069-04:00  INFO 29484 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-06-24T15:04:49.069-04:00  INFO 29484 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-06-24T15:04:49.069-04:00  INFO 29484 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-06-24T15:04:49.069-04:00  INFO 29484 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-06-24T15:04:49.069-04:00  INFO 29484 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-06-24T15:04:49.278-04:00  INFO 29484 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-06-24T15:04:49.279-04:00  INFO 29484 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-06-24T15:04:49.281-04:00  INFO 29484 --- [notification-service] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-06-24T15:04:49.282-04:00  INFO 29484 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1782327889282 with initial instances count: 5
+2026-06-24T15:04:49.284-04:00  INFO 29484 --- [notification-service] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application NOTIFICATION-SERVICE with eureka with status UP
+2026-06-24T15:04:49.285-04:00  INFO 29484 --- [notification-service] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1782327889285, current=UP, previous=STARTING]
+2026-06-24T15:04:49.286-04:00  INFO 29484 --- [notification-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_NOTIFICATION-SERVICE/localhost:notification-service:8088: registering service...
+2026-06-24T15:04:49.308-04:00  INFO 29484 --- [notification-service] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8088 (http) with context path '/'
+2026-06-24T15:04:49.308-04:00  INFO 29484 --- [notification-service] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_NOTIFICATION-SERVICE/localhost:notification-service:8088 - registration status: 204
+2026-06-24T15:04:49.309-04:00  INFO 29484 --- [notification-service] [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8088
+2026-06-24T15:04:50.518-04:00  INFO 29484 --- [notification-service] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-06-24T15:04:50.528-04:00  INFO 29484 --- [notification-service] [main] c.s.n.NotificationServiceApplication     : Started NotificationServiceApplication in 14.686 seconds (process running for 15.424)
+2026-06-24T15:07:06.688-04:00  INFO 23596 --- [notification-service] [main] c.s.n.c.NotificacionControllerTest       : Starting NotificacionControllerTest using Java 17.0.12 with PID 23596 (started by PN-Alumno in C:\workspace\SmallBooksRepository\notification-service)
+2026-06-24T15:07:06.689-04:00 DEBUG 23596 --- [notification-service] [main] c.s.n.c.NotificacionControllerTest       : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-24T15:07:06.690-04:00  INFO 23596 --- [notification-service] [main] c.s.n.c.NotificacionControllerTest       : No active profile set, falling back to 1 default profile: "default"
+2026-06-24T15:07:06.700-04:00  INFO 23596 --- [notification-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-24T15:07:06.700-04:00  INFO 23596 --- [notification-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=notification-service, profiles=[default], label=null, version=null, state=null
+2026-06-24T15:07:08.669-04:00  INFO 23596 --- [notification-service] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-06-24T15:07:08.669-04:00  INFO 23596 --- [notification-service] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-06-24T15:07:08.671-04:00  INFO 23596 --- [notification-service] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-06-24T15:07:08.735-04:00  INFO 23596 --- [notification-service] [main] c.s.n.c.NotificacionControllerTest       : Started NotificacionControllerTest in 3.868 seconds (process running for 4.604)
+2026-06-24T15:09:49.081-04:00  INFO 29484 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-24T15:14:49.089-04:00  INFO 29484 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-06-24T15:18:50.641-04:00  INFO 8432 --- [notification-service] [main] c.s.n.c.NotificacionControllerTest       : Starting NotificacionControllerTest using Java 17.0.12 with PID 8432 (started by PN-Alumno in C:\workspace\SmallBooksRepository\notification-service)
+2026-06-24T15:18:50.642-04:00 DEBUG 8432 --- [notification-service] [main] c.s.n.c.NotificacionControllerTest       : Running with Spring Boot v3.3.11, Spring v6.1.19
+2026-06-24T15:18:50.643-04:00  INFO 8432 --- [notification-service] [main] c.s.n.c.NotificacionControllerTest       : No active profile set, falling back to 1 default profile: "default"
+2026-06-24T15:18:50.659-04:00  INFO 8432 --- [notification-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2026-06-24T15:18:50.659-04:00  INFO 8432 --- [notification-service] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=notification-service, profiles=[default], label=null, version=null, state=null
+2026-06-24T15:18:54.689-04:00  INFO 8432 --- [notification-service] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-06-24T15:18:54.689-04:00  INFO 8432 --- [notification-service] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-06-24T15:18:54.692-04:00  INFO 8432 --- [notification-service] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 2 ms
+2026-06-24T15:18:54.841-04:00  INFO 8432 --- [notification-service] [main] c.s.n.c.NotificacionControllerTest       : Started NotificacionControllerTest in 6.69 seconds (process running for 8.417)
+2026-06-24T15:19:49.099-04:00  INFO 29484 --- [notification-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
