@@ -1,0 +1,45 @@
+# ============================================================
+# .gitignore raíz — aplica a todo el repositorio SmallBooks
+# Los .gitignore de cada microservicio cubren sus propios casos
+# Este archivo cubre patrones globales del proyecto multi-módulo
+# ============================================================
+
+# --- Logs de aplicación (Spring Boot escribe aquí en runtime) ---
+**/logs/
+*.log
+*.log.*
+
+# --- Compilados Maven ---
+**/target/
+**/build/
+
+# --- IntelliJ IDEA ---
+.idea/
+**/*.iml
+**/*.iws
+**/*.ipr
+
+# --- VS Code ---
+.vscode/
+
+# --- Eclipse / STS ---
+**/.classpath
+**/.project
+**/.settings/
+**/.apt_generated
+**/.factorypath
+**/.springBeans
+**/.sts4-cache
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- Variables de entorno (nunca subir secrets) ---
+.env
+*.env
+
+# --- Maven wrapper jar (se descarga automáticamente) ---
+!**/mvnw
+!**/mvnw.cmd
+**/maven-wrapper.jar
