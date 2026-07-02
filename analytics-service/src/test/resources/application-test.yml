@@ -1,0 +1,19 @@
+# Perfil de test para analytics-service
+# Este servicio NO tiene base de datos propia — consume elending-service via Feign.
+# Solo necesitamos deshabilitear Config Server y Eureka para que el contexto levante
+# sin infraestructura externa. El LendingClient se mockea en cada test.
+
+spring:
+  config:
+    import: ""          # Evita conectarse al Config Server externo
+  cloud:
+    config:
+      enabled: false    # Desactiva el cliente de Config Server
+
+eureka:
+  client:
+    enabled: false      # Desactiva registro en Eureka
+
+logging:
+  level:
+    root: WARN

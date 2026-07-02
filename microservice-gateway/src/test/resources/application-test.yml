@@ -1,0 +1,26 @@
+# Perfil de test para microservice-gateway
+# El gateway necesita jwt.secret para que JwtAuthFilter pueda inyectarlo con @Value.
+# Desactivamos Config Server y Eureka para no necesitar infraestructura externa.
+
+spring:
+  config:
+    import: ""
+  cloud:
+    config:
+      enabled: false
+    gateway:
+      # Sin rutas definidas en test — el filtro se testa de forma unitaria
+      routes: []
+
+eureka:
+  client:
+    enabled: false
+
+# Secret de 32+ caracteres requerido por HMAC-SHA256
+# En producción viene del Config Server — aquí lo ponemos fijo para tests
+jwt:
+  secret: "clave-secreta-de-prueba-para-tests-unitarios-32chars"
+
+logging:
+  level:
+    root: WARN

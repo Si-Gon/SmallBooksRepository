@@ -1,0 +1,18 @@
+# Perfil de test para content-service
+# Sin base de datos propia — solo desactivamos Config Server y Eureka.
+# LendingClient e IngestionClient (Feign) se mockean en cada test.
+
+spring:
+  config:
+    import: ""
+  cloud:
+    config:
+      enabled: false
+
+eureka:
+  client:
+    enabled: false
+
+logging:
+  level:
+    root: WARN

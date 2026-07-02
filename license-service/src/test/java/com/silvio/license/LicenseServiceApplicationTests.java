@@ -1,11 +1,11 @@
 package com.silvio.license;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-@Disabled("Requiere BD activa — excluido de tests unitarios")
+@ActiveProfiles("test")
 class LicenseServiceApplicationTests {
 
 	@Test

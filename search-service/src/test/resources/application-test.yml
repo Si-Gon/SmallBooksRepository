@@ -1,0 +1,18 @@
+# Perfil de test para search-service
+# Sin base de datos — solo consulta al catalog-service via Feign.
+# CatalogClient se mockea en cada test con @MockBean.
+
+spring:
+  config:
+    import: ""
+  cloud:
+    config:
+      enabled: false
+
+eureka:
+  client:
+    enabled: false
+
+logging:
+  level:
+    root: WARN

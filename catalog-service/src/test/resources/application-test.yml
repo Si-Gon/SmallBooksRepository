@@ -1,0 +1,45 @@
+# ============================================================
+# Configuración exclusiva para el perfil "test"
+# Spring la usa SOLO cuando se ejecuta con @ActiveProfiles("test")
+# ============================================================
+
+spring:
+  # Desactiva la importación del Config Server externo (localhost:8888)
+  # Sin esto, el test falla al no poder conectarse a Eureka/ConfigServer
+  config:
+    import: ""
+
+  # Base de datos en memoria H2 — se crea al iniciar el test y se destruye al terminar
+  # No necesita MySQL instalado, es perfecta para tests unitarios de integración ligera
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  jpa:
+    # Hibernate crea las tablas automáticamente a partir de las entidades JPA
+    # "create-drop" = crea al arrancar, borra al cerrar → cada test empieza limpio
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+
+  # Desactiva Flyway en tests — las migraciones SQL son para MySQL, no para H2
+  flyway:
+    enabled: false
+
+  # Desactiva el registro con Eureka — en tests no hay servidor de descubrimiento
+  cloud:
+    config:
+      enabled: false
+
+eureka:
+  client:
+    enabled: false
+
+# Nivel de log reducido en tests para no saturar la consola
+logging:
+  level:
+    root: WARN
+    com.silvio: INFO

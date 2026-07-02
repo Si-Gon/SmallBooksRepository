@@ -1,0 +1,31 @@
+# Perfil de test para ingestion-service
+# Tiene base de datos (guarda archivos como BLOB en MySQL).
+# En tests usamos H2 en memoria + desactivamos Flyway (las migraciones SQL
+# pueden ser incompatibles con H2). JPA crea las tablas directamente via ddl-auto.
+
+spring:
+  config:
+    import: ""
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: false
+  flyway:
+    enabled: false
+  cloud:
+    config:
+      enabled: false
+
+eureka:
+  client:
+    enabled: false
+
+logging:
+  level:
+    root: WARN
