@@ -114,9 +114,25 @@ public class PrestamoService {
         prestamo.setFechaVencimiento(ahora.plusDays(suscripcion.getDiasPrestamo()));
         prestamo.setEstado(EstadoPrestamo.ACTIVO);
 
-        Prestamo guardado = prestamoRepository.save(prestamo);
-        log.info("Préstamo creado exitosamente — id: {}, usuario: {}, libro: {}, vence: {}",
-                guardado.getId(), usuarioId, request.getLibroId(), guardado.getFechaVencimiento());
+        Prestamo guardado;
+        try {
+            guardado = prestamoRepository.save(prestamo);
+            log.info("Préstamo creado exitosamente — id: {}, usuario: {}, libro: {}, vence: {}",
+            guardado.getId(), usuarioId, request.getLibroId(), 
+            guardado.getFechaVencimiento());
+        } catch (Exception e) {
+            log.error("Error al guardar préstamo — intentando compensar descuento de copia — libro: {}",
+            request.getLibroId());
+        try {
+            licenseClient.devolver(request.getLibroId());
+                log.info("Compensación exitosa — copia restaurada para libro: {}", 
+                request.getLibroId());
+        } catch (Exception ex) {
+                log.error("COMPENSACIÓN FALLIDA — inconsistencia en copias del libro: {}. " +
+                "Requiere revisión manual.", request.getLibroId());
+        }
+            throw new RuntimeException("Error al crear el préstamo. La operación fue revertida.");
+        }
 
         // Paso 7: Notificar
         try {
