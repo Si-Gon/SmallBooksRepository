@@ -1,0 +1,173 @@
+version: '3.8'
+
+services:
+
+  # ─── 1. CONFIG SERVER (arranca primero, sin dependencias) ───────────────────
+  config:
+    build:
+      context: ./microservice-config
+    container_name: config-server
+    ports:
+      - "8888:8888"
+
+  # ─── 2. EUREKA (necesita config) ────────────────────────────────────────────
+  eureka:
+    build:
+      context: ./microservice-eureka
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+    depends_on:
+      - config
+
+  # ─── 3. GATEWAY (necesita config + eureka) ──────────────────────────────────
+  gateway:
+    build:
+      context: ./microservice-gateway
+    container_name: gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+    depends_on:
+      - config
+      - eureka
+
+  # ─── 4. IDENTITY (necesita config + eureka + BD) ────────────────────────────
+  identity:
+    build:
+      context: ./identity-services
+    container_name: identity
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_identity?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    depends_on:
+      - config
+      - eureka
+
+  # ─── 5. CATALOG ─────────────────────────────────────────────────────────────
+  catalog:
+    build:
+      context: ./catalog-service
+    container_name: catalog
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_catalog?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    depends_on:
+      - config
+      - eureka
+
+  # ─── 6. LICENSE ─────────────────────────────────────────────────────────────
+  license:
+    build:
+      context: ./license-service
+    container_name: license
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_license?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    depends_on:
+      - config
+      - eureka
+
+  # ─── 7. E-LENDING ───────────────────────────────────────────────────────────
+  elending:
+    build:
+      context: ./elending-service
+    container_name: elending
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_lending?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    depends_on:
+      - config
+      - eureka
+
+  # ─── 8. NOTIFICATION ────────────────────────────────────────────────────────
+  notification:
+    build:
+      context: ./notification-service
+    container_name: notification
+    ports:
+      - "8088:8088"
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_notifications?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    depends_on:
+      - config
+      - eureka
+
+  # ─── 9. SUBSCRIPTION ────────────────────────────────────────────────────────
+  subscription:
+    build:
+      context: ./subscription-service
+    container_name: subscription
+    ports:
+      - "8089:8089"
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_subscriptions?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    depends_on:
+      - config
+      - eureka
+
+  # ─── 10. SEARCH (sin BD, solo Feign) ────────────────────────────────────────
+  search:
+    build:
+      context: ./search-service
+    container_name: search
+    ports:
+      - "8090:8090"
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+    depends_on:
+      - config
+      - eureka
+
+  # ─── 11. ANALYTICS (sin BD, solo Feign) ─────────────────────────────────────
+  analytics:
+    build:
+      context: ./analytics-service
+    container_name: analytics
+    ports:
+      - "8091:8091"
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+    depends_on:
+      - config
+      - eureka
+
+  # ─── 12. INGESTION ──────────────────────────────────────────────────────────
+  ingestion:
+    build:
+      context: ./ingestion-service
+    container_name: ingestion
+    ports:
+      - "8092:8092"
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_ingestion?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    depends_on:
+      - config
+      - eureka
+
+  # ─── 13. CONTENT (sin BD, solo Feign) ───────────────────────────────────────
+  content:
+    build:
+      context: ./content-service
+    container_name: content
+    ports:
+      - "8093:8093"
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+    depends_on:
+      - config
+      - eureka
