@@ -2,15 +2,21 @@ version: '3.8'
 
 services:
 
-  # ─── 1. CONFIG SERVER (arranca primero, sin dependencias) ───────────────────
+  # ─── 1. CONFIG SERVER ───────────────────────────────────────────────────────
   config:
     build:
       context: ./microservice-config
     container_name: config-server
     ports:
       - "8888:8888"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8888/actuator/health"]
+      interval: 10s      # cada 10 segundos pregunta si está listo
+      timeout: 5s        # espera máximo 5 segundos la respuesta
+      retries: 10        # intenta 10 veces antes de declararlo fallido
+      start_period: 30s  # espera 30s antes de empezar a preguntar
 
-  # ─── 2. EUREKA (necesita config) ────────────────────────────────────────────
+    # ─── 2. EUREKA ──────────────────────────────────────────────────────────────
   eureka:
     build:
       context: ./microservice-eureka
@@ -19,10 +25,18 @@ services:
       - "8761:8761"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
     depends_on:
-      - config
+      config:
+        condition: service_healthy # espera a que config esté listo antes de iniciar eureka
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
-  # ─── 3. GATEWAY (necesita config + eureka) ──────────────────────────────────
+  # ─── 3. GATEWAY ─────────────────────────────────────────────────────────────
   gateway:
     build:
       context: ./microservice-gateway
@@ -31,11 +45,20 @@ services:
       - "8080:8080"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
     depends_on:
-      - config
-      - eureka
+      config:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
 
-  # ─── 4. IDENTITY (necesita config + eureka + BD) ────────────────────────────
+  # ─── 4. IDENTITY ────────────────────────────────────────────────────────────
   identity:
     build:
       context: ./identity-services
@@ -44,10 +67,13 @@ services:
       - "8084:8084"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
       - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_identity?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     depends_on:
-      - config
-      - eureka
+      config:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
 
   # ─── 5. CATALOG ─────────────────────────────────────────────────────────────
   catalog:
@@ -58,10 +84,13 @@ services:
       - "8085:8085"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
       - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_catalog?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     depends_on:
-      - config
-      - eureka
+      config:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
 
   # ─── 6. LICENSE ─────────────────────────────────────────────────────────────
   license:
@@ -72,10 +101,13 @@ services:
       - "8086:8086"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
       - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_license?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     depends_on:
-      - config
-      - eureka
+      config:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
 
   # ─── 7. E-LENDING ───────────────────────────────────────────────────────────
   elending:
@@ -86,10 +118,13 @@ services:
       - "8087:8087"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
       - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_lending?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     depends_on:
-      - config
-      - eureka
+      config:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
 
   # ─── 8. NOTIFICATION ────────────────────────────────────────────────────────
   notification:
@@ -100,10 +135,13 @@ services:
       - "8088:8088"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
       - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_notifications?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     depends_on:
-      - config
-      - eureka
+      config:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
 
   # ─── 9. SUBSCRIPTION ────────────────────────────────────────────────────────
   subscription:
@@ -114,12 +152,15 @@ services:
       - "8089:8089"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
       - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_subscriptions?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     depends_on:
-      - config
-      - eureka
+      config:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
 
-  # ─── 10. SEARCH (sin BD, solo Feign) ────────────────────────────────────────
+  # ─── 10. SEARCH ─────────────────────────────────────────────────────────────
   search:
     build:
       context: ./search-service
@@ -128,11 +169,14 @@ services:
       - "8090:8090"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
     depends_on:
-      - config
-      - eureka
+      config:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
 
-  # ─── 11. ANALYTICS (sin BD, solo Feign) ─────────────────────────────────────
+  # ─── 11. ANALYTICS ──────────────────────────────────────────────────────────
   analytics:
     build:
       context: ./analytics-service
@@ -141,9 +185,12 @@ services:
       - "8091:8091"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
     depends_on:
-      - config
-      - eureka
+      config:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
 
   # ─── 12. INGESTION ──────────────────────────────────────────────────────────
   ingestion:
@@ -154,12 +201,15 @@ services:
       - "8092:8092"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
       - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_ingestion?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     depends_on:
-      - config
-      - eureka
+      config:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
 
-  # ─── 13. CONTENT (sin BD, solo Feign) ───────────────────────────────────────
+  # ─── 13. CONTENT ────────────────────────────────────────────────────────────
   content:
     build:
       context: ./content-service
@@ -168,6 +218,9 @@ services:
       - "8093:8093"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
     depends_on:
-      - config
-      - eureka
+      config:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy

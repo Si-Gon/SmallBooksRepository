@@ -1,11 +1,16 @@
 spring:
   main:
-    web-application-type:  reactive
+    web-application-type: reactive
   application:
     name: msvc-gateway
   config:
-    import: 'optional:configserver:http://localhost:8888'
-        
+    import: 'optional:configserver:http://config:8888'
 
- 
-        
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
