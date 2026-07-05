@@ -112,7 +112,8 @@ public class LicenseController {
     @Operation(summary = "Descontar copia al prestar")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Copia descontada exitosamente"),
-        @ApiResponse(responseCode = "404", description = "Licencia no encontrada")
+        @ApiResponse(responseCode = "404", description = "Licencia no encontrada"),
+        @ApiResponse(responseCode = "422", description = "No hay copias disponibles para prestar")
     })
     @PutMapping("/{libroId}/prestar")
     public ResponseEntity<LicenseResponseDTO> prestar(
@@ -131,7 +132,8 @@ public class LicenseController {
     @Operation(summary = "Sumar copia al devolver")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Copia devuelta exitosamente"),
-        @ApiResponse(responseCode = "404", description = "Licencia no encontrada")
+        @ApiResponse(responseCode = "404", description = "Licencia no encontrada"),
+        @ApiResponse(responseCode = "422", description = "Todas las copias ya están disponibles")
     })
     @PutMapping("/{libroId}/devolver")
     public ResponseEntity<LicenseResponseDTO> devolver(
