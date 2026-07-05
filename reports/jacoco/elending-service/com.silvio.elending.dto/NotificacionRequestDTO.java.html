@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NotificacionRequestDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report"></a> &gt; <a href="index.source.html" class="el_package">com.silvio.elending.dto</a> &gt; <span class="el_source">NotificacionRequestDTO.java</span></div><h1>NotificacionRequestDTO.java</h1><pre class="source lang-java linenums">package com.silvio.elending.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+
+// DTO que E-Lending envía a Notification Service via Feign
+// El tipo debe coincidir con TipoNotificacion del notification-service
+@Data
+public class NotificacionRequestDTO {
+
+    @NotBlank(message = &quot;El usuarioId es obligatorio&quot;)
+    private String usuarioId;
+
+    @NotBlank(message = &quot;El tipo de notificación es obligatorio&quot;)
+    @Pattern(
+        regexp = &quot;^(PRESTAMO_CREADO|PROXIMO_VENCER|VENCIDO)$&quot;,
+        message = &quot;El tipo debe ser: PRESTAMO_CREADO, PROXIMO_VENCER o VENCIDO&quot;
+    )
+    private String tipo;    // &quot;PRESTAMO_CREADO&quot;, &quot;PROXIMO_VENCER&quot;, &quot;VENCIDO&quot;
+
+    @NotBlank(message = &quot;El mensaje es obligatorio&quot;)
+    @Size(max = 500, message = &quot;El mensaje no puede superar 500 caracteres&quot;)
+    private String mensaje;
+
+    // Constructor estático para crear notificaciones fácilmente
+    public static NotificacionRequestDTO prestamoCreado(String usuarioId, Long libroId) {
+<span class="fc" id="L29">        NotificacionRequestDTO dto = new NotificacionRequestDTO();</span>
+<span class="fc" id="L30">        dto.setUsuarioId(usuarioId);</span>
+<span class="fc" id="L31">        dto.setTipo(&quot;PRESTAMO_CREADO&quot;);</span>
+<span class="fc" id="L32">        dto.setMensaje(&quot;Tu préstamo del libro &quot; + libroId +</span>
+                &quot; ha sido creado exitosamente. Tienes 14 días para leerlo.&quot;);
+<span class="fc" id="L34">        return dto;</span>
+    }
+
+    public static NotificacionRequestDTO prestamoVencido(String usuarioId, Long libroId) {
+<span class="nc" id="L38">        NotificacionRequestDTO dto = new NotificacionRequestDTO();</span>
+<span class="nc" id="L39">        dto.setUsuarioId(usuarioId);</span>
+<span class="nc" id="L40">        dto.setTipo(&quot;VENCIDO&quot;);</span>
+<span class="nc" id="L41">        dto.setMensaje(&quot;Tu préstamo del libro &quot; + libroId +</span>
+                &quot; ha vencido y ha sido cerrado automáticamente.&quot;);
+<span class="nc" id="L43">        return dto;</span>
+    }
+
+    public static NotificacionRequestDTO proximoVencer(String usuarioId, Long libroId) {
+<span class="nc" id="L47">        NotificacionRequestDTO dto = new NotificacionRequestDTO();</span>
+<span class="nc" id="L48">        dto.setUsuarioId(usuarioId);</span>
+<span class="nc" id="L49">        dto.setTipo(&quot;PROXIMO_VENCER&quot;);</span>
+<span class="nc" id="L50">        dto.setMensaje(&quot;Tu préstamo del libro &quot; + libroId +</span>
+                &quot; vence en 2 días. Aprovecha el tiempo restante.&quot;);
+<span class="nc" id="L52">        return dto;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -13,6 +13,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class CatalogServiceTest {
@@ -83,18 +84,18 @@ class CatalogServiceTest {
     }
 
     @Test
-    void buscar_PorTitulo_DebeRetornarLibrosCoincidentes() {
-        // Given
-        List<Libro> libros = Arrays.asList(new Libro(), new Libro());
-        when(libroRepository.findByTituloContainingIgnoreCase("Cien")).thenReturn(libros);
+void buscar_PorTitulo_DebeRetornarLibrosCoincidentes() {
+    // Given
+    List<Libro> libros = Arrays.asList(new Libro(), new Libro());
+    when(libroRepository.buscarCombinado("Cien", null, null)).thenReturn(libros);
 
-        // When
-        List<LibroResponseDTO> result = catalogService.buscar("Cien", null, null);
+    // When
+    List<LibroResponseDTO> result = catalogService.buscar("Cien", null, null);
 
-        // Then
-        assertEquals(2, result.size());
-        verify(libroRepository).findByTituloContainingIgnoreCase("Cien");
-    }
+    // Then
+    assertEquals(2, result.size());
+    verify(libroRepository).buscarCombinado("Cien", null, null);
+}
 
     @Test
     void agregar_DebeGuardarNuevoLibro() {

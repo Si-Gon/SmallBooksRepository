@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SuscripcionService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report"></a> &gt; <a href="index.source.html" class="el_package">com.silvio.subscription.service</a> &gt; <span class="el_source">SuscripcionService.java</span></div><h1>SuscripcionService.java</h1><pre class="source lang-java linenums">package com.silvio.subscription.service;
+
+import com.silvio.subscription.dto.SuscripcionRequestDTO;
+import com.silvio.subscription.dto.SuscripcionResponseDTO;
+import com.silvio.subscription.model.Suscripcion;
+import com.silvio.subscription.model.Suscripcion.PlanSuscripcion;
+import com.silvio.subscription.repository.SuscripcionRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+
+<span class="fc" id="L15">@Slf4j</span>
+@Service
+@RequiredArgsConstructor
+public class SuscripcionService {
+
+    private final SuscripcionRepository suscripcionRepository;
+
+    private static final int BASICO_MAX_PRESTAMOS = 2;
+    private static final int BASICO_DIAS_PRESTAMO = 7;
+    private static final int PREMIUM_MAX_PRESTAMOS = 5;
+    private static final int PREMIUM_DIAS_PRESTAMO = 14;
+
+    public SuscripcionResponseDTO obtenerPorUsuario(String usuarioId) {
+<span class="fc" id="L28">        log.info(&quot;Consultando suscripción activa del usuario: {}&quot;, usuarioId);</span>
+<span class="fc" id="L29">        Suscripcion suscripcion = suscripcionRepository</span>
+<span class="fc" id="L30">                .findByUsuarioIdAndActivaTrue(usuarioId)</span>
+<span class="fc" id="L31">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L32">                    log.warn(&quot;Sin suscripción activa para usuario: {}&quot;, usuarioId);</span>
+<span class="fc" id="L33">                    return new RuntimeException(</span>
+                            &quot;No hay suscripción activa para el usuario: &quot; + usuarioId);
+                });
+<span class="fc" id="L36">        return mapearADto(suscripcion);</span>
+    }
+
+    @Transactional
+    public SuscripcionResponseDTO crear(SuscripcionRequestDTO request, String usuarioId) {
+<span class="fc" id="L41">        log.info(&quot;Creando suscripción {} para usuario: {}, duración: {} mes(es)&quot;,</span>
+<span class="fc" id="L42">                request.getPlan(), usuarioId, request.getMeses());</span>
+
+<span class="fc" id="L44">        suscripcionRepository.findByUsuarioIdAndActivaTrue(usuarioId)</span>
+<span class="fc" id="L45">                .ifPresent(s -&gt; {</span>
+<span class="fc" id="L46">                    log.info(&quot;Cancelando suscripción anterior {} para usuario: {}&quot;,</span>
+<span class="fc" id="L47">                            s.getPlan(), usuarioId);</span>
+<span class="fc" id="L48">                    s.setActiva(false);</span>
+<span class="fc" id="L49">                    suscripcionRepository.save(s);</span>
+<span class="fc" id="L50">                });</span>
+
+<span class="fc" id="L52">        LocalDateTime ahora = LocalDateTime.now();</span>
+<span class="fc" id="L53">        Suscripcion suscripcion = new Suscripcion();</span>
+<span class="fc" id="L54">        suscripcion.setUsuarioId(usuarioId);</span>
+<span class="fc" id="L55">        suscripcion.setPlan(request.getPlan());</span>
+<span class="fc" id="L56">        suscripcion.setFechaInicio(ahora);</span>
+<span class="fc" id="L57">        suscripcion.setFechaFin(ahora.plusMonths(request.getMeses()));</span>
+<span class="fc" id="L58">        suscripcion.setActiva(true);</span>
+
+<span class="fc" id="L60">        Suscripcion guardada = suscripcionRepository.save(suscripcion);</span>
+<span class="fc" id="L61">        log.info(&quot;Suscripción creada — id: {}, usuario: {}, plan: {}, vence: {}&quot;,</span>
+<span class="fc" id="L62">                guardada.getId(), usuarioId, guardada.getPlan(), guardada.getFechaFin());</span>
+<span class="fc" id="L63">        return mapearADto(guardada);</span>
+    }
+
+    @Transactional
+    public SuscripcionResponseDTO cancelar(String usuarioId) {
+<span class="fc" id="L68">        log.info(&quot;Cancelando suscripción del usuario: {}&quot;, usuarioId);</span>
+<span class="fc" id="L69">        Suscripcion suscripcion = suscripcionRepository</span>
+<span class="fc" id="L70">                .findByUsuarioIdAndActivaTrue(usuarioId)</span>
+<span class="fc" id="L71">                .orElseThrow(() -&gt; new RuntimeException(</span>
+                        &quot;No hay suscripción activa para el usuario: &quot; + usuarioId));
+
+<span class="fc" id="L74">        suscripcion.setActiva(false);</span>
+<span class="fc" id="L75">        log.info(&quot;Suscripción cancelada — usuario: {}, plan: {}&quot;, usuarioId, suscripcion.getPlan());</span>
+<span class="fc" id="L76">        return mapearADto(suscripcionRepository.save(suscripcion));</span>
+    }
+
+    private SuscripcionResponseDTO mapearADto(Suscripcion s) {
+<span class="fc" id="L80">        SuscripcionResponseDTO dto = new SuscripcionResponseDTO();</span>
+<span class="fc" id="L81">        dto.setId(s.getId());</span>
+<span class="fc" id="L82">        dto.setUsuarioId(s.getUsuarioId());</span>
+<span class="fc" id="L83">        dto.setPlan(s.getPlan());</span>
+<span class="fc" id="L84">        dto.setFechaInicio(s.getFechaInicio());</span>
+<span class="fc" id="L85">        dto.setFechaFin(s.getFechaFin());</span>
+<span class="fc" id="L86">        dto.setActiva(s.getActiva());</span>
+
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        if (s.getPlan() == PlanSuscripcion.PREMIUM) {</span>
+<span class="fc" id="L89">            dto.setMaxPrestamos(PREMIUM_MAX_PRESTAMOS);</span>
+<span class="fc" id="L90">            dto.setDiasPrestamo(PREMIUM_DIAS_PRESTAMO);</span>
+        } else {
+<span class="fc" id="L92">            dto.setMaxPrestamos(BASICO_MAX_PRESTAMOS);</span>
+<span class="fc" id="L93">            dto.setDiasPrestamo(BASICO_DIAS_PRESTAMO);</span>
+        }
+<span class="fc" id="L95">        return dto;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

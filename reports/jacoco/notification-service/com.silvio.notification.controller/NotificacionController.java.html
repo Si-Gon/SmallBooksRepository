@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NotificacionController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report"></a> &gt; <a href="index.source.html" class="el_package">com.silvio.notification.controller</a> &gt; <span class="el_source">NotificacionController.java</span></div><h1>NotificacionController.java</h1><pre class="source lang-java linenums">package com.silvio.notification.controller;
+
+import com.silvio.notification.dto.NotificacionDTO;
+import com.silvio.notification.dto.NotificacionRequestDTO;
+import com.silvio.notification.service.NotificacionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
+@Tag(name = &quot;Notifications&quot;, description = &quot;Gestión de notificaciones — creadas por E-Lending via Feign al crear o vencer préstamos&quot;)
+@RestController
+@RequestMapping(&quot;/api/notifications&quot;)
+@RequiredArgsConstructor
+public class NotificacionController {
+
+    private final NotificacionService notificacionService;
+
+    @Operation(summary = &quot;Crear notificación&quot;,
+               description = &quot;Endpoint interno usado por E-Lending Service via Feign&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Notificación creada exitosamente&quot;),
+        @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Datos de notificación inválidos&quot;)
+    })
+    @PostMapping
+    public ResponseEntity&lt;NotificacionDTO&gt; crear(
+            @Valid @RequestBody NotificacionRequestDTO request) {
+<span class="fc" id="L38">        NotificacionDTO dto = notificacionService.crear(request);</span>
+
+<span class="fc" id="L40">        dto.add(linkTo(methodOn(NotificacionController.class)</span>
+<span class="fc" id="L41">                .obtenerPorUsuario(dto.getUsuarioId())).withRel(&quot;mis-notificaciones&quot;));</span>
+<span class="fc" id="L42">        dto.add(linkTo(methodOn(NotificacionController.class)</span>
+<span class="fc" id="L43">                .obtenerNoLeidas(dto.getUsuarioId())).withRel(&quot;no-leidas&quot;));</span>
+<span class="fc" id="L44">        dto.add(linkTo(methodOn(NotificacionController.class)</span>
+<span class="fc" id="L45">                .marcarLeida(dto.getId())).withRel(&quot;marcar-leida&quot;));</span>
+
+<span class="fc" id="L47">        return ResponseEntity.status(HttpStatus.CREATED).body(dto);</span>
+    }
+
+    @Operation(summary = &quot;Obtener notificaciones por usuario&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista de notificaciones obtenida&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Usuario no encontrado&quot;)
+    })
+    @GetMapping(&quot;/usuario/{usuarioId}&quot;)
+    public ResponseEntity&lt;List&lt;NotificacionDTO&gt;&gt; obtenerPorUsuario(
+            @Parameter(description = &quot;ID del usuario (username)&quot;, required = true)
+            @PathVariable String usuarioId) {
+<span class="fc" id="L59">        List&lt;NotificacionDTO&gt; lista = notificacionService.obtenerPorUsuario(usuarioId);</span>
+
+<span class="fc" id="L61">        lista.forEach(dto -&gt; {</span>
+<span class="fc" id="L62">            dto.add(linkTo(methodOn(NotificacionController.class)</span>
+<span class="fc" id="L63">                    .marcarLeida(dto.getId())).withRel(&quot;marcar-leida&quot;));</span>
+<span class="fc" id="L64">            dto.add(linkTo(methodOn(NotificacionController.class)</span>
+<span class="fc" id="L65">                    .obtenerNoLeidas(usuarioId)).withRel(&quot;no-leidas&quot;));</span>
+<span class="fc" id="L66">        });</span>
+
+<span class="fc" id="L68">        return ResponseEntity.ok(lista);</span>
+    }
+
+    @Operation(summary = &quot;Obtener notificaciones no leídas&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista de notificaciones no leídas&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Usuario no encontrado&quot;)
+    })
+    @GetMapping(&quot;/usuario/{usuarioId}/no-leidas&quot;)
+    public ResponseEntity&lt;List&lt;NotificacionDTO&gt;&gt; obtenerNoLeidas(
+            @Parameter(description = &quot;ID del usuario (username)&quot;, required = true)
+            @PathVariable String usuarioId) {
+<span class="fc" id="L80">        List&lt;NotificacionDTO&gt; lista = notificacionService.obtenerNoLeidas(usuarioId);</span>
+
+<span class="fc" id="L82">        lista.forEach(dto -&gt;</span>
+<span class="fc" id="L83">            dto.add(linkTo(methodOn(NotificacionController.class)</span>
+<span class="fc" id="L84">                    .marcarLeida(dto.getId())).withRel(&quot;marcar-leida&quot;))</span>
+        );
+
+<span class="fc" id="L87">        return ResponseEntity.ok(lista);</span>
+    }
+
+    @Operation(summary = &quot;Marcar notificación como leída&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Notificación marcada como leída&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Notificación no encontrada&quot;)
+    })
+    @PatchMapping(&quot;/{id}/leer&quot;)
+    public ResponseEntity&lt;NotificacionDTO&gt; marcarLeida(
+            @Parameter(description = &quot;ID de la notificación&quot;, required = true)
+            @PathVariable Long id) {
+<span class="fc" id="L99">        NotificacionDTO dto = notificacionService.marcarLeida(id);</span>
+
+<span class="fc" id="L101">        dto.add(linkTo(methodOn(NotificacionController.class)</span>
+<span class="fc" id="L102">                .obtenerPorUsuario(dto.getUsuarioId())).withRel(&quot;mis-notificaciones&quot;));</span>
+<span class="fc" id="L103">        dto.add(linkTo(methodOn(NotificacionController.class)</span>
+<span class="fc" id="L104">                .marcarTodasLeidas(dto.getUsuarioId())).withRel(&quot;marcar-todas-leidas&quot;));</span>
+
+<span class="fc" id="L106">        return ResponseEntity.ok(dto);</span>
+    }
+
+    @Operation(summary = &quot;Marcar todas las notificaciones como leídas&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Todas marcadas como leídas&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Usuario no encontrado&quot;)
+    })
+    @PatchMapping(&quot;/usuario/{usuarioId}/leer-todas&quot;)
+    public ResponseEntity&lt;Void&gt; marcarTodasLeidas(
+            @Parameter(description = &quot;ID del usuario (username)&quot;, required = true)
+            @PathVariable String usuarioId) {
+<span class="fc" id="L118">        notificacionService.marcarTodasLeidas(usuarioId);</span>
+<span class="fc" id="L119">        return ResponseEntity.noContent().build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

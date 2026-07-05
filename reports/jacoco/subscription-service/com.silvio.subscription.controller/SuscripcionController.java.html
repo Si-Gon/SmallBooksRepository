@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SuscripcionController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report"></a> &gt; <a href="index.source.html" class="el_package">com.silvio.subscription.controller</a> &gt; <span class="el_source">SuscripcionController.java</span></div><h1>SuscripcionController.java</h1><pre class="source lang-java linenums">package com.silvio.subscription.controller;
+
+import com.silvio.subscription.dto.SuscripcionRequestDTO;
+import com.silvio.subscription.dto.SuscripcionResponseDTO;
+import com.silvio.subscription.security.JwtExtractor;
+import com.silvio.subscription.service.SuscripcionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
+@Tag(name = &quot;Subscriptions&quot;, description = &quot;Gestión de suscripciones — planes BASICO y PREMIUM que determinan límites de préstamo&quot;)
+@RestController
+@RequestMapping(&quot;/api/subscriptions&quot;)
+@RequiredArgsConstructor
+public class SuscripcionController {
+
+    private final SuscripcionService suscripcionService;
+    private final JwtExtractor jwtExtractor;  // inyectado — responsabilidad delegada
+
+    @Operation(summary = &quot;Consultar mi plan actual&quot;,
+               description = &quot;Devuelve la suscripción activa del usuario autenticado&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Plan obtenido exitosamente&quot;),
+        @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Token JWT inválido o ausente&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;El usuario no tiene suscripción activa&quot;)
+    })
+    @GetMapping(&quot;/mi-plan&quot;)
+    public ResponseEntity&lt;SuscripcionResponseDTO&gt; miPlan(
+            @Parameter(description = &quot;Token JWT en formato: Bearer {token}&quot;, required = true)
+            @RequestHeader(&quot;Authorization&quot;) String authHeader) {
+<span class="fc" id="L40">        String usuarioId = jwtExtractor.extraerUsuario(authHeader);</span>
+<span class="fc" id="L41">        SuscripcionResponseDTO dto = suscripcionService.obtenerPorUsuario(usuarioId);</span>
+
+<span class="fc" id="L43">        dto.add(linkTo(methodOn(SuscripcionController.class)</span>
+<span class="fc" id="L44">                .miPlan(authHeader)).withSelfRel());</span>
+<span class="fc" id="L45">        dto.add(linkTo(methodOn(SuscripcionController.class)</span>
+<span class="fc" id="L46">                .cancelar(authHeader)).withRel(&quot;cancelar&quot;));</span>
+
+<span class="fc" id="L48">        return ResponseEntity.ok(dto);</span>
+    }
+
+    @Operation(summary = &quot;Obtener plan por usuario&quot;,
+               description = &quot;Endpoint interno usado por E-Lending Service via Feign&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Suscripción obtenida exitosamente&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Usuario sin suscripción activa&quot;)
+    })
+    @GetMapping(&quot;/usuario/{usuarioId}&quot;)
+    public ResponseEntity&lt;SuscripcionResponseDTO&gt; obtenerPorUsuarioId(
+            @Parameter(description = &quot;ID del usuario (username)&quot;, required = true)
+            @PathVariable String usuarioId) {
+<span class="fc" id="L61">        SuscripcionResponseDTO dto = suscripcionService.obtenerPorUsuario(usuarioId);</span>
+
+<span class="fc" id="L63">        dto.add(linkTo(methodOn(SuscripcionController.class)</span>
+<span class="fc" id="L64">                .obtenerPorUsuarioId(usuarioId)).withSelfRel());</span>
+
+<span class="fc" id="L66">        return ResponseEntity.ok(dto);</span>
+    }
+
+    @Operation(summary = &quot;Crear o cambiar suscripción&quot;,
+               description = &quot;Crea una nueva suscripción o cambia el plan actual del usuario&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Suscripción creada exitosamente&quot;),
+        @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Plan inválido o datos incorrectos&quot;),
+        @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Token JWT inválido o ausente&quot;)
+    })
+    @PostMapping
+    public ResponseEntity&lt;SuscripcionResponseDTO&gt; crear(
+            @Valid @RequestBody SuscripcionRequestDTO request,
+            @Parameter(description = &quot;Token JWT en formato: Bearer {token}&quot;, required = true)
+            @RequestHeader(&quot;Authorization&quot;) String authHeader) {
+<span class="fc" id="L81">        String usuarioId = jwtExtractor.extraerUsuario(authHeader);</span>
+<span class="fc" id="L82">        SuscripcionResponseDTO dto = suscripcionService.crear(request, usuarioId);</span>
+
+<span class="fc" id="L84">        dto.add(linkTo(methodOn(SuscripcionController.class)</span>
+<span class="fc" id="L85">                .miPlan(authHeader)).withRel(&quot;mi-plan&quot;));</span>
+<span class="fc" id="L86">        dto.add(linkTo(methodOn(SuscripcionController.class)</span>
+<span class="fc" id="L87">                .cancelar(authHeader)).withRel(&quot;cancelar&quot;));</span>
+
+<span class="fc" id="L89">        return ResponseEntity.status(HttpStatus.CREATED).body(dto);</span>
+    }
+
+    @Operation(summary = &quot;Cancelar suscripción&quot;,
+               description = &quot;Cancela la suscripción activa — el usuario vuelve al plan BASICO&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Suscripción cancelada exitosamente&quot;),
+        @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Token JWT inválido o ausente&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;No hay suscripción activa para cancelar&quot;)
+    })
+    @PatchMapping(&quot;/cancelar&quot;)
+    public ResponseEntity&lt;SuscripcionResponseDTO&gt; cancelar(
+            @Parameter(description = &quot;Token JWT en formato: Bearer {token}&quot;, required = true)
+            @RequestHeader(&quot;Authorization&quot;) String authHeader) {
+<span class="fc" id="L103">        String usuarioId = jwtExtractor.extraerUsuario(authHeader);</span>
+<span class="fc" id="L104">        SuscripcionResponseDTO dto = suscripcionService.cancelar(usuarioId);</span>
+
+<span class="fc" id="L106">        dto.add(linkTo(methodOn(SuscripcionController.class)</span>
+<span class="fc" id="L107">                .miPlan(authHeader)).withRel(&quot;mi-plan&quot;));</span>
+
+<span class="fc" id="L109">        return ResponseEntity.ok(dto);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

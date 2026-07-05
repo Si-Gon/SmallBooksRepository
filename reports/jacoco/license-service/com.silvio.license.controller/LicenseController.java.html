@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LicenseController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report"></a> &gt; <a href="index.source.html" class="el_package">com.silvio.license.controller</a> &gt; <span class="el_source">LicenseController.java</span></div><h1>LicenseController.java</h1><pre class="source lang-java linenums">package com.silvio.license.controller;
+
+import com.silvio.license.dto.LicenseRequestDTO;
+import com.silvio.license.dto.LicenseResponseDTO;
+import com.silvio.license.service.LicenseService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
+@Tag(name = &quot;Licenses&quot;, description = &quot;Gestión de licencias y control de copias disponibles por libro&quot;)
+@RestController
+@RequestMapping(&quot;/api/licenses&quot;)
+@RequiredArgsConstructor
+public class LicenseController {
+
+    private final LicenseService licenseService;
+
+    @Operation(summary = &quot;Listar todas las licencias&quot;,
+               description = &quot;Devuelve todas las licencias registradas con su cantidad de copias totales y disponibles&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista de licencias obtenida exitosamente&quot;),
+        @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Error interno del servidor&quot;)
+    })
+    @GetMapping
+    public ResponseEntity&lt;List&lt;LicenseResponseDTO&gt;&gt; obtenerTodas() {
+<span class="fc" id="L37">        List&lt;LicenseResponseDTO&gt; lista = licenseService.obtenerTodas();</span>
+
+<span class="fc" id="L39">        lista.forEach(dto -&gt;</span>
+<span class="fc" id="L40">            dto.add(linkTo(methodOn(LicenseController.class)</span>
+<span class="fc" id="L41">                    .obtenerPorLibroId(dto.getLibroId())).withSelfRel())</span>
+        );
+
+<span class="fc" id="L44">        return ResponseEntity.ok(lista);</span>
+    }
+
+    @Operation(summary = &quot;Obtener licencia por libro&quot;,
+               description = &quot;Consulta la licencia de un libro específico. &quot; +
+                             &quot;Usado por E-Lending Service via Feign antes de crear un préstamo &quot; +
+                             &quot;para verificar si hay copias disponibles&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Licencia encontrada&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;No existe licencia para este libro&quot;)
+    })
+    @GetMapping(&quot;/{libroId}&quot;)
+    public ResponseEntity&lt;LicenseResponseDTO&gt; obtenerPorLibroId(
+            @Parameter(description = &quot;ID del libro&quot;, required = true)
+            @PathVariable Long libroId) {
+<span class="fc" id="L59">        LicenseResponseDTO dto = licenseService.obtenerPorLibroId(libroId);</span>
+
+<span class="fc" id="L61">        dto.add(linkTo(methodOn(LicenseController.class)</span>
+<span class="fc" id="L62">                .obtenerPorLibroId(libroId)).withSelfRel());</span>
+<span class="fc" id="L63">        dto.add(linkTo(methodOn(LicenseController.class)</span>
+<span class="fc" id="L64">                .obtenerTodas()).withRel(&quot;todas&quot;));</span>
+<span class="fc" id="L65">        dto.add(linkTo(methodOn(LicenseController.class)</span>
+<span class="fc" id="L66">                .prestar(libroId)).withRel(&quot;prestar&quot;));</span>
+<span class="fc" id="L67">        dto.add(linkTo(methodOn(LicenseController.class)</span>
+<span class="fc" id="L68">                .devolver(libroId)).withRel(&quot;devolver&quot;));</span>
+
+<span class="fc" id="L70">        return ResponseEntity.ok(dto);</span>
+    }
+
+    @Operation(summary = &quot;Registrar nueva licencia&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Licencia creada exitosamente&quot;),
+        @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Datos de licencia inválidos&quot;),
+        @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Ya existe una licencia para este libro&quot;)
+    })
+    @PostMapping
+    public ResponseEntity&lt;LicenseResponseDTO&gt; crear(
+            @Valid @RequestBody LicenseRequestDTO request) {
+<span class="fc" id="L82">        LicenseResponseDTO dto = licenseService.crear(request);</span>
+
+<span class="fc" id="L84">        dto.add(linkTo(methodOn(LicenseController.class)</span>
+<span class="fc" id="L85">                .obtenerPorLibroId(dto.getLibroId())).withSelfRel());</span>
+<span class="fc" id="L86">        dto.add(linkTo(methodOn(LicenseController.class)</span>
+<span class="fc" id="L87">                .obtenerTodas()).withRel(&quot;todas&quot;));</span>
+
+<span class="fc" id="L89">        return ResponseEntity.status(HttpStatus.CREATED).body(dto);</span>
+    }
+
+    @Operation(summary = &quot;Actualizar licencia&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Licencia actualizada exitosamente&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Licencia no encontrada&quot;)
+    })
+    @PutMapping(&quot;/{libroId}&quot;)
+    public ResponseEntity&lt;LicenseResponseDTO&gt; actualizar(
+            @Parameter(description = &quot;ID del libro&quot;, required = true)
+            @PathVariable Long libroId,
+            @Valid @RequestBody LicenseRequestDTO request) {
+<span class="fc" id="L102">        LicenseResponseDTO dto = licenseService.actualizar(libroId, request);</span>
+
+<span class="fc" id="L104">        dto.add(linkTo(methodOn(LicenseController.class)</span>
+<span class="fc" id="L105">                .obtenerPorLibroId(libroId)).withSelfRel());</span>
+<span class="fc" id="L106">        dto.add(linkTo(methodOn(LicenseController.class)</span>
+<span class="fc" id="L107">                .obtenerTodas()).withRel(&quot;todas&quot;));</span>
+
+<span class="fc" id="L109">        return ResponseEntity.ok(dto);</span>
+    }
+
+    @Operation(summary = &quot;Descontar copia al prestar&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Copia descontada exitosamente&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Licencia no encontrada&quot;),
+        @ApiResponse(responseCode = &quot;422&quot;, description = &quot;No hay copias disponibles para prestar&quot;)
+    })
+    @PutMapping(&quot;/{libroId}/prestar&quot;)
+    public ResponseEntity&lt;LicenseResponseDTO&gt; prestar(
+            @Parameter(description = &quot;ID del libro&quot;, required = true)
+            @PathVariable Long libroId) {
+<span class="fc" id="L122">        LicenseResponseDTO dto = licenseService.prestar(libroId);</span>
+
+<span class="fc" id="L124">        dto.add(linkTo(methodOn(LicenseController.class)</span>
+<span class="fc" id="L125">                .obtenerPorLibroId(libroId)).withSelfRel());</span>
+<span class="fc" id="L126">        dto.add(linkTo(methodOn(LicenseController.class)</span>
+<span class="fc" id="L127">                .devolver(libroId)).withRel(&quot;devolver&quot;));</span>
+
+<span class="fc" id="L129">        return ResponseEntity.ok(dto);</span>
+    }
+
+    @Operation(summary = &quot;Sumar copia al devolver&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Copia devuelta exitosamente&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Licencia no encontrada&quot;),
+        @ApiResponse(responseCode = &quot;422&quot;, description = &quot;Todas las copias ya están disponibles&quot;)
+    })
+    @PutMapping(&quot;/{libroId}/devolver&quot;)
+    public ResponseEntity&lt;LicenseResponseDTO&gt; devolver(
+            @Parameter(description = &quot;ID del libro&quot;, required = true)
+            @PathVariable Long libroId) {
+<span class="fc" id="L142">        LicenseResponseDTO dto = licenseService.devolver(libroId);</span>
+
+<span class="fc" id="L144">        dto.add(linkTo(methodOn(LicenseController.class)</span>
+<span class="fc" id="L145">                .obtenerPorLibroId(libroId)).withSelfRel());</span>
+<span class="fc" id="L146">        dto.add(linkTo(methodOn(LicenseController.class)</span>
+<span class="fc" id="L147">                .prestar(libroId)).withRel(&quot;prestar&quot;));</span>
+
+<span class="fc" id="L149">        return ResponseEntity.ok(dto);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

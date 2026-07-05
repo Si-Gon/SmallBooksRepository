@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PrestamoService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report"></a> &gt; <a href="index.source.html" class="el_package">com.silvio.elending.service</a> &gt; <span class="el_source">PrestamoService.java</span></div><h1>PrestamoService.java</h1><pre class="source lang-java linenums">package com.silvio.elending.service;
+
+import com.silvio.elending.client.LicenseClient;
+import com.silvio.elending.client.NotificationClient;
+import com.silvio.elending.client.SubscriptionClient;
+import com.silvio.elending.dto.LicenciaDTO;
+import com.silvio.elending.dto.NotificacionRequestDTO;
+import com.silvio.elending.dto.PrestamoRequestDTO;
+import com.silvio.elending.dto.PrestamoResponseDTO;
+import com.silvio.elending.dto.SuscripcionDTO;
+import com.silvio.elending.model.Prestamo;
+import com.silvio.elending.model.Prestamo.EstadoPrestamo;
+import com.silvio.elending.repository.PrestamoRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+<span class="fc" id="L24">@Slf4j</span>
+@Service
+@RequiredArgsConstructor
+public class PrestamoService {
+
+    private final PrestamoRepository prestamoRepository;
+    private final LicenseClient licenseClient;
+    private final SubscriptionClient subscriptionClient;
+    private final NotificationClient notificationClient;
+
+    @Transactional
+    public PrestamoResponseDTO crearPrestamo(PrestamoRequestDTO request, String usuarioId) {
+<span class="fc" id="L36">        log.info(&quot;Iniciando creación de préstamo — usuario: {}, libro: {}&quot;, </span>
+<span class="fc" id="L37">                usuarioId, request.getLibroId());</span>
+
+        // Paso 1: Consultar plan del usuario
+        SuscripcionDTO suscripcion;
+        try {
+<span class="fc" id="L42">            suscripcion = subscriptionClient.obtenerSuscripcion(usuarioId);</span>
+<span class="fc" id="L43">            log.info(&quot;Plan activo para usuario {}: {} — max: {} préstamos, {} días&quot;,</span>
+<span class="fc" id="L44">                    usuarioId, suscripcion.getPlan(),</span>
+<span class="fc" id="L45">                    suscripcion.getMaxPrestamos(), suscripcion.getDiasPrestamo());</span>
+<span class="fc" id="L46">        } catch (Exception e) {</span>
+<span class="fc" id="L47">            log.warn(&quot;No se encontró suscripción activa para usuario {}. Aplicando plan BASICO por defecto.&quot;, </span>
+                    usuarioId);
+<span class="fc" id="L49">            suscripcion = new SuscripcionDTO();</span>
+<span class="fc" id="L50">            suscripcion.setMaxPrestamos(2);</span>
+<span class="fc" id="L51">            suscripcion.setDiasPrestamo(7);</span>
+<span class="fc" id="L52">            suscripcion.setPlan(&quot;BASICO&quot;);</span>
+<span class="fc" id="L53">        }</span>
+
+        // Paso 2: Verificar límite de préstamos
+<span class="fc" id="L56">        List&lt;Prestamo&gt; prestamosActivos = prestamoRepository</span>
+<span class="fc" id="L57">                .findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO);</span>
+
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (prestamosActivos.size() &gt;= suscripcion.getMaxPrestamos()) {</span>
+<span class="fc" id="L60">            log.warn(&quot;Usuario {} alcanzó límite de préstamos activos: {}/{}&quot;,</span>
+<span class="fc" id="L61">                    usuarioId, prestamosActivos.size(), suscripcion.getMaxPrestamos());</span>
+<span class="fc" id="L62">            throw new RuntimeException(</span>
+<span class="fc" id="L63">                    &quot;Has alcanzado el límite de &quot; + suscripcion.getMaxPrestamos() +</span>
+<span class="fc" id="L64">                    &quot; préstamos activos para tu plan &quot; + suscripcion.getPlan());</span>
+        }
+
+        // Paso 3: Verificar duplicado
+<span class="fc" id="L68">        boolean yaLoTiene = prestamoRepository</span>
+<span class="fc" id="L69">                .findByLibroIdAndEstado(request.getLibroId(), EstadoPrestamo.ACTIVO)</span>
+<span class="fc" id="L70">                .stream()</span>
+<span class="fc" id="L71">                .anyMatch(p -&gt; p.getUsuarioId().equals(usuarioId));</span>
+
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        if (yaLoTiene) {</span>
+<span class="fc" id="L74">            log.warn(&quot;Usuario {} ya tiene préstamo activo del libro {}&quot;, </span>
+<span class="fc" id="L75">                    usuarioId, request.getLibroId());</span>
+<span class="fc" id="L76">            throw new RuntimeException(&quot;Ya tienes este libro en préstamo activo&quot;);</span>
+        }
+
+        // Paso 4: Verificar copias disponibles
+        LicenciaDTO licencia;
+        try {
+<span class="fc" id="L82">            licencia = licenseClient.obtenerLicencia(request.getLibroId());</span>
+<span class="fc" id="L83">            log.info(&quot;Licencia libro {}: {}/{} copias disponibles&quot;,</span>
+<span class="fc" id="L84">                    request.getLibroId(), licencia.getCopiasDisponibles(), licencia.getTotalCopias());</span>
+<span class="nc" id="L85">        } catch (Exception e) {</span>
+<span class="nc" id="L86">            log.error(&quot;Error al consultar licencia del libro {}: {}&quot;, </span>
+<span class="nc" id="L87">                    request.getLibroId(), e.getMessage());</span>
+<span class="nc" id="L88">            throw new RuntimeException(</span>
+<span class="nc" id="L89">                    &quot;No se pudo verificar disponibilidad del libro con id: &quot; + request.getLibroId());</span>
+<span class="fc" id="L90">        }</span>
+
+<span class="pc bpc" id="L92" title="1 of 4 branches missed.">        if (licencia.getCopiasDisponibles() == null || licencia.getCopiasDisponibles() &lt;= 0) {</span>
+<span class="fc" id="L93">            log.warn(&quot;No hay copias disponibles del libro {}&quot;, request.getLibroId());</span>
+<span class="fc" id="L94">            throw new RuntimeException(</span>
+<span class="fc" id="L95">                    &quot;No hay copias disponibles del libro con id: &quot; + request.getLibroId());</span>
+        }
+
+        // Paso 5: Descontar copia
+        try {
+<span class="fc" id="L100">            licenseClient.prestar(request.getLibroId());</span>
+<span class="fc" id="L101">            log.info(&quot;Copia descontada exitosamente — libro: {}&quot;, request.getLibroId());</span>
+<span class="nc" id="L102">        } catch (Exception e) {</span>
+<span class="nc" id="L103">            log.error(&quot;Error al descontar copia en License Service — libro: {}: {}&quot;,</span>
+<span class="nc" id="L104">                    request.getLibroId(), e.getMessage());</span>
+<span class="nc" id="L105">            throw new RuntimeException(&quot;Error al registrar el préstamo en License Service&quot;);</span>
+<span class="fc" id="L106">        }</span>
+
+        // Paso 6: Crear préstamo
+<span class="fc" id="L109">        LocalDateTime ahora = LocalDateTime.now();</span>
+<span class="fc" id="L110">        Prestamo prestamo = new Prestamo();</span>
+<span class="fc" id="L111">        prestamo.setUsuarioId(usuarioId);</span>
+<span class="fc" id="L112">        prestamo.setLibroId(request.getLibroId());</span>
+<span class="fc" id="L113">        prestamo.setFechaInicio(ahora);</span>
+<span class="fc" id="L114">        prestamo.setFechaVencimiento(ahora.plusDays(suscripcion.getDiasPrestamo()));</span>
+<span class="fc" id="L115">        prestamo.setEstado(EstadoPrestamo.ACTIVO);</span>
+
+        Prestamo guardado;
+        try {
+<span class="fc" id="L119">            guardado = prestamoRepository.save(prestamo);</span>
+<span class="fc" id="L120">            log.info(&quot;Préstamo creado exitosamente — id: {}, usuario: {}, libro: {}, vence: {}&quot;,</span>
+<span class="fc" id="L121">            guardado.getId(), usuarioId, request.getLibroId(), </span>
+<span class="fc" id="L122">            guardado.getFechaVencimiento());</span>
+<span class="nc" id="L123">        } catch (Exception e) {</span>
+<span class="nc" id="L124">            log.error(&quot;Error al guardar préstamo — intentando compensar descuento de copia — libro: {}&quot;,</span>
+<span class="nc" id="L125">            request.getLibroId());</span>
+        try {
+<span class="nc" id="L127">            licenseClient.devolver(request.getLibroId());</span>
+<span class="nc" id="L128">                log.info(&quot;Compensación exitosa — copia restaurada para libro: {}&quot;, </span>
+<span class="nc" id="L129">                request.getLibroId());</span>
+<span class="nc" id="L130">        } catch (Exception ex) {</span>
+<span class="nc" id="L131">                log.error(&quot;COMPENSACIÓN FALLIDA — inconsistencia en copias del libro: {}. &quot; +</span>
+<span class="nc" id="L132">                &quot;Requiere revisión manual.&quot;, request.getLibroId());</span>
+<span class="nc" id="L133">        }</span>
+<span class="nc" id="L134">            throw new RuntimeException(&quot;Error al crear el préstamo. La operación fue revertida.&quot;);</span>
+<span class="fc" id="L135">        }</span>
+
+        // Paso 7: Notificar
+        try {
+<span class="fc" id="L139">            notificationClient.crear(</span>
+<span class="fc" id="L140">                NotificacionRequestDTO.prestamoCreado(usuarioId, request.getLibroId()));</span>
+<span class="fc" id="L141">            log.info(&quot;Notificación PRESTAMO_CREADO enviada al usuario {}&quot;, usuarioId);</span>
+<span class="nc" id="L142">        } catch (Exception e) {</span>
+<span class="nc" id="L143">            log.warn(&quot;No se pudo enviar notificación de préstamo creado para usuario {}: {}&quot;,</span>
+<span class="nc" id="L144">                    usuarioId, e.getMessage());</span>
+<span class="fc" id="L145">        }</span>
+
+<span class="fc" id="L147">        return mapearADto(guardado);</span>
+    }
+
+    public List&lt;PrestamoResponseDTO&gt; obtenerPrestamosActivos(String usuarioId) {
+<span class="fc" id="L151">        log.info(&quot;Consultando préstamos activos del usuario: {}&quot;, usuarioId);</span>
+<span class="fc" id="L152">        return prestamoRepository</span>
+<span class="fc" id="L153">                .findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO)</span>
+<span class="fc" id="L154">                .stream()</span>
+<span class="fc" id="L155">                .map(this::mapearADto)</span>
+<span class="fc" id="L156">                .collect(Collectors.toList());</span>
+    }
+
+    public List&lt;PrestamoResponseDTO&gt; obtenerHistorial(String usuarioId) {
+<span class="fc" id="L160">        log.info(&quot;Consultando historial completo del usuario: {}&quot;, usuarioId);</span>
+<span class="fc" id="L161">        return prestamoRepository</span>
+<span class="fc" id="L162">                .findByUsuarioId(usuarioId)</span>
+<span class="fc" id="L163">                .stream()</span>
+<span class="fc" id="L164">                .map(this::mapearADto)</span>
+<span class="fc" id="L165">                .collect(Collectors.toList());</span>
+    }
+
+    public List&lt;PrestamoResponseDTO&gt; obtenerTodos() {
+<span class="nc" id="L169">        log.info(&quot;Consultando todos los préstamos para Analytics&quot;);</span>
+<span class="nc" id="L170">        return prestamoRepository.findAll()</span>
+<span class="nc" id="L171">                .stream()</span>
+<span class="nc" id="L172">                .map(this::mapearADto)</span>
+<span class="nc" id="L173">                .collect(Collectors.toList());</span>
+    }
+
+    @Scheduled(fixedRate = 3600000)
+    @Transactional
+    public void cerrarPrestamosVencidos() {
+<span class="fc" id="L179">        LocalDateTime ahora = LocalDateTime.now();</span>
+<span class="fc" id="L180">        log.info(&quot;Scheduler ejecutado — verificando préstamos vencidos a las {}&quot;, ahora);</span>
+
+<span class="fc" id="L182">        List&lt;Prestamo&gt; vencidos = prestamoRepository</span>
+<span class="nc" id="L183">                .findByEstadoAndFechaVencimientoBefore(EstadoPrestamo.ACTIVO, ahora);</span>
+
+<span class="nc" id="L185">        log.info(&quot;Préstamos vencidos encontrados: {}&quot;, vencidos.size());</span>
+
+<span class="nc bnc" id="L187" title="All 2 branches missed.">        for (Prestamo prestamo : vencidos) {</span>
+            try {
+<span class="nc" id="L189">                licenseClient.devolver(prestamo.getLibroId());</span>
+<span class="nc" id="L190">                prestamo.setEstado(EstadoPrestamo.VENCIDO);</span>
+<span class="nc" id="L191">                prestamoRepository.save(prestamo);</span>
+
+<span class="nc" id="L193">                log.info(&quot;Préstamo cerrado — id: {}, usuario: {}, libro: {}&quot;,</span>
+<span class="nc" id="L194">                        prestamo.getId(), prestamo.getUsuarioId(), prestamo.getLibroId());</span>
+
+                try {
+<span class="nc" id="L197">                    notificationClient.crear(</span>
+<span class="nc" id="L198">                        NotificacionRequestDTO.prestamoVencido(</span>
+<span class="nc" id="L199">                            prestamo.getUsuarioId(), prestamo.getLibroId()));</span>
+<span class="nc" id="L200">                } catch (Exception e) {</span>
+<span class="nc" id="L201">                    log.warn(&quot;No se pudo notificar vencimiento — préstamo {}: {}&quot;,</span>
+<span class="nc" id="L202">                            prestamo.getId(), e.getMessage());</span>
+<span class="nc" id="L203">                }</span>
+
+<span class="nc" id="L205">            } catch (Exception e) {</span>
+<span class="nc" id="L206">                log.error(&quot;Error al cerrar préstamo id: {} — {}&quot;, </span>
+<span class="nc" id="L207">                        prestamo.getId(), e.getMessage());</span>
+<span class="nc" id="L208">            }</span>
+<span class="nc" id="L209">        }</span>
+
+        // Avisar próximos a vencer
+<span class="nc" id="L212">        LocalDateTime en2Dias = ahora.plusDays(2);</span>
+<span class="nc" id="L213">        List&lt;Prestamo&gt; proximosAVencer = prestamoRepository</span>
+<span class="nc" id="L214">                .findByEstadoAndFechaVencimientoBefore(EstadoPrestamo.ACTIVO, en2Dias)</span>
+<span class="nc" id="L215">                .stream()</span>
+<span class="nc" id="L216">                .filter(p -&gt; p.getFechaVencimiento().isAfter(ahora))</span>
+<span class="nc" id="L217">                .collect(Collectors.toList());</span>
+
+<span class="nc" id="L219">        log.info(&quot;Préstamos próximos a vencer (2 días): {}&quot;, proximosAVencer.size());</span>
+
+<span class="nc bnc" id="L221" title="All 2 branches missed.">        for (Prestamo prestamo : proximosAVencer) {</span>
+            try {
+<span class="nc" id="L223">                notificationClient.crear(</span>
+<span class="nc" id="L224">                    NotificacionRequestDTO.proximoVencer(</span>
+<span class="nc" id="L225">                        prestamo.getUsuarioId(), prestamo.getLibroId()));</span>
+<span class="nc" id="L226">            } catch (Exception e) {</span>
+<span class="nc" id="L227">                log.warn(&quot;No se pudo notificar próximo vencimiento — préstamo {}: {}&quot;,</span>
+<span class="nc" id="L228">                        prestamo.getId(), e.getMessage());</span>
+<span class="nc" id="L229">            }</span>
+<span class="nc" id="L230">        }</span>
+<span class="nc" id="L231">    }</span>
+
+    private PrestamoResponseDTO mapearADto(Prestamo prestamo) {
+<span class="fc" id="L234">        PrestamoResponseDTO dto = new PrestamoResponseDTO();</span>
+<span class="fc" id="L235">        dto.setId(prestamo.getId());</span>
+<span class="fc" id="L236">        dto.setUsuarioId(prestamo.getUsuarioId());</span>
+<span class="fc" id="L237">        dto.setLibroId(prestamo.getLibroId());</span>
+<span class="fc" id="L238">        dto.setFechaInicio(prestamo.getFechaInicio());</span>
+<span class="fc" id="L239">        dto.setFechaVencimiento(prestamo.getFechaVencimiento());</span>
+<span class="fc" id="L240">        dto.setEstado(prestamo.getEstado());</span>
+<span class="fc" id="L241">        return dto;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

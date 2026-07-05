@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CatalogService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report"></a> &gt; <a href="index.source.html" class="el_package">com.silvio.catalog.service</a> &gt; <span class="el_source">CatalogService.java</span></div><h1>CatalogService.java</h1><pre class="source lang-java linenums">package com.silvio.catalog.service;
+
+import com.silvio.catalog.dto.LibroRequestDTO;
+import com.silvio.catalog.dto.LibroResponseDTO;
+import com.silvio.catalog.model.Libro;
+import com.silvio.catalog.repository.LibroRepository;
+
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@NonNull
+<span class="fc" id="L17">@Slf4j</span>
+@Service
+@RequiredArgsConstructor
+public class CatalogService {
+
+    private final LibroRepository libroRepository;
+
+    public List&lt;LibroResponseDTO&gt; obtenerTodos() {
+<span class="fc" id="L25">        log.info(&quot;Consultando todos los libros del catálogo&quot;);</span>
+<span class="fc" id="L26">        return libroRepository.findAll()</span>
+<span class="fc" id="L27">                .stream()</span>
+<span class="fc" id="L28">                .map(this::mapearADto)</span>
+<span class="fc" id="L29">                .collect(Collectors.toList());</span>
+    }
+
+    public List&lt;LibroResponseDTO&gt; obtenerDisponibles() {
+<span class="fc" id="L33">        log.info(&quot;Consultando libros disponibles&quot;);</span>
+<span class="fc" id="L34">        return libroRepository.findByDisponibleTrue()</span>
+<span class="fc" id="L35">                .stream()</span>
+<span class="fc" id="L36">                .map(this::mapearADto)</span>
+<span class="fc" id="L37">                .collect(Collectors.toList());</span>
+    }
+
+<span class="pc bpc" id="L40" title="1 of 2 branches missed.">    public LibroResponseDTO obtenerPorId(@NonNull Long id) {</span>
+<span class="fc" id="L41">        log.info(&quot;Consultando libro con id: {}&quot;, id);</span>
+<span class="fc" id="L42">        Libro libro = libroRepository.findById(id)</span>
+<span class="fc" id="L43">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L44">                    log.warn(&quot;Libro no encontrado con id: {}&quot;, id);</span>
+<span class="fc" id="L45">                    return new RuntimeException(&quot;Libro no encontrado con id: &quot; + id);</span>
+                });
+<span class="fc" id="L47">        return mapearADto(libro);</span>
+    }
+
+    public List&lt;LibroResponseDTO&gt; buscar(String titulo, String autor, String genero) {
+<span class="fc" id="L51">    log.info(&quot;Búsqueda combinada — titulo: {}, autor: {}, genero: {}&quot;, titulo, autor, genero);</span>
+
+<span class="pc bpc" id="L53" title="2 of 4 branches missed.">            String t = (titulo != null &amp;&amp; !titulo.isBlank()) ? titulo : null;</span>
+<span class="pc bpc" id="L54" title="3 of 4 branches missed.">            String a = (autor != null &amp;&amp; !autor.isBlank()) ? autor : null;</span>
+<span class="pc bpc" id="L55" title="3 of 4 branches missed.">            String g = (genero != null &amp;&amp; !genero.isBlank()) ? genero : null;</span>
+
+<span class="fc" id="L57">    return libroRepository.buscarCombinado(t, a, g)</span>
+<span class="fc" id="L58">            .stream()</span>
+<span class="fc" id="L59">            .map(this::mapearADto)</span>
+<span class="fc" id="L60">            .collect(Collectors.toList());</span>
+}
+
+    public LibroResponseDTO agregar(LibroRequestDTO request) {
+<span class="fc" id="L64">        log.info(&quot;Agregando libro al catálogo — ISBN: {}, título: {}&quot;, </span>
+<span class="fc" id="L65">                request.getIsbn(), request.getTitulo());</span>
+
+<span class="fc" id="L67">        libroRepository.findByIsbn(request.getIsbn())</span>
+<span class="fc" id="L68">                .ifPresent(l -&gt; {</span>
+<span class="fc" id="L69">                    log.warn(&quot;ISBN duplicado: {}&quot;, request.getIsbn());</span>
+<span class="fc" id="L70">                    throw new RuntimeException(&quot;Ya existe un libro con ISBN: &quot; + request.getIsbn());</span>
+                });
+
+<span class="fc" id="L73">        Libro libro = new Libro();</span>
+<span class="fc" id="L74">        libro.setTitulo(request.getTitulo());</span>
+<span class="fc" id="L75">        libro.setAutor(request.getAutor());</span>
+<span class="fc" id="L76">        libro.setIsbn(request.getIsbn());</span>
+<span class="fc" id="L77">        libro.setEditorial(request.getEditorial());</span>
+<span class="fc" id="L78">        libro.setAnioPublicacion(request.getAnioPublicacion());</span>
+<span class="fc" id="L79">        libro.setIdioma(request.getIdioma());</span>
+<span class="fc" id="L80">        libro.setGenero(request.getGenero());</span>
+<span class="fc" id="L81">        libro.setSinopsis(request.getSinopsis());</span>
+<span class="fc" id="L82">        libro.setPortadaUrl(request.getPortadaUrl());</span>
+<span class="fc" id="L83">        libro.setDisponible(true);</span>
+
+<span class="fc" id="L85">        Libro guardado = libroRepository.save(libro);</span>
+<span class="fc" id="L86">        log.info(&quot;Libro agregado exitosamente — id: {}, título: {}&quot;, </span>
+<span class="fc" id="L87">                guardado.getId(), guardado.getTitulo());</span>
+<span class="fc" id="L88">        return mapearADto(guardado);</span>
+    }
+
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">    public LibroResponseDTO actualizar(@NonNull Long id, LibroRequestDTO request) {</span>
+<span class="fc" id="L92">        log.info(&quot;Actualizando libro id: {}&quot;, id);</span>
+<span class="fc" id="L93">        Libro libro = libroRepository.findById(id)</span>
+<span class="fc" id="L94">                .orElseThrow(() -&gt; {</span>
+<span class="nc" id="L95">                    log.warn(&quot;Libro no encontrado para actualizar — id: {}&quot;, id);</span>
+<span class="nc" id="L96">                    return new RuntimeException(&quot;Libro no encontrado con id: &quot; + id);</span>
+                });
+
+<span class="fc" id="L99">        libro.setTitulo(request.getTitulo());</span>
+<span class="fc" id="L100">        libro.setAutor(request.getAutor());</span>
+<span class="fc" id="L101">        libro.setIsbn(request.getIsbn());</span>
+<span class="fc" id="L102">        libro.setEditorial(request.getEditorial());</span>
+<span class="fc" id="L103">        libro.setAnioPublicacion(request.getAnioPublicacion());</span>
+<span class="fc" id="L104">        libro.setIdioma(request.getIdioma());</span>
+<span class="fc" id="L105">        libro.setGenero(request.getGenero());</span>
+<span class="fc" id="L106">        libro.setSinopsis(request.getSinopsis());</span>
+<span class="fc" id="L107">        libro.setPortadaUrl(request.getPortadaUrl());</span>
+
+<span class="fc" id="L109">        log.info(&quot;Libro actualizado exitosamente — id: {}&quot;, id);</span>
+<span class="fc" id="L110">        return mapearADto(libroRepository.save(libro));</span>
+    }
+
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">    public LibroResponseDTO cambiarDisponibilidad(@NonNull Long id, Boolean disponible) {</span>
+<span class="fc" id="L114">        log.info(&quot;Cambiando disponibilidad libro id: {} → {}&quot;, id, disponible);</span>
+<span class="fc" id="L115">        Libro libro = libroRepository.findById(id)</span>
+<span class="pc" id="L116">                .orElseThrow(() -&gt; new RuntimeException(&quot;Libro no encontrado con id: &quot; + id));</span>
+<span class="fc" id="L117">        libro.setDisponible(disponible);</span>
+<span class="fc" id="L118">        return mapearADto(libroRepository.save(libro));</span>
+    }
+
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">    public void eliminar(@NonNull Long id) {</span>
+<span class="fc" id="L122">        log.info(&quot;Eliminando libro id: {}&quot;, id);</span>
+<span class="fc" id="L123">        Libro libro = libroRepository.findById(id)</span>
+<span class="pc" id="L124">                .orElseThrow(() -&gt; new RuntimeException(&quot;Libro no encontrado con id: &quot; + id));</span>
+<span class="fc" id="L125">        libroRepository.delete(libro);</span>
+<span class="fc" id="L126">        log.info(&quot;Libro eliminado exitosamente — id: {}&quot;, id);</span>
+<span class="fc" id="L127">    }</span>
+
+    private LibroResponseDTO mapearADto(Libro libro) {
+<span class="fc" id="L130">        LibroResponseDTO dto = new LibroResponseDTO();</span>
+<span class="fc" id="L131">        dto.setId(libro.getId());</span>
+<span class="fc" id="L132">        dto.setTitulo(libro.getTitulo());</span>
+<span class="fc" id="L133">        dto.setAutor(libro.getAutor());</span>
+<span class="fc" id="L134">        dto.setIsbn(libro.getIsbn());</span>
+<span class="fc" id="L135">        dto.setEditorial(libro.getEditorial());</span>
+<span class="fc" id="L136">        dto.setAnioPublicacion(libro.getAnioPublicacion());</span>
+<span class="fc" id="L137">        dto.setIdioma(libro.getIdioma());</span>
+<span class="fc" id="L138">        dto.setGenero(libro.getGenero());</span>
+<span class="fc" id="L139">        dto.setSinopsis(libro.getSinopsis());</span>
+<span class="fc" id="L140">        dto.setPortadaUrl(libro.getPortadaUrl());</span>
+<span class="fc" id="L141">        dto.setDisponible(libro.getDisponible());</span>
+<span class="fc" id="L142">        return dto;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">identity-service</a> &gt; <a href="index.source.html" class="el_package">com.silvio.identity.exception</a> &gt; <span class="el_source">GlobalExceptionHandler.java</span></div><h1>GlobalExceptionHandler.java</h1><pre class="source lang-java linenums">package com.silvio.identity.exception; 
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestControllerAdvice
+<span class="fc" id="L15">public class GlobalExceptionHandler {</span>
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity&lt;Map&lt;String, String&gt;&gt; manejarValidacion(MethodArgumentNotValidException ex) {
+<span class="nc" id="L19">        Map&lt;String, String&gt; errores = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L20">        ex.getBindingResult().getFieldErrors().forEach(error -&gt; {</span>
+<span class="nc" id="L21">            errores.put(error.getField(), error.getDefaultMessage());</span>
+<span class="nc" id="L22">        });</span>
+<span class="nc" id="L23">        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errores);</span>
+    }
+
+    //  Manejo específico para credenciales incorrectas
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity&lt;Map&lt;String, String&gt;&gt; manejarBadCredentials(BadCredentialsException ex) {
+<span class="fc" id="L29">        Map&lt;String, String&gt; error = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L30">        error.put(&quot;error&quot;, &quot;Credenciales inválidas&quot;);</span>
+<span class="fc" id="L31">        error.put(&quot;message&quot;, ex.getMessage());</span>
+<span class="fc" id="L32">        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);</span>
+    }
+
+    //  Manejo para usuario no encontrado
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity&lt;Map&lt;String, String&gt;&gt; manejarUsernameNotFound(UsernameNotFoundException ex) {
+<span class="nc" id="L38">        Map&lt;String, String&gt; error = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L39">        error.put(&quot;error&quot;, ex.getMessage());</span>
+<span class="nc" id="L40">        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);</span>
+    }
+
+    //  Manejo para RuntimeException (errores de negocio)
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity&lt;Map&lt;String, String&gt;&gt; manejarRuntimeException(RuntimeException ex) {
+<span class="fc" id="L46">        Map&lt;String, String&gt; error = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L47">        error.put(&quot;error&quot;, ex.getMessage());</span>
+        
+        // Clasificar por mensaje para dar status code apropiado
+<span class="fc" id="L50">        HttpStatus status = HttpStatus.BAD_REQUEST;</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if (ex.getMessage().contains(&quot;ya existe&quot;)) {</span>
+<span class="fc" id="L52">            status = HttpStatus.CONFLICT;  // 409</span>
+<span class="pc bpc" id="L53" title="3 of 4 branches missed.">        } else if (ex.getMessage().contains(&quot;expirado&quot;) || ex.getMessage().contains(&quot;inválido&quot;)) {</span>
+<span class="fc" id="L54">            status = HttpStatus.UNAUTHORIZED;  // 401</span>
+        }
+        
+<span class="fc" id="L57">        return ResponseEntity.status(status).body(error);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

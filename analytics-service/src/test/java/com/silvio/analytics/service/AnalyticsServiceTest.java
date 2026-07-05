@@ -74,7 +74,7 @@ class AnalyticsServiceTest {
 
         // Libro 1 aparece 3 veces, libro 2 aparece 2 veces
         assertThat(resultado.getLibrosMasPrestados()).containsKey(1L);
-        assertThat(resultado.getLibrosMasPrestados().get(1L)).isEqualTo(2L); // silvio tiene 2 del libro 1, pero el total es 3
+        assertThat(resultado.getLibrosMasPrestados().get(1L)).isEqualTo(3L); // silvio tiene 2 del libro 1, pero el total es 3
         // Verificamos que el libro 1 es el primero (más prestado)
         Long primerLibro = resultado.getLibrosMasPrestados().keySet().iterator().next();
         assertThat(primerLibro).isEqualTo(1L);

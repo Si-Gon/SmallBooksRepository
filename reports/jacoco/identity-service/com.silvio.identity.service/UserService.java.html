@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">identity-service</a> &gt; <a href="index.source.html" class="el_package">com.silvio.identity.service</a> &gt; <span class="el_source">UserService.java</span></div><h1>UserService.java</h1><pre class="source lang-java linenums">package com.silvio.identity.service;
+
+import com.silvio.identity.model.User;
+import com.silvio.identity.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+<span class="fc" id="L20">@Slf4j</span>
+@Service
+@RequiredArgsConstructor
+public class UserService implements UserDetailsService {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Transactional
+    public void registerUser(String username, String rawPassword, Set&lt;String&gt; roles) {
+<span class="fc" id="L30">        log.info(&quot;Registrando nuevo usuario: {}&quot;, username);</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        if (userRepository.findByUsername(username).isPresent()) {</span>
+<span class="fc" id="L32">            log.warn(&quot;Intento de registro con username ya existente: {}&quot;, username);</span>
+<span class="fc" id="L33">            throw new RuntimeException(&quot; El usuario '&quot; + username + &quot;' ya existe&quot;);</span>
+        }
+
+<span class="fc" id="L36">        User user = new User();</span>
+<span class="fc" id="L37">        user.setUsername(username);</span>
+<span class="fc" id="L38">        user.setPassword(passwordEncoder.encode(rawPassword));</span>
+<span class="pc bpc" id="L39" title="1 of 4 branches missed.">        user.setRoles(roles != null &amp;&amp; !roles.isEmpty() ? roles : Set.of(&quot;ROLE_USER&quot;));</span>
+<span class="fc" id="L40">        userRepository.save(user);</span>
+<span class="fc" id="L41">        log.info(&quot;Usuario registrado exitosamente: {} con roles: {}&quot;, username, user.getRoles());</span>
+<span class="fc" id="L42">    }</span>
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+<span class="fc" id="L46">        log.info(&quot;Cargando usuario para autenticación: {}&quot;, username);</span>
+<span class="fc" id="L47">        User user = userRepository.findByUsername(username)</span>
+<span class="fc" id="L48">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L49">                    log.warn(&quot;Usuario no encontrado: {}&quot;, username);</span>
+<span class="fc" id="L50">                    return new UsernameNotFoundException(&quot; Usuario no encontrado: &quot; + username);</span>
+                });
+
+<span class="fc" id="L53">        return org.springframework.security.core.userdetails.User.builder()</span>
+<span class="fc" id="L54">                .username(user.getUsername())</span>
+<span class="fc" id="L55">                .password(user.getPassword())</span>
+<span class="fc" id="L56">                .authorities(user.getRoles().stream()</span>
+<span class="fc" id="L57">                        .map(SimpleGrantedAuthority::new)</span>
+<span class="fc" id="L58">                        .collect(Collectors.toList()))</span>
+<span class="fc" id="L59">                .build();</span>
+    }
+
+    @Transactional
+    public String createPasswordResetToken(String username) {
+<span class="fc" id="L64">        log.info(&quot;Generando token de recuperación para: {}&quot;, username);</span>
+<span class="fc" id="L65">        User user = userRepository.findByUsername(username)</span>
+<span class="fc" id="L66">                .orElseThrow(() -&gt; new RuntimeException(&quot; Usuario no encontrado&quot;));</span>
+
+<span class="fc" id="L68">        String resetToken = UUID.randomUUID().toString();</span>
+<span class="fc" id="L69">        user.setResetToken(resetToken);</span>
+<span class="fc" id="L70">        user.setResetTokenExpiry(LocalDateTime.now().plusHours(24));</span>
+<span class="fc" id="L71">        userRepository.save(user);</span>
+<span class="fc" id="L72">        log.info(&quot;Token de recuperación generado para usuario: {}&quot;, username);</span>
+<span class="fc" id="L73">        return resetToken;</span>
+    }
+
+    @Transactional
+    public void resetPassword(String token, String newPassword) {
+<span class="fc" id="L78">        log.info(&quot;Intentando reset de contraseña con token&quot;);</span>
+<span class="fc" id="L79">        User user = userRepository.findByResetToken(token)</span>
+<span class="fc" id="L80">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L81">                    log.warn(&quot;Token de recuperación inválido&quot;);</span>
+<span class="fc" id="L82">                    return new RuntimeException(&quot; Token de recuperación inválido&quot;);</span>
+                });
+
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        if (user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {</span>
+<span class="fc" id="L86">            log.warn(&quot;Token de recuperación expirado para usuario: {}&quot;, user.getUsername());</span>
+<span class="fc" id="L87">            throw new RuntimeException(&quot; El token de recuperación ha expirado&quot;);</span>
+        }
+
+<span class="fc" id="L90">        user.setPassword(passwordEncoder.encode(newPassword));</span>
+<span class="fc" id="L91">        user.setResetToken(null);</span>
+<span class="fc" id="L92">        user.setResetTokenExpiry(null);</span>
+<span class="fc" id="L93">        userRepository.save(user);</span>
+<span class="fc" id="L94">        log.info(&quot;Contraseña actualizada exitosamente para usuario: {}&quot;, user.getUsername());</span>
+<span class="fc" id="L95">    }</span>
+
+    @Transactional
+    public void changePassword(String username, String currentPassword, String newPassword) {
+<span class="fc" id="L99">        log.info(&quot;Cambiando contraseña para usuario: {}&quot;, username);</span>
+<span class="fc" id="L100">        User user = userRepository.findByUsername(username)</span>
+<span class="fc" id="L101">                .orElseThrow(() -&gt; new RuntimeException(&quot; Usuario no encontrado&quot;));</span>
+
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {</span>
+<span class="fc" id="L104">            log.warn(&quot;Contraseña actual incorrecta para usuario: {}&quot;, username);</span>
+<span class="fc" id="L105">            throw new RuntimeException(&quot; Contraseña actual incorrecta&quot;);</span>
+        }
+
+<span class="fc" id="L108">        user.setPassword(passwordEncoder.encode(newPassword));</span>
+<span class="fc" id="L109">        userRepository.save(user);</span>
+<span class="fc" id="L110">        log.info(&quot;Contraseña cambiada exitosamente para usuario: {}&quot;, username);</span>
+<span class="fc" id="L111">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

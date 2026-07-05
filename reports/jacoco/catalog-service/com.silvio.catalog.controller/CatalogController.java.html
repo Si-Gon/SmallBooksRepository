@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CatalogController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report"></a> &gt; <a href="index.source.html" class="el_package">com.silvio.catalog.controller</a> &gt; <span class="el_source">CatalogController.java</span></div><h1>CatalogController.java</h1><pre class="source lang-java linenums">package com.silvio.catalog.controller;
+
+import com.silvio.catalog.dto.LibroRequestDTO;
+import com.silvio.catalog.dto.LibroResponseDTO;
+import com.silvio.catalog.service.CatalogService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
+import java.util.List;
+
+@Tag(name = &quot;Catalog&quot;, description = &quot;Gestión del catálogo de libros de SmallBooks&quot;)
+@RestController
+@RequestMapping(&quot;/api/catalog&quot;)
+@RequiredArgsConstructor
+public class CatalogController {
+
+    private final CatalogService catalogService;
+
+    @Operation(summary = &quot;Listar todos los libros&quot;,
+               description = &quot;Devuelve la lista completa de libros registrados en el catálogo&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista obtenida exitosamente&quot;),
+        @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Error interno del servidor&quot;)
+    })
+    @GetMapping
+    public ResponseEntity&lt;List&lt;LibroResponseDTO&gt;&gt; obtenerTodos() {
+<span class="fc" id="L39">        List&lt;LibroResponseDTO&gt; libros = catalogService.obtenerTodos();</span>
+
+<span class="fc" id="L41">    libros.forEach(dto -&gt;</span>
+<span class="fc" id="L42">            dto.add(linkTo(methodOn(CatalogController.class).obtenerPorId(dto.getId())).withSelfRel())</span>
+    );
+
+<span class="fc" id="L45">    return ResponseEntity.ok(libros);</span>
+    }
+
+    @Operation(summary = &quot;Listar libros disponibles&quot;,
+               description = &quot;Devuelve solo los libros marcados como disponibles para préstamo&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista obtenida exitosamente&quot;)
+    })
+    @GetMapping(&quot;/disponibles&quot;)
+    public ResponseEntity&lt;List&lt;LibroResponseDTO&gt;&gt; obtenerDisponibles() {
+<span class="fc" id="L55">         List&lt;LibroResponseDTO&gt; libros = catalogService.obtenerDisponibles();</span>
+
+<span class="fc" id="L57">    libros.forEach(dto -&gt;</span>
+<span class="fc" id="L58">            dto.add(linkTo(methodOn(CatalogController.class).obtenerPorId(dto.getId())).withSelfRel())</span>
+    );
+
+<span class="fc" id="L61">    return ResponseEntity.ok(libros);</span>
+    }
+
+    @Operation(summary = &quot;Obtener libro por ID&quot;,
+               description = &quot;Devuelve un libro específico según su identificador&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Libro encontrado&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Libro no encontrado&quot;)
+    })
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;LibroResponseDTO&gt; obtenerPorId(
+            @Parameter(description = &quot;ID del libro&quot;, required = true)
+            @PathVariable Long id) {
+<span class="fc" id="L74">            LibroResponseDTO dto = catalogService.obtenerPorId(id);</span>
+<span class="fc" id="L75">            dto.add(linkTo(methodOn(CatalogController.class).obtenerPorId(id)).withSelfRel());</span>
+<span class="fc" id="L76">            dto.add(linkTo(methodOn(CatalogController.class).obtenerTodos()).withRel(&quot;todos&quot;));</span>
+<span class="fc" id="L77">            dto.add(linkTo(methodOn(CatalogController.class).obtenerDisponibles()).withRel(&quot;disponibles&quot;));</span>
+<span class="fc" id="L78">            dto.add(linkTo(methodOn(CatalogController.class).eliminar(id)).withRel(&quot;eliminar&quot;));</span>
+
+
+<span class="fc" id="L81">        return ResponseEntity.ok(dto);</span>
+    }
+
+    @Operation(summary = &quot;Buscar libros&quot;,
+               description = &quot;Búsqueda por título, autor o género. Los parámetros son opcionales y combinables&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Búsqueda realizada exitosamente&quot;),
+        @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Parámetros de búsqueda inválidos&quot;)
+    })
+    @GetMapping(&quot;/buscar&quot;)
+    public ResponseEntity&lt;List&lt;LibroResponseDTO&gt;&gt; buscar(
+            @Parameter(description = &quot;Título del libro (parcial)&quot;) 
+            @RequestParam(required = false) String titulo,
+            @Parameter(description = &quot;Nombre del autor (parcial)&quot;) 
+            @RequestParam(required = false) String autor,
+            @Parameter(description = &quot;Género literario&quot;) 
+            @RequestParam(required = false) String genero) {
+<span class="fc" id="L98">        return ResponseEntity.ok(catalogService.buscar(titulo, autor, genero));</span>
+    }
+
+    @Operation(summary = &quot;Agregar libro&quot;,
+               description = &quot;Registra un nuevo libro en el catálogo&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Libro creado exitosamente&quot;),
+        @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Datos del libro inválidos o incompletos&quot;)
+    })
+    @PostMapping
+    public ResponseEntity&lt;LibroResponseDTO&gt; agregar(
+            @Valid @RequestBody LibroRequestDTO request) {
+<span class="fc" id="L110">                 LibroResponseDTO dto = catalogService.agregar(request);</span>
+
+<span class="fc" id="L112">            dto.add(linkTo(methodOn(CatalogController.class).obtenerPorId(dto.getId())).withSelfRel());</span>
+<span class="fc" id="L113">            dto.add(linkTo(methodOn(CatalogController.class).obtenerTodos()).withRel(&quot;todos&quot;));</span>
+
+<span class="fc" id="L115">        return ResponseEntity.status(HttpStatus.CREATED).body(dto);</span>
+        
+    }
+
+    @Operation(summary = &quot;Actualizar libro&quot;,
+               description = &quot;Actualiza todos los campos de un libro existente&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Libro actualizado exitosamente&quot;),
+        @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Datos inválidos&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Libro no encontrado&quot;)
+    })
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;LibroResponseDTO&gt; actualizar(
+            @Parameter(description = &quot;ID del libro a actualizar&quot;, required = true)
+            @PathVariable Long id,
+            @Valid @RequestBody LibroRequestDTO request) {
+<span class="fc" id="L131">        LibroResponseDTO dto = catalogService.actualizar(id, request);</span>
+
+<span class="fc" id="L133">            dto.add(linkTo(methodOn(CatalogController.class).obtenerPorId(id)).withSelfRel());</span>
+<span class="fc" id="L134">            dto.add(linkTo(methodOn(CatalogController.class).obtenerTodos()).withRel(&quot;todos&quot;));</span>
+
+<span class="fc" id="L136">        return ResponseEntity.ok(dto);</span>
+    }
+
+    @Operation(summary = &quot;Cambiar disponibilidad&quot;,
+               description = &quot;Marca un libro como disponible o no disponible. &quot; +
+                             &quot;Usado internamente por E-Lending via Feign al crear/devolver préstamos&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Disponibilidad actualizada&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Libro no encontrado&quot;)
+    })
+    @PatchMapping(&quot;/{id}/disponibilidad&quot;)
+    public ResponseEntity&lt;LibroResponseDTO&gt; cambiarDisponibilidad(
+            @Parameter(description = &quot;ID del libro&quot;, required = true)
+            @PathVariable Long id,
+            @Parameter(description = &quot;true = disponible, false = prestado&quot;, required = true)
+            @RequestParam Boolean disponible) {
+<span class="fc" id="L152">        return ResponseEntity.ok(catalogService.cambiarDisponibilidad(id, disponible));</span>
+    }
+
+    @Operation(summary = &quot;Eliminar libro&quot;,
+               description = &quot;Elimina permanentemente un libro del catálogo&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Libro eliminado exitosamente&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Libro no encontrado&quot;)
+    })
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; eliminar(
+            @Parameter(description = &quot;ID del libro a eliminar&quot;, required = true)
+            @PathVariable Long id) {
+<span class="fc" id="L165">        catalogService.eliminar(id);</span>
+<span class="fc" id="L166">        return ResponseEntity.noContent().build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

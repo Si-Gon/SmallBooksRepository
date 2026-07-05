@@ -1,0 +1,7 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+,com.silvio.license.service,LicenseService,6,360,0,6,0,68,1,15,1,12
+,com.silvio.license.controller,LicenseController,0,216,0,0,0,39,0,7,0,7
+,com.silvio.license,LicenseServiceApplication,5,3,0,0,2,1,1,1,1,1
+,com.silvio.license.exception,GlobalExceptionHandler,5,64,3,5,2,14,3,5,0,4
+,com.silvio.license.dto,LicenseResponseDTO,11,0,4,0,1,0,3,0,1,0
+,com.silvio.license.config,SwaggerConfig,0,17,0,0,0,5,0,2,0,2

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PrestamoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report"></a> &gt; <a href="index.source.html" class="el_package">com.silvio.elending.controller</a> &gt; <span class="el_source">PrestamoController.java</span></div><h1>PrestamoController.java</h1><pre class="source lang-java linenums">package com.silvio.elending.controller;
+
+import com.silvio.elending.dto.PrestamoRequestDTO;
+import com.silvio.elending.dto.PrestamoResponseDTO;
+import com.silvio.elending.security.JwtExtractor;
+import com.silvio.elending.service.PrestamoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
+import java.util.List;
+
+@Tag(name = &quot;E-Lending&quot;, description = &quot;Gestión de préstamos digitales — reglas BASICO (2 préstamos, 7 días) y PREMIUM (5 préstamos, 14 días)&quot;)
+@RestController
+@RequestMapping(&quot;/api/lending&quot;)
+@RequiredArgsConstructor
+public class PrestamoController {
+
+    private final PrestamoService prestamoService;
+    private final JwtExtractor jwtExtractor;  // inyectado — responsabilidad delegada
+
+    @Operation(summary = &quot;Crear préstamo&quot;,
+               description = &quot;Crea un nuevo préstamo digital. El usuario se identifica desde el token JWT — &quot; +
+                             &quot;no es necesario enviar el usuarioId en el body. &quot; +
+                             &quot;Valida límites de plan: BASICO (máx 2 activos), PREMIUM (máx 5 activos)&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Préstamo creado exitosamente&quot;),
+        @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Límite de préstamos alcanzado según el plan&quot;),
+        @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Token JWT inválido o ausente&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Libro no encontrado o no disponible&quot;)
+    })
+    @PostMapping(&quot;/prestamos&quot;)
+    public ResponseEntity&lt;PrestamoResponseDTO&gt; crearPrestamo(
+            @Valid @RequestBody PrestamoRequestDTO request,
+            @Parameter(description = &quot;Token JWT en formato: Bearer {token}&quot;, required = true)
+            @RequestHeader(&quot;Authorization&quot;) String authHeader) {
+
+<span class="fc" id="L47">        String usuarioId = jwtExtractor.extraerUsuario(authHeader);</span>
+<span class="fc" id="L48">        PrestamoResponseDTO prestamo = prestamoService.crearPrestamo(request, usuarioId);</span>
+<span class="fc" id="L49">        prestamo.add(linkTo(methodOn(PrestamoController.class)</span>
+<span class="fc" id="L50">                .obtenerActivos(authHeader)).withRel(&quot;mis-activos&quot;));</span>
+<span class="fc" id="L51">        prestamo.add(linkTo(methodOn(PrestamoController.class)</span>
+<span class="fc" id="L52">                .obtenerHistorial(authHeader)).withRel(&quot;mi-historial&quot;));</span>
+
+<span class="fc" id="L54">        return ResponseEntity.status(HttpStatus.CREATED).body(prestamo);</span>
+    }
+
+    @Operation(summary = &quot;Obtener préstamos activos&quot;,
+               description = &quot;Lista los préstamos activos del usuario autenticado. &quot; +
+                             &quot;El usuario se identifica desde el token JWT&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista de préstamos activos&quot;),
+        @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Token JWT inválido o ausente&quot;)
+    })
+    @GetMapping(&quot;/prestamos/activos&quot;)
+    public ResponseEntity&lt;List&lt;PrestamoResponseDTO&gt;&gt; obtenerActivos(
+            @Parameter(description = &quot;Token JWT en formato: Bearer {token}&quot;, required = true)
+            @RequestHeader(&quot;Authorization&quot;) String authHeader) {
+
+<span class="fc" id="L69">        String usuarioId = jwtExtractor.extraerUsuario(authHeader);</span>
+<span class="fc" id="L70">        List&lt;PrestamoResponseDTO&gt; prestamos = prestamoService.obtenerPrestamosActivos(usuarioId);</span>
+
+<span class="fc" id="L72">        prestamos.forEach(p -&gt;</span>
+<span class="fc" id="L73">            p.add(linkTo(methodOn(PrestamoController.class)</span>
+<span class="fc" id="L74">                    .obtenerHistorial(authHeader)).withRel(&quot;mi-historial&quot;)));</span>
+
+<span class="fc" id="L76">        return ResponseEntity.ok(prestamos);</span>
+    }
+
+    @Operation(summary = &quot;Obtener historial de préstamos&quot;,
+               description = &quot;Lista todos los préstamos (activos y vencidos) del usuario autenticado&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Historial completo obtenido&quot;),
+        @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Token JWT inválido o ausente&quot;)
+    })
+    @GetMapping(&quot;/prestamos/historial&quot;)
+    public ResponseEntity&lt;List&lt;PrestamoResponseDTO&gt;&gt; obtenerHistorial(
+            @Parameter(description = &quot;Token JWT en formato: Bearer {token}&quot;, required = true)
+            @RequestHeader(&quot;Authorization&quot;) String authHeader) {
+
+<span class="fc" id="L90">        String usuarioId = jwtExtractor.extraerUsuario(authHeader);</span>
+<span class="fc" id="L91">        List&lt;PrestamoResponseDTO&gt; prestamos = prestamoService.obtenerHistorial(usuarioId);</span>
+
+<span class="fc" id="L93">        prestamos.forEach(p -&gt;</span>
+<span class="fc" id="L94">            p.add(linkTo(methodOn(PrestamoController.class)</span>
+<span class="fc" id="L95">                    .obtenerActivos(authHeader)).withRel(&quot;mis-activos&quot;)));</span>
+
+<span class="fc" id="L97">        return ResponseEntity.ok(prestamos);</span>
+    }
+
+    @Operation(summary = &quot;Obtener todos los préstamos&quot;,
+               description = &quot;Endpoint interno usado por Analytics Service via Feign. &quot; +
+                             &quot;Devuelve todos los préstamos del sistema para cálculo de estadísticas globales&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista completa de préstamos&quot;)
+    })
+    @GetMapping(&quot;/prestamos/todos&quot;)
+    public ResponseEntity&lt;List&lt;PrestamoResponseDTO&gt;&gt; obtenerTodos() {
+<span class="fc" id="L108">        List&lt;PrestamoResponseDTO&gt; prestamos = prestamoService.obtenerTodos();</span>
+<span class="fc" id="L109">        prestamos.forEach(p -&gt;</span>
+<span class="fc" id="L110">            p.add(linkTo(methodOn(PrestamoController.class)</span>
+<span class="fc" id="L111">                    .obtenerTodos()).withSelfRel()));</span>
+<span class="fc" id="L112">        return ResponseEntity.ok(prestamos);</span>
+    }
+
+    @Operation(summary = &quot;Obtener historial por usuario&quot;,
+               description = &quot;Endpoint interno usado por Analytics Service via Feign. &quot; +
+                             &quot;Devuelve el historial de préstamos de un usuario específico&quot;)
+    @ApiResponses({
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Historial obtenido exitosamente&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Usuario no encontrado&quot;)
+    })
+    @GetMapping(&quot;/prestamos/historial/{usuarioId}&quot;)
+    public ResponseEntity&lt;List&lt;PrestamoResponseDTO&gt;&gt; obtenerHistorialPorId(
+            @Parameter(description = &quot;ID del usuario (username)&quot;, required = true)
+            @PathVariable String usuarioId) {
+<span class="fc" id="L126">        List&lt;PrestamoResponseDTO&gt; prestamos = prestamoService.obtenerHistorial(usuarioId);</span>
+<span class="fc" id="L127">        prestamos.forEach(p -&gt;</span>
+<span class="fc" id="L128">            p.add(linkTo(methodOn(PrestamoController.class)</span>
+<span class="fc" id="L129">                    .obtenerHistorialPorId(usuarioId)).withSelfRel()));</span>
+<span class="fc" id="L130">        return ResponseEntity.ok(prestamos);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
