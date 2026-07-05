@@ -48,21 +48,17 @@ public class CatalogService {
     }
 
     public List<LibroResponseDTO> buscar(String titulo, String autor, String genero) {
-        log.info("Búsqueda — titulo: {}, autor: {}, genero: {}", titulo, autor, genero);
-        if (titulo != null && !titulo.isBlank()) {
-            return libroRepository.findByTituloContainingIgnoreCase(titulo)
-                    .stream().map(this::mapearADto).collect(Collectors.toList());
-        }
-        if (autor != null && !autor.isBlank()) {
-            return libroRepository.findByAutorContainingIgnoreCase(autor)
-                    .stream().map(this::mapearADto).collect(Collectors.toList());
-        }
-        if (genero != null && !genero.isBlank()) {
-            return libroRepository.findByGeneroIgnoreCase(genero)
-                    .stream().map(this::mapearADto).collect(Collectors.toList());
-        }
-        return obtenerTodos();
-    }
+    log.info("Búsqueda combinada — titulo: {}, autor: {}, genero: {}", titulo, autor, genero);
+
+            String t = (titulo != null && !titulo.isBlank()) ? titulo : null;
+            String a = (autor != null && !autor.isBlank()) ? autor : null;
+            String g = (genero != null && !genero.isBlank()) ? genero : null;
+
+    return libroRepository.buscarCombinado(t, a, g)
+            .stream()
+            .map(this::mapearADto)
+            .collect(Collectors.toList());
+}
 
     public LibroResponseDTO agregar(LibroRequestDTO request) {
         log.info("Agregando libro al catálogo — ISBN: {}, título: {}", 
