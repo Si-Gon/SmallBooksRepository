@@ -14,7 +14,7 @@ public class Suscripcion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "usuario_id", unique = true, nullable = false, length = 100)
+    @Column(name = "usuario_id", nullable = false, length = 100)
     private String usuarioId;
 
     @Enumerated(EnumType.STRING)
