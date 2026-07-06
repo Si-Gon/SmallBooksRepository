@@ -102,6 +102,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+				<mainClass>com.silvio.license.LicenseServiceApplication</mainClass>  <!-- línea nueva -->
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>

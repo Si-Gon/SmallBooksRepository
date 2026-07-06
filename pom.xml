@@ -56,7 +56,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.30</version>
+      <version>1.18.38</version>
       <optional>true</optional>
     </dependency>
     <dependency> <!-- Nueva dependencia para documentacion automatica con OpenAPI/Swagger en todos los microservicios -->
@@ -97,6 +97,19 @@
                 <artifactId>lombok</artifactId>
               </exclude>
             </excludes>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+            <annotationProcessorPaths>
+            <path>
+          <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.38</version>
+            </path>
+            </annotationProcessorPaths>
           </configuration>
         </plugin>
       </plugins>
