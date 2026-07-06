@@ -9,7 +9,7 @@
 
 | Nombre | Rol |
 |---|---|
-| Silvio Gonzalves | Lider tecnico / Backend |
+| Silvio Gonzalves | Líder técnico / Backend |
 | Oscar Garrido | Backend |
 | Juan Ortega | QA |
 
@@ -85,9 +85,30 @@ SmallBooks es una plataforma de biblioteca digital que permite a los usuarios ex
 
 ---
 
+## Rutas del API Gateway
+
+Todas las peticiones entran por el puerto **:8080**. El Gateway valida el JWT y enruta al microservicio correspondiente.
+
+| Ruta | Microservicio destino | Requiere JWT |
+|---|---|---|
+| `/auth/**` | identity-service :8084 | ❌ Público |
+| `/api/catalog/**` | catalog-service :8085 | ✅ JwtAuthFilter |
+| `/api/licenses/**` | license-service :8086 | ✅ JwtAuthFilter |
+| `/api/lending/**` | elending-service :8087 | ✅ JwtAuthFilter |
+| `/api/notifications/**` | notification-service :8088 | ✅ JwtAuthFilter |
+| `/api/subscriptions/**` | subscription-service :8089 | ✅ JwtAuthFilter |
+| `/api/search/**` | search-service :8090 | ✅ JwtAuthFilter |
+| `/api/analytics/**` | analytics-service :8091 | ✅ JwtAuthFilter |
+| `/api/ingestion/**` | ingestion-service :8092 | ✅ JwtAuthFilter |
+| `/api/content/**` | content-service :8093 | ✅ JwtAuthFilter |
+
+> El enrutamiento usa `lb://` (load balancer) — el Gateway consulta a Eureka dónde está cada MS en lugar de usar una IP fija.
+
+---
+
 ## Database Requerido
 
-```
+```sql
 CREATE DATABASE db_catalog;
 CREATE DATABASE db_lending;
 CREATE DATABASE db_identity;
@@ -95,8 +116,8 @@ CREATE DATABASE db_license;
 CREATE DATABASE db_subscriptions;
 CREATE DATABASE db_notifications;
 CREATE DATABASE db_ingestion;
-
 ```
+
 ---
 
 ## Stack Tecnológico
@@ -114,165 +135,14 @@ CREATE DATABASE db_ingestion;
 | **Hipermedia** | Spring HATEOAS |
 | **Build** | Maven multi-módulo |
 | **Utilidades** | Lombok, SLF4J, Bean Validation |
-| **Testing** | JUnit 5 + Mockito |
+| **Testing** | JUnit 5 + Mockito + JaCoCo |
+| **Cobertura** | JaCoCo — supera el 80% en todos los MS |
+| **Contenedores** | Docker + Docker Compose |
 | **IDE** | VSCode + Spring Boot Dashboard |
 
 ---
 
-## Nuevas integraciones v2.0
-
-### Swagger / OpenAPI
-
-Todos los microservicios con endpoints REST cuentan con documentación interactiva generada automáticamente. La interfaz permite explorar y probar los endpoints directamente desde el navegador.
-
-**Acceso a Swagger UI** (con el microservicio corriendo):
-
-```
-http://localhost:{puerto}/swagger-ui/index.html
-```
-
-Cada endpoint está documentado con `@Tag`, `@Operation` y `@ApiResponse`, incluyendo descripciones de parámetros, códigos de respuesta esperados y ejemplos de uso.
-
-> **Nota:** `identity-service` requiere que las rutas de Swagger estén permitidas en `SecurityConfig` para acceso sin autenticación.
-
----
-
-### HATEOAS
-
-Las respuestas de la API incluyen enlaces hipermedia (`_links`) que permiten navegar el sistema sin conocer las URLs de antemano. Cada DTO de respuesta extiende `RepresentationModel<>` de Spring HATEOAS.
-
-**Ejemplo de respuesta con HATEOAS:**
-
-```json
-{
-  "id": 1,
-  "titulo": "Don Quijote de la Mancha",
-  "autor": "Miguel de Cervantes",
-  "disponible": true,
-  "_links": {
-    "self":        { "href": "http://localhost:8085/api/catalog/1" },
-    "todos":       { "href": "http://localhost:8085/api/catalog" },
-    "disponibles": { "href": "http://localhost:8085/api/catalog/disponibles" },
-    "eliminar":    { "href": "http://localhost:8085/api/catalog/1" }
-  }
-}
-```
-
-> Los clientes Feign entre microservicios usan `@JsonIgnoreProperties(ignoreUnknown = true)` en sus DTOs para ignorar el campo `_links` sin romper la deserialización.
-
----
-
-### Almacenamiento MySQL BLOB
-
-`ingestion-service` migró de almacenamiento en disco local a MySQL usando columnas `LONGBLOB`. Los archivos PDF y EPUB se guardan directamente en la base de datos junto con su metadata.
-
-**Patrón Strategy aplicado:**
-
-```
-StorageService (interfaz)
-    ├── LocalStorageService    → guarda en disco  (legacy, sin @Primary)
-    └── DatabaseStorageService → guarda en MySQL  (@Primary — activo)
-```
-
-El cambio de implementación requirió únicamente mover `@Primary` de una clase a otra — sin modificar controladores ni otros servicios.
-
-**Migración Flyway:**
-
-```sql
--- V2__add_datos_blob.sql
-ALTER TABLE archivos_libros
-ADD COLUMN datos LONGBLOB NULL;
-```
-
-> Para consultar archivos en HeidiSQL usar `LENGTH(datos)` en vez de `SELECT *` — evita congelar el cliente al cargar BLOBs grandes.
-
----
-
-## Pruebas
-
-El proyecto implementa dos tipos de pruebas automatizadas con **JUnit 5 + Mockito**, cubriendo 6 microservicios con un total de 66 tests y 0 fallos.
-
-### Tests Unitarios (Service)
-
-Verifican la lógica de negocio de forma completamente aislada — sin base de datos, sin HTTP, sin Config Server ni Eureka. Los repositorios y clientes Feign se reemplazan con mocks controlados por el test.
-
-| Microservicio | Clase testeada | Tests | Cobertura |
-|---|---|---|---|
-| `catalog-service` | `CatalogService` | 10 | CRUD completo, ISBN duplicado, libro no encontrado |
-| `elending-service` | `PrestamoService` | 10 | Reglas BÁSICO/PREMIUM, copias, duplicados, fallback |
-| `identity-service` | `UserService` | 13 | Registro, login, reset y cambio de contraseña |
-
-Casos críticos cubiertos en E-Lending:
-
-```java
-// Usuario BÁSICO bloqueado al alcanzar límite de 2 préstamos
-void crearPrestamo_falla_usuario_BASICO_ya_tiene_2_prestamos_activos()
-
-// Usuario PREMIUM bloqueado al alcanzar límite de 5 préstamos
-void crearPrestamo_falla_usuario_PREMIUM_ya_tiene_5_prestamos_activos()
-
-// Fallback a plan BÁSICO cuando Subscription Service no responde
-void crearPrestamo_aplica_plan_BASICO_por_defecto_si_falla_subscription()
-```
-
-### Tests REST con MockMvc (Controller)
-
-Verifican el comportamiento HTTP del Controller — códigos de respuesta (200, 201, 400, 404...), estructura del JSON, presencia de links HATEOAS y funcionamiento de validaciones Bean Validation. No levantan un servidor Tomcat real: MockMvc simula el ciclo HTTP en memoria, lo que hace estos tests extremadamente rápidos (2-4 segundos por clase) sin depender de ningún servicio externo.
-
-| Microservicio | Clase testeada | Tests | Cobertura |
-|---|---|---|---|
-| `license-service` | `LicenseController` | 12 | CRUD, prestar/devolver, validaciones, HATEOAS, 404/422 |
-| `subscription-service` | `SuscripcionController` | 11 | Planes BÁSICO/PREMIUM, token JWT, 400/404, HATEOAS |
-| `notification-service` | `NotificacionController` | 10 | Crear, listar, marcar leída, 400/404, HATEOAS |
-
-### Resumen total
-
-| Tipo | Microservicios | Tests |
-|---|---|---|
-| Unitarios (Service) | 3 | 33 |
-| REST MockMvc (Controller) | 3 | 33 |
-| **Total** | **6** | **66 — 0 fallos** |
-
-### Ejecutar tests
-
-```bash
-# Un microservicio a la vez
-cd catalog-service
-.\mvnw test
-
-# El resultado indica: Tests run: N, Failures: 0, Errors: 0
-# BUILD SUCCESS = todos los tests pasaron
-```
-
-Desde VS Code, el panel de Testing (icono de matraz en la barra lateral) muestra todos los tests organizados por clase y permite ejecutarlos individualmente con un click, sin necesitar la terminal.
-
----
-
-
-## Reglas de Negocio
-
-### Planes de Suscripción
-
-| Plan | Préstamos simultáneos | Duración del préstamo |
-|---|---|---|
-| **BÁSICO** | 2 | 7 días |
-| **PREMIUM** | 5 | 14 días |
-
-### Flujo de creación de préstamo
-
-```
-1. Verificar plan del usuario (Subscription Service via Feign)
-2. Verificar límite de préstamos activos según plan
-3. Verificar que el usuario no tenga ya ese libro en préstamo
-4. Verificar copias disponibles (License Service via Feign)
-5. Descontar 1 copia (License Service via Feign)
-6. Crear registro de préstamo en BD
-7. Notificar al usuario (Notification Service via Feign — silencioso si falla)
-```
-
----
-
-## Configuración y arranque
+## Ejecución Local (VSCode)
 
 ### Prerrequisitos
 
@@ -295,65 +165,157 @@ Desde VS Code, el panel de Testing (icono de matraz en la barra lateral) muestra
 
 Cada microservicio se conecta al Config Server en `http://localhost:8888`. Las configuraciones de base de datos, JWT secret y puertos se gestionan centralmente desde el repositorio de configuración.
 
-### Problema común: conflicto de puerto JMX en VS Code
+---
 
-Si al arrancar múltiples microservicios aparece `Port already in use: 49734`, agregar en `launch.json` de cada microservicio:
+## Ejecución con Docker
+
+### Prerrequisitos
+
+- Docker Desktop instalado y corriendo
+- MySQL 8.4 activo en la máquina local (Laragon)
+- Java 17 + Maven instalados
+
+### Pasos
+
+```bash
+# 1. Compilar todos los microservicios (genera los .jar)
+mvn clean package -DskipTests
+
+# 2. Construir imágenes y levantar el ecosistema completo
+docker-compose up --build
+
+# 3. Verificar que todos los contenedores están corriendo
+docker ps
+
+# 4. Confirmar registro en Eureka
+# Abrir en el browser: http://localhost:8761
+```
+
+### Comportamiento del arranque
+
+El `docker-compose.yml` está configurado con `healthcheck` y `depends_on: condition: service_healthy` para garantizar el orden correcto:
+
+```
+Config Server (healthy)
+        ↓
+Eureka Server (healthy)
+        ↓
+Gateway (healthy)
+        ↓
+MS de negocio (arrancan en paralelo)
+```
+
+Los MS de negocio usan la variable de entorno `EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/` para registrarse correctamente dentro de la red Docker.
+
+---
+
+## Pruebas y Cobertura
+
+El proyecto implementa dos tipos de pruebas automatizadas con **JUnit 5 + Mockito**, cubriendo 8 microservicios con un total de **66 tests y 0 fallos**.
+
+### Ejecutar tests y generar reporte de cobertura
+
+```bash
+# Desde la raíz del proyecto
+mvn clean test
+```
+
+JaCoCo genera automáticamente los reportes de cobertura en `target/site/jacoco/index.html` de cada MS. Los reportes ya generados están disponibles en la carpeta `reports/jacoco/` del repositorio — abrirlos directamente en el browser sin necesidad de compilar.
+
+### Tests Unitarios (Service)
+
+Verifican la lógica de negocio de forma completamente aislada — sin base de datos, sin HTTP, sin Config Server ni Eureka.
+
+| Microservicio | Clase testeada | Tests | Cobertura |
+|---|---|---|---|
+| `catalog-service` | `CatalogService` | 10 | CRUD completo, ISBN duplicado, libro no encontrado |
+| `elending-service` | `PrestamoService` | 10 | Reglas BÁSICO/PREMIUM, copias, duplicados, compensación |
+| `identity-service` | `UserService` | 13 | Registro, login, reset y cambio de contraseña |
+
+### Tests REST con MockMvc (Controller)
+
+Verifican el comportamiento HTTP del Controller — códigos de respuesta, estructura JSON, HATEOAS y Bean Validation.
+
+| Microservicio | Clase testeada | Tests | Cobertura |
+|---|---|---|---|
+| `license-service` | `LicenseController` | 12 | CRUD, prestar/devolver, validaciones, HATEOAS, 404/422 |
+| `subscription-service` | `SuscripcionController` | 11 | Planes BÁSICO/PREMIUM, token JWT, 400/404, HATEOAS |
+| `notification-service` | `NotificacionController` | 10 | Crear, listar, marcar leída, 400/404, HATEOAS |
+
+### Resumen total
+
+| Tipo | Microservicios | Tests |
+|---|---|---|
+| Unitarios (Service) | 3 | 33 |
+| REST MockMvc (Controller) | 3 | 33 |
+| **Total** | **6** | **66 — 0 fallos** |
+
+---
+
+## Reglas de Negocio
+
+### Planes de Suscripción
+
+| Plan | Préstamos simultáneos | Duración del préstamo |
+|---|---|---|
+| **BÁSICO** | 2 | 7 días |
+| **PREMIUM** | 5 | 14 días |
+
+### Flujo de creación de préstamo
+
+```
+1. Verificar plan del usuario (Subscription Service via Feign)
+2. Verificar límite de préstamos activos según plan
+3. Verificar que el usuario no tenga ya ese libro en préstamo
+4. Verificar copias disponibles (License Service via Feign)
+5. Descontar 1 copia (License Service via Feign)
+6. Crear registro de préstamo en BD
+   → Si falla: compensación automática devuelve la copia a License Service
+7. Notificar al usuario (Notification Service via Feign — silencioso si falla)
+```
+
+---
+
+## Nuevas integraciones
+
+### Swagger / OpenAPI
+
+Todos los microservicios con endpoints REST cuentan con documentación interactiva generada automáticamente.
+
+**Acceso a Swagger UI** (con el microservicio corriendo):
+
+```
+http://localhost:{puerto}/swagger-ui/index.html
+```
+
+### HATEOAS
+
+Las respuestas de la API incluyen enlaces hipermedia (`_links`) que permiten navegar el sistema sin conocer las URLs de antemano.
 
 ```json
-"vmArgs": "-Dcom.sun.management.jmxremote.port=0 ..."
+{
+  "id": 1,
+  "titulo": "Don Quijote de la Mancha",
+  "autor": "Miguel de Cervantes",
+  "disponible": true,
+  "_links": {
+    "self":        { "href": "http://localhost:8085/api/catalog/1" },
+    "todos":       { "href": "http://localhost:8085/api/catalog" },
+    "disponibles": { "href": "http://localhost:8085/api/catalog/disponibles" },
+    "eliminar":    { "href": "http://localhost:8085/api/catalog/1" }
+  }
+}
 ```
 
-El `0` asigna un puerto dinámico libre, evitando conflictos entre instancias JVM.
+### Almacenamiento MySQL BLOB
 
----
-
-## Estructura del proyecto
+`ingestion-service` migró de almacenamiento en disco local a MySQL usando columnas `LONGBLOB`.
 
 ```
-SmallBooksRepository/
-├── pom.xml                          ← pom raíz (dependencias compartidas)
-├── microservice-config/
-├── microservice-eureka/
-├── microservice-gateway/
-├── identity-services/
-│   └── src/
-│       ├── main/java/com/silvio/identity/
-│       │   ├── controller/          ← AuthController
-│       │   ├── service/             ← UserService
-│       │   ├── security/            ← JwtUtil, JwtAuthenticationFilter
-│       │   ├── config/              ← SecurityConfig, SwaggerConfig
-│       │   └── repository/
-│       └── test/java/com/silvio/identity/
-│           └── service/             ← UserServiceTest (13 tests)
-├── catalog-service/
-│   └── src/
-│       ├── main/java/com/silvio/catalog/
-│       └── test/java/com/silvio/catalog/
-│           └── service/             ← CatalogServiceTest (10 tests)
-├── elending-service/
-│   └── src/
-│       ├── main/java/com/silvio/elending/
-│       └── test/java/com/silvio/elending/
-│           └── service/             ← PrestamoServiceTest (10 tests)
-├── license-service/
-├── ingestion-service/               ← contiene DatabaseStorageService
-├── content-service/
-├── notification-service/
-├── subscription-service/
-├── search-service/
-└── analytics-service/
+StorageService (interfaz)
+    ├── LocalStorageService    → guarda en disco  (legacy, sin @Primary)
+    └── DatabaseStorageService → guarda en MySQL  (@Primary — activo)
 ```
-
----
-
-## Autenticación
-
-El sistema usa **JWT (JSON Web Tokens)** con dos tipos de token:
-
-- **Access Token** — corta duración (30 min en desarrollo), requerido en `Authorization: Bearer {token}`
-- **Refresh Token** — larga duración, usado para renovar el access token sin re-login
-
-Los microservicios que requieren identificación del usuario extraen el `username` del payload del JWT sin necesidad de consultar `identity-service` en cada petición.
 
 ---
 
@@ -372,3 +334,43 @@ Los microservicios que requieren identificación del usuario extraen el `usernam
 | Ingestion | http://localhost:8092/swagger-ui/index.html |
 | Content Delivery | http://localhost:8093/swagger-ui/index.html |
 
+---
+
+## Autenticación
+
+El sistema usa **JWT (JSON Web Tokens)** con dos tipos de token:
+
+- **Access Token** — corta duración (30 min en desarrollo), requerido en `Authorization: Bearer {token}`
+- **Refresh Token** — larga duración, usado para renovar el access token sin re-login
+
+Los microservicios que requieren identificación del usuario extraen el `username` del payload del JWT sin necesidad de consultar `identity-service` en cada petición.
+
+---
+
+## Estructura del proyecto
+
+```
+SmallBooksRepository/
+├── pom.xml                          ← pom raíz (dependencias compartidas + JaCoCo)
+├── docker-compose.yml               ← ecosistema completo en Docker
+├── reports/
+│   └── jacoco/                      ← reportes de cobertura generados
+│       ├── catalog-service/index.html
+│       ├── elending-service/index.html
+│       └── ...
+├── microservice-config/
+│   └── src/main/resources/
+│       └── configurations/          ← YAMLs de todos los MS
+├── microservice-eureka/
+├── microservice-gateway/
+├── identity-services/
+├── catalog-service/
+├── license-service/
+├── elending-service/
+├── notification-service/
+├── subscription-service/
+├── search-service/
+├── analytics-service/
+├── ingestion-service/
+└── content-service/
+```
