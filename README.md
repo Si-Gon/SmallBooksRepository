@@ -374,3 +374,25 @@ SmallBooksRepository/
 ├── ingestion-service/
 └── content-service/
 ```
+---
+
+## Notas de compatibilidad
+
+### Lombok y versiones de Java
+
+El proyecto usa **Lombok 1.18.38** — compatible con Java 17, 21 y 25.
+
+Si al compilar aparece un error relacionado con Lombok en Java 21 o superior,
+verificar que la versión en el `pom.xml` raíz sea `1.18.38` o superior:
+
+\```xml
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <version>1.18.38</version>
+    <optional>true</optional>
+</dependency>
+\```
+
+> Versiones anteriores de Lombok (1.18.30 y menores) pueden fallar al compilar
+> con Java 21+ debido a cambios en las APIs internas del compilador.
