@@ -11,6 +11,12 @@ spring:
       ddl-auto: create-drop
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: false
+    # schema.sql se ejecuta DESPUÉS de Hibernate DDL para crear la tabla shedlock
+    # (no es una entidad JPA, por lo que Hibernate no la crea automáticamente)
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
   flyway:
     enabled: false
   cloud:

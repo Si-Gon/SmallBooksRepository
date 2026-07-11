@@ -1,13 +1,13 @@
 package com.silvio.elending.service;
 
 import com.silvio.elending.client.LicenseClient;
-import com.silvio.elending.client.NotificationClient;
 import com.silvio.elending.client.SubscriptionClient;
 import com.silvio.elending.dto.LicenciaDTO;
-import com.silvio.elending.dto.NotificacionRequestDTO;
 import com.silvio.elending.dto.PrestamoRequestDTO;
 import com.silvio.elending.dto.PrestamoResponseDTO;
 import com.silvio.elending.dto.SuscripcionDTO;
+import com.silvio.elending.messaging.NotificacionEvent;
+import com.silvio.elending.messaging.NotificacionPublisher;
 import com.silvio.elending.model.Prestamo;
 import com.silvio.elending.model.Prestamo.EstadoPrestamo;
 import com.silvio.elending.repository.PrestamoRepository;
@@ -32,7 +32,7 @@ public class PrestamoService {
     private final PrestamoRepository prestamoRepository;
     private final LicenseClient licenseClient;
     private final SubscriptionClient subscriptionClient;
-    private final NotificationClient notificationClient;
+    private final NotificacionPublisher notificacionPublisher;
 
     // ─── crearPrestamo con optimistic locking ────────────────────────────────
     // Wrapper no transaccional: reintenta hasta 3 veces si el License Service
@@ -199,13 +199,13 @@ public class PrestamoService {
             throw new RuntimeException("Error al crear el préstamo. La operación fue revertida.");
         }
 
-        // Paso 7: Notificar
+        // Paso 7: Notificar vía RabbitMQ (asíncrono — reemplaza Feign)
         try {
-            notificationClient.crear(
-                NotificacionRequestDTO.prestamoCreado(usuarioId, request.getLibroId(), suscripcion.getDiasPrestamo()));
-            log.info("Notificación PRESTAMO_CREADO enviada al usuario {}", usuarioId);
+            notificacionPublisher.publicarEvento(
+                NotificacionEvent.prestamoCreado(usuarioId, request.getLibroId(), suscripcion.getDiasPrestamo()));
+            log.info("Evento PRESTAMO_CREADO publicado para usuario {}", usuarioId);
         } catch (Exception e) {
-            log.warn("No se pudo enviar notificación de préstamo creado para usuario {}: {}",
+            log.warn("No se pudo publicar evento de préstamo creado para usuario {}: {}",
                     usuarioId, e.getMessage());
         }
 
@@ -271,11 +271,11 @@ public class PrestamoService {
                         prestamo.getId(), prestamo.getUsuarioId(), prestamo.getLibroId());
 
                 try {
-                    notificationClient.crear(
-                        NotificacionRequestDTO.prestamoVencido(
+                    notificacionPublisher.publicarEvento(
+                        NotificacionEvent.prestamoVencido(
                             prestamo.getUsuarioId(), prestamo.getLibroId()));
                 } catch (Exception e) {
-                    log.warn("No se pudo notificar vencimiento — préstamo {}: {}",
+                    log.warn("No se pudo publicar evento de vencimiento — préstamo {}: {}",
                             prestamo.getId(), e.getMessage());
                 }
 
@@ -301,11 +301,11 @@ public class PrestamoService {
 
         for (Prestamo prestamo : proximosAVencer) {
             try {
-                notificationClient.crear(
-                    NotificacionRequestDTO.proximoVencer(
+                notificacionPublisher.publicarEvento(
+                    NotificacionEvent.proximoVencer(
                         prestamo.getUsuarioId(), prestamo.getLibroId()));
             } catch (Exception e) {
-                log.warn("No se pudo notificar próximo vencimiento — préstamo {}: {}",
+                log.warn("No se pudo publicar evento de próximo vencimiento — préstamo {}: {}",
                         prestamo.getId(), e.getMessage());
             }
         }

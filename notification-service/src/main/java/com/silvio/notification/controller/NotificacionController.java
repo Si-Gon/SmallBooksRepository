@@ -18,7 +18,7 @@ import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
-@Tag(name = "Notifications", description = "Gestión de notificaciones — creadas por E-Lending via Feign al crear o vencer préstamos")
+@Tag(name = "Notifications", description = "Gestión de notificaciones — creadas por E-Lending via RabbitMQ al crear o vencer préstamos (endpoint REST disponible para pruebas y uso manual)")
 @RestController
 @RequestMapping("/api/notifications")
 @RequiredArgsConstructor
@@ -27,7 +27,7 @@ public class NotificacionController {
     private final NotificacionService notificacionService;
 
     @Operation(summary = "Crear notificación",
-               description = "Endpoint interno usado por E-Lending Service via Feign")
+               description = "Endpoint REST disponible para pruebas manuales. En producción, las notificaciones se crean vía RabbitMQ desde E-Lending Service.")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Notificación creada exitosamente"),
         @ApiResponse(responseCode = "400", description = "Datos de notificación inválidos")

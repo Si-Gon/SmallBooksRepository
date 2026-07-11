@@ -6,7 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-// Usado por E-Lending Service via Feign para registrar notificaciones
+// Usado por el endpoint REST POST /api/notifications y por NotificacionEventListener
+// (RabbitMQ) para registrar notificaciones en la base de datos.
 @Data
 public class NotificacionRequestDTO {
 

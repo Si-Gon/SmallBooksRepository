@@ -4,6 +4,24 @@ spring:
   config:
     import: optional:configserver:http://localhost:8888
 
+  # RabbitMQ — consumidor de eventos de notificación con Dead Letter Queue
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: 5672
+    username: guest
+    password: guest
+    listener:
+      simple:
+        # NOTA: La configuración programática en RabbitMQConfig (RetryInterceptorBuilder
+        # con RejectAndDontRequeueRecoverer) anula esta config YAML porque el bean
+        # rabbitListenerContainerFactory personalizado toma precedencia sobre el default.
+        retry:
+          enabled: true
+          initial-interval: 2s
+          max-attempts: 3
+          multiplier: 2.0
+          max-interval: 10s
+
 logging:
   file:
     name: logs/smallbooks.log

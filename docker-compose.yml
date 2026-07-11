@@ -120,10 +120,13 @@ services:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
       - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_lending?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_RABBITMQ_HOST=rabbitmq
     depends_on:
       config:
         condition: service_healthy
       eureka:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
 
   # ─── 8. NOTIFICATION ────────────────────────────────────────────────────────
@@ -137,10 +140,13 @@ services:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
       - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_notifications?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_RABBITMQ_HOST=rabbitmq
     depends_on:
       config:
         condition: service_healthy
       eureka:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
 
   # ─── 9. SUBSCRIPTION ────────────────────────────────────────────────────────
@@ -224,3 +230,17 @@ services:
         condition: service_healthy
       eureka:
         condition: service_healthy
+
+  # ─── 14. RABBITMQ ────────────────────────────────────────────────────────────
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"     # AMQP — conexión de servicios
+      - "15672:15672"   # Management UI — http://localhost:15672 (guest/guest)
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s

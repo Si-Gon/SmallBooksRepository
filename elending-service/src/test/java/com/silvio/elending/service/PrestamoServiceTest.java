@@ -1,11 +1,11 @@
 package com.silvio.elending.service;
 
 import com.silvio.elending.client.LicenseClient;
-import com.silvio.elending.client.NotificationClient;
 import com.silvio.elending.client.SubscriptionClient;
 import com.silvio.elending.dto.LicenciaDTO;
-import com.silvio.elending.dto.NotificacionRequestDTO;
 import com.silvio.elending.dto.PrestamoRequestDTO;
+import com.silvio.elending.messaging.NotificacionEvent;
+import com.silvio.elending.messaging.NotificacionPublisher;
 import com.silvio.elending.dto.PrestamoResponseDTO;
 import com.silvio.elending.dto.SuscripcionDTO;
 import com.silvio.elending.model.Prestamo;
@@ -50,7 +50,7 @@ class PrestamoServiceTest {
     private SubscriptionClient subscriptionClient;
 
     @Mock
-    private NotificationClient notificationClient;
+    private NotificacionPublisher notificacionPublisher;
 
     // ─── helpers reutilizables ───────────────────────────────────────────────
 
@@ -691,8 +691,8 @@ class PrestamoServiceTest {
         when(prestamoRepository.save(any(Prestamo.class)))
                 .thenAnswer(i -> i.getArgument(0));
         // Notificación falla — no debe romper el flujo
-        when(notificationClient.crear(any()))
-                .thenThrow(new RuntimeException("Notification service no disponible"));
+        doThrow(new RuntimeException("RabbitMQ no disponible"))
+                .when(notificacionPublisher).publicarEvento(any(NotificacionEvent.class));
 
         // When
         PrestamoResponseDTO resultado = prestamoService.crearPrestamo(request(16L), usuarioId);
@@ -703,7 +703,7 @@ class PrestamoServiceTest {
         assertEquals(EstadoPrestamo.ACTIVO, resultado.getEstado());
         verify(licenseClient).prestar(16L);
         verify(prestamoRepository).save(any(Prestamo.class));
-        verify(notificationClient).crear(any());
+        verify(notificacionPublisher).publicarEvento(any(NotificacionEvent.class));
     }
 
     // ─── tests cerrarPrestamosVencidos (scheduler) ───────────────────────────
@@ -732,7 +732,7 @@ class PrestamoServiceTest {
         verify(licenseClient).devolver(10L);
         verify(prestamoRepository).save(any(Prestamo.class));
         assertEquals(EstadoPrestamo.VENCIDO, vencido.getEstado());
-        verify(notificationClient).crear(any());
+        verify(notificacionPublisher).publicarEvento(any(NotificacionEvent.class));
     }
 
     @Test
@@ -772,7 +772,7 @@ class PrestamoServiceTest {
         verify(prestamoRepository).save(any(Prestamo.class));
         assertEquals(EstadoPrestamo.VENCIDO, vencido.getEstado());
         // Se notificó: vencimiento + próximo a vencer
-        verify(notificationClient, times(2)).crear(any());
+        verify(notificacionPublisher, times(2)).publicarEvento(any(NotificacionEvent.class));
     }
 
     @Test
@@ -798,7 +798,7 @@ class PrestamoServiceTest {
         // No se cerró ningún préstamo (no hay vencidos)
         verify(licenseClient, never()).devolver(anyLong());
         // Pero sí se notificó al próximo a vencer
-        verify(notificationClient).crear(any());
+        verify(notificacionPublisher).publicarEvento(any(NotificacionEvent.class));
     }
 
     @Test
@@ -855,7 +855,7 @@ class PrestamoServiceTest {
         // por lo que el objeto en memoria sí cambió aunque save() falle
         assertEquals(EstadoPrestamo.VENCIDO, vencido.getEstado());
         // No se llegó a notificar porque save() falló antes de llegar a ese bloque
-        verify(notificationClient, never()).crear(any());
+        verify(notificacionPublisher, never()).publicarEvento(any(NotificacionEvent.class));
     }
 
     @Test
@@ -875,8 +875,8 @@ class PrestamoServiceTest {
         when(prestamoRepository.save(any(Prestamo.class)))
                 .thenAnswer(i -> i.getArgument(0));
         // Notificación falla
-        when(notificationClient.crear(any()))
-                .thenThrow(new RuntimeException("Notification service error"));
+        doThrow(new RuntimeException("RabbitMQ no disponible"))
+                .when(notificacionPublisher).publicarEvento(any(NotificacionEvent.class));
 
         // When — no debe lanzar excepción
         prestamoService.cerrarPrestamosVencidos();
@@ -886,7 +886,7 @@ class PrestamoServiceTest {
         verify(prestamoRepository).save(any(Prestamo.class));
         assertEquals(EstadoPrestamo.VENCIDO, vencido.getEstado());
         // La notificación se intentó pero falló — el flujo continúa
-        verify(notificationClient, atLeastOnce()).crear(any());
+        verify(notificacionPublisher, atLeastOnce()).publicarEvento(any(NotificacionEvent.class));
     }
 
     @Test
@@ -902,7 +902,7 @@ class PrestamoServiceTest {
         // Then
         verify(licenseClient, never()).devolver(anyLong());
         verify(prestamoRepository, never()).save(any(Prestamo.class));
-        verify(notificationClient, never()).crear(any());
+        verify(notificacionPublisher, never()).publicarEvento(any(NotificacionEvent.class));
     }
 
     // ─── tests cerrarPrestamosVencidos — límites y próximos ─────────────────
@@ -951,15 +951,15 @@ class PrestamoServiceTest {
                 .thenReturn(new ArrayList<>())           // vencidos: vacío
                 .thenReturn(Arrays.asList(proximo));     // próximos: 1
         // Notificación falla
-        when(notificationClient.crear(any()))
-                .thenThrow(new RuntimeException("Notification error para próximo"));
+        doThrow(new RuntimeException("RabbitMQ no disponible"))
+                .when(notificacionPublisher).publicarEvento(any(NotificacionEvent.class));
 
         // When — no debe lanzar excepción
         prestamoService.cerrarPrestamosVencidos();
 
         // Then
         verify(licenseClient, never()).devolver(anyLong());
-        verify(notificationClient).crear(any()); // se intentó notificar
+        verify(notificacionPublisher).publicarEvento(any(NotificacionEvent.class)); // se intentó notificar
     }
 
     @Test
@@ -985,15 +985,15 @@ class PrestamoServiceTest {
                 .thenReturn(Arrays.asList(proximo1, proximo2)); // próximos
 
         // La notificación falla para el primero pero funciona para el segundo
-        when(notificationClient.crear(any(NotificacionRequestDTO.class)))
-                .thenThrow(new RuntimeException("Notificación falló para próximo1"))
-                .thenReturn(null); // el segundo no falla
+        doThrow(new RuntimeException("RabbitMQ no disponible"))
+                .doNothing()
+                .when(notificacionPublisher).publicarEvento(any(NotificacionEvent.class));
 
         // When — no debe lanzar excepción
         prestamoService.cerrarPrestamosVencidos();
 
         // Then — ambas notificaciones se intentaron
-        verify(notificationClient, times(2)).crear(any());
+        verify(notificacionPublisher, times(2)).publicarEvento(any(NotificacionEvent.class));
     }
 
     // ─── tests crearPrestamo — verificación del objeto guardado ─────────────

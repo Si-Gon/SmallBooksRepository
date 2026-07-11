@@ -1,14 +1,5 @@
-package com.silvio.elending.client;
-
-import com.silvio.elending.dto.NotificacionRequestDTO;
-import com.silvio.elending.dto.NotificacionResponseDTO;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-@FeignClient(name = "notification-service")
-public interface NotificationClient {
-
-    @PostMapping("/api/notifications")
-    NotificacionResponseDTO crear(@RequestBody NotificacionRequestDTO request);
-}
+// NOTA: Este cliente Feign ha sido reemplazado por mensajería asíncrona
+// con RabbitMQ (NotificacionPublisher). Las notificaciones ahora se publican
+// en el exchange "notificacion.exchange" para que Notification Service
+// las consuma desde la cola "notificacion.queue".
+// Ver: com.silvio.elending.messaging.NotificacionPublisher

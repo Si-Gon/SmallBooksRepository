@@ -17,6 +17,12 @@ spring:
     config:
       enabled: false
 
+  # Evita que el listener RabbitMQ intente conectarse en tests (no hay RabbitMQ disponible)
+  rabbitmq:
+    listener:
+      simple:
+        auto-startup: false
+
 eureka:
   client:
     enabled: false
