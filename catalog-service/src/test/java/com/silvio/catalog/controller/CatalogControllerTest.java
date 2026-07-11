@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
@@ -34,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * MockMvc simula peticiones HTTP reales sin necesitar un servidor arrancado.
  */
 @WebMvcTest(CatalogController.class)
+@ActiveProfiles("test")
 class CatalogControllerTest {
 
     @Autowired
@@ -254,6 +256,292 @@ class CatalogControllerTest {
 
         mockMvc.perform(delete("/api/catalog/999"))
                 .andExpect(status().isNotFound());
+    }
+
+    // =========================================================
+    // GET /api/catalog/buscar — búsqueda por autor
+    // =========================================================
+
+    @Test
+    void buscar_PorAutor_DebeRetornar200() throws Exception {
+        LibroResponseDTO libro = crearLibroResponse(1L, "Cien años de soledad", "García Márquez");
+        when(catalogService.buscar(null, "García", null)).thenReturn(Arrays.asList(libro));
+
+        mockMvc.perform(get("/api/catalog/buscar").param("autor", "García"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].titulo").value("Cien años de soledad"));
+    }
+
+    // =========================================================
+    // GET /api/catalog/buscar — búsqueda por género
+    // =========================================================
+
+    @Test
+    void buscar_PorGenero_DebeRetornar200() throws Exception {
+        LibroResponseDTO libro = crearLibroResponse(1L, "Cien años de soledad", "García Márquez");
+        when(catalogService.buscar(null, null, "Ficción")).thenReturn(Arrays.asList(libro));
+
+        mockMvc.perform(get("/api/catalog/buscar").param("genero", "Ficción"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].titulo").value("Cien años de soledad"));
+    }
+
+    // =========================================================
+    // GET /api/catalog/buscar — búsqueda combinada
+    // =========================================================
+
+    @Test
+    void buscar_ConParametrosCombinados_DebeRetornar200() throws Exception {
+        LibroResponseDTO libro = crearLibroResponse(1L, "Cien años de soledad", "García Márquez");
+        when(catalogService.buscar("Cien", "García", "Novela")).thenReturn(Arrays.asList(libro));
+
+        mockMvc.perform(get("/api/catalog/buscar")
+                        .param("titulo", "Cien")
+                        .param("autor", "García")
+                        .param("genero", "Novela"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].titulo").value("Cien años de soledad"));
+    }
+
+    // =========================================================
+    // PATCH /api/catalog/{id}/disponibilidad — ID inexistente
+    // =========================================================
+
+    @Test
+    void cambiarDisponibilidad_ConIdInexistente_DebeRetornar404() throws Exception {
+        when(catalogService.cambiarDisponibilidad(999L, false))
+                .thenThrow(new RuntimeException("Libro no encontrado con id: 999"));
+
+        mockMvc.perform(patch("/api/catalog/999/disponibilidad")
+                        .param("disponible", "false"))
+                .andExpect(status().isNotFound());
+    }
+
+    // =========================================================
+    // PUT /api/catalog/{id} — DTO inválido (sin título)
+    // =========================================================
+
+    @Test
+    void actualizar_ConDatosInvalidos_DebeRetornar400() throws Exception {
+        LibroRequestDTO request = new LibroRequestDTO();
+        request.setAutor("Autor Test");
+        request.setIsbn("1234567890123");
+        // titulo es null — @NotBlank debe rechazar
+
+        mockMvc.perform(put("/api/catalog/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    // =========================================================
+    // POST /api/catalog — validación: autor vacío
+    // =========================================================
+
+    @Test
+    void agregar_ConAutorVacio_DebeRetornar400() throws Exception {
+        LibroRequestDTO request = new LibroRequestDTO();
+        request.setTitulo("Libro Test");
+        request.setAutor("");           // inválido — @NotBlank
+        request.setIsbn("1234567890123");
+
+        mockMvc.perform(post("/api/catalog")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    // =========================================================
+    // POST /api/catalog — validación: ISBN con formato incorrecto
+    // =========================================================
+
+    @Test
+    void agregar_ConIsbnInvalido_DebeRetornar400() throws Exception {
+        LibroRequestDTO request = new LibroRequestDTO();
+        request.setTitulo("Libro Test");
+        request.setAutor("Autor Test");
+        request.setIsbn("ISBN-invalido");   // no cumple @Pattern
+
+        mockMvc.perform(post("/api/catalog")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    // =========================================================
+    // GET /api/catalog/disponibles — lista vacía
+    // =========================================================
+
+    @Test
+    void obtenerDisponibles_ConListaVacia_DebeRetornar200() throws Exception {
+        when(catalogService.obtenerDisponibles()).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/api/catalog/disponibles"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").isEmpty());
+    }
+
+    // =========================================================
+    // GET /api/catalog/buscar — parámetros vacíos (blank)
+    // =========================================================
+
+    @Test
+    void buscar_ConParametrosVacios_DebeRetornar200() throws Exception {
+        when(catalogService.buscar("", "", "")).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/api/catalog/buscar")
+                        .param("titulo", "")
+                        .param("autor", "")
+                        .param("genero", ""))
+                .andExpect(status().isOk());
+    }
+
+    // =========================================================
+    // POST /api/catalog — validación: portadaUrl inválida
+    // =========================================================
+
+    @Test
+    void agregar_ConPortadaUrlInvalida_DebeRetornar400() throws Exception {
+        LibroRequestDTO request = new LibroRequestDTO();
+        request.setTitulo("Libro Test");
+        request.setAutor("Autor Test");
+        request.setIsbn("1234567890123");
+        request.setPortadaUrl("ftp://mal.com/img.jpg");  // no comienza con http:// o https://
+
+        mockMvc.perform(post("/api/catalog")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    // =========================================================
+    // POST /api/catalog — validación: año de publicación fuera de rango
+    // =========================================================
+
+    @Test
+    void agregar_ConAnioPublicacionInvalido_DebeRetornar400() throws Exception {
+        LibroRequestDTO request = new LibroRequestDTO();
+        request.setTitulo("Libro Test");
+        request.setAutor("Autor Test");
+        request.setIsbn("1234567890123");
+        request.setAnioPublicacion(1400);  // < 1450 — inválido
+
+        mockMvc.perform(post("/api/catalog")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void agregar_ConAnioPublicacionFuturo_DebeRetornar400() throws Exception {
+        LibroRequestDTO request = new LibroRequestDTO();
+        request.setTitulo("Libro Test");
+        request.setAutor("Autor Test");
+        request.setIsbn("1234567890123");
+        request.setAnioPublicacion(2101);  // > 2100 — inválido
+
+        mockMvc.perform(post("/api/catalog")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    // =========================================================
+    // POST /api/catalog — validación: ISBN nulo
+    // =========================================================
+
+    @Test
+    void agregar_ConIsbnNulo_DebeRetornar400() throws Exception {
+        LibroRequestDTO request = new LibroRequestDTO();
+        request.setTitulo("Libro Test");
+        request.setAutor("Autor Test");
+        // isbn = null — @NotBlank debe rechazar
+
+        mockMvc.perform(post("/api/catalog")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    // =========================================================
+    // PATCH /api/catalog/{id}/disponibilidad — sin parámetro disponible
+    // =========================================================
+
+    @Test
+    void cambiarDisponibilidad_SinParametroDisponible_DebeRetornar400() throws Exception {
+        // disponible es @RequestParam requerido (required = true por defecto)
+        mockMvc.perform(patch("/api/catalog/1/disponibilidad"))
+                .andExpect(status().isBadRequest());
+    }
+
+    // =========================================================
+    // HATEOAS — verificación de enlaces _links en respuestas
+    // =========================================================
+
+    @Test
+    void obtenerTodos_DebeIncluirEnlacesHATEOAS() throws Exception {
+        // Given
+        LibroResponseDTO libro1 = crearLibroResponse(1L, "Cien años de soledad", "García Márquez");
+        LibroResponseDTO libro2 = crearLibroResponse(2L, "El Quijote", "Cervantes");
+        when(catalogService.obtenerTodos()).thenReturn(Arrays.asList(libro1, libro2));
+
+        // When & Then: respuesta en application/json, links como array
+        // "links": [{"rel":"self","href":"http://localhost/api/catalog/1"}]
+        mockMvc.perform(get("/api/catalog"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].links[0].rel").value("self"))
+                .andExpect(jsonPath("$[0].links[0].href").value(org.hamcrest.Matchers.containsString("/api/catalog/1")))
+                .andExpect(jsonPath("$[1].links[0].rel").value("self"))
+                .andExpect(jsonPath("$[1].links[0].href").value(org.hamcrest.Matchers.containsString("/api/catalog/2")));
+    }
+
+    @Test
+    void obtenerPorId_DebeIncluirTodosLosEnlacesHATEOAS() throws Exception {
+        // Given
+        LibroResponseDTO libro = crearLibroResponse(1L, "1984", "Orwell");
+        when(catalogService.obtenerPorId(1L)).thenReturn(libro);
+
+        // When & Then: respuesta en application/hal+json, links como _links objeto
+        // "_links":{"self":{"href":"..."},"todos":{"href":"..."},...}
+        mockMvc.perform(get("/api/catalog/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$._links.self.href").value(org.hamcrest.Matchers.containsString("/api/catalog/1")))
+                .andExpect(jsonPath("$._links.todos.href").value(org.hamcrest.Matchers.containsString("/api/catalog")))
+                .andExpect(jsonPath("$._links.disponibles.href").value(org.hamcrest.Matchers.containsString("/api/catalog/disponibles")))
+                .andExpect(jsonPath("$._links.eliminar.href").value(org.hamcrest.Matchers.containsString("/api/catalog/1")));
+    }
+
+    @Test
+    void agregar_DebeIncluirEnlacesHATEOAS() throws Exception {
+        // Given
+        LibroRequestDTO request = crearLibroRequest();
+        LibroResponseDTO response = crearLibroResponse(1L, "Nuevo Libro", "Autor Test");
+        when(catalogService.agregar(any(LibroRequestDTO.class))).thenReturn(response);
+
+        // When & Then: respuesta en application/hal+json, links como _links objeto
+        mockMvc.perform(post("/api/catalog")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$._links.self.href").value(org.hamcrest.Matchers.containsString("/api/catalog/1")))
+                .andExpect(jsonPath("$._links.todos.href").value(org.hamcrest.Matchers.containsString("/api/catalog")));
+    }
+
+    @Test
+    void actualizar_DebeIncluirEnlacesHATEOAS() throws Exception {
+        // Given
+        LibroRequestDTO request = crearLibroRequest();
+        LibroResponseDTO response = crearLibroResponse(1L, "Libro Actualizado", "Autor Test");
+        when(catalogService.actualizar(eq(1L), any(LibroRequestDTO.class))).thenReturn(response);
+
+        // When & Then: respuesta en application/hal+json, links como _links objeto
+        mockMvc.perform(put("/api/catalog/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$._links.self.href").value(org.hamcrest.Matchers.containsString("/api/catalog/1")))
+                .andExpect(jsonPath("$._links.todos.href").value(org.hamcrest.Matchers.containsString("/api/catalog")));
     }
 
     // =========================================================

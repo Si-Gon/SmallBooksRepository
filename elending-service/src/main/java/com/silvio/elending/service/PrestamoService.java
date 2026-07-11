@@ -137,7 +137,7 @@ public class PrestamoService {
         // Paso 7: Notificar
         try {
             notificationClient.crear(
-                NotificacionRequestDTO.prestamoCreado(usuarioId, request.getLibroId()));
+                NotificacionRequestDTO.prestamoCreado(usuarioId, request.getLibroId(), suscripcion.getDiasPrestamo()));
             log.info("Notificación PRESTAMO_CREADO enviada al usuario {}", usuarioId);
         } catch (Exception e) {
             log.warn("No se pudo enviar notificación de préstamo creado para usuario {}: {}",

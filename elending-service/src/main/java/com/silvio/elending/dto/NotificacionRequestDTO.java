@@ -25,12 +25,13 @@ public class NotificacionRequestDTO {
     private String mensaje;
 
     // Constructor estático para crear notificaciones fácilmente
-    public static NotificacionRequestDTO prestamoCreado(String usuarioId, Long libroId) {
+    // diasPrestamo debe venir del plan del usuario (7 BASICO, 14 PREMIUM)
+    public static NotificacionRequestDTO prestamoCreado(String usuarioId, Long libroId, int diasPrestamo) {
         NotificacionRequestDTO dto = new NotificacionRequestDTO();
         dto.setUsuarioId(usuarioId);
         dto.setTipo("PRESTAMO_CREADO");
         dto.setMensaje("Tu préstamo del libro " + libroId +
-                " ha sido creado exitosamente. Tienes 14 días para leerlo.");
+                " ha sido creado exitosamente. Tienes " + diasPrestamo + " días para leerlo.");
         return dto;
     }
 

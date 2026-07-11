@@ -96,6 +96,23 @@ class PrestamoControllerTest {
     }
 
     @Test
+    void crearPrestamo_libroIdCero_debeRetornar400() throws Exception {
+        // @Positive rechaza libroId = 0
+        when(jwtExtractor.extraerUsuario(FAKE_JWT)).thenReturn(USUARIO_ID);
+
+        PrestamoRequestDTO requestInvalido = new PrestamoRequestDTO();
+        requestInvalido.setLibroId(0L); // viola @Positive
+
+        mockMvc.perform(post("/api/lending/prestamos")
+                        .header("Authorization", FAKE_JWT)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestInvalido)))
+                .andExpect(status().isBadRequest());
+
+        verify(prestamoService, never()).crearPrestamo(any(), anyString());
+    }
+
+    @Test
     void crearPrestamo_limiteAlcanzado_debeRetornar4xx() throws Exception {
         when(jwtExtractor.extraerUsuario(FAKE_JWT)).thenReturn(USUARIO_ID);
         when(prestamoService.crearPrestamo(any(PrestamoRequestDTO.class), eq(USUARIO_ID)))
@@ -152,6 +169,19 @@ class PrestamoControllerTest {
     }
 
     @Test
+    void obtenerActivos_tokenInvalido_debeRetornar4xx() throws Exception {
+        // JwtExtractor lanza excepción con token inválido
+        when(jwtExtractor.extraerUsuario(any())).thenThrow(
+                new RuntimeException("No se pudo extraer el usuario del token"));
+
+        mockMvc.perform(get("/api/lending/prestamos/activos")
+                        .header("Authorization", "Bearer token_invalido"))
+                .andExpect(status().is4xxClientError());
+
+        verify(prestamoService, never()).obtenerPrestamosActivos(anyString());
+    }
+
+    @Test
     void obtenerActivos_sinPrestamos_debeRetornar200ListaVacia() throws Exception {
         when(jwtExtractor.extraerUsuario(FAKE_JWT)).thenReturn(USUARIO_ID);
         when(prestamoService.obtenerPrestamosActivos(USUARIO_ID)).thenReturn(Collections.emptyList());
@@ -182,6 +212,50 @@ class PrestamoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].estado").value("ACTIVO"))
                 .andExpect(jsonPath("$[1].estado").value("VENCIDO"));
+    }
+
+    @Test
+    void obtenerHistorial_tokenInvalido_debeRetornar4xx() throws Exception {
+        when(jwtExtractor.extraerUsuario(any())).thenThrow(
+                new RuntimeException("No se pudo extraer el usuario del token"));
+
+        mockMvc.perform(get("/api/lending/prestamos/historial")
+                        .header("Authorization", "Bearer token_invalido"))
+                .andExpect(status().is4xxClientError());
+
+        verify(prestamoService, never()).obtenerHistorial(anyString());
+    }
+
+    @Test
+    void crearPrestamo_sinToken_debeRetornar401() throws Exception {
+        // Sin header Authorization — el controller falla antes de llegar al service
+        PrestamoRequestDTO request = new PrestamoRequestDTO();
+        request.setLibroId(1L);
+
+        mockMvc.perform(post("/api/lending/prestamos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest()); // Missing header → error de servlet
+                // Nota: @RequestHeader sin required=false → error de servlet, no entra al handler
+
+        verify(prestamoService, never()).crearPrestamo(any(), anyString());
+    }
+
+    @Test
+    void crearPrestamo_libroIdNegativo_debeRetornar400() throws Exception {
+        // @Positive rechaza libroId negativo
+        when(jwtExtractor.extraerUsuario(FAKE_JWT)).thenReturn(USUARIO_ID);
+
+        PrestamoRequestDTO requestInvalido = new PrestamoRequestDTO();
+        requestInvalido.setLibroId(-1L); // viola @Positive
+
+        mockMvc.perform(post("/api/lending/prestamos")
+                        .header("Authorization", FAKE_JWT)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestInvalido)))
+                .andExpect(status().isBadRequest());
+
+        verify(prestamoService, never()).crearPrestamo(any(), anyString());
     }
 
     // =========================================================

@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
         error.put("error", ex.getMessage());
 
         HttpStatus status = HttpStatus.NOT_FOUND;
-        if (ex.getMessage() != null && ex.getMessage().contains("ya existe")) {
+        if (ex.getMessage() != null && ex.getMessage().toLowerCase().contains("ya existe")) {
             status = HttpStatus.CONFLICT; // 409
         }
 
