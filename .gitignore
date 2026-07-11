@@ -43,3 +43,11 @@ Thumbs.db
 !**/mvnw
 !**/mvnw.cmd
 **/maven-wrapper.jar
+
+# Agentes y contexto
+.opencode-context.md
+BACKLOG.md
+
+# Reportes de auditoría 
+docs/*security-audit*.md
+docs/*audit*.md
