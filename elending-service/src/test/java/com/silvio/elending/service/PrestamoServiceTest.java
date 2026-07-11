@@ -25,6 +25,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -1317,5 +1323,299 @@ class PrestamoServiceTest {
         // Lo que importa es que el flujo no se interrumpió y procesó al segundo.
         // El segundo se procesó correctamente
         assertEquals(EstadoPrestamo.VENCIDO, vencido2.getEstado());
+    }
+
+    // ─── test de concurrencia — CountDownLatch ────────────────────────────
+
+    @Test
+    void crearPrestamo_concurrencia_ultimaCopia_conCountDownLatch() throws InterruptedException {
+        // Given — 3 hilos compiten por la última copia del libro 999
+        // Usando CountDownLatch para que todos arranquen simultáneamente
+        String usuarioId = "usuario_concurrente";
+        Long libroId = 999L;
+        int numHilos = 3;
+
+        // Mock: 1 copia disponible para todos
+        when(subscriptionClient.obtenerSuscripcion(usuarioId)).thenReturn(suscripcionBasico());
+        when(prestamoRepository.findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(prestamoRepository.findByLibroIdAndEstado(libroId, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(licenseClient.obtenerLicencia(libroId)).thenReturn(licenciaDisponible());
+
+        // Simula la carrera: el primer hilo que llama a prestar() descuenta la última copia,
+        // los siguientes reciben 409 Conflict y reintentan hasta agotar los 3 intentos.
+        AtomicBoolean copiaDescontada = new AtomicBoolean(false);
+        when(licenseClient.prestar(libroId)).thenAnswer(invocation -> {
+            if (copiaDescontada.compareAndSet(false, true)) {
+                return licenciaDisponible(); // el primero en llegar descuenta
+            }
+            throw mock(FeignException.Conflict.class); // los demás chocan
+        });
+
+        // El primero que pasa prestar() puede guardar el préstamo
+        when(prestamoRepository.save(any(Prestamo.class)))
+                .thenAnswer(i -> i.getArgument(0));
+
+        // CountDownLatch: todos los hilos esperan en el mismo punto de partida
+        CountDownLatch latch = new CountDownLatch(1);
+        // Contadores para resultados
+        AtomicInteger exitosos = new AtomicInteger(0);
+        AtomicInteger fallidos = new AtomicInteger(0);
+        // Excepción capturada para verificar mensaje
+        AtomicReference<Throwable> excepcionCapturada = new AtomicReference<>();
+
+        ExecutorService executor = Executors.newFixedThreadPool(numHilos);
+
+        for (int i = 0; i < numHilos; i++) {
+            executor.submit(() -> {
+                try {
+                    latch.await(); // todos esperan aquí
+                    prestamoService.crearPrestamo(request(libroId), usuarioId);
+                    exitosos.incrementAndGet();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    fallidos.incrementAndGet();
+                } catch (RuntimeException e) {
+                    excepcionCapturada.set(e);
+                    fallidos.incrementAndGet();
+                }
+            });
+        }
+
+        // Disparo de salida — todos arrancan a la vez
+        latch.countDown();
+
+        // Esperar a que todos terminen — awaitTermination reemplaza Thread.sleep
+        // para evitar fragilidad en entornos CI lentos
+        executor.shutdown();
+        if (!executor.awaitTermination(15, java.util.concurrent.TimeUnit.SECONDS)) {
+            executor.shutdownNow();
+        }
+
+        // Then
+        // Solo 1 hilo logró descontar la copia y crear el préstamo
+        assertEquals(1, exitosos.get(),
+                "Solo un hilo debería obtener la última copia exitosamente");
+        assertEquals(numHilos - 1, fallidos.get(),
+                "Los demás hilos deben fallar tras agotar reintentos");
+        assertNotNull(excepcionCapturada.get(),
+                "Debe capturarse al menos una excepción de los hilos fallidos");
+        assertTrue(excepcionCapturada.get().getMessage().contains("última copia")
+                        || excepcionCapturada.get().getMessage().contains("otro usuario"),
+                "El mensaje de error debe indicar que la copia fue tomada por otro usuario");
+        // prestar() fue llamado 1 vez (éxito) + 3 * (numHilos - 1) reintentos
+        verify(licenseClient, times(1 + 3 * (numHilos - 1))).prestar(libroId);
+        // save() solo se llamó una vez (el exitoso)
+        verify(prestamoRepository, times(1)).save(any(Prestamo.class));
+    }
+
+    @Test
+    void crearPrestamo_concurrencia_5_hilos_conCountDownLatch() throws InterruptedException {
+        // Given — 5 hilos compiten por la última copia del libro 888
+        // Extiende el test original para verificar comportamiento con más hilos
+        String usuarioId = "usuario_5hilos";
+        Long libroId = 888L;
+        int numHilos = 5;
+
+        when(subscriptionClient.obtenerSuscripcion(usuarioId)).thenReturn(suscripcionBasico());
+        when(prestamoRepository.findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(prestamoRepository.findByLibroIdAndEstado(libroId, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(licenseClient.obtenerLicencia(libroId)).thenReturn(licenciaDisponible());
+
+        AtomicBoolean copiaDescontada = new AtomicBoolean(false);
+        when(licenseClient.prestar(libroId)).thenAnswer(invocation -> {
+            if (copiaDescontada.compareAndSet(false, true)) {
+                return licenciaDisponible();
+            }
+            throw mock(FeignException.Conflict.class);
+        });
+
+        when(prestamoRepository.save(any(Prestamo.class)))
+                .thenAnswer(i -> i.getArgument(0));
+
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicInteger exitosos = new AtomicInteger(0);
+        AtomicInteger fallidos = new AtomicInteger(0);
+        AtomicReference<Throwable> excepcionCapturada = new AtomicReference<>();
+
+        ExecutorService executor = Executors.newFixedThreadPool(numHilos);
+
+        for (int i = 0; i < numHilos; i++) {
+            executor.submit(() -> {
+                try {
+                    latch.await();
+                    prestamoService.crearPrestamo(request(libroId), usuarioId);
+                    exitosos.incrementAndGet();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    fallidos.incrementAndGet();
+                } catch (RuntimeException e) {
+                    excepcionCapturada.set(e);
+                    fallidos.incrementAndGet();
+                }
+            });
+        }
+
+        latch.countDown();
+
+        executor.shutdown();
+        if (!executor.awaitTermination(15, java.util.concurrent.TimeUnit.SECONDS)) {
+            executor.shutdownNow();
+        }
+
+        // Then
+        assertEquals(1, exitosos.get(),
+                "Solo un hilo de 5 debería obtener la última copia");
+        assertEquals(numHilos - 1, fallidos.get(),
+                "Los 4 hilos restantes deben fallar tras agotar reintentos");
+        assertNotNull(excepcionCapturada.get());
+        assertTrue(excepcionCapturada.get().getMessage().contains("última copia")
+                        || excepcionCapturada.get().getMessage().contains("otro usuario"));
+        // prestar(): 1 éxito + 3 reintentos * 4 hilos fallidos = 13
+        verify(licenseClient, times(1 + 3 * (numHilos - 1))).prestar(libroId);
+        verify(prestamoRepository, times(1)).save(any(Prestamo.class));
+    }
+
+    @Test
+    void crearPrestamo_concurrencia_10_hilos_conCountDownLatch() throws InterruptedException {
+        // Given — 10 hilos compiten por la última copia del libro 777
+        // Verifica que el patrón de reintentos escala correctamente
+        String usuarioId = "usuario_10hilos";
+        Long libroId = 777L;
+        int numHilos = 10;
+
+        when(subscriptionClient.obtenerSuscripcion(usuarioId)).thenReturn(suscripcionBasico());
+        when(prestamoRepository.findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(prestamoRepository.findByLibroIdAndEstado(libroId, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(licenseClient.obtenerLicencia(libroId)).thenReturn(licenciaDisponible());
+
+        AtomicBoolean copiaDescontada = new AtomicBoolean(false);
+        when(licenseClient.prestar(libroId)).thenAnswer(invocation -> {
+            if (copiaDescontada.compareAndSet(false, true)) {
+                return licenciaDisponible();
+            }
+            throw mock(FeignException.Conflict.class);
+        });
+
+        when(prestamoRepository.save(any(Prestamo.class)))
+                .thenAnswer(i -> i.getArgument(0));
+
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicInteger exitosos = new AtomicInteger(0);
+        AtomicInteger fallidos = new AtomicInteger(0);
+        AtomicReference<Throwable> excepcionCapturada = new AtomicReference<>();
+
+        ExecutorService executor = Executors.newFixedThreadPool(numHilos);
+
+        for (int i = 0; i < numHilos; i++) {
+            executor.submit(() -> {
+                try {
+                    latch.await();
+                    prestamoService.crearPrestamo(request(libroId), usuarioId);
+                    exitosos.incrementAndGet();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    fallidos.incrementAndGet();
+                } catch (RuntimeException e) {
+                    excepcionCapturada.set(e);
+                    fallidos.incrementAndGet();
+                }
+            });
+        }
+
+        latch.countDown();
+
+        executor.shutdown();
+        if (!executor.awaitTermination(20, java.util.concurrent.TimeUnit.SECONDS)) {
+            executor.shutdownNow();
+        }
+
+        // Then
+        assertEquals(1, exitosos.get(),
+                "Solo un hilo de 10 debería obtener la última copia");
+        assertEquals(numHilos - 1, fallidos.get(),
+                "Los 9 hilos restantes deben fallar tras agotar reintentos");
+        assertNotNull(excepcionCapturada.get());
+        assertTrue(excepcionCapturada.get().getMessage().contains("última copia")
+                        || excepcionCapturada.get().getMessage().contains("otro usuario"));
+        // prestar(): 1 éxito + 3 reintentos * 9 hilos fallidos = 28
+        verify(licenseClient, times(1 + 3 * (numHilos - 1))).prestar(libroId);
+        verify(prestamoRepository, times(1)).save(any(Prestamo.class));
+    }
+
+    @Test
+    void crearPrestamo_concurrencia_conLatenciaVariable() throws InterruptedException {
+        // Given — 3 hilos con latencia variable en prestar() simulando red
+        // Verifica que el CountDownLatch + retry funciona incluso con tiempos de red irregulares
+        String usuarioId = "usuario_latencia";
+        Long libroId = 666L;
+        int numHilos = 3;
+
+        when(subscriptionClient.obtenerSuscripcion(usuarioId)).thenReturn(suscripcionBasico());
+        when(prestamoRepository.findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(prestamoRepository.findByLibroIdAndEstado(libroId, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(licenseClient.obtenerLicencia(libroId)).thenReturn(licenciaDisponible());
+
+        // Simular latencia de red variable (80-200ms) en prestar()
+        AtomicBoolean copiaDescontada = new AtomicBoolean(false);
+        when(licenseClient.prestar(libroId)).thenAnswer(invocation -> {
+            Thread.sleep(80 + (long)(Math.random() * 120)); // 80-200ms de latencia
+            if (copiaDescontada.compareAndSet(false, true)) {
+                return licenciaDisponible();
+            }
+            throw mock(FeignException.Conflict.class);
+        });
+
+        when(prestamoRepository.save(any(Prestamo.class)))
+                .thenAnswer(i -> i.getArgument(0));
+
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicInteger exitosos = new AtomicInteger(0);
+        AtomicInteger fallidos = new AtomicInteger(0);
+        AtomicReference<Throwable> excepcionCapturada = new AtomicReference<>();
+
+        ExecutorService executor = Executors.newFixedThreadPool(numHilos);
+
+        for (int i = 0; i < numHilos; i++) {
+            executor.submit(() -> {
+                try {
+                    latch.await();
+                    prestamoService.crearPrestamo(request(libroId), usuarioId);
+                    exitosos.incrementAndGet();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    fallidos.incrementAndGet();
+                } catch (RuntimeException e) {
+                    excepcionCapturada.set(e);
+                    fallidos.incrementAndGet();
+                }
+            });
+        }
+
+        latch.countDown();
+
+        executor.shutdown();
+        // Mayor timeout por latencia simulada
+        if (!executor.awaitTermination(30, java.util.concurrent.TimeUnit.SECONDS)) {
+            executor.shutdownNow();
+        }
+
+        // Then
+        assertEquals(1, exitosos.get(),
+                "Solo un hilo debería obtener la última copia con latencia variable");
+        assertEquals(numHilos - 1, fallidos.get(),
+                "Los demás hilos deben fallar incluso con latencia simulada");
+        assertNotNull(excepcionCapturada.get());
+        assertTrue(excepcionCapturada.get().getMessage().contains("última copia")
+                        || excepcionCapturada.get().getMessage().contains("otro usuario"));
+        verify(licenseClient, times(1 + 3 * (numHilos - 1))).prestar(libroId);
+        verify(prestamoRepository, times(1)).save(any(Prestamo.class));
     }
 }

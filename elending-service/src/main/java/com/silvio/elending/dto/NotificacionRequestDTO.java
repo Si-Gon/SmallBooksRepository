@@ -26,7 +26,11 @@ public class NotificacionRequestDTO {
 
     // Constructor estático para crear notificaciones fácilmente
     // diasPrestamo debe venir del plan del usuario (7 BASICO, 14 PREMIUM)
+    // Si es <= 0, aplica 7 días por defecto para evitar mensajes inválidos
     public static NotificacionRequestDTO prestamoCreado(String usuarioId, Long libroId, int diasPrestamo) {
+        if (diasPrestamo <= 0) {
+            diasPrestamo = 7;
+        }
         NotificacionRequestDTO dto = new NotificacionRequestDTO();
         dto.setUsuarioId(usuarioId);
         dto.setTipo("PRESTAMO_CREADO");

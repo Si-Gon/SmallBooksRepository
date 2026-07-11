@@ -14,6 +14,7 @@ import com.silvio.elending.repository.PrestamoRepository;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -81,16 +82,17 @@ public class PrestamoService {
             suscripcion.setPlan("BASICO");
         }
 
-        // Validar que maxPrestamos y diasPrestamo no sean nulos
-        // Si son nulos (ej. respuesta incompleta del subscription-service), aplicar plan BASICO por defecto
-        if (suscripcion.getMaxPrestamos() == null || suscripcion.getDiasPrestamo() == null) {
-            log.warn("Valores nulos en suscripción del usuario {}. Aplicando plan BASICO por defecto. " +
+        // Validar que maxPrestamos y diasPrestamo no sean nulos ni inválidos
+        // Si son nulos o <= 0 (ej. respuesta incompleta del subscription-service), aplicar plan BASICO por defecto
+        if (suscripcion.getMaxPrestamos() == null || suscripcion.getDiasPrestamo() == null
+                || suscripcion.getMaxPrestamos() <= 0 || suscripcion.getDiasPrestamo() <= 0) {
+            log.warn("Valores inválidos en suscripción del usuario {}. Aplicando plan BASICO por defecto. " +
                      "maxPrestamos: {}, diasPrestamo: {}",
                      usuarioId, suscripcion.getMaxPrestamos(), suscripcion.getDiasPrestamo());
-            if (suscripcion.getMaxPrestamos() == null) {
+            if (suscripcion.getMaxPrestamos() == null || suscripcion.getMaxPrestamos() <= 0) {
                 suscripcion.setMaxPrestamos(2);
             }
-            if (suscripcion.getDiasPrestamo() == null) {
+            if (suscripcion.getDiasPrestamo() == null || suscripcion.getDiasPrestamo() <= 0) {
                 suscripcion.setDiasPrestamo(7);
             }
         }
@@ -236,8 +238,20 @@ public class PrestamoService {
                 .collect(Collectors.toList());
     }
 
+    // ShedLock: bloqueo distribuido para multi-instancia.
+    // Solo una instancia adquiere el lock "prestamos-vencidos" por vez.
+    // lockAtMostFor = 30m: libera el lock automáticamente tras 30 min
+    //   (cae muerta la instancia). lockAtLeastFor = 1000ms: evita ejecuciones
+    //   solapadas en la misma instancia.
+    // NOTA: Sin @Transactional a nivel de método a propósito.
+    // Cada préstamo vencido se procesa individualmente y Spring Data JPA
+    // ya provee @Transactional en save() y findBy*() desde SimpleJpaRepository.
+    // Si un préstamo individual falla, los demás no se ven afectados
+    // (evita rollback total que dejaría el servicio inconsistente).
+    // ShedLock garantiza que solo una instancia ejecute este scheduler
+    // a la vez, y @Version en Prestamo previene doble procesamiento.
     @Scheduled(fixedRate = 3600000)
-    @Transactional
+    @SchedulerLock(name = "prestamos-vencidos", lockAtMostFor = "30m", lockAtLeastFor = "1s")
     public void cerrarPrestamosVencidos() {
         LocalDateTime ahora = LocalDateTime.now();
         log.info("Scheduler ejecutado — verificando préstamos vencidos a las {}", ahora);
