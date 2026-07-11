@@ -26,4 +26,10 @@ public class License {
     @NotNull
     @Column(name = "copias_disponibles", nullable = false)
     private Integer copiasDisponibles;
+
+    // Versión para optimistic locking — evita race conditions
+    // cuando dos préstamos simultáneos leen la misma copia disponible
+    @Version
+    @Column(name = "version")
+    private Integer version;
 }

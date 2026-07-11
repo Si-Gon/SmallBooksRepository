@@ -11,8 +11,10 @@ import com.silvio.elending.dto.SuscripcionDTO;
 import com.silvio.elending.model.Prestamo;
 import com.silvio.elending.model.Prestamo.EstadoPrestamo;
 import com.silvio.elending.repository.PrestamoRepository;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +33,35 @@ public class PrestamoService {
     private final SubscriptionClient subscriptionClient;
     private final NotificationClient notificationClient;
 
-    @Transactional
+    // ─── crearPrestamo con optimistic locking ────────────────────────────────
+    // Wrapper no transaccional: reintenta hasta 3 veces si el License Service
+    // responde 409 Conflict (otro usuario tomó la última copia justo antes).
+    // El @Version en License dispara ObjectOptimisticLockingFailureException
+    // que el License Service convierte en 409 tras agotar reintentos.
+    // El @Version en Prestamo protege el save() local contra escrituras concurrentes.
+
     public PrestamoResponseDTO crearPrestamo(PrestamoRequestDTO request, String usuarioId) {
+        int maxReintentos = 3;
+        int intento = 0;
+        while (true) {
+            try {
+                return doCrearPrestamo(request, usuarioId);
+            } catch (FeignException.Conflict e) {
+                // 409 del License Service — otro usuario tomó la última copia justo antes
+                if (++intento >= maxReintentos) {
+                    log.warn("No se pudo crear préstamo tras {} intentos — libro: {}, usuario: {}",
+                            maxReintentos, request.getLibroId(), usuarioId);
+                    throw new RuntimeException(
+                            "La última copia del libro fue tomada por otro usuario. Intenta de nuevo.");
+                }
+                log.warn("Conflicto de concurrencia al descontar copia — libro: {}, reintento {}/{}",
+                        request.getLibroId(), intento, maxReintentos);
+            }
+        }
+    }
+
+    @Transactional
+    protected PrestamoResponseDTO doCrearPrestamo(PrestamoRequestDTO request, String usuarioId) {
         log.info("Iniciando creación de préstamo — usuario: {}, libro: {}", 
                 usuarioId, request.getLibroId());
 
@@ -110,9 +139,15 @@ public class PrestamoService {
         }
 
         // Paso 5: Descontar copia
+        // El License Service usa @Version + reintentos (optimistic locking).
+        // Si tras 3 reintentos persiste el conflicto, responde 409 Conflict,
+        // que el wrapper captura y reintenta.
         try {
             licenseClient.prestar(request.getLibroId());
             log.info("Copia descontada exitosamente — libro: {}", request.getLibroId());
+        } catch (FeignException.Conflict e) {
+            // No se captura aquí — el wrapper (crearPrestamo) lo reintenta
+            throw e;
         } catch (Exception e) {
             log.error("Error al descontar copia en License Service — libro: {}: {}",
                     request.getLibroId(), e.getMessage());
@@ -134,17 +169,31 @@ public class PrestamoService {
             log.info("Préstamo creado exitosamente — id: {}, usuario: {}, libro: {}, vence: {}",
             guardado.getId(), usuarioId, request.getLibroId(), 
             guardado.getFechaVencimiento());
+        } catch (ObjectOptimisticLockingFailureException e) {
+            // Conflicto de @Version en Prestamo — otro request creó el mismo préstamo
+            log.error("Conflicto de concurrencia al guardar préstamo — libro: {}: {}",
+                    request.getLibroId(), e.getMessage());
+            try {
+                licenseClient.devolver(request.getLibroId());
+                log.info("Compensación exitosa — copia restaurada para libro: {}", 
+                        request.getLibroId());
+            } catch (Exception ex) {
+                log.error("COMPENSACIÓN FALLIDA — inconsistencia en copias del libro: {}. " +
+                        "Requiere revisión manual.", request.getLibroId());
+            }
+            throw new RuntimeException(
+                    "La última copia del libro fue tomada por otro usuario. Intenta de nuevo.");
         } catch (Exception e) {
             log.error("Error al guardar préstamo — intentando compensar descuento de copia — libro: {}",
             request.getLibroId());
-        try {
-            licenseClient.devolver(request.getLibroId());
+            try {
+                licenseClient.devolver(request.getLibroId());
                 log.info("Compensación exitosa — copia restaurada para libro: {}", 
-                request.getLibroId());
-        } catch (Exception ex) {
+                        request.getLibroId());
+            } catch (Exception ex) {
                 log.error("COMPENSACIÓN FALLIDA — inconsistencia en copias del libro: {}. " +
-                "Requiere revisión manual.", request.getLibroId());
-        }
+                        "Requiere revisión manual.", request.getLibroId());
+            }
             throw new RuntimeException("Error al crear el préstamo. La operación fue revertida.");
         }
 
@@ -216,6 +265,10 @@ public class PrestamoService {
                             prestamo.getId(), e.getMessage());
                 }
 
+            } catch (ObjectOptimisticLockingFailureException e) {
+                // @Version cambió — otro scheduler o request cerró este préstamo primero
+                log.warn("Conflicto de concurrencia al cerrar préstamo id: {} — " +
+                        "se procesará en el próximo ciclo del scheduler", prestamo.getId());
             } catch (Exception e) {
                 log.error("Error al cerrar préstamo id: {} — {}", 
                         prestamo.getId(), e.getMessage());

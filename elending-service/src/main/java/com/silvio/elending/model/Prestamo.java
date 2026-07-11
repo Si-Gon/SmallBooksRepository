@@ -36,6 +36,12 @@ public class Prestamo {
     @Column(nullable = false, length = 20)
     private EstadoPrestamo estado;
 
+    // Versión para optimistic locking — evita que dos requests simultáneos
+    // creen el mismo préstamo o actualicen concurrentemente (ej. cerrarPrestamosVencidos)
+    @Version
+    @Column(name = "version")
+    private Integer version;
+
     public enum EstadoPrestamo {
         ACTIVO,
         VENCIDO

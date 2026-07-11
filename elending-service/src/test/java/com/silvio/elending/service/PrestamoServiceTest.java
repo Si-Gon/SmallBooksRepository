@@ -11,8 +11,10 @@ import com.silvio.elending.dto.SuscripcionDTO;
 import com.silvio.elending.model.Prestamo;
 import com.silvio.elending.model.Prestamo.EstadoPrestamo;
 import com.silvio.elending.repository.PrestamoRepository;
+import feign.FeignException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -1151,5 +1153,169 @@ class PrestamoServiceTest {
         assertTrue(resultado.getFechaVencimiento()
                 .isAfter(resultado.getFechaInicio().plusDays(6)));
         verify(prestamoRepository).save(any(Prestamo.class));
+    }
+
+    // ─── test optimistic lock — 409 Conflict ─────────────────────────────────
+
+    @Test
+    void crearPrestamo_falla_cuando_licenseClient_prestar_lanza_409_conflict() {
+        // Given — simula el optimistic lock: License Service responde 409
+        // cuando dos usuarios piden la última copia simultáneamente
+        String usuarioId = "usuario_optimistic_lock";
+        when(subscriptionClient.obtenerSuscripcion(usuarioId)).thenReturn(suscripcionBasico());
+        when(prestamoRepository.findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(prestamoRepository.findByLibroIdAndEstado(42L, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(licenseClient.obtenerLicencia(42L)).thenReturn(licenciaDisponible());
+        when(licenseClient.prestar(42L))
+                .thenThrow(mock(FeignException.Conflict.class));
+
+        // When & Then
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> prestamoService.crearPrestamo(request(42L), usuarioId));
+
+        assertTrue(ex.getMessage().contains("última copia")
+                || ex.getMessage().contains("otro usuario")
+                || ex.getMessage().contains("Intenta de nuevo"));
+        // El wrapper reintenta 3 veces — verify que prestar() se llamó 3 veces
+        verify(licenseClient, times(3)).prestar(42L);
+        // No debe llegar a save — la copia no se descontó
+        verify(prestamoRepository, never()).save(any(Prestamo.class));
+    }
+
+    @Test
+    void crearPrestamo_funciona_en_3er_reintento_cuando_license_devuelve_409_dos_veces() {
+        // Given — License Service responde 409 dos veces y éxito en el 3er intento
+        String usuarioId = "usuario_409_3er_intento";
+        when(subscriptionClient.obtenerSuscripcion(usuarioId)).thenReturn(suscripcionBasico());
+        when(prestamoRepository.findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(prestamoRepository.findByLibroIdAndEstado(88L, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(licenseClient.obtenerLicencia(88L)).thenReturn(licenciaDisponible());
+        when(licenseClient.prestar(88L))
+                .thenThrow(mock(FeignException.Conflict.class))
+                .thenThrow(mock(FeignException.Conflict.class))
+                .thenReturn(licenciaDisponible());
+        when(prestamoRepository.save(any(Prestamo.class)))
+                .thenAnswer(i -> i.getArgument(0));
+
+        // When
+        PrestamoResponseDTO resultado = prestamoService.crearPrestamo(request(88L), usuarioId);
+
+        // Then — el 3er reintento fue exitoso
+        assertNotNull(resultado);
+        assertEquals(88L, resultado.getLibroId());
+        assertEquals(EstadoPrestamo.ACTIVO, resultado.getEstado());
+        verify(licenseClient, times(3)).prestar(88L);
+        verify(prestamoRepository).save(any(Prestamo.class));
+    }
+
+    // ─── test optimistic lock local — @Version en Prestamo ───────────────────
+
+    @Test
+    void crearPrestamo_falla_cuando_save_lanza_optimistic_lock() {
+        // Given — simula el optimistic lock local: @Version en Prestamo
+        // detecta que otro request creó un préstamo concurrentemente
+        String usuarioId = "usuario_ol_local";
+        when(subscriptionClient.obtenerSuscripcion(usuarioId)).thenReturn(suscripcionBasico());
+        when(prestamoRepository.findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(prestamoRepository.findByLibroIdAndEstado(99L, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(licenseClient.obtenerLicencia(99L)).thenReturn(licenciaDisponible());
+        when(licenseClient.prestar(99L)).thenReturn(licenciaDisponible());
+        when(prestamoRepository.save(any(Prestamo.class)))
+                .thenThrow(new ObjectOptimisticLockingFailureException("prestamo", null));
+
+        // When & Then
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> prestamoService.crearPrestamo(request(99L), usuarioId));
+
+        assertTrue(ex.getMessage().contains("última copia")
+                || ex.getMessage().contains("otro usuario")
+                || ex.getMessage().contains("Intenta de nuevo"));
+        // La copia se descontó en license-service pero falló el save local
+        verify(licenseClient).prestar(99L);
+        // Debe compensar: devolver la copia
+        verify(licenseClient).devolver(99L);
+    }
+
+    @Test
+    void crearPrestamo_compensa_cuando_save_lanza_OL_y_devolver_tambien_falla() {
+        // Given — @Version en Prestamo lanza OL en save(), y la compensación
+        // (devolver copia en license-service) también falla
+        String usuarioId = "usuario_ol_comp_fail";
+        when(subscriptionClient.obtenerSuscripcion(usuarioId)).thenReturn(suscripcionBasico());
+        when(prestamoRepository.findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(prestamoRepository.findByLibroIdAndEstado(55L, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(licenseClient.obtenerLicencia(55L)).thenReturn(licenciaDisponible());
+        when(licenseClient.prestar(55L)).thenReturn(licenciaDisponible());
+        when(prestamoRepository.save(any(Prestamo.class)))
+                .thenThrow(new ObjectOptimisticLockingFailureException("prestamo", null));
+        // La compensación también falla
+        when(licenseClient.devolver(55L))
+                .thenThrow(new RuntimeException("License service no disponible para compensar OL"));
+
+        // When & Then — debe lanzar RuntimeException a pesar del fallo en compensación
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> prestamoService.crearPrestamo(request(55L), usuarioId));
+
+        assertTrue(ex.getMessage().contains("última copia")
+                || ex.getMessage().contains("otro usuario")
+                || ex.getMessage().contains("Intenta de nuevo"));
+        // La copia se descontó y se intentó compensar
+        verify(licenseClient).prestar(55L);
+        verify(licenseClient).devolver(55L);
+        // No debe llegar a guardar exitosamente
+        verify(prestamoRepository).save(any(Prestamo.class));
+    }
+
+    // ─── test scheduler — ObjectOptimisticLockingFailureException ────────────
+
+    @Test
+    void cerrarPrestamosVencidos_maneja_OL_y_continua_con_otros_prestamos() {
+        // Given — dos préstamos vencidos, el primero lanza OL en save,
+        // el segundo se procesa correctamente
+        Prestamo vencido1 = new Prestamo();
+        vencido1.setId(60L);
+        vencido1.setUsuarioId("user_ol_fail");
+        vencido1.setLibroId(600L);
+        vencido1.setEstado(EstadoPrestamo.ACTIVO);
+        vencido1.setFechaVencimiento(LocalDateTime.now().minusDays(1));
+
+        Prestamo vencido2 = new Prestamo();
+        vencido2.setId(61L);
+        vencido2.setUsuarioId("user_ol_ok");
+        vencido2.setLibroId(601L);
+        vencido2.setEstado(EstadoPrestamo.ACTIVO);
+        vencido2.setFechaVencimiento(LocalDateTime.now().minusDays(2));
+
+        when(prestamoRepository.findByEstadoAndFechaVencimientoBefore(
+                eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class)))
+                .thenReturn(Arrays.asList(vencido1, vencido2));
+        when(licenseClient.devolver(600L)).thenReturn(licenciaDisponible());
+        when(licenseClient.devolver(601L)).thenReturn(licenciaDisponible());
+        // El save del primero lanza OL, el segundo funciona
+        when(prestamoRepository.save(any(Prestamo.class)))
+                .thenThrow(new ObjectOptimisticLockingFailureException("prestamo", null))
+                .thenAnswer(i -> i.getArgument(0));
+
+        // When — no debe lanzar excepción, continúa con el segundo aunque
+        // el primero falle por OL
+        prestamoService.cerrarPrestamosVencidos();
+
+        // Then
+        verify(licenseClient).devolver(600L);  // primero: devolver se llamó
+        verify(licenseClient).devolver(601L);  // segundo: devolver se llamó
+        verify(prestamoRepository, times(2)).save(any(Prestamo.class)); // ambos intentaron save
+        // NOTA: setEstado(VENCIDO) se ejecuta ANTES de save() en el código,
+        // por lo que vencido1.getEstado() = VENCIDO aunque save() haya fallado.
+        // Lo que importa es que el flujo no se interrumpió y procesó al segundo.
+        // El segundo se procesó correctamente
+        assertEquals(EstadoPrestamo.VENCIDO, vencido2.getEstado());
     }
 }

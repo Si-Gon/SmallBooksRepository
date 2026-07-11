@@ -15,7 +15,10 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 /**
  * Tests unitarios de LicenseService.
@@ -208,6 +211,79 @@ class LicenseServiceTest {
             .hasMessageContaining("Todas las copias del libro ya están disponibles");
 
         verify(licenseRepository, never()).save(any());
+    }
+
+    // =====================================================================
+    // prestar() — optimistic locking: 3 reintentos ante conflicto @Version
+    // =====================================================================
+
+    @Test
+    void prestar_con_3_conflictos_OL_consecutivos_lanza_RuntimeException() {
+        // Simula 3 conflictos de @Version seguidos — el wrapper agota reintentos
+        License l = license(1L, 10, 3);
+        when(licenseRepository.findByLibroId(1L)).thenReturn(Optional.of(l));
+        when(licenseRepository.save(any(License.class)))
+                .thenThrow(new ObjectOptimisticLockingFailureException("license", null));
+
+        assertThatThrownBy(() -> licenseService.prestar(1L))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessageContaining("muchos usuarios");
+
+        // save() se intentó 3 veces (una por cada reintento)
+        verify(licenseRepository, times(3)).save(any(License.class));
+    }
+
+    @Test
+    void prestar_con_2_conflictos_OL_y_3er_intento_exitoso_funciona() {
+        // Simula 2 conflictos @Version seguidos + éxito en el 3er intento
+        // NOTA: doPrestar() modifica el entity antes de save(), por lo que
+        // las copias disponibles en el DTO reflejan el 3er intento (3-1-1-1=0).
+        // Lo importante es que no lance excepción y reintente 3 veces.
+        License l = license(1L, 10, 3);
+        when(licenseRepository.findByLibroId(1L)).thenReturn(Optional.of(l));
+        when(licenseRepository.save(any(License.class)))
+                .thenThrow(new ObjectOptimisticLockingFailureException("license", null))
+                .thenThrow(new ObjectOptimisticLockingFailureException("license", null))
+                .thenReturn(l);
+
+        licenseService.prestar(1L);
+
+        verify(licenseRepository, times(3)).save(any(License.class));
+    }
+
+    // =====================================================================
+    // devolver() — optimistic locking: 3 reintentos ante conflicto @Version
+    // =====================================================================
+
+    @Test
+    void devolver_con_3_conflictos_OL_consecutivos_lanza_RuntimeException() {
+        // Simula 3 conflictos de @Version seguidos en devolver()
+        License l = license(1L, 10, 3);
+        when(licenseRepository.findByLibroId(1L)).thenReturn(Optional.of(l));
+        when(licenseRepository.save(any(License.class)))
+                .thenThrow(new ObjectOptimisticLockingFailureException("license", null));
+
+        assertThatThrownBy(() -> licenseService.devolver(1L))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessageContaining("Error al devolver copia");
+
+        verify(licenseRepository, times(3)).save(any(License.class));
+    }
+
+    @Test
+    void devolver_con_2_conflictos_OL_y_3er_intento_exitoso_funciona() {
+        // Simula 2 conflictos @Version seguidos + éxito en el 3er intento
+        // Lo importante es que no lance excepción y reintente 3 veces.
+        License l = license(1L, 10, 3);
+        when(licenseRepository.findByLibroId(1L)).thenReturn(Optional.of(l));
+        when(licenseRepository.save(any(License.class)))
+                .thenThrow(new ObjectOptimisticLockingFailureException("license", null))
+                .thenThrow(new ObjectOptimisticLockingFailureException("license", null))
+                .thenReturn(l);
+
+        licenseService.devolver(1L);
+
+        verify(licenseRepository, times(3)).save(any(License.class));
     }
 
     // =====================================================================

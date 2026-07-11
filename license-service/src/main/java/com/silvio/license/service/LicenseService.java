@@ -6,6 +6,7 @@ import com.silvio.license.model.License;
 import com.silvio.license.repository.LicenseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,8 +61,32 @@ public class LicenseService {
         return mapearADto(guardada);
     }
 
-    @Transactional
+    // ─── prestar con optimistic locking ─────────────────────────────────────
+    // Wrapper no transaccional: reintenta si hay conflicto de concurrencia
+    // El @Version en License dispara ObjectOptimisticLockingFailureException
+    // cuando dos hilos modifican la misma fila simultáneamente
+
     public LicenseResponseDTO prestar(Long libroId) {
+        int maxReintentos = 3;
+        int intento = 0;
+        while (true) {
+            try {
+                return doPrestar(libroId);
+            } catch (ObjectOptimisticLockingFailureException e) {
+                if (++intento >= maxReintentos) {
+                    log.error("No se pudo descontar copia tras {} intentos — libro: {}",
+                            maxReintentos, libroId);
+                    throw new RuntimeException(
+                            "El libro está siendo solicitado por muchos usuarios. Intenta de nuevo.");
+                }
+                log.warn("Conflicto de concurrencia al prestar libro {}, reintento {}/{}",
+                        libroId, intento, maxReintentos);
+            }
+        }
+    }
+
+    @Transactional
+    protected LicenseResponseDTO doPrestar(Long libroId) {
         log.info("Descontando copia — libro id: {}", libroId);
         License license = licenseRepository.findByLibroId(libroId)
                 .orElseThrow(() -> new RuntimeException(
@@ -79,8 +104,29 @@ public class LicenseService {
         return mapearADto(licenseRepository.save(license));
     }
 
-    @Transactional
+    // ─── devolver con optimistic locking ────────────────────────────────────
+
     public LicenseResponseDTO devolver(Long libroId) {
+        int maxReintentos = 3;
+        int intento = 0;
+        while (true) {
+            try {
+                return doDevolver(libroId);
+            } catch (ObjectOptimisticLockingFailureException e) {
+                if (++intento >= maxReintentos) {
+                    log.error("No se pudo devolver copia tras {} intentos — libro: {}",
+                            maxReintentos, libroId);
+                    throw new RuntimeException(
+                            "Error al devolver copia. Intenta de nuevo.");
+                }
+                log.warn("Conflicto de concurrencia al devolver libro {}, reintento {}/{}",
+                        libroId, intento, maxReintentos);
+            }
+        }
+    }
+
+    @Transactional
+    protected LicenseResponseDTO doDevolver(Long libroId) {
         log.info("Devolviendo copia — libro id: {}", libroId);
         License license = licenseRepository.findByLibroId(libroId)
                 .orElseThrow(() -> new RuntimeException(
