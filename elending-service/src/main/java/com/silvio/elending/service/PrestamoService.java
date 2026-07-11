@@ -52,6 +52,20 @@ public class PrestamoService {
             suscripcion.setPlan("BASICO");
         }
 
+        // Validar que maxPrestamos y diasPrestamo no sean nulos
+        // Si son nulos (ej. respuesta incompleta del subscription-service), aplicar plan BASICO por defecto
+        if (suscripcion.getMaxPrestamos() == null || suscripcion.getDiasPrestamo() == null) {
+            log.warn("Valores nulos en suscripción del usuario {}. Aplicando plan BASICO por defecto. " +
+                     "maxPrestamos: {}, diasPrestamo: {}",
+                     usuarioId, suscripcion.getMaxPrestamos(), suscripcion.getDiasPrestamo());
+            if (suscripcion.getMaxPrestamos() == null) {
+                suscripcion.setMaxPrestamos(2);
+            }
+            if (suscripcion.getDiasPrestamo() == null) {
+                suscripcion.setDiasPrestamo(7);
+            }
+        }
+
         // Paso 2: Verificar límite de préstamos
         List<Prestamo> prestamosActivos = prestamoRepository
                 .findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO);

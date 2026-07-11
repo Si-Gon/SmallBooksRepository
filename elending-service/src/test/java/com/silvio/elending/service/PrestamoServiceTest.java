@@ -307,9 +307,9 @@ class PrestamoServiceTest {
     // ─── tests crearPrestamo — nulls en SuscripcionDTO ──────────────────────
 
     @Test
-    void crearPrestamo_cuandoMaxPrestamosEsNull_lanzaExcepcion() {
+    void crearPrestamo_cuandoMaxPrestamosEsNull_aplicaFallback() {
         // Given — SuscripcionDTO con maxPrestamos = null
-        // El auto-unboxing en >= comparison lanza NPE
+        // El fallback asigna 2 (BASICO) para evitar NPE por auto-unboxing
         String usuarioId = "usuario_null_max";
         SuscripcionDTO suscripcionSinMax = new SuscripcionDTO();
         suscripcionSinMax.setPlan("BASICO");
@@ -320,18 +320,27 @@ class PrestamoServiceTest {
         when(subscriptionClient.obtenerSuscripcion(usuarioId)).thenReturn(suscripcionSinMax);
         when(prestamoRepository.findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO))
                 .thenReturn(new ArrayList<>());
+        when(prestamoRepository.findByLibroIdAndEstado(111L, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(licenseClient.obtenerLicencia(111L)).thenReturn(licenciaDisponible());
+        when(licenseClient.prestar(111L)).thenReturn(licenciaDisponible());
+        when(prestamoRepository.save(any(Prestamo.class))).thenAnswer(i -> i.getArgument(0));
 
-        // When & Then — NPE por auto-unboxing de null Integer
-        assertThrows(RuntimeException.class,
-                () -> prestamoService.crearPrestamo(request(111L), usuarioId));
-        verify(prestamoRepository, never()).save(any(Prestamo.class));
-        verify(licenseClient, never()).prestar(anyLong());
+        // When — no debe lanzar excepción, aplica fallback a BASICO
+        PrestamoResponseDTO resultado = prestamoService.crearPrestamo(request(111L), usuarioId);
+
+        // Then
+        assertNotNull(resultado);
+        assertEquals(111L, resultado.getLibroId());
+        assertEquals(EstadoPrestamo.ACTIVO, resultado.getEstado());
+        verify(prestamoRepository).save(any(Prestamo.class));
+        verify(licenseClient).prestar(111L);
     }
 
     @Test
-    void crearPrestamo_cuandoDiasPrestamoEsNull_lanzaExcepcion() {
+    void crearPrestamo_cuandoDiasPrestamoEsNull_aplicaFallback() {
         // Given — SuscripcionDTO con diasPrestamo = null
-        // El auto-unboxing en plusDays() lanza NPE
+        // El fallback asigna 7 (BASICO) para evitar NPE por auto-unboxing en plusDays()
         String usuarioId = "usuario_null_dias";
         SuscripcionDTO suscripcionSinDias = new SuscripcionDTO();
         suscripcionSinDias.setPlan("BASICO");
@@ -346,11 +355,20 @@ class PrestamoServiceTest {
                 .thenReturn(new ArrayList<>());
         when(licenseClient.obtenerLicencia(112L)).thenReturn(licenciaDisponible());
         when(licenseClient.prestar(112L)).thenReturn(licenciaDisponible());
+        when(prestamoRepository.save(any(Prestamo.class))).thenAnswer(i -> i.getArgument(0));
 
-        // When & Then — NPE por auto-unboxing de null Integer en plusDays()
-        assertThrows(RuntimeException.class,
-                () -> prestamoService.crearPrestamo(request(112L), usuarioId));
-        verify(prestamoRepository, never()).save(any(Prestamo.class));
+        // When — no debe lanzar excepción, aplica fallback a BASICO
+        PrestamoResponseDTO resultado = prestamoService.crearPrestamo(request(112L), usuarioId);
+
+        // Then
+        assertNotNull(resultado);
+        assertEquals(112L, resultado.getLibroId());
+        assertEquals(EstadoPrestamo.ACTIVO, resultado.getEstado());
+        // Con fallback: 7 días de vencimiento
+        assertTrue(resultado.getFechaVencimiento()
+                .isAfter(resultado.getFechaInicio().plusDays(6)));
+        verify(prestamoRepository).save(any(Prestamo.class));
+        verify(licenseClient).prestar(112L);
     }
 
     // ─── tests crearPrestamo — verificación exacta de duración ──────────────
