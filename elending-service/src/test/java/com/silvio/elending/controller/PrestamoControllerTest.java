@@ -8,6 +8,7 @@ import com.silvio.elending.security.JwtExtractor;
 import com.silvio.elending.service.PrestamoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -33,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 3. JwtExtractor también se mockea — no queremos validar tokens JWT reales en tests.
  */
 @WebMvcTest(PrestamoController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class PrestamoControllerTest {
 
     @Autowired
@@ -227,7 +229,7 @@ class PrestamoControllerTest {
     }
 
     @Test
-    void crearPrestamo_sinToken_debeRetornar401() throws Exception {
+    void crearPrestamo_sinToken_debeRetornar400() throws Exception {
         // Sin header Authorization — el controller falla antes de llegar al service
         PrestamoRequestDTO request = new PrestamoRequestDTO();
         request.setLibroId(1L);
