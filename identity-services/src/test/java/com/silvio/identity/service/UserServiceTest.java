@@ -1,5 +1,6 @@
 package com.silvio.identity.service;
 
+import com.silvio.identity.dto.UsuarioDTO;
 import com.silvio.identity.model.User;
 import com.silvio.identity.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -273,5 +274,77 @@ class UserServiceTest {
         assertThrows(RuntimeException.class,
                 () -> userService.changePassword("noexiste", "pass", "nueva"));
         verify(userRepository, never()).save(any(User.class));
+    }
+
+    // ─── tests obtenerUsuarioPorUsername ────────────────────────────────────────
+
+    @Test
+    void obtenerUsuarioPorUsername_devuelve_DTO_cuando_usuario_existe() {
+        // Given
+        String username = "silvio";
+        User user = usuarioBase(username);
+        user.setId(1L);
+
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+
+        // When
+        UsuarioDTO dto = userService.obtenerUsuarioPorUsername(username);
+
+        // Then
+        assertNotNull(dto);
+        assertEquals(1L, dto.getId());
+        assertEquals(username, dto.getUsername());
+        assertTrue(dto.getRoles().contains("ROLE_USER"));
+        assertEquals(1, dto.getRoles().size());
+        verify(userRepository).findByUsername(username);
+    }
+
+    @Test
+    void obtenerUsuarioPorUsername_devuelve_DTO_con_multiples_roles() {
+        // Given — usuario con múltiples roles
+        String username = "admin";
+        User user = usuarioBase(username);
+        user.setId(2L);
+        user.setRoles(Set.of("ROLE_USER", "ROLE_ADMIN", "ROLE_PREMIUM"));
+
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+
+        // When
+        UsuarioDTO dto = userService.obtenerUsuarioPorUsername(username);
+
+        // Then — el DTO debe contener todos los roles
+        assertNotNull(dto);
+        assertEquals(2L, dto.getId());
+        assertEquals(username, dto.getUsername());
+        assertEquals(3, dto.getRoles().size());
+        assertTrue(dto.getRoles().containsAll(Set.of("ROLE_USER", "ROLE_ADMIN", "ROLE_PREMIUM")));
+        verify(userRepository).findByUsername(username);
+    }
+
+    @Test
+    void obtenerUsuarioPorUsername_falla_cuando_usuario_no_existe() {
+        // Given
+        String username = "noexiste";
+        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
+
+        // When & Then
+        UsernameNotFoundException ex = assertThrows(UsernameNotFoundException.class,
+                () -> userService.obtenerUsuarioPorUsername(username));
+
+        assertTrue(ex.getMessage().contains("no encontrado"));
+        verify(userRepository).findByUsername(username);
+    }
+
+    @Test
+    void obtenerUsuarioPorUsername_falla_cuando_username_es_null() {
+        // Given — Spring Data JPA devuelve Optional.empty() para parámetros null
+        when(userRepository.findByUsername(null)).thenReturn(Optional.empty());
+
+        // When & Then — debe lanzar UsernameNotFoundException como con cualquier usuario inexistente
+        UsernameNotFoundException ex = assertThrows(UsernameNotFoundException.class,
+                () -> userService.obtenerUsuarioPorUsername(null));
+
+        assertTrue(ex.getMessage().contains("no encontrado"));
+        verify(userRepository).findByUsername(null);
     }
 }

@@ -1,5 +1,6 @@
 package com.silvio.identity.service;
 
+import com.silvio.identity.dto.UsuarioDTO;
 import com.silvio.identity.model.User;
 import com.silvio.identity.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -108,5 +109,22 @@ public class UserService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
         log.info("Contraseña cambiada exitosamente para usuario: {}", username);
+    }
+
+    @Transactional(readOnly = true)
+    public UsuarioDTO obtenerUsuarioPorUsername(String username) {
+        log.info("Consultando usuario por username: {}", username);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> {
+                    log.warn("Usuario no encontrado: {}", username);
+                    return new UsernameNotFoundException("Usuario '" + username + "' no encontrado");
+                });
+
+        UsuarioDTO dto = new UsuarioDTO();
+        dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
+        dto.setRoles(user.getRoles());
+        log.info("Usuario encontrado: {} con roles: {}", username, user.getRoles());
+        return dto;
     }
 }
