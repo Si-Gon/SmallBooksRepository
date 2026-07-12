@@ -130,6 +130,19 @@ class ShedLockIntegrationTest {
         // When — liberar el lock explícitamente
         lock.get().unlock();
 
+        // Limpiar caché interna LockRecordRegistry del LockProvider.
+        // unlock() no remueve el registro del caché (Set<String> lockRecords),
+        // por lo que lock() posterior para el mismo nombre saltea INSERT
+        // y va directo a UPDATE con WHERE lock_until <= :now.
+        // Si :now (ClockProvider.now() truncado a millis) no supera
+        // el unlockTime (también truncado a millis), el UPDATE afecta
+        // 0 filas y el test falla intermitentemente.
+        // Con clearCache() forzamos el path INSERT que falla con
+        // DuplicateKeyException y hace fallback a UPDATE con timing fresco.
+        if (lockProvider instanceof StorageBasedLockProvider) {
+            ((StorageBasedLockProvider) lockProvider).clearCache();
+        }
+
         // Then — se puede adquirir de nuevo
         Optional<SimpleLock> lockRenovado = lockProvider.lock(config);
         assertTrue(lockRenovado.isPresent(),
