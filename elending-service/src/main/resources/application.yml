@@ -4,6 +4,12 @@ spring:
   config:
     import: optional:configserver:http://localhost:8888
 
+  # Resilience4j — Circuit Breaker para Feign Clients
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+
   # RabbitMQ — productor de eventos de notificación
   rabbitmq:
     host: ${SPRING_RABBITMQ_HOST:localhost}
@@ -16,6 +22,34 @@ spring:
         initial-interval: 2s
         max-attempts: 3
         multiplier: 2.0
+
+# Resilience4j Circuit Breaker — configuración global y por cliente Feign
+# Cada cliente tiene su propio circuito: identity-client, catalog-client, subscription-client
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        sliding-window-size: 10                # ventana de 10 llamadas
+        minimum-number-of-calls: 5              # mínimo antes de evaluar
+        failure-rate-threshold: 50              # 50% de fallos → abre el circuito
+        wait-duration-in-open-state: 30s        # espera antes de pasar a half-open
+        permitted-number-of-calls-in-half-open-state: 3
+        slow-call-rate-threshold: 50
+        slow-call-duration-threshold: 5s
+    instances:
+      identity-service:
+        base-config: default
+      catalog-service:
+        base-config: default
+      subscription-service:
+        base-config: default
+
+  # Timeout global para Feign calls (evita hilos colgados)
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 5s
+        cancel-running-future: true
 
 logging:
   file:

@@ -89,6 +89,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Resilience4j: Circuit Breaker para Feign Clients con fallbacks degradados -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+		</dependency>
+
 		<!-- ShedLock: bloqueo distribuido para scheduler multi-instancia -->
 		<dependency>
 			<groupId>net.javacrumbs.shedlock</groupId>
