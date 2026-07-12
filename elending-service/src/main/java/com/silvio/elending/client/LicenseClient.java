@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 // lb://license-service → Feign usa Eureka para encontrar la URL real
 // No necesitamos saber el puerto — Eureka lo resuelve por nombre
-@FeignClient(name = "license-service")
+@FeignClient(
+        name = "license-service",
+        fallbackFactory = LicenseClientFallbackFactory.class
+)
 public interface LicenseClient {
 
     // Consultar copias disponibles de un libro

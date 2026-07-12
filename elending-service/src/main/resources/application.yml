@@ -43,6 +43,8 @@ resilience4j:
         base-config: default
       subscription-service:
         base-config: default
+      license-service:
+        base-config: default
 
   # Timeout global para Feign calls (evita hilos colgados)
   timelimiter:

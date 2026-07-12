@@ -2,6 +2,7 @@ package com.silvio.elending.config;
 
 import com.silvio.elending.client.CatalogClientFallbackFactory;
 import com.silvio.elending.client.IdentityClientFallbackFactory;
+import com.silvio.elending.client.LicenseClientFallbackFactory;
 import com.silvio.elending.client.SubscriptionClientFallbackFactory;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
@@ -31,6 +32,9 @@ class Resilience4jConfigIntegrationTest {
 
     @Autowired(required = false)
     private SubscriptionClientFallbackFactory subscriptionClientFallbackFactory;
+
+    @Autowired(required = false)
+    private LicenseClientFallbackFactory licenseClientFallbackFactory;
 
     @Test
     void contextLoads_conCircuitBreakerConfig() {
@@ -62,6 +66,14 @@ class Resilience4jConfigIntegrationTest {
         CircuitBreaker cb = circuitBreakerRegistry.circuitBreaker("subscription-service");
         assertNotNull(cb, "Debe existir un circuito para subscription-service");
         assertEquals("subscription-service", cb.getName());
+    }
+
+    @Test
+    void circuitBreakerRegistry_contieneInstanciaLicenseService() {
+        assertNotNull(circuitBreakerRegistry);
+        CircuitBreaker cb = circuitBreakerRegistry.circuitBreaker("license-service");
+        assertNotNull(cb, "Debe existir un circuito para license-service");
+        assertEquals("license-service", cb.getName());
     }
 
     @Test
@@ -115,13 +127,20 @@ class Resilience4jConfigIntegrationTest {
     }
 
     @Test
-    void tresCircuitosConMismaConfig_baseConfigDefault() {
+    void fallbackFactory_licenseClient_beanRegistrado() {
+        assertNotNull(licenseClientFallbackFactory,
+                "LicenseClientFallbackFactory debe ser un bean registrado en Spring");
+    }
+
+    @Test
+    void cuatroCircuitosConMismaConfig_baseConfigDefault() {
         assertNotNull(circuitBreakerRegistry);
         CircuitBreaker cbIdentity = circuitBreakerRegistry.circuitBreaker("identity-service");
         CircuitBreaker cbCatalog = circuitBreakerRegistry.circuitBreaker("catalog-service");
         CircuitBreaker cbSubscription = circuitBreakerRegistry.circuitBreaker("subscription-service");
+        CircuitBreaker cbLicense = circuitBreakerRegistry.circuitBreaker("license-service");
 
-        // Los 3 circuitos deben tener la misma configuración (base-config: default)
+        // Los 4 circuitos deben tener la misma configuración (base-config: default)
         assertEquals(
                 cbIdentity.getCircuitBreakerConfig().getSlidingWindowSize(),
                 cbCatalog.getCircuitBreakerConfig().getSlidingWindowSize());
@@ -130,6 +149,9 @@ class Resilience4jConfigIntegrationTest {
                 cbSubscription.getCircuitBreakerConfig().getFailureRateThreshold());
         assertEquals(
                 cbIdentity.getCircuitBreakerConfig().getMinimumNumberOfCalls(),
-                cbCatalog.getCircuitBreakerConfig().getMinimumNumberOfCalls());
+                cbLicense.getCircuitBreakerConfig().getMinimumNumberOfCalls());
+        assertEquals(
+                cbIdentity.getCircuitBreakerConfig().getPermittedNumberOfCallsInHalfOpenState(),
+                cbLicense.getCircuitBreakerConfig().getPermittedNumberOfCallsInHalfOpenState());
     }
 }

@@ -16,7 +16,7 @@ public class IdentityClientFallbackFactory implements FallbackFactory<IdentityCl
 
     @Override
     public IdentityClient create(Throwable cause) {
-        log.warn("⛔ Identity Service no disponible. Activando fallback. Causa: {}",
+        log.warn(" Identity Service no disponible. Activando fallback. Causa: {}",
                 cause.getMessage() != null ? cause.getMessage() : cause.getClass().getSimpleName());
 
         return new IdentityClient() {

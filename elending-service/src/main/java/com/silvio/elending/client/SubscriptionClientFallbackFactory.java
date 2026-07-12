@@ -16,7 +16,7 @@ public class SubscriptionClientFallbackFactory implements FallbackFactory<Subscr
 
     @Override
     public SubscriptionClient create(Throwable cause) {
-        log.warn("⛔ Subscription Service no disponible. Activando fallback. Causa: {}",
+        log.warn(" Subscription Service no disponible. Activando fallback. Causa: {}",
                 cause.getMessage() != null ? cause.getMessage() : cause.getClass().getSimpleName());
 
         return new SubscriptionClient() {

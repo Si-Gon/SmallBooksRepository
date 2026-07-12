@@ -17,7 +17,7 @@ public class CatalogClientFallbackFactory implements FallbackFactory<CatalogClie
 
     @Override
     public CatalogClient create(Throwable cause) {
-        log.warn("⛔ Catalog Service no disponible. Activando fallback. Causa: {}",
+        log.warn(" Catalog Service no disponible. Activando fallback. Causa: {}",
                 cause.getMessage() != null ? cause.getMessage() : cause.getClass().getSimpleName());
 
         return new CatalogClient() {
