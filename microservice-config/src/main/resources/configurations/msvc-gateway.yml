@@ -89,5 +89,21 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka/
 
+# ──────────────────────────────────────────────
+# Configuración del rate limiter Bucket4j
+# ──────────────────────────────────────────────
+# Bucket4j aplica el algoritmo Token Bucket en memoria (ConcurrentHashMap).
+# Sin Redis — los contadores viven dentro del proceso del gateway.
+#
+# global:  Límite total del gateway (protege los 13 servicios de saturación)
+# per-ip:  Límite individual por cliente (fair use — un cliente no bloquea a otros)
+rate-limiting:
+  global:
+    capacity: 1000          # Máximo de tokens en el bucket global
+    refill-per-minute: 1000 # Tokens que se regeneran cada minuto
+  per-ip:
+    capacity: 50            # Máximo de tokens por IP
+    refill-per-minute: 50   # Tokens que se regeneran cada minuto por IP
+
 jwt:
   secret: Duoc.1983Duoc.1983Duoc.1983Duoc.1983

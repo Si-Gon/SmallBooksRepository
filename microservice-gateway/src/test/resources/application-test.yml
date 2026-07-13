@@ -16,6 +16,17 @@ eureka:
   client:
     enabled: false
 
+# Límites reducidos para tests de rate limiting
+# Los valores por defecto (@Value con ":") también funcionan, pero
+# tenerlos explicitados evita sorpresas si alguien cambia los defaults
+rate-limiting:
+  global:
+    capacity: 100
+    refill-per-minute: 100
+  per-ip:
+    capacity: 10
+    refill-per-minute: 10
+
 # Secret de 32+ caracteres requerido por HMAC-SHA256
 # En producción viene del Config Server — aquí lo ponemos fijo para tests
 jwt:
