@@ -91,13 +91,10 @@
         <artifactId>spring-boot-starter-aop</artifactId>
     </dependency>
     <!-- Zipkin Reporter: exporta trazas a Zipkin para visualización  -->
-    <!-- Opcional — descomentar cuando se tenga un servidor Zipkin    -->
-    <!--
     <dependency>
         <groupId>io.zipkin.reporter2</groupId>
         <artifactId>zipkin-reporter-brave</artifactId>
     </dependency>
-    -->
     <!-- Micrometer Observation Test: TestObservationRegistry para validar spans -->
     <dependency>
         <groupId>io.micrometer</groupId>

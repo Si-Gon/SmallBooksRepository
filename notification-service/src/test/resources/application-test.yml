@@ -16,8 +16,9 @@ spring:
   cloud:
     config:
       enabled: false
-
-  # Evita que el listener RabbitMQ intente conectarse en tests (no hay RabbitMQ disponible)
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
   rabbitmq:
     listener:
       simple:

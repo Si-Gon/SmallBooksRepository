@@ -25,8 +25,8 @@ management:
     sampling:
       probability: 1.0           # 100% muestreo en desarrollo; reducir a 0.1 en producción
   # ─────────────────────────────────────────────────────────────────────
-  # EXPORTACIÓN A ZIPKIN (opcional)
-  # Descomentar cuando se tenga un servidor Zipkin corriendo en el host.
-  # zipkin:
-  #   tracing:
-  #     endpoint: http://localhost:9411/api/v2/spans
+  # EXPORTACIÓN A ZIPKIN
+  # ─────────────────────────────────────────────────────────────────────
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
