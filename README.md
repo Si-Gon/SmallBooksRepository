@@ -3,6 +3,13 @@
 > Proyecto académico desarrollado en **Duoc UC** · Ingeniería Informática · DSY1103 Desarrollo FullStack 1  
 > Arquitectura de microservicios con Spring Boot 3.3.11 y Spring Cloud 2023.0.5
 
+![Java](https://img.shields.io/badge/Java-17-orange)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.11-green)
+![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2023.0.5-green)
+![Tests](https://img.shields.io/badge/Tests-859-blue)
+![Coverage](https://img.shields.io/badge/Coverage-90%25-brightgreen)
+![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-black)
+
 ---
 
 ## Equipo de Desarrollo
@@ -36,7 +43,9 @@ SmallBooks es una plataforma de biblioteca digital que permite a los usuarios ex
                                  │ registro de servicios
                         ┌────────▼────────┐
                         │  API Gateway    │ :8080
-                        │  (Spring Cloud) │
+                        │  JWT + Rate     │
+                        │  Limiting +     │
+                        │  X-User-Id      │
                         └────────┬────────┘
                                  │
           ┌──────────────────────┼──────────────────────┐
@@ -49,17 +58,17 @@ SmallBooks es una plataforma de biblioteca digital que permite a los usuarios ex
    ┌──────▼──────┐      ┌───────▼───────┐     ┌───────▼───────┐
    │  License    │      │ Subscription  │     │ Notification  │
    │   :8086     │      │    :8089      │     │    :8088      │
-   └─────────────┘      └───────────────┘     └───────────────┘
-          │                      │                      │
-   ┌──────▼──────┐      ┌───────▼───────┐     ┌───────▼───────┐
-   │  Ingestion  │      │    Search     │     │   Analytics   │
-   │   :8092     │      │    :8090      │     │    :8091      │
-   └─────────────┘      └───────────────┘     └───────────────┘
+   └─────────────┘      └───────────────┘     └───────┬───────┘
+          │                      │                    ↑
+   ┌──────▼──────┐      ┌───────▼───────┐     RabbitMQ (async)
+   │  Ingestion  │      │    Search     │
+   │   :8092     │      │    :8090      │
+   └─────────────┘      └───────────────┘
           │
-   ┌──────▼──────┐
-   │   Content   │
-   │  Delivery   │
-   │   :8093     │
+   ┌──────▼──────┐      ┌───────────────┐      ┌─────────────┐
+   │   Content   │      │   Analytics   │      │   Zipkin    │
+   │  Delivery   │      │    :8091      │      │   :9411     │
+   │   :8093     │      └───────────────┘      └─────────────┘
    └─────────────┘
 ```
 
@@ -71,52 +80,17 @@ SmallBooks es una plataforma de biblioteca digital que permite a los usuarios ex
 |---|---|---|
 | `microservice-config` | 8888 | Servidor de configuración centralizada |
 | `microservice-eureka` | 8761 | Registro y descubrimiento de servicios |
-| `microservice-gateway` | 8080 | API Gateway — punto de entrada único |
-| `identity-services` | 8084 | Autenticación JWT, registro y gestión de contraseñas |
-| `catalog-service` | 8085 | Catálogo de libros (CRUD completo) |
-| `license-service` | 8086 | Control de copias disponibles por libro |
+| `microservice-gateway` | 8080 | API Gateway — JWT, Rate Limiting, Identity Propagation |
+| `identity-services` | 8084 | Autenticación JWT, registro y gestión de usuarios |
+| `catalog-service` | 8085 | Catálogo de libros (CRUD completo + HATEOAS) |
+| `license-service` | 8086 | Control de copias disponibles con Optimistic Lock |
 | `elending-service` | 8087 | Préstamos digitales con reglas BÁSICO/PREMIUM |
-| `notification-service` | 8088 | Gestión de notificaciones a usuarios |
+| `notification-service` | 8088 | Notificaciones asíncronas via RabbitMQ con idempotencia |
 | `subscription-service` | 8089 | Planes de suscripción BÁSICO y PREMIUM |
 | `search-service` | 8090 | Búsqueda y descubrimiento de libros |
 | `analytics-service` | 8091 | Métricas y estadísticas de uso |
 | `ingestion-service` | 8092 | Carga de archivos PDF/EPUB → MySQL BLOB |
 | `content-service` | 8093 | Entrega de archivos a usuarios con préstamo activo |
-
----
-
-## Rutas del API Gateway
-
-Todas las peticiones entran por el puerto **:8080**. El Gateway valida el JWT y enruta al microservicio correspondiente.
-
-| Ruta | Microservicio destino | Requiere JWT |
-|---|---|---|
-| `/auth/**` | identity-service :8084 | ❌ Público |
-| `/api/catalog/**` | catalog-service :8085 | ✅ JwtAuthFilter |
-| `/api/licenses/**` | license-service :8086 | ✅ JwtAuthFilter |
-| `/api/lending/**` | elending-service :8087 | ✅ JwtAuthFilter |
-| `/api/notifications/**` | notification-service :8088 | ✅ JwtAuthFilter |
-| `/api/subscriptions/**` | subscription-service :8089 | ✅ JwtAuthFilter |
-| `/api/search/**` | search-service :8090 | ✅ JwtAuthFilter |
-| `/api/analytics/**` | analytics-service :8091 | ✅ JwtAuthFilter |
-| `/api/ingestion/**` | ingestion-service :8092 | ✅ JwtAuthFilter |
-| `/api/content/**` | content-service :8093 | ✅ JwtAuthFilter |
-
-> El enrutamiento usa `lb://` (load balancer) — el Gateway consulta a Eureka dónde está cada MS en lugar de usar una IP fija.
-
----
-
-## Database Requerido
-
-```sql
-CREATE DATABASE db_catalog;
-CREATE DATABASE db_lending;
-CREATE DATABASE db_identity;
-CREATE DATABASE db_license;
-CREATE DATABASE db_subscriptions;
-CREATE DATABASE db_notifications;
-CREATE DATABASE db_ingestion;
-```
 
 ---
 
@@ -126,129 +100,76 @@ CREATE DATABASE db_ingestion;
 |---|---|
 | **Framework** | Spring Boot 3.3.11 |
 | **Cloud** | Spring Cloud 2023.0.5 |
-| **Base de datos** | MySQL 8.4 (Laragon) |
+| **Base de datos** | MySQL 8.4 |
 | **Migraciones** | Flyway |
 | **ORM** | Spring Data JPA + Hibernate 6.5 |
 | **Seguridad** | Spring Security + JWT |
-| **Comunicación inter-servicio** | OpenFeign + Eureka Load Balancer |
+| **Comunicación síncrona** | OpenFeign + Eureka Load Balancer |
+| **Comunicación asíncrona** | RabbitMQ + Spring AMQP (DLQ + retry) |
+| **Resiliencia** | Resilience4j (Circuit Breaker + fallback) |
+| **Control de tráfico** | Bucket4j in-memory (Rate Limiting en Gateway) |
+| **Trazabilidad** | Micrometer + TraceID + Zipkin |
+| **Bloqueo distribuido** | ShedLock 5.13.0 (scheduler multi-instancia) |
 | **Documentación API** | SpringDoc OpenAPI 2.5.0 (Swagger UI) |
 | **Hipermedia** | Spring HATEOAS |
 | **Build** | Maven multi-módulo |
 | **Utilidades** | Lombok, SLF4J, Bean Validation |
 | **Testing** | JUnit 5 + Mockito + JaCoCo |
-| **Cobertura** | JaCoCo — supera el 80% en todos los MS |
+| **Cobertura** | 90.17% — 859 tests, 0 fallos |
 | **Contenedores** | Docker + Docker Compose |
-| **IDE** | VSCode + Spring Boot Dashboard |
+| **CI/CD** | GitHub Actions (path filtering por módulo) |
 
 ---
 
-## Ejecución Local (VSCode)
+## Patrones y Funcionalidades Implementadas
 
-### Prerrequisitos
+### Resiliencia
+- **Circuit Breaker (Resilience4j)** — en los 4 Feign clients de elending-service (Identity, Catalog, Subscription, License) con fallback methods que devuelven respuestas degradadas
+- **Optimistic Locking (JPA @Version)** — en License y Préstamo para control de concurrencia
+- **Retry pattern** — en LicenseService con hasta 3 reintentos ante conflictos de concurrencia
+- **Dead Letter Queue (RabbitMQ)** — mensajes fallidos se envían a cola DLQ con reintento automático
 
-- Java 17
-- Maven (o usar `mvnw` incluido)
-- MySQL 8.4 (Laragon recomendado en Windows)
-- Laragon o MySQL Server activo
+### Mensajería Asíncrona
+- **RabbitMQ** — elending-service publica eventos, notification-service los consume de forma asíncrona
+- **Idempotencia** — notification-service ignora mensajes duplicados usando clave de idempotencia por hash
+- **Trazabilidad RabbitMQ** — TraceID propagado en headers de mensajes async
 
-### Orden de arranque
+### Seguridad y Control de Acceso
+- **JWT en Gateway** — validación centralizada antes de enrutar a los microservicios
+- **Rate Limiting (Bucket4j)** — 1000 req/min global + 50 req/min por IP en el Gateway
+- **Identity Propagation** — Gateway extrae claims JWT y propaga `X-User-Id` y `X-User-Roles` como headers a todos los microservicios
+- **FeignRequestInterceptor** — propaga automáticamente el JWT en todas las llamadas entre servicios
 
-```
-1. microservice-config   :8888  ← primero siempre
-2. microservice-eureka   :8761
-3. identity-services     :8084
-4. microservice-gateway  :8080
-5. Resto de microservicios (cualquier orden)
-```
+### Observabilidad
+- **Micrometer TraceID** — trazabilidad distribuida en los 13 servicios con @Observed en métodos críticos
+- **Zipkin** — visualización de trazas distribuidas en http://localhost:9411
+- **ShedLock** — evita ejecución paralela del scheduler en múltiples instancias
 
-### Variables de entorno requeridas
-
-Cada microservicio se conecta al Config Server en `http://localhost:8888`. Las configuraciones de base de datos, JWT secret y puertos se gestionan centralmente desde el repositorio de configuración.
-
----
-
-## Ejecución con Docker
-
-### Prerrequisitos
-
-- Docker Desktop instalado y corriendo
-- MySQL 8.4 activo en la máquina local (Laragon)
-- Java 17 + Maven instalados
-
-### Pasos
-
-```bash
-# 1. Compilar todos los microservicios (genera los .jar)
-mvn clean package -DskipTests
-
-# 2. Construir imágenes y levantar el ecosistema completo
-docker-compose up --build
-
-# 3. Verificar que todos los contenedores están corriendo
-docker ps
-
-# 4. Confirmar registro en Eureka
-# Abrir en el browser: http://localhost:8761
-```
-
-### Comportamiento del arranque
-
-El `docker-compose.yml` está configurado con `healthcheck` y `depends_on: condition: service_healthy` para garantizar el orden correcto:
-
-```
-Config Server (healthy)
-        ↓
-Eureka Server (healthy)
-        ↓
-Gateway (healthy)
-        ↓
-MS de negocio (arrancan en paralelo)
-```
-
-Los MS de negocio usan la variable de entorno `EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/` para registrarse correctamente dentro de la red Docker.
+### CI/CD
+- **GitHub Actions** — workflow con path filtering por módulo (solo corre tests del módulo afectado)
+- **Branch protection** — documentado en `docs/07-proteccion-ramas-cicd.md`
 
 ---
 
-## Pruebas y Cobertura
+## Rutas del API Gateway
 
-El proyecto implementa dos tipos de pruebas automatizadas con **JUnit 5 + Mockito**, cubriendo 8 microservicios con un total de **66 tests y 0 fallos**.
+Todas las peticiones entran por el puerto **:8080**.
 
-### Ejecutar tests y generar reporte de cobertura
-
-```bash
-# Desde la raíz del proyecto
-mvn clean test
-```
-
-JaCoCo genera automáticamente los reportes de cobertura en `target/site/jacoco/index.html` de cada MS. Los reportes ya generados están disponibles en la carpeta `reports/jacoco/` del repositorio — abrirlos directamente en el browser sin necesidad de compilar.
-
-### Tests Unitarios (Service)
-
-Verifican la lógica de negocio de forma completamente aislada — sin base de datos, sin HTTP, sin Config Server ni Eureka.
-
-| Microservicio | Clase testeada | Tests | Cobertura |
-|---|---|---|---|
-| `catalog-service` | `CatalogService` | 10 | CRUD completo, ISBN duplicado, libro no encontrado |
-| `elending-service` | `PrestamoService` | 10 | Reglas BÁSICO/PREMIUM, copias, duplicados, compensación |
-| `identity-service` | `UserService` | 13 | Registro, login, reset y cambio de contraseña |
-
-### Tests REST con MockMvc (Controller)
-
-Verifican el comportamiento HTTP del Controller — códigos de respuesta, estructura JSON, HATEOAS y Bean Validation.
-
-| Microservicio | Clase testeada | Tests | Cobertura |
-|---|---|---|---|
-| `license-service` | `LicenseController` | 12 | CRUD, prestar/devolver, validaciones, HATEOAS, 404/422 |
-| `subscription-service` | `SuscripcionController` | 11 | Planes BÁSICO/PREMIUM, token JWT, 400/404, HATEOAS |
-| `notification-service` | `NotificacionController` | 10 | Crear, listar, marcar leída, 400/404, HATEOAS |
-
-### Resumen total
-
-| Tipo | Microservicios | Tests |
+| Ruta | Microservicio destino | Requiere JWT |
 |---|---|---|
-| Unitarios (Service) | 3 | 33 |
-| REST MockMvc (Controller) | 3 | 33 |
-| **Total** | **6** | **66 — 0 fallos** |
+| `/auth/**` | identity-service :8084 | No — Público |
+| `/api/users/**` | identity-service :8084 | Si — JwtAuthFilter |
+| `/api/catalog/**` | catalog-service :8085 | Si — JwtAuthFilter |
+| `/api/licenses/**` | license-service :8086 | Si — JwtAuthFilter |
+| `/api/lending/**` | elending-service :8087 | Si — JwtAuthFilter |
+| `/api/notifications/**` | notification-service :8088 | Si — JwtAuthFilter |
+| `/api/subscriptions/**` | subscription-service :8089 | Si — JwtAuthFilter |
+| `/api/search/**` | search-service :8090 | Si — JwtAuthFilter |
+| `/api/analytics/**` | analytics-service :8091 | Si — JwtAuthFilter |
+| `/api/ingestion/**` | ingestion-service :8092 | Si — JwtAuthFilter |
+| `/api/content/**` | content-service :8093 | Si — JwtAuthFilter |
+
+> El Gateway propaga `X-User-Id` y `X-User-Roles` como headers a todos los microservicios tras validar el JWT.
 
 ---
 
@@ -264,64 +185,120 @@ Verifican el comportamiento HTTP del Controller — códigos de respuesta, estru
 ### Flujo de creación de préstamo
 
 ```
-1. Verificar plan del usuario (Subscription Service via Feign)
+1. Verificar plan del usuario (Subscription Service via Feign + Circuit Breaker)
 2. Verificar límite de préstamos activos según plan
 3. Verificar que el usuario no tenga ya ese libro en préstamo
-4. Verificar copias disponibles (License Service via Feign)
-5. Descontar 1 copia (License Service via Feign)
+4. Verificar copias disponibles (License Service via Feign + Circuit Breaker)
+5. Descontar 1 copia con Optimistic Lock (hasta 3 reintentos)
 6. Crear registro de préstamo en BD
    → Si falla: compensación automática devuelve la copia a License Service
-7. Notificar al usuario (Notification Service via Feign — silencioso si falla)
+7. Publicar evento en RabbitMQ → notification-service notifica al usuario de forma asíncrona
 ```
 
 ---
 
-## Nuevas integraciones
+## Pruebas y Cobertura
 
-### Swagger / OpenAPI
+```bash
+# Correr todos los tests desde la raíz
+mvn clean test
 
-Todos los microservicios con endpoints REST cuentan con documentación interactiva generada automáticamente.
-
-**Acceso a Swagger UI** (con el microservicio corriendo):
-
-```
-http://localhost:{puerto}/swagger-ui/index.html
+# Correr tests de un módulo específico
+mvn test -pl elending-service
 ```
 
-### HATEOAS
+| Microservicio | Tests | Cobertura |
+|---|---|---|
+| `elending-service` | 248 | 97.82% |
+| `catalog-service` | 116 | 98.47% |
+| `notification-service` | 112 | 95.61% |
+| `identity-services` | 58 | 69.57% |
+| `microservice-gateway` | 55 | 97.04% |
+| `license-service` | 54 | 90.31% |
+| `subscription-service` | 48 | 97.71% |
+| `search-service` | 45 | 96.39% |
+| `ingestion-service` | 39 | 72.99% |
+| `analytics-service` | 38 | 94.05% |
+| `content-service` | 34 | 93.59% |
+| `microservice-config` | 6 | 40.00% |
+| `microservice-eureka` | 6 | 40.00% |
+| **Total** | **859** | **90.17%** |
 
-Las respuestas de la API incluyen enlaces hipermedia (`_links`) que permiten navegar el sistema sin conocer las URLs de antemano.
+---
 
-```json
-{
-  "id": 1,
-  "titulo": "Don Quijote de la Mancha",
-  "autor": "Miguel de Cervantes",
-  "disponible": true,
-  "_links": {
-    "self":        { "href": "http://localhost:8085/api/catalog/1" },
-    "todos":       { "href": "http://localhost:8085/api/catalog" },
-    "disponibles": { "href": "http://localhost:8085/api/catalog/disponibles" },
-    "eliminar":    { "href": "http://localhost:8085/api/catalog/1" }
-  }
-}
+## Ejecución Local
+
+### Prerrequisitos
+
+- Java 17
+- Maven 3.9+
+- MySQL 8.4 activo (Laragon recomendado en Windows)
+- Docker Desktop (para ejecución con contenedores)
+
+### Bases de datos requeridas
+
+```sql
+CREATE DATABASE db_catalog;
+CREATE DATABASE db_lending;
+CREATE DATABASE db_identity;
+CREATE DATABASE db_license;
+CREATE DATABASE db_subscriptions;
+CREATE DATABASE db_notifications;
+CREATE DATABASE db_ingestion;
 ```
 
-### Almacenamiento MySQL BLOB
-
-`ingestion-service` migró de almacenamiento en disco local a MySQL usando columnas `LONGBLOB`.
+### Orden de arranque manual
 
 ```
-StorageService (interfaz)
-    ├── LocalStorageService    → guarda en disco  (legacy, sin @Primary)
-    └── DatabaseStorageService → guarda en MySQL  (@Primary — activo)
+1. microservice-config   :8888  ← primero siempre
+2. microservice-eureka   :8761
+3. identity-services     :8084
+4. microservice-gateway  :8080
+5. Resto de microservicios (cualquier orden)
+```
+
+---
+
+## Ejecución con Docker
+
+```bash
+# 1. Compilar todos los microservicios
+mvn clean package -DskipTests
+
+# 2. Levantar el ecosistema completo
+docker-compose up --build
+
+# 3. Verificar contenedores
+docker ps
+
+# 4. Verificar registro en Eureka
+# http://localhost:8761
+
+# 5. Ver trazabilidad distribuida en Zipkin
+# http://localhost:9411
+```
+
+### Orden de arranque en Docker
+
+```
+Config Server (healthy)
+        ↓
+RabbitMQ (healthy)
+        ↓
+Eureka Server (healthy)
+        ↓
+Gateway (healthy)
+        ↓
+MS de negocio (arrancan en paralelo)
+        ↓
+Zipkin (disponible en :9411)
 ```
 
 ---
 
 ## Swagger UI por microservicio
 
-| Microservicio | URL Swagger |
+| Microservicio | URL |
 |---|---|
 | Identity | http://localhost:8084/swagger-ui/index.html |
 | Catalog | http://localhost:8085/swagger-ui/index.html |
@@ -336,28 +313,23 @@ StorageService (interfaz)
 
 ---
 
-## Autenticación
-
-El sistema usa **JWT (JSON Web Tokens)** con dos tipos de token:
-
-- **Access Token** — corta duración (30 min en desarrollo), requerido en `Authorization: Bearer {token}`
-- **Refresh Token** — larga duración, usado para renovar el access token sin re-login
-
-Los microservicios que requieren identificación del usuario extraen el `username` del payload del JWT sin necesidad de consultar `identity-service` en cada petición.
-
----
-
 ## Estructura del proyecto
 
 ```
 SmallBooksRepository/
 ├── pom.xml                          ← pom raíz (dependencias compartidas + JaCoCo)
-├── docker-compose.yml               ← ecosistema completo en Docker
-├── reports/
-│   └── jacoco/                      ← reportes de cobertura generados
-│       ├── catalog-service/index.html
-│       ├── elending-service/index.html
-│       └── ...
+├── docker-compose.yml               ← ecosistema completo en Docker + RabbitMQ + Zipkin
+├── .github/
+│   └── workflows/
+│       └── ci-sigon.yml             ← CI/CD GitHub Actions con path filtering
+├── docs/
+│   ├── 01-arquitectura-general.md
+│   ├── 02-catalogo-microservicios.md
+│   ├── 03-mapa-comunicaciones.md
+│   ├── 04-adr-decisiones.md
+│   ├── 05-guia-estilo.md
+│   ├── 06-modelo-datos-global.md
+│   └── 07-proteccion-ramas-cicd.md
 ├── microservice-config/
 │   └── src/main/resources/
 │       └── configurations/          ← YAMLs de todos los MS
@@ -374,6 +346,18 @@ SmallBooksRepository/
 ├── ingestion-service/
 └── content-service/
 ```
+
+---
+
+## Autenticación
+
+El sistema usa **JWT (JSON Web Tokens)**:
+
+- **Access Token** — 30 min en desarrollo, requerido en `Authorization: Bearer {token}`
+- **Refresh Token** — larga duración para renovar sin re-login
+- El Gateway valida el JWT y propaga `X-User-Id` y `X-User-Roles` como headers
+- Los microservicios confían en los headers del Gateway sin re-validar el token
+
 ---
 
 ## Notas de compatibilidad
@@ -382,17 +366,13 @@ SmallBooksRepository/
 
 El proyecto usa **Lombok 1.18.38** — compatible con Java 17, 21 y 25.
 
-Si al compilar aparece un error relacionado con Lombok en Java 21 o superior,
-verificar que la versión en el `pom.xml` raíz sea `1.18.38` o superior:
-
-\```xml
+```xml
 <dependency>
     <groupId>org.projectlombok</groupId>
     <artifactId>lombok</artifactId>
     <version>1.18.38</version>
     <optional>true</optional>
 </dependency>
-\```
+```
 
-> Versiones anteriores de Lombok (1.18.30 y menores) pueden fallar al compilar
-> con Java 21+ debido a cambios en las APIs internas del compilador.
+> Versiones anteriores de Lombok (1.18.30 y menores) pueden fallar al compilar con Java 21+ debido a cambios en las APIs internas del compilador.

@@ -5,13 +5,17 @@ import io.micrometer.observation.aop.ObservedAspect;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
 class TracingConfigTest {
+
+    @MockBean
+    private ConnectionFactory connectionFactory;
 
     @Autowired(required = false)
     private ObservedAspect observedAspect;
