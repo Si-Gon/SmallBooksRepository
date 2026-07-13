@@ -120,6 +120,37 @@ class NotificacionControllerTest {
         verify(notificacionService, never()).crear(any());
     }
 
+    @Test
+    void crear_devuelve_201_con_mismo_id_para_mismo_contenido() throws Exception {
+        // Given — mismo body dos veces (idempotencia en service)
+        NotificacionRequestDTO request = notificacionRequest(
+                "usuario1", TipoNotificacion.PRESTAMO_CREADO);
+        NotificacionDTO response = notificacionDTO(
+                1L, "usuario1", TipoNotificacion.PRESTAMO_CREADO, false);
+
+        // El service devuelve el mismo DTO (existente) para el duplicado
+        when(notificacionService.crear(any(NotificacionRequestDTO.class)))
+                .thenReturn(response);
+
+        // When — primera llamada
+        mockMvc.perform(post("/api/notifications")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$._links.mis-notificaciones").exists());
+
+        // Then — segunda llamada con mismo body también retorna 201 y mismo id
+        mockMvc.perform(post("/api/notifications")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$._links.mis-notificaciones").exists());
+
+        verify(notificacionService, times(2)).crear(any(NotificacionRequestDTO.class));
+    }
+
     // ─── GET /api/notifications/usuario/{usuarioId} ───────────────────────────
 
     @Test

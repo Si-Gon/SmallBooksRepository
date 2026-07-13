@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -204,6 +205,44 @@ class NotificacionEventListenerTest {
         assertNull(requestCaptor.getValue().getUsuarioId());
         assertNull(requestCaptor.getValue().getMensaje());
         assertEquals(TipoNotificacion.PRESTAMO_CREADO, requestCaptor.getValue().getTipo());
+    }
+
+    // ─── idempotencia: evento duplicado desde RabbitMQ ───────────────────────
+
+    @Test
+    void procesarEvento_eventoDuplicado_servicioManejadoCorrectamente() {
+        // Given — RabbitMQ reintenta entregar el mismo mensaje
+        NotificacionEvent evento = new NotificacionEvent("u1", "PRESTAMO_CREADO",
+                "Tu préstamo fue creado");
+
+        // When — primera entrega
+        listener.procesarEvento(evento);
+        verify(notificacionService, times(1)).crear(any(NotificacionRequestDTO.class));
+
+        // When — reintento con el mismo mensaje
+        listener.procesarEvento(evento);
+
+        // Then — el listener pasa ambas veces al service (la idempotencia
+        // está en NotificacionService, no en el listener)
+        verify(notificacionService, times(2)).crear(any(NotificacionRequestDTO.class));
+    }
+
+    @Test
+    void procesarEvento_eventoDuplicado_mismoDTOCreado() {
+        // Given
+        NotificacionEvent evento = new NotificacionEvent("u_dup", "VENCIDO",
+                "Préstamo vencido — libro 42");
+
+        // When — dos entregas del mismo evento
+        listener.procesarEvento(evento);
+        listener.procesarEvento(evento);
+
+        // Then — ambos requests deben tener el mismo contenido
+        verify(notificacionService, times(2)).crear(requestCaptor.capture());
+        var requests = requestCaptor.getAllValues();
+        assertThat(requests.get(0).getUsuarioId()).isEqualTo(requests.get(1).getUsuarioId());
+        assertThat(requests.get(0).getTipo()).isEqualTo(requests.get(1).getTipo());
+        assertThat(requests.get(0).getMensaje()).isEqualTo(requests.get(1).getMensaje());
     }
 
     // ─── mapeo exacto de campos ───────────────────────────────────────────────
