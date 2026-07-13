@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.micrometer.observation.annotation.Observed;
+
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -24,6 +26,7 @@ public class SuscripcionService {
     private static final int PREMIUM_MAX_PRESTAMOS = 5;
     private static final int PREMIUM_DIAS_PRESTAMO = 14;
 
+    @Observed(name = "subscription.obtenerPorUsuario")
     public SuscripcionResponseDTO obtenerPorUsuario(String usuarioId) {
         log.info("Consultando suscripción activa del usuario: {}", usuarioId);
         Suscripcion suscripcion = suscripcionRepository
@@ -36,6 +39,7 @@ public class SuscripcionService {
         return mapearADto(suscripcion);
     }
 
+    @Observed(name = "subscription.crear")
     @Transactional
     public SuscripcionResponseDTO crear(SuscripcionRequestDTO request, String usuarioId) {
         log.info("Creando suscripción {} para usuario: {}, duración: {} mes(es)",
@@ -63,6 +67,7 @@ public class SuscripcionService {
         return mapearADto(guardada);
     }
 
+    @Observed(name = "subscription.cancelar")
     @Transactional
     public SuscripcionResponseDTO cancelar(String usuarioId) {
         log.info("Cancelando suscripción del usuario: {}", usuarioId);

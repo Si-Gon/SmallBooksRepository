@@ -13,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.micrometer.observation.annotation.Observed;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -26,6 +28,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Observed(name = "identity.registerUser")
     @Transactional
     public void registerUser(String username, String rawPassword, Set<String> roles) {
         log.info("Registrando nuevo usuario: {}", username);
@@ -43,6 +46,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
+    @Observed(name = "identity.loadUserByUsername")
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Cargando usuario para autenticación: {}", username);
         User user = userRepository.findByUsername(username)
@@ -60,6 +64,7 @@ public class UserService implements UserDetailsService {
                 .build();
     }
 
+    @Observed(name = "identity.createPasswordResetToken")
     @Transactional
     public String createPasswordResetToken(String username) {
         log.info("Generando token de recuperación para: {}", username);
@@ -74,6 +79,7 @@ public class UserService implements UserDetailsService {
         return resetToken;
     }
 
+    @Observed(name = "identity.resetPassword")
     @Transactional
     public void resetPassword(String token, String newPassword) {
         log.info("Intentando reset de contraseña con token");
@@ -95,6 +101,7 @@ public class UserService implements UserDetailsService {
         log.info("Contraseña actualizada exitosamente para usuario: {}", user.getUsername());
     }
 
+    @Observed(name = "identity.changePassword")
     @Transactional
     public void changePassword(String username, String currentPassword, String newPassword) {
         log.info("Cambiando contraseña para usuario: {}", username);
@@ -111,6 +118,7 @@ public class UserService implements UserDetailsService {
         log.info("Contraseña cambiada exitosamente para usuario: {}", username);
     }
 
+    @Observed(name = "identity.obtenerUsuario")
     @Transactional(readOnly = true)
     public UsuarioDTO obtenerUsuarioPorUsername(String username) {
         log.info("Consultando usuario por username: {}", username);

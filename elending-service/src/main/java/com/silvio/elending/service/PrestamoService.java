@@ -20,6 +20,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.micrometer.observation.annotation.Observed;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,6 +43,7 @@ public class PrestamoService {
     // que el License Service convierte en 409 tras agotar reintentos.
     // El @Version en Prestamo protege el save() local contra escrituras concurrentes.
 
+    @Observed(name = "elending.crearPrestamo")
     public PrestamoResponseDTO crearPrestamo(PrestamoRequestDTO request, String usuarioId) {
         int maxReintentos = 3;
         int intento = 0;
@@ -61,6 +64,7 @@ public class PrestamoService {
         }
     }
 
+    @Observed(name = "elending.doCrearPrestamo")
     @Transactional
     protected PrestamoResponseDTO doCrearPrestamo(PrestamoRequestDTO request, String usuarioId) {
         log.info("Iniciando creación de préstamo — usuario: {}, libro: {}", 
@@ -212,6 +216,7 @@ public class PrestamoService {
         return mapearADto(guardado);
     }
 
+    @Observed(name = "elending.obtenerPrestamosActivos")
     public List<PrestamoResponseDTO> obtenerPrestamosActivos(String usuarioId) {
         log.info("Consultando préstamos activos del usuario: {}", usuarioId);
         return prestamoRepository
@@ -221,6 +226,7 @@ public class PrestamoService {
                 .collect(Collectors.toList());
     }
 
+    @Observed(name = "elending.obtenerHistorial")
     public List<PrestamoResponseDTO> obtenerHistorial(String usuarioId) {
         log.info("Consultando historial completo del usuario: {}", usuarioId);
         return prestamoRepository
@@ -230,6 +236,7 @@ public class PrestamoService {
                 .collect(Collectors.toList());
     }
 
+    @Observed(name = "elending.obtenerTodos")
     public List<PrestamoResponseDTO> obtenerTodos() {
         log.info("Consultando todos los préstamos para Analytics");
         return prestamoRepository.findAll()
@@ -250,6 +257,7 @@ public class PrestamoService {
     // (evita rollback total que dejaría el servicio inconsistente).
     // ShedLock garantiza que solo una instancia ejecute este scheduler
     // a la vez, y @Version en Prestamo previene doble procesamiento.
+    @Observed(name = "elending.cerrarPrestamosVencidos")
     @Scheduled(fixedRate = 3600000)
     @SchedulerLock(name = "prestamos-vencidos", lockAtMostFor = "30m", lockAtLeastFor = "1s")
     public void cerrarPrestamosVencidos() {

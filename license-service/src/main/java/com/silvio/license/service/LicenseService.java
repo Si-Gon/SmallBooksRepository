@@ -10,6 +10,8 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.micrometer.observation.annotation.Observed;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +22,7 @@ public class LicenseService {
 
     private final LicenseRepository licenseRepository;
 
+    @Observed(name = "license.obtenerTodas")
     public List<LicenseResponseDTO> obtenerTodas() {
         log.info("Consultando todas las licencias");
         return licenseRepository.findAll()
@@ -28,6 +31,7 @@ public class LicenseService {
                 .collect(Collectors.toList());
     }
 
+    @Observed(name = "license.obtenerPorLibroId")
     public LicenseResponseDTO obtenerPorLibroId(Long libroId) {
         log.info("Consultando licencia para libro id: {}", libroId);
         License license = licenseRepository.findByLibroId(libroId)
@@ -39,6 +43,7 @@ public class LicenseService {
         return mapearADto(license);
     }
 
+    @Observed(name = "license.crear")
     public LicenseResponseDTO crear(LicenseRequestDTO request) {
         log.info("Creando licencia para libro id: {}, total copias: {}",
                 request.getLibroId(), request.getTotalCopias());
@@ -66,6 +71,7 @@ public class LicenseService {
     // El @Version en License dispara ObjectOptimisticLockingFailureException
     // cuando dos hilos modifican la misma fila simultáneamente
 
+    @Observed(name = "license.prestarWrapper")
     public LicenseResponseDTO prestar(Long libroId) {
         int maxReintentos = 3;
         int intento = 0;
@@ -85,6 +91,7 @@ public class LicenseService {
         }
     }
 
+    @Observed(name = "license.prestar")
     @Transactional
     protected LicenseResponseDTO doPrestar(Long libroId) {
         log.info("Descontando copia — libro id: {}", libroId);
@@ -106,6 +113,7 @@ public class LicenseService {
 
     // ─── devolver con optimistic locking ────────────────────────────────────
 
+    @Observed(name = "license.devolverWrapper")
     public LicenseResponseDTO devolver(Long libroId) {
         int maxReintentos = 3;
         int intento = 0;
@@ -125,6 +133,7 @@ public class LicenseService {
         }
     }
 
+    @Observed(name = "license.devolver")
     @Transactional
     protected LicenseResponseDTO doDevolver(Long libroId) {
         log.info("Devolviendo copia — libro id: {}", libroId);
@@ -143,6 +152,7 @@ public class LicenseService {
         return mapearADto(licenseRepository.save(license));
     }
 
+    @Observed(name = "license.actualizar")
     @Transactional
     public LicenseResponseDTO actualizar(Long libroId, LicenseRequestDTO request) {
         log.info("Actualizando licencia libro id: {}, nuevo total: {}",

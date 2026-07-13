@@ -4,11 +4,24 @@ spring:
   config:
     import: optional:configserver:http://localhost:8888
 
+  # Sin BD propia — calcula métricas consultando E-Lending via Feign
+  autoconfigure:
+    exclude: >
+      org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,
+      org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration,
+      org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration
+
 logging:
   file:
     name: logs/smallbooks.log   # ← se crea en la raíz del proyecto
   level:
     root: INFO
     com.silvio: DEBUG           # ← para ver los logs de la aplicación
-    
-    
+  pattern:
+    level: "%5p [%mdc{traceId:-NONE} %mdc{spanId:-NONE}]"
+
+# Tracing distribuido — fallback local cuando el Config Server no está disponible
+management:
+  tracing:
+    sampling:
+      probability: 1.0

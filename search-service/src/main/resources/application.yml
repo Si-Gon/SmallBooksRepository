@@ -4,9 +4,24 @@ spring:
   config:
     import: optional:configserver:http://localhost:8888
 
+  # Sin BD propia — toda la data via Catalog Service Feign
+  autoconfigure:
+    exclude: >
+      org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,
+      org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration,
+      org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration
+
 logging:
   file:
     name: logs/smallbooks.log
   level:
     root: INFO
     com.silvio: DEBUG
+  pattern:
+    level: "%5p [%mdc{traceId:-NONE} %mdc{spanId:-NONE}]"
+
+# Tracing distribuido — fallback local cuando el Config Server no está disponible
+management:
+  tracing:
+    sampling:
+      probability: 1.0

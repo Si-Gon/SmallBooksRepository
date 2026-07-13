@@ -12,6 +12,7 @@ spring:
     password: guest
     listener:
       simple:
+        observation-enabled: true  # Restaura traceId desde headers AMQP
         # NOTA: La configuración programática en RabbitMQConfig (RetryInterceptorBuilder
         # con RejectAndDontRequeueRecoverer) anula esta config YAML porque el bean
         # rabbitListenerContainerFactory personalizado toma precedencia sobre el default.
@@ -28,3 +29,11 @@ logging:
   level:
     root: INFO
     com.silvio: DEBUG
+  pattern:
+    level: "%5p [%mdc{traceId:-NONE} %mdc{spanId:-NONE}]"
+
+# Tracing distribuido — fallback local cuando el Config Server no está disponible
+management:
+  tracing:
+    sampling:
+      probability: 1.0

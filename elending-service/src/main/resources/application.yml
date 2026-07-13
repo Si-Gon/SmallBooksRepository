@@ -17,6 +17,7 @@ spring:
     username: guest
     password: guest
     template:
+      observation-enabled: true  # Inyecta traceId en headers AMQP
       retry:
         enabled: true
         initial-interval: 2s
@@ -59,3 +60,11 @@ logging:
   level:
     root: INFO
     com.silvio: DEBUG
+  pattern:
+    level: "%5p [%mdc{traceId:-NONE} %mdc{spanId:-NONE}]"
+
+# Tracing distribuido — fallback local cuando el Config Server no está disponible
+management:
+  tracing:
+    sampling:
+      probability: 1.0

@@ -10,3 +10,11 @@ logging:
   level:
     root: INFO
     com.silvio: DEBUG
+  pattern:
+    level: "%5p [%mdc{traceId:-NONE} %mdc{spanId:-NONE}]"
+
+# Tracing distribuido — fallback local cuando el Config Server no está disponible
+management:
+  tracing:
+    sampling:
+      probability: 1.0

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.micrometer.observation.annotation.Observed;
+
 import java.io.IOException;
 
 import java.time.LocalDateTime;
@@ -28,6 +30,7 @@ public class IngestionService {
             "application/epub+zip"
     );
 
+    @Observed(name = "ingestion.subirArchivo")
     @Transactional
     public ArchivoLibroDTO subirArchivo(Long libroId, MultipartFile archivo) {
         log.info("Subiendo archivo para libro id: {}, nombre: {}, tamaño: {} bytes",
@@ -68,6 +71,7 @@ public class IngestionService {
         return mapearADto(guardado);
     }
 
+    @Observed(name = "ingestion.obtenerInfo")
     public ArchivoLibroDTO obtenerInfo(Long libroId) {
         log.info("Consultando info de archivo para libro id: {}", libroId);
         ArchivoLibro archivo = archivoRepository.findByLibroId(libroId)
@@ -79,6 +83,7 @@ public class IngestionService {
         return mapearADto(archivo);
     }
 
+    @Observed(name = "ingestion.obtenerBytes")
     public byte[] obtenerBytes(Long libroId) {
         log.info("Obteniendo bytes del archivo para libro id: {}", libroId);
         ArchivoLibro archivo = archivoRepository.findByLibroId(libroId)
@@ -87,6 +92,7 @@ public class IngestionService {
         return storageService.obtener(archivo.getRutaOClave());
     }
 
+    @Observed(name = "ingestion.eliminar")
     @Transactional
     public void eliminar(Long libroId) {
         log.info("Eliminando archivo para libro id: {}", libroId);

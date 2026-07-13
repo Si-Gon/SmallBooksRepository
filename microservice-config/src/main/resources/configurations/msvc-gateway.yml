@@ -6,6 +6,11 @@ spring:
     name: msvc-gateway
   cloud:
     gateway:
+      # Habilita la observabilidad (tracing) en el Gateway reactivo.
+      # Micrometer Tracing genera el traceId al entrar y lo propaga
+      # automaticamente al microservicio destino via headers B3.
+      observability:
+        enabled: true
       discovery:
         locator:
           enabled: true

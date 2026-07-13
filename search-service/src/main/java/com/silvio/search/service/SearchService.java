@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import io.micrometer.observation.annotation.Observed;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,7 @@ public class SearchService {
 
     private final CatalogClient catalogClient;
 
+    @Observed(name = "search.buscar")
     public List<SearchResultDTO> buscar(String titulo, String autor, String genero) {
         log.info("Búsqueda — titulo: {}, autor: {}, genero: {}", titulo, autor, genero);
         try {
@@ -29,6 +32,7 @@ public class SearchService {
         }
     }
 
+    @Observed(name = "search.buscarDisponibles")
     public List<SearchResultDTO> buscarDisponibles() {
         log.info("Consultando libros disponibles via Catalog Service");
         try {
@@ -41,6 +45,7 @@ public class SearchService {
         }
     }
 
+    @Observed(name = "search.obtenerTodos")
     public List<SearchResultDTO> obtenerTodos() {
         log.info("Consultando catálogo completo via Catalog Service");
         try {

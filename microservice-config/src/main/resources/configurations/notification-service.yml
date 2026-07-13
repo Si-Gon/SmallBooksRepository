@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: notification-service
+  rabbitmq:
+    listener:
+      simple:
+        observation-enabled: true   # Restaura traceId/spanId al consumir mensajes
   datasource:
     url: jdbc:mysql://localhost:3306/db_notifications?useSSL=false&serverTimezone=UTC
     username: root

@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import io.micrometer.observation.annotation.Observed;
+
 import java.util.List;
 
 @Slf4j
@@ -17,6 +19,7 @@ public class ContentService {
     private final LendingClient lendingClient;
     private final IngestionClient ingestionClient;
 
+    @Observed(name = "content.obtenerArchivo")
     public byte[] obtenerArchivo(Long libroId, String authHeader) {
         log.info("Solicitud de acceso al archivo del libro id: {}", libroId);
 

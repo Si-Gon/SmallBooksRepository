@@ -6,3 +6,27 @@ spring:
           default:
             connectTimeout: 3000
             readTimeout: 5000
+
+# ─────────────────────────────────────────────────────────────────────
+# TRACING DISTRIBUIDO — configuración global para todos los servicios
+# ─────────────────────────────────────────────────────────────────────
+# Cada servicio hereda estos valores desde el Config Server.
+# Se puede sobrescribir por servicio en su propio <service>.yml.
+
+# Patrón de log con traceId/spanId para correlacionar eventos entre
+# microservicios. El traceId se genera al entrar al Gateway y se
+# propaga via headers B3 (Zipkin) a traves de toda la cadena.
+logging:
+  pattern:
+    level: "%5p [%mdc{traceId:-NONE} %mdc{spanId:-NONE}]"
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0           # 100% muestreo en desarrollo; reducir a 0.1 en producción
+  # ─────────────────────────────────────────────────────────────────────
+  # EXPORTACIÓN A ZIPKIN (opcional)
+  # Descomentar cuando se tenga un servidor Zipkin corriendo en el host.
+  # zipkin:
+  #   tracing:
+  #     endpoint: http://localhost:9411/api/v2/spans

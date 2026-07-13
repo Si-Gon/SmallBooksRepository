@@ -178,6 +178,30 @@ class RabbitMQConfigTest {
         assertNotNull(factory);
     }
 
+    // ─── Tracing / Observabilidad ─────────────────────────────────────────────
+
+    @Test
+    void rabbitListenerContainerFactory_debeTenerObservationEnabled()
+            throws Exception {
+        // Given
+        ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
+
+        // When
+        SimpleRabbitListenerContainerFactory factory =
+                config.rabbitListenerContainerFactory(connectionFactory, true);
+
+        // Then — observationEnabled debe estar en true para que Micrometer Tracing
+        // restaure el traceId desde los headers AMQP del mensaje. Accedemos via
+        // reflection porque SimpleRabbitListenerContainerFactory no expone getter.
+        Field observationEnabledField = SimpleRabbitListenerContainerFactory.class
+                .getSuperclass().getDeclaredField("observationEnabled");
+        observationEnabledField.setAccessible(true);
+        boolean observationEnabled = observationEnabledField.getBoolean(factory);
+
+        assertTrue(observationEnabled,
+                "observationEnabled debe estar en true para tracing distribuido");
+    }
+
     @Test
     void rabbitListenerContainerFactory_debeTenerRetryInterceptor() {
         // Given

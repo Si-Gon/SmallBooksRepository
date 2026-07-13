@@ -26,6 +26,12 @@ eureka:
   client:
     enabled: false
 
+# Propiedad requerida por LocalStorageService (usada en @Value)
+# En tests no se escribe nada en disco, pero el bean necesita el valor
+storage:
+  local:
+    path: target/test-storage
+
 logging:
   level:
     root: WARN

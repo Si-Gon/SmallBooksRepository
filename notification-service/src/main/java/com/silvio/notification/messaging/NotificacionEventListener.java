@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
+import io.micrometer.observation.annotation.Observed;
+
 // Consumidor de eventos de notificación desde RabbitMQ.
 // Escucha la cola "notificacion.queue" y procesa los eventos
 // publicados por E-Lending Service cuando ocurren operaciones
@@ -27,6 +29,7 @@ public class NotificacionEventListener {
 
     private final NotificacionService notificacionService;
 
+    @Observed(name = "notification.procesarEvento")
     @RabbitListener(queues = "notificacion.queue")
     public void procesarEvento(NotificacionEvent evento) {
         log.info("Evento recibido — tipo: {}, usuario: {}",

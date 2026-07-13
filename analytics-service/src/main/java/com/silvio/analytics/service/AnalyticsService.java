@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import io.micrometer.observation.annotation.Observed;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,6 +20,7 @@ public class AnalyticsService {
 
     private final LendingClient lendingClient;
 
+    @Observed(name = "analytics.obtenerEstadisticas")
     public EstadisticasDTO obtenerEstadisticas() {
         log.info("Calculando estadísticas globales del sistema");
         List<PrestamoAnalyticsDTO> todos;
@@ -67,6 +70,7 @@ public class AnalyticsService {
         return stats;
     }
 
+    @Observed(name = "analytics.historialUsuario")
     public List<PrestamoAnalyticsDTO> historialUsuario(String usuarioId) {
         log.info("Consultando historial del usuario: {}", usuarioId);
         try {

@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: elending-service
+  rabbitmq:
+    template:
+      observation-enabled: true   # Propaga traceId/spanId en mensajes RabbitMQ
   datasource:
     url: jdbc:mysql://localhost:3306/db_lending?useSSL=false&serverTimezone=UTC
     username: root

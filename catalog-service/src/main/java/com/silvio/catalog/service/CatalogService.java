@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import io.micrometer.observation.annotation.Observed;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +23,7 @@ public class CatalogService {
 
     private final LibroRepository libroRepository;
 
+    @Observed(name = "catalog.obtenerTodos")
     public List<LibroResponseDTO> obtenerTodos() {
         log.info("Consultando todos los libros del catálogo");
         return libroRepository.findAll()
@@ -29,6 +32,7 @@ public class CatalogService {
                 .collect(Collectors.toList());
     }
 
+    @Observed(name = "catalog.obtenerDisponibles")
     public List<LibroResponseDTO> obtenerDisponibles() {
         log.info("Consultando libros disponibles");
         return libroRepository.findByDisponibleTrue()
@@ -37,6 +41,7 @@ public class CatalogService {
                 .collect(Collectors.toList());
     }
 
+    @Observed(name = "catalog.obtenerPorId")
     public LibroResponseDTO obtenerPorId(@NonNull Long id) {
         log.info("Consultando libro con id: {}", id);
         Libro libro = libroRepository.findById(id)
@@ -47,6 +52,7 @@ public class CatalogService {
         return mapearADto(libro);
     }
 
+    @Observed(name = "catalog.buscar")
     public List<LibroResponseDTO> buscar(String titulo, String autor, String genero) {
     log.info("Búsqueda combinada — titulo: {}, autor: {}, genero: {}", titulo, autor, genero);
 
@@ -60,6 +66,7 @@ public class CatalogService {
             .collect(Collectors.toList());
 }
 
+    @Observed(name = "catalog.agregar")
     public LibroResponseDTO agregar(LibroRequestDTO request) {
         log.info("Agregando libro al catálogo — ISBN: {}, título: {}", 
                 request.getIsbn(), request.getTitulo());
@@ -88,6 +95,7 @@ public class CatalogService {
         return mapearADto(guardado);
     }
 
+    @Observed(name = "catalog.actualizar")
     public LibroResponseDTO actualizar(@NonNull Long id, LibroRequestDTO request) {
         log.info("Actualizando libro id: {}", id);
         Libro libro = libroRepository.findById(id)
@@ -110,6 +118,7 @@ public class CatalogService {
         return mapearADto(libroRepository.save(libro));
     }
 
+    @Observed(name = "catalog.cambiarDisponibilidad")
     public LibroResponseDTO cambiarDisponibilidad(@NonNull Long id, Boolean disponible) {
         log.info("Cambiando disponibilidad libro id: {} → {}", id, disponible);
         Libro libro = libroRepository.findById(id)
@@ -118,6 +127,7 @@ public class CatalogService {
         return mapearADto(libroRepository.save(libro));
     }
 
+    @Observed(name = "catalog.eliminar")
     public void eliminar(@NonNull Long id) {
         log.info("Eliminando libro id: {}", id);
         Libro libro = libroRepository.findById(id)

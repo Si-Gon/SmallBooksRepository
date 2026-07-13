@@ -59,18 +59,53 @@
       <version>1.18.38</version>
       <optional>true</optional>
     </dependency>
-    <dependency> <!-- Nueva dependencia para documentacion automatica con OpenAPI/Swagger en todos los microservicios -->
+    <dependency> <!-- Documentacion automatica con OpenAPI/Swagger en todos los microservicios -->
         <groupId>org.springdoc</groupId>
         <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         <version>2.5.0</version>
     </dependency>
-    <dependency> <!-- Nueva dependencia para HATEOAS en todos los microservicios -->
+    <dependency> <!-- HATEOAS en todos los microservicios -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-hateoas</artifactId>
     </dependency>
+
+    <!-- ============================================================ -->
+    <!-- TRACING DISTRIBUIDO — Micrometer Tracing + Brave             -->
+    <!-- ============================================================ -->
+    <!-- Bridge Brave: genera traceId/spanId, los inyecta en MDC y   -->
+    <!-- propaga headers B3/traceparent a traves de Feign y RabbitMQ -->
+    <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-tracing-bridge-brave</artifactId>
+    </dependency>
+    <!-- Actuator: expone /actuator/health, metrics, info, etc.      -->
+    <!-- Necesario para que Micrometer Tracing registre sus beans    -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+    <!-- AOP: necesario para que @Observed funcione con ObservedAspect -->
+    <!-- Permite crear spans manuales con anotaciones en métodos      -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-aop</artifactId>
+    </dependency>
+    <!-- Zipkin Reporter: exporta trazas a Zipkin para visualización  -->
+    <!-- Opcional — descomentar cuando se tenga un servidor Zipkin    -->
+    <!--
+    <dependency>
+        <groupId>io.zipkin.reporter2</groupId>
+        <artifactId>zipkin-reporter-brave</artifactId>
+    </dependency>
+    -->
+    <!-- Micrometer Observation Test: TestObservationRegistry para validar spans -->
+    <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-observation-test</artifactId>
+        <scope>test</scope>
+    </dependency>
   </dependencies>
 
-  
   <dependencyManagement>
     <dependencies>
       <dependency>

@@ -82,10 +82,14 @@ public class RabbitMQConfig {
         return converter;
     }
 
-    // ─── Factory con reintentos y DLQ ─────────────────────────────────────────
+    // ─── Factory con reintentos, DLQ y observabilidad ─────────────────────────
     // 3 intentos: 2s → 4s → 8s (backoff multiplicativo)
     // Si se agotan los reintentos → RejectAndDontRequeueRecoverer
     //   → el mensaje va al DLX "notificacion.dlx" → cola "notificacion.queue.dlq"
+    //
+    // Observabilidad habilitada: Micrometer Tracing restaura el traceId/spanId
+    // desde los headers AMQP del mensaje, continuando la traza distribuida
+    // iniciada en el productor (elending-service).
 
     @Bean
     public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
@@ -95,6 +99,7 @@ public class RabbitMQConfig {
         factory.setConnectionFactory(connectionFactory);
         factory.setMessageConverter(jsonMessageConverter());
         factory.setAutoStartup(autoStartup);  // false en tests (application-test.yml)
+        factory.setObservationEnabled(true);  // Restaura traceId desde headers AMQP
 
         RetryOperationsInterceptor retry = RetryInterceptorBuilder.stateless()
                 .maxAttempts(3)

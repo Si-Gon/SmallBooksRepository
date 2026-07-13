@@ -10,6 +10,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.micrometer.observation.annotation.Observed;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -26,6 +28,7 @@ public class NotificacionService {
 
     private final NotificacionRepository notificacionRepository;
 
+    @Observed(name = "notification.crear")
     @Transactional
     public NotificacionDTO crear(NotificacionRequestDTO request) {
         // Genera clave de idempotencia a partir del contenido del mensaje
@@ -76,6 +79,7 @@ public class NotificacionService {
         }
     }
 
+    @Observed(name = "notification.obtenerPorUsuario")
     public List<NotificacionDTO> obtenerPorUsuario(String usuarioId) {
         log.info("Consultando notificaciones del usuario: {}", usuarioId);
         return notificacionRepository
@@ -85,6 +89,7 @@ public class NotificacionService {
                 .collect(Collectors.toList());
     }
 
+    @Observed(name = "notification.obtenerNoLeidas")
     public List<NotificacionDTO> obtenerNoLeidas(String usuarioId) {
         log.info("Consultando notificaciones no leídas del usuario: {}", usuarioId);
         return notificacionRepository
@@ -94,6 +99,7 @@ public class NotificacionService {
                 .collect(Collectors.toList());
     }
 
+    @Observed(name = "notification.marcarLeida")
     public NotificacionDTO marcarLeida(Long id) {
         log.info("Marcando notificación como leída — id: {}", id);
         Notificacion notificacion = notificacionRepository.findById(id)
@@ -106,6 +112,7 @@ public class NotificacionService {
         return mapearADto(notificacionRepository.save(notificacion));
     }
 
+    @Observed(name = "notification.marcarTodasLeidas")
     public void marcarTodasLeidas(String usuarioId) {
         log.info("Marcando todas las notificaciones como leídas — usuario: {}", usuarioId);
         List<Notificacion> noLeidas = notificacionRepository

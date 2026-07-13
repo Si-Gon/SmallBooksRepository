@@ -6,11 +6,18 @@ spring:
   config:
     import: 'optional:configserver:http://config:8888'
 
+logging:
+  pattern:
+    level: "%5p [%mdc{traceId:-NONE} %mdc{spanId:-NONE}]"
+
 management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: health,info
   endpoint:
     health:
       show-details: always
+  tracing:
+    sampling:
+      probability: 1.0
