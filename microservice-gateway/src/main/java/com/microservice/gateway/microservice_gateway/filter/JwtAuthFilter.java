@@ -17,12 +17,14 @@ import java.security.Key;
 // ¿QUÉ HACE ESTE FILTRO?
 //
 // Cada request que llega al gateway pasa por aquí ANTES de llegar
-// al microservicio destino. El filtro hace tres cosas:
+// al microservicio destino. El filtro hace cuatro cosas:
 //
 //   1. Verifica que el header "Authorization: Bearer <token>" existe
 //   2. Valida la firma del token con la misma clave secreta que usó
 //      identity-service para generarlo
 //   3. Verifica que sea un access token (no un refresh token)
+//   4. Propaga la identidad (userId, roles) como headers X-User-Id y
+//      X-User-Roles al microservicio destino
 //
 // Si todo está bien → deja pasar la request al microservicio
 // Si algo falla    → devuelve 401 UNAUTHORIZED de inmediato
@@ -78,8 +80,28 @@ public class JwtAuthFilter extends AbstractGatewayFilterFactory<JwtAuthFilter.Co
                     return rechazar(exchange, HttpStatus.UNAUTHORIZED);
                 }
  
-                // Token válido → dejar pasar al microservicio destino
-                return chain.filter(exchange);
+                // --- Paso 4: Propagar identidad al microservicio destino ---
+                // Extraemos userId (sub del token) y roles del JWT y los inyectamos
+                // como headers HTTP para que el microservicio destino sepa quién es
+                // el usuario sin tener que validar el token nuevamente.
+                // Usamos h.set() en lugar de r.header() para REEMPLAZAR cualquier
+                // header X-User-Id o X-User-Roles que el cliente haya enviado,
+                // evitando así inyección de identidad por duplicación de headers.
+                String userId = claims.getSubject();
+                String roles = claims.get("roles", String.class);
+
+                if (userId == null) {
+                    return rechazar(exchange, HttpStatus.UNAUTHORIZED);
+                }
+
+                ServerWebExchange mutatedExchange = exchange.mutate()
+                        .request(r -> r.headers(h -> {
+                            h.set("X-User-Id", userId);
+                            h.set("X-User-Roles", roles != null ? roles : "");
+                        }))
+                        .build();
+
+                return chain.filter(mutatedExchange);
  
             } catch (Exception e) {
                 // Token malformado, expirado, firma incorrecta → 401
