@@ -1,0 +1,139 @@
+# ============================================================
+# CI/CD Pipeline — SmallBooks Plataforma de Biblioteca Digital
+# Versión: 2.0
+#
+# Disparadores:
+#   - push a la rama sigon (desarrollo activo)
+#   - pull_request hacia main (validación pre-merge)
+#   - workflow_dispatch (ejecución manual)
+#
+# Jobs:
+#   1. compilar-y-testear: build Maven + 552 tests + JaCoCo
+#   2. notificar-fallo: solo si el job principal falla
+# ============================================================
+
+name: CI/CD — SmallBooks
+
+on:
+  push:
+    branches:
+      - sigon
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+# Control de concurrencia: cancela ejecuciones previas en la misma
+# rama si hay una más reciente. En PRs usa refs/pull/N/merge,
+# aislado de pushes simultáneos.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  # ──────────────────────────────────────────────────────────
+  # Job 1: Compilar y ejecutar tests
+  # ──────────────────────────────────────────────────────────
+  compilar-y-testear:
+    name: Compilar y ejecutar tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 17 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Compilar y ejecutar tests con Maven
+        id: mvn-test
+        run: |
+          echo "::group::Maven clean test"
+          mvn clean test \
+            --batch-mode \
+            --no-transfer-progress \
+            -Dstyle.color=never \
+            -Djacoco.skip=false 2>&1
+          echo "::endgroup::"
+        shell: bash
+
+      - name: Subir reportes JaCoCo (cobertura HTML)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-reports
+          path: '**/target/site/jacoco/**'
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Subir reportes JUnit (resultados XML)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: '**/target/surefire-reports/TEST-*.xml'
+          if-no-files-found: warn
+          retention-days: 7
+
+      # ── Resumen del build en GitHub Summary ──────────────
+      - name: Resumen del build
+        if: always()
+        run: |
+          STATUS="${{ job.status }}"
+          if [ "$STATUS" = "success" ]; then
+            ICON="✅"
+            MSG="Éxito"
+          elif [ "$STATUS" = "failure" ]; then
+            ICON="❌"
+            MSG="Fallo"
+          elif [ "$STATUS" = "cancelled" ]; then
+            ICON="⏹️"
+            MSG="Cancelado"
+          else
+            ICON="⚠️"
+            MSG="$STATUS"
+          fi
+
+          {
+            echo "## ${ICON} Resumen del CI/CD — $MSG"
+            echo ""
+            echo "| Métrica | Valor |"
+            echo "|---------|-------|"
+            echo "| **Rama** | \`${{ github.ref_name }}\` |"
+            echo "| **Commit** | \`${{ github.sha }}\` |"
+            echo "| **Usuario** | ${{ github.actor }} |"
+            echo "| **Estado** | ${ICON} ${MSG} |"
+            echo "| **Módulos** | 13 microservicios |"
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              echo "| **PR** | #${{ github.event.number }} |"
+            fi
+            echo ""
+            echo "### 📂 Artefactos disponibles"
+            echo "- [Reportes JaCoCo](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts)"
+            echo "- [Resultados JUnit](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts)"
+          } >> "$GITHUB_STEP_SUMMARY"
+        shell: bash
+
+  # ──────────────────────────────────────────────────────────
+  # Job 2: Notificar fallo (solo si el job principal falla)
+  # ──────────────────────────────────────────────────────────
+  notificar-fallo:
+    name: Notificar fallo del build
+    needs: compilar-y-testear
+    if: failure() && github.ref_name == 'sigon'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Marcar estado del check como fallido
+        run: |
+          echo "❌ El build falló en la rama \`${{ github.ref_name }}\`"
+          echo "   Commit: ${{ github.sha }}"
+          echo "   Autor: ${{ github.actor }}"
+          echo "   Ejecución: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"

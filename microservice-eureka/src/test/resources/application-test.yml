@@ -1,0 +1,32 @@
+# ============================================================
+# Configuración exclusiva para el perfil "test" — Eureka Server
+# Desactiva conexión a Config Server externo para CI/CD
+# ============================================================
+
+spring:
+  # Desactiva la importación del Config Server externo (localhost:8888)
+  config:
+    import: ""
+
+  cloud:
+    config:
+      enabled: false
+
+eureka:
+  client:
+    # No desactivamos el cliente Eureka por completo porque
+    # EurekaServerAutoConfiguration necesita ApplicationInfoManager
+    # que lo provee EurekaClientAutoConfiguration.
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  server:
+    # Evita que Eureka intente protegerse en modo test
+    enable-self-preservation: false
+    # Reduce los tiempos de espera en test
+    eviction-interval-timer-in-ms: 5000
+
+logging:
+  level:
+    root: WARN

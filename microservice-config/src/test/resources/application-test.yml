@@ -1,0 +1,17 @@
+# ============================================================
+# Configuración exclusiva para el perfil "test" — Config Server
+# El test usa @ActiveProfiles({"test", "native"}) para evitar
+# que Config Server intente el backend git. Aquí sólo silenciamos
+# el logging y definimos la ubicación nativa de configuraciones.
+# ============================================================
+
+spring:
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/configurations
+
+logging:
+  level:
+    root: WARN
