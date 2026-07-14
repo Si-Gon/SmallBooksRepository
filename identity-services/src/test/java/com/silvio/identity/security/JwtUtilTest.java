@@ -219,10 +219,24 @@ class JwtUtilTest {
         assertThrows(ExpiredJwtException.class, () -> jwtUtil.validateToken(expiredToken));
     }
 
-    // NOTA: isTokenExpired() internamente llama a validateToken() que lanza
-    // ExpiredJwtException en tokens expirados, por lo que el método nunca
-    // retorna true actualmente. La validación de expiración se cubre en
-    // validateToken_expirado_debeLanzarExpiredJwtException.
+    @Test
+    @DisplayName("isTokenExpired: retorna true para token expirado")
+    void isTokenExpired_tokenExpirado_debeRetornarTrue() {
+        SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
+        String expiredToken = Jwts.builder()
+                .claims()
+                    .subject("silvio")
+                    .issuedAt(new Date(System.currentTimeMillis() - 3600000))
+                    .expiration(new Date(System.currentTimeMillis() - 1))
+                    .and()
+                .signWith(key, Jwts.SIG.HS256)
+                .compact();
+
+        assertTrue(jwtUtil.isTokenExpired(expiredToken));
+    }
+
+    // NOTA: isTokenExpired() captura ExpiredJwtException y retorna true.
+    // La validación directa con validateToken() se cubre en el test de abajo.
 
     // =============================================================
     // CASOS BORDE
@@ -261,5 +275,21 @@ class JwtUtilTest {
         String token = jwtUtil.generateRefreshToken("silvio");
         Claims claims = jwtUtil.validateToken(token);
         assertEquals("refresh", claims.get("type"));
+    }
+
+    // =============================================================
+    // isTokenExpired — casos borde adicionales
+    // =============================================================
+
+    @Test
+    @DisplayName("isTokenExpired: token nulo lanza excepción (delega a validateToken)")
+    void isTokenExpired_tokenNulo_debeLanzarExcepcion() {
+        assertThrows(Exception.class, () -> jwtUtil.isTokenExpired(null));
+    }
+
+    @Test
+    @DisplayName("isTokenExpired: token malformado lanza excepción")
+    void isTokenExpired_tokenMalformado_debeLanzarExcepcion() {
+        assertThrows(Exception.class, () -> jwtUtil.isTokenExpired("token.malformado"));
     }
 }

@@ -2,6 +2,7 @@ package com.silvio.identity.security;
 
 import com.silvio.identity.config.JwtProperties;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -79,6 +80,10 @@ public class JwtUtil {
     }
 
     public boolean isTokenExpired(String token) {
-        return validateToken(token).getExpiration().before(new Date());
+        try {
+            return validateToken(token).getExpiration().before(new Date());
+        } catch (ExpiredJwtException e) {
+            return true;
+        }
     }
 }

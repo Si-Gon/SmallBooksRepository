@@ -47,6 +47,8 @@ public class AuthController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String accessToken = jwtUtil.generateAccessToken(userDetails);
         String refreshToken = jwtUtil.generateRefreshToken(userDetails.getUsername());
+        // Almacenar hash del refresh token para poder rotarlo después
+        userService.storeRefreshTokenHash(userDetails.getUsername(), refreshToken);
         AuthResponse response = new AuthResponse(
         accessToken, refreshToken,
         " Login exitoso. Bienvenido " + userDetails.getUsername(),
@@ -91,27 +93,38 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
         String refreshToken = request.getRefreshToken();
+
+        // Verificar expiración primero antes de cualquier otra validación JWT
+        if (jwtUtil.isTokenExpired(refreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new AuthResponse(null, null, " Refresh token expirado", null));
+        }
+
         String tokenType = jwtUtil.extractTokenType(refreshToken);
         if (!"refresh".equals(tokenType)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new AuthResponse(null, null, " Token inválido: no es un refresh token", null));
         }
         String username = jwtUtil.extractUsername(refreshToken);
-        if (jwtUtil.isTokenExpired(refreshToken)) {
+        // Validar contra el hash almacenado y rotar el token
+        try {
+            UserDetails userDetails = userService.loadUserByUsername(username);
+            String newAccessToken = jwtUtil.generateAccessToken(userDetails);
+            String newRefreshToken = jwtUtil.generateRefreshToken(username);
+            // Rotar: invalida el viejo, almacena el nuevo hash
+            userService.rotateRefreshToken(refreshToken, newRefreshToken);
+            AuthResponse response = new AuthResponse(
+                newAccessToken, newRefreshToken,
+                " Token refrescado exitosamente", username
+            );
+            response.add(linkTo(methodOn(AuthController.class).login(null)).withRel("login"));
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            // Token inválido, ya rotado o posible robo — forzar re-login
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(new AuthResponse(null, null, " Refresh token expirado", null));
+                .body(new AuthResponse(null, null,
+                    " Refresh token inválido o ya utilizado. Por favor inicia sesión nuevamente.", null));
         }
-        UserDetails userDetails = userService.loadUserByUsername(username);
-        String newAccessToken = jwtUtil.generateAccessToken(userDetails);
-        String newRefreshToken = jwtUtil.generateRefreshToken(username);
-        AuthResponse response = new AuthResponse(
-        newAccessToken, newRefreshToken,
-        " Token refrescado exitosamente", username
-    );
-
-    response.add(linkTo(methodOn(AuthController.class).login(null)).withRel("login"));
-
-    return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Solicitar recuperación de contraseña",

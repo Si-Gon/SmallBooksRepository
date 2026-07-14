@@ -28,7 +28,10 @@ public class User {
     @Column(name = "role")
     private Set<String> roles; // ej: "ROLE_ADMIN", "ROLE_USER"
 
-    // Nuevos campos para recuperación de contraseña
+    // Campos para recuperación de contraseña
     private String resetToken;
     private LocalDateTime resetTokenExpiry;
+
+    // Hash SHA-256 del refresh token vigente para rotación
+    private String refreshTokenHash;
 }

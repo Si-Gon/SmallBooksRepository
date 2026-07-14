@@ -1,5 +1,6 @@
 package com.silvio.identity.service;
 
+import com.silvio.identity.config.JwtProperties;
 import com.silvio.identity.dto.UsuarioDTO;
 import com.silvio.identity.model.User;
 import com.silvio.identity.repository.UserRepository;
@@ -15,7 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.micrometer.observation.annotation.Observed;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.HexFormat;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -27,6 +32,7 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtProperties jwtProperties;
 
     @Observed(name = "identity.registerUser")
     @Transactional
@@ -73,9 +79,10 @@ public class UserService implements UserDetailsService {
 
         String resetToken = UUID.randomUUID().toString();
         user.setResetToken(resetToken);
-        user.setResetTokenExpiry(LocalDateTime.now().plusHours(24));
+        user.setResetTokenExpiry(LocalDateTime.now().plusHours(jwtProperties.getResetTokenExpirationHours()));
         userRepository.save(user);
-        log.info("Token de recuperación generado para usuario: {}", username);
+        log.info("Token de recuperación generado para usuario: {}, expira en {} horas",
+                username, jwtProperties.getResetTokenExpirationHours());
         return resetToken;
     }
 
@@ -116,6 +123,55 @@ public class UserService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
         log.info("Contraseña cambiada exitosamente para usuario: {}", username);
+    }
+
+    // ─── Refresh Token Rotation ──────────────────────────────────────────────
+
+    /**
+     * Genera el hash SHA-256 de un refresh token para almacenamiento seguro.
+     */
+    private String hashRefreshToken(String refreshToken) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(refreshToken.getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(hash);
+        } catch (NoSuchAlgorithmException e) {
+            log.error("Error al generar hash del refresh token", e);
+            throw new RuntimeException("Error interno de seguridad");
+        }
+    }
+
+    @Observed(name = "identity.storeRefreshTokenHash")
+    @Transactional
+    public void storeRefreshTokenHash(String username, String refreshToken) {
+        log.info("Almacenando hash de refresh token para usuario: {}", username);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException(" Usuario no encontrado"));
+        user.setRefreshTokenHash(hashRefreshToken(refreshToken));
+        userRepository.save(user);
+    }
+
+    /**
+     * Valida que el refresh token coincida con el almacenado y lo rota.
+     *
+     * @return el nuevo hash almacenado si la validación es exitosa
+     * @throws RuntimeException si el token no coincide (posible robo)
+     */
+    @Observed(name = "identity.rotateRefreshToken")
+    @Transactional
+    public void rotateRefreshToken(String oldRefreshToken, String newRefreshToken) {
+        String oldHash = hashRefreshToken(oldRefreshToken);
+
+        User user = userRepository.findByRefreshTokenHash(oldHash)
+                .orElseThrow(() -> {
+                    log.warn("Intento de refresco con token inválido o ya rotado — posible robo de token");
+                    return new RuntimeException(" Refresh token inválido o ya utilizado");
+                });
+
+        String newHash = hashRefreshToken(newRefreshToken);
+        user.setRefreshTokenHash(newHash);
+        userRepository.save(user);
+        log.info("Refresh token rotado exitosamente para usuario: {}", user.getUsername());
     }
 
     @Observed(name = "identity.obtenerUsuario")

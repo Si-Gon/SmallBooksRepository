@@ -1,5 +1,6 @@
 package com.silvio.identity.service;
 
+import com.silvio.identity.config.JwtProperties;
 import com.silvio.identity.dto.UsuarioDTO;
 import com.silvio.identity.model.User;
 import com.silvio.identity.repository.UserRepository;
@@ -12,13 +13,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.HexFormat;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -33,6 +39,9 @@ class UserServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private JwtProperties jwtProperties;
+
     // ─── helpers ─────────────────────────────────────────────────────────────
 
     private User usuarioBase(String username) {
@@ -41,6 +50,17 @@ class UserServiceTest {
         user.setPassword("$2a$10$hashedpassword");
         user.setRoles(Set.of("ROLE_USER"));
         return user;
+    }
+
+    // Reproduce el mismo hash SHA-256 que usa UserService.hashRefreshToken()
+    private String hashTokenForTest(String token) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(token.getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(hash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @BeforeEach
@@ -146,6 +166,7 @@ class UserServiceTest {
         User user = usuarioBase(username);
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
+        when(jwtProperties.getResetTokenExpirationHours()).thenReturn(24L);
 
         // When
         String token = userService.createPasswordResetToken(username);
@@ -156,6 +177,32 @@ class UserServiceTest {
         // El token debe ser un UUID válido
         assertDoesNotThrow(() -> UUID.fromString(token));
         verify(userRepository).save(any(User.class));
+        verify(jwtProperties, atLeastOnce()).getResetTokenExpirationHours();
+    }
+
+    @Test
+    void createPasswordResetToken_estableceResetTokenExpiry() {
+        // Given
+        String username = "silvio";
+        User user = usuarioBase(username);
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
+        when(jwtProperties.getResetTokenExpirationHours()).thenReturn(48L);
+
+        // When
+        userService.createPasswordResetToken(username);
+
+        // Then
+        assertNotNull(user.getResetTokenExpiry());
+        // Debe ser aproximadamente ahora + 48h (con un margen de 1 minuto)
+        LocalDateTime expectedMin = LocalDateTime.now().plusHours(48).minusMinutes(1);
+        LocalDateTime expectedMax = LocalDateTime.now().plusHours(48).plusMinutes(1);
+        assertTrue(user.getResetTokenExpiry().isAfter(expectedMin),
+                "resetTokenExpiry debe ser >= ahora + 48h");
+        assertTrue(user.getResetTokenExpiry().isBefore(expectedMax),
+                "resetTokenExpiry debe ser <= ahora + 48h");
+        verify(userRepository).save(any(User.class));
+        verify(jwtProperties, atLeastOnce()).getResetTokenExpirationHours();
     }
 
     @Test
@@ -274,6 +321,115 @@ class UserServiceTest {
         assertThrows(RuntimeException.class,
                 () -> userService.changePassword("noexiste", "pass", "nueva"));
         verify(userRepository, never()).save(any(User.class));
+    }
+
+    // ─── tests storeRefreshTokenHash ──────────────────────────────────────────
+
+    @Test
+    void storeRefreshTokenHash_almacena_hash_cuando_usuario_existe() {
+        // Given
+        String username = "silvio";
+        String refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaWx2aW8iLCJ0eXBlIjoicmVmcmVzaCJ9.sometoken";
+        User user = usuarioBase(username);
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
+
+        // When
+        userService.storeRefreshTokenHash(username, refreshToken);
+
+        // Then
+        verify(userRepository).findByUsername(username);
+        verify(userRepository).save(any(User.class));
+        // Verificar que se asignó un hash (SHA-256 = 64 caracteres hex)
+        assertNotNull(user.getRefreshTokenHash());
+        assertEquals(64, user.getRefreshTokenHash().length());
+    }
+
+    @Test
+    void storeRefreshTokenHash_falla_cuando_usuario_no_existe() {
+        // Given
+        when(userRepository.findByUsername("noexiste")).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(RuntimeException.class,
+                () -> userService.storeRefreshTokenHash("noexiste", "token"));
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    // ─── tests rotateRefreshToken ─────────────────────────────────────────────
+
+    @Test
+    void rotateRefreshToken_rotacion_exitosa_con_token_valido() {
+        // Given
+        String username = "silvio";
+        String oldRefreshToken = "old-refresh-token-value";
+        String newRefreshToken = "new-refresh-token-value";
+        User user = usuarioBase(username);
+        // Calcular el hash SHA-256 que coincide con el que genera UserService internamente
+        String expectedOldHash = hashTokenForTest(oldRefreshToken);
+        user.setRefreshTokenHash(expectedOldHash);
+
+        when(userRepository.findByRefreshTokenHash(expectedOldHash)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
+
+        // When
+        userService.rotateRefreshToken(oldRefreshToken, newRefreshToken);
+
+        // Then
+        verify(userRepository).findByRefreshTokenHash(expectedOldHash);
+        verify(userRepository).save(any(User.class));
+        // El hash debe haber cambiado al del nuevo token
+        assertNotNull(user.getRefreshTokenHash());
+        assertEquals(64, user.getRefreshTokenHash().length());
+    }
+
+    @Test
+    void rotateRefreshToken_falla_con_token_invalido() {
+        // Given
+        String oldRefreshToken = "token-que-no-existe";
+        // Ningún usuario tiene este hash almacenado
+        when(userRepository.findByRefreshTokenHash(anyString())).thenReturn(Optional.empty());
+
+        // When & Then
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> userService.rotateRefreshToken(oldRefreshToken, "nuevo-token"));
+        assertTrue(ex.getMessage().contains("inválido") || ex.getMessage().contains("utilizado"));
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void rotateRefreshToken_tokenYaRotado_debeFallar() {
+        // Given — simula el escenario de reuso de un token ya rotado:
+        // 1. El usuario tenía "old-token" cuyo hash estaba en BD
+        // 2. Se hizo un refresh exitoso: el hash se actualizó al de "new-token"
+        // 3. Un atacante intenta reusar "old-token" → ya no existe en BD
+
+        String username = "silvio";
+        String oldRefreshToken = "primer-refresh-token";
+        String newRefreshToken = "segundo-refresh-token";
+
+        User user = usuarioBase(username);
+
+        // Primera rotación: el hash del old-token SÍ existe
+        String firstHash = hashTokenForTest(oldRefreshToken);
+        user.setRefreshTokenHash(firstHash);
+        when(userRepository.findByRefreshTokenHash(firstHash)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
+
+        // Ejecutar primera rotación — debe funcionar
+        userService.rotateRefreshToken(oldRefreshToken, newRefreshToken);
+        // Después de la rotación, el hash ahora es el del nuevo token
+        String newHash = hashTokenForTest(newRefreshToken);
+        assertEquals(newHash, user.getRefreshTokenHash());
+
+        // Segunda rotación con el MISMO old token — simula reuso
+        // El hash del old-token ya no encuentra al usuario porque fue reemplazado
+        when(userRepository.findByRefreshTokenHash(firstHash)).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> userService.rotateRefreshToken(oldRefreshToken, "otro-token-mas"));
+        assertTrue(ex.getMessage().contains("inválido") || ex.getMessage().contains("utilizado"));
+        verify(userRepository, times(2)).findByRefreshTokenHash(firstHash);
     }
 
     // ─── tests obtenerUsuarioPorUsername ────────────────────────────────────────

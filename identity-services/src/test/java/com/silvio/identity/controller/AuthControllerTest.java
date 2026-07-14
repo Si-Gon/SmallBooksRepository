@@ -122,6 +122,7 @@ class AuthControllerTest {
         when(authenticationManager.authenticate(any())).thenReturn(authToken);
         when(jwtUtil.generateAccessToken(any())).thenReturn("access.token.fake");
         when(jwtUtil.generateRefreshToken(any())).thenReturn("refresh.token.fake");
+        doNothing().when(userService).storeRefreshTokenHash(any(), any());
 
         mockMvc.perform(post("/auth/login").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -132,6 +133,7 @@ class AuthControllerTest {
 
         verify(authenticationManager).authenticate(any());
         verify(jwtUtil).generateAccessToken(any());
+        verify(userService).storeRefreshTokenHash(eq("silvio"), any());
     }
 
     @Test
@@ -263,5 +265,141 @@ class AuthControllerTest {
 
         verify(jwtUtil).extractUsername("fake.jwt.token");
         verify(userService).changePassword(eq("silvio"), any(), any());
+    }
+
+    // =========================================================
+    // POST /auth/refresh — Refresh Token Rotation
+    // =========================================================
+
+    @Test
+    void refreshToken_exitoso_debeRetornar200ConNuevosTokens() throws Exception {
+        // Given
+        RefreshTokenRequest request = new RefreshTokenRequest();
+        request.setRefreshToken("refresh.token.valido");
+
+        UserDetails userDetails = userDetailsTest("silvio");
+
+        when(jwtUtil.isTokenExpired("refresh.token.valido")).thenReturn(false);
+        when(jwtUtil.extractTokenType("refresh.token.valido")).thenReturn("refresh");
+        when(jwtUtil.extractUsername("refresh.token.valido")).thenReturn("silvio");
+        when(userService.loadUserByUsername("silvio")).thenReturn(userDetails);
+        when(jwtUtil.generateAccessToken(userDetails)).thenReturn("nuevo.access.token");
+        when(jwtUtil.generateRefreshToken("silvio")).thenReturn("nuevo.refresh.token");
+        doNothing().when(userService).rotateRefreshToken("refresh.token.valido", "nuevo.refresh.token");
+
+        // When & Then
+        mockMvc.perform(post("/auth/refresh").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").value("nuevo.access.token"))
+                .andExpect(jsonPath("$.refreshToken").value("nuevo.refresh.token"))
+                .andExpect(jsonPath("$.message").value(" Token refrescado exitosamente"))
+                .andExpect(jsonPath("$.username").value("silvio"));
+
+        verify(jwtUtil).isTokenExpired("refresh.token.valido");
+        verify(jwtUtil).extractTokenType("refresh.token.valido");
+        verify(userService).rotateRefreshToken("refresh.token.valido", "nuevo.refresh.token");
+    }
+
+    @Test
+    void refreshToken_expirado_debeRetornar401() throws Exception {
+        // Given
+        RefreshTokenRequest request = new RefreshTokenRequest();
+        request.setRefreshToken("refresh.token.expirado");
+
+        // isTokenExpired retorna true — se verifica ANTES de cualquier otra validación
+        when(jwtUtil.isTokenExpired("refresh.token.expirado")).thenReturn(true);
+
+        // When & Then
+        mockMvc.perform(post("/auth/refresh").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value(" Refresh token expirado"));
+
+        verify(jwtUtil).isTokenExpired("refresh.token.expirado");
+        // No deben invocarse métodos posteriores si el token ya expiró
+        verify(jwtUtil, never()).extractTokenType(any());
+        verify(userService, never()).rotateRefreshToken(any(), any());
+    }
+
+    @Test
+    void refreshToken_tokenYaRotado_debeRetornar401() throws Exception {
+        // Given
+        RefreshTokenRequest request = new RefreshTokenRequest();
+        request.setRefreshToken("refresh.token.ya.rotado");
+
+        UserDetails userDetails = userDetailsTest("silvio");
+
+        // El token no está expirado y es de tipo refresh
+        when(jwtUtil.isTokenExpired("refresh.token.ya.rotado")).thenReturn(false);
+        when(jwtUtil.extractTokenType("refresh.token.ya.rotado")).thenReturn("refresh");
+        when(jwtUtil.extractUsername("refresh.token.ya.rotado")).thenReturn("silvio");
+        when(userService.loadUserByUsername("silvio")).thenReturn(userDetails);
+        when(jwtUtil.generateAccessToken(userDetails)).thenReturn("nuevo.access.token");
+        when(jwtUtil.generateRefreshToken("silvio")).thenReturn("nuevo.refresh.token");
+
+        // rotateRefreshToken lanza excepción porque el token ya fue rotado (reuso detectado)
+        doThrow(new RuntimeException(" Refresh token inválido o ya utilizado"))
+                .when(userService).rotateRefreshToken("refresh.token.ya.rotado", "nuevo.refresh.token");
+
+        // When & Then
+        mockMvc.perform(post("/auth/refresh").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value(
+                        " Refresh token inválido o ya utilizado. Por favor inicia sesión nuevamente."));
+
+        verify(jwtUtil).isTokenExpired("refresh.token.ya.rotado");
+        verify(jwtUtil).extractTokenType("refresh.token.ya.rotado");
+        verify(userService).rotateRefreshToken("refresh.token.ya.rotado", "nuevo.refresh.token");
+    }
+
+    @Test
+    void refreshToken_tokenTipoAccess_debeRetornar401() throws Exception {
+        // Given
+        RefreshTokenRequest request = new RefreshTokenRequest();
+        request.setRefreshToken("access.token.falso");
+
+        // Token no expirado pero es de tipo "access", no "refresh"
+        when(jwtUtil.isTokenExpired("access.token.falso")).thenReturn(false);
+        when(jwtUtil.extractTokenType("access.token.falso")).thenReturn("access");
+
+        // When & Then
+        mockMvc.perform(post("/auth/refresh").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value(" Token inválido: no es un refresh token"));
+
+        verify(jwtUtil).isTokenExpired("access.token.falso");
+        verify(jwtUtil).extractTokenType("access.token.falso");
+        // No debe llegar a rotar si el tipo es incorrecto
+        verify(userService, never()).rotateRefreshToken(any(), any());
+    }
+
+    // =========================================================
+    // POST /auth/forgot-password — casos borde
+    // =========================================================
+
+    @Test
+    void forgotPassword_usuarioNoExistente_debeRetornar400() throws Exception {
+        // Given
+        PasswordResetRequest request = new PasswordResetRequest();
+        request.setUsername("usuario_inexistente");
+
+        // createPasswordResetToken lanza RuntimeException si el usuario no existe
+        doThrow(new RuntimeException("Usuario no encontrado"))
+                .when(userService).createPasswordResetToken("usuario_inexistente");
+
+        // When & Then
+        mockMvc.perform(post("/auth/forgot-password").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+
+        verify(userService).createPasswordResetToken("usuario_inexistente");
     }
 }

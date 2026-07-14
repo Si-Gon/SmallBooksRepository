@@ -11,4 +11,5 @@ public class JwtProperties {
     private String secret;
     private long accessTokenExpiration;
     private long refreshTokenExpiration;
+    private long resetTokenExpirationHours = 24; // horas de validez del token de recuperación
 }
