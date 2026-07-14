@@ -3,6 +3,9 @@ package com.silvio.license.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.silvio.license.dto.LicenseRequestDTO;
 import com.silvio.license.dto.LicenseResponseDTO;
+import com.silvio.license.exception.CopiaNoDisponibleException;
+import com.silvio.license.exception.DevolucionInvalidaException;
+import com.silvio.license.exception.LicenciaNotFoundException;
 import com.silvio.license.service.LicenseService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,11 +109,11 @@ class LicenseControllerTest {
     void obtenerPorLibroId_devuelve_404_cuando_no_existe() throws Exception {
         // Given
         when(licenseService.obtenerPorLibroId(999L))
-            .thenThrow(new RuntimeException("No existe licencia para el libro con id: 999"));
+            .thenThrow(new LicenciaNotFoundException(999L));
 
         // When & Then
         mockMvc.perform(get("/api/licenses/999"))
-            .andExpect(status().isNotFound());  // 404 — default del GlobalExceptionHandler
+            .andExpect(status().isNotFound());
 
         verify(licenseService).obtenerPorLibroId(999L);
     }
@@ -209,11 +212,11 @@ class LicenseControllerTest {
     void prestar_devuelve_422_cuando_no_hay_copias() throws Exception {
         // Given
         when(licenseService.prestar(1L))
-            .thenThrow(new RuntimeException("No hay copias disponibles del libro con id: 1"));
+            .thenThrow(new CopiaNoDisponibleException(1L));
 
         // When & Then
         mockMvc.perform(put("/api/licenses/1/prestar"))
-            .andExpect(status().isUnprocessableEntity());  // 422
+            .andExpect(status().isUnprocessableEntity());
 
         verify(licenseService).prestar(1L);
 }
@@ -236,14 +239,14 @@ class LicenseControllerTest {
     }
 
     @Test
-     void devolver_devuelve_404_cuando_todas_las_copias_estan_disponibles() throws Exception {
+     void devolver_devuelve_400_cuando_todas_las_copias_estan_disponibles() throws Exception {
         // Given
         when(licenseService.devolver(1L))
-            .thenThrow(new RuntimeException("Todas las copias del libro ya están disponibles"));
+            .thenThrow(new DevolucionInvalidaException());
 
         // When & Then
         mockMvc.perform(put("/api/licenses/1/devolver"))
-            .andExpect(status().isNotFound());  // 404 — default del GlobalExceptionHandler
+            .andExpect(status().isBadRequest());
 
         verify(licenseService).devolver(1L);
      }

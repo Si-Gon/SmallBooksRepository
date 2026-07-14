@@ -1,5 +1,6 @@
 package com.silvio.elending.security;
 
+import com.silvio.elending.exception.TokenExtraccionException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,7 +48,7 @@ class JwtExtractorTest {
         String tokenInvalido = "Bearer token-invalido";
 
         // When & Then
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        TokenExtraccionException ex = assertThrows(TokenExtraccionException.class,
                 () -> jwtExtractor.extraerUsuario(tokenInvalido));
         assertTrue(ex.getMessage().contains("No se pudo extraer"));
     }
@@ -58,7 +59,7 @@ class JwtExtractorTest {
         String tokenSinBearer = "token-sin-bearer";
 
         // When & Then
-        assertThrows(RuntimeException.class,
+        assertThrows(TokenExtraccionException.class,
                 () -> jwtExtractor.extraerUsuario(tokenSinBearer));
     }
 
@@ -68,7 +69,7 @@ class JwtExtractorTest {
         String token = "Bearer header.payload-invalido.firma";
 
         // When & Then
-        assertThrows(RuntimeException.class,
+        assertThrows(TokenExtraccionException.class,
                 () -> jwtExtractor.extraerUsuario(token));
     }
 }

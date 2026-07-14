@@ -2,6 +2,11 @@ package com.silvio.identity.service;
 
 import com.silvio.identity.config.JwtProperties;
 import com.silvio.identity.dto.UsuarioDTO;
+import com.silvio.identity.exception.ContrasenaIncorrectaException;
+import com.silvio.identity.exception.TokenExpiradoException;
+import com.silvio.identity.exception.TokenInvalidoException;
+import com.silvio.identity.exception.UsuarioDuplicadoException;
+import com.silvio.identity.exception.UsuarioNotFoundException;
 import com.silvio.identity.model.User;
 import com.silvio.identity.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -118,7 +123,7 @@ class UserServiceTest {
                 .thenReturn(Optional.of(usuarioBase(username)));
 
         // When & Then
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        UsuarioDuplicadoException ex = assertThrows(UsuarioDuplicadoException.class,
                 () -> userService.registerUser(username, "pass123", null));
 
         assertTrue(ex.getMessage().contains("ya existe") || ex.getMessage().contains(username));
@@ -211,7 +216,7 @@ class UserServiceTest {
         when(userRepository.findByUsername("noexiste")).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(RuntimeException.class,
+        assertThrows(UsuarioNotFoundException.class,
                 () -> userService.createPasswordResetToken("noexiste"));
         verify(userRepository, never()).save(any(User.class));
     }
@@ -252,7 +257,7 @@ class UserServiceTest {
         when(userRepository.findByResetToken(token)).thenReturn(Optional.of(user));
 
         // When & Then
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        TokenExpiradoException ex = assertThrows(TokenExpiradoException.class,
                 () -> userService.resetPassword(token, "nuevaPassword"));
 
         assertTrue(ex.getMessage().contains("expirado") || ex.getMessage().contains("token"));
@@ -267,7 +272,7 @@ class UserServiceTest {
         when(userRepository.findByResetToken(tokenInvalido)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(RuntimeException.class,
+        assertThrows(TokenInvalidoException.class,
                 () -> userService.resetPassword(tokenInvalido, "nuevaPassword"));
         verify(userRepository, never()).save(any(User.class));
     }
@@ -304,7 +309,7 @@ class UserServiceTest {
         when(passwordEncoder.matches("passwordIncorrecta", user.getPassword())).thenReturn(false);
 
         // When & Then
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        ContrasenaIncorrectaException ex = assertThrows(ContrasenaIncorrectaException.class,
                 () -> userService.changePassword(username, "passwordIncorrecta", "nueva"));
 
         assertTrue(ex.getMessage().contains("incorrecta") || ex.getMessage().contains("actual"));
@@ -318,7 +323,7 @@ class UserServiceTest {
         when(userRepository.findByUsername("noexiste")).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(RuntimeException.class,
+        assertThrows(UsuarioNotFoundException.class,
                 () -> userService.changePassword("noexiste", "pass", "nueva"));
         verify(userRepository, never()).save(any(User.class));
     }
@@ -351,7 +356,7 @@ class UserServiceTest {
         when(userRepository.findByUsername("noexiste")).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(RuntimeException.class,
+        assertThrows(UsuarioNotFoundException.class,
                 () -> userService.storeRefreshTokenHash("noexiste", "token"));
         verify(userRepository, never()).save(any(User.class));
     }
@@ -391,7 +396,7 @@ class UserServiceTest {
         when(userRepository.findByRefreshTokenHash(anyString())).thenReturn(Optional.empty());
 
         // When & Then
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        TokenInvalidoException ex = assertThrows(TokenInvalidoException.class,
                 () -> userService.rotateRefreshToken(oldRefreshToken, "nuevo-token"));
         assertTrue(ex.getMessage().contains("inválido") || ex.getMessage().contains("utilizado"));
         verify(userRepository, never()).save(any(User.class));
@@ -426,7 +431,7 @@ class UserServiceTest {
         // El hash del old-token ya no encuentra al usuario porque fue reemplazado
         when(userRepository.findByRefreshTokenHash(firstHash)).thenReturn(Optional.empty());
 
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        TokenInvalidoException ex = assertThrows(TokenInvalidoException.class,
                 () -> userService.rotateRefreshToken(oldRefreshToken, "otro-token-mas"));
         assertTrue(ex.getMessage().contains("inválido") || ex.getMessage().contains("utilizado"));
         verify(userRepository, times(2)).findByRefreshTokenHash(firstHash);

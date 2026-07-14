@@ -3,6 +3,8 @@ package com.silvio.content.config;
 import com.silvio.content.client.IngestionClient;
 import com.silvio.content.client.LendingClient;
 import com.silvio.content.dto.PrestamoDTO;
+import com.silvio.content.exception.AccesoDenegadoException;
+import com.silvio.content.exception.VerificacionPrestamoException;
 import com.silvio.content.service.ContentService;
 import io.micrometer.tracing.Tracer;
 import org.junit.jupiter.api.Test;
@@ -71,7 +73,7 @@ class FeignTracingPropagationTest {
         when(lendingClient.obtenerPrestamosActivos("Bearer test-token"))
                 .thenReturn(java.util.Collections.emptyList());
 
-        assertThrows(RuntimeException.class,
+        assertThrows(AccesoDenegadoException.class,
                 () -> contentService.obtenerArchivo(1L, "Bearer test-token"),
                 "Sin préstamo activo debe lanzar excepción");
 
@@ -84,7 +86,7 @@ class FeignTracingPropagationTest {
         when(lendingClient.obtenerPrestamosActivos("Bearer test-token"))
                 .thenThrow(new RuntimeException("Error de conexión con E-Lending"));
 
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        VerificacionPrestamoException ex = assertThrows(VerificacionPrestamoException.class,
                 () -> contentService.obtenerArchivo(1L, "Bearer test-token"));
         assertTrue(ex.getMessage().contains("No se pudo verificar el préstamo"));
 

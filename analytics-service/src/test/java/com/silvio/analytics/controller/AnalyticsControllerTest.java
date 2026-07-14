@@ -2,6 +2,8 @@ package com.silvio.analytics.controller;
 
 import com.silvio.analytics.dto.EstadisticasDTO;
 import com.silvio.analytics.dto.PrestamoAnalyticsDTO;
+import com.silvio.analytics.exception.ErrorDatosPrestamosException;
+import com.silvio.analytics.exception.ErrorHistorialUsuarioException;
 import com.silvio.analytics.service.AnalyticsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,9 +84,9 @@ class AnalyticsControllerTest {
 
     @Test
     void obtenerEstadisticas_errorInterno_debeRetornar503() throws Exception {
-        // GlobalExceptionHandler convierte RuntimeException en 503 SERVICE_UNAVAILABLE
+        // ErrorDatosPrestamosException → GlobalExceptionHandler devuelve 503
         when(analyticsService.obtenerEstadisticas())
-            .thenThrow(new RuntimeException("Error al obtener datos de préstamos: Connection refused"));
+            .thenThrow(new ErrorDatosPrestamosException("Connection refused"));
 
         mockMvc.perform(get("/api/analytics/estadisticas"))
                 .andExpect(status().isServiceUnavailable())
@@ -127,7 +129,7 @@ class AnalyticsControllerTest {
     @Test
     void historialUsuario_errorEnServicio_debeRetornar503() throws Exception {
         when(analyticsService.historialUsuario("fallo"))
-            .thenThrow(new RuntimeException("Error al obtener historial del usuario: fallo"));
+            .thenThrow(new ErrorHistorialUsuarioException("fallo"));
 
         mockMvc.perform(get("/api/analytics/historial/fallo"))
                 .andExpect(status().isServiceUnavailable())

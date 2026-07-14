@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * Se usan dos enfoques complementarios:
  * - MockMvc standalone para probar la validación → 400 (usa un controller inline)
- * - Llamadas directas al handler para probar RuntimeException → 404 / 409
+ * - Llamadas directas al handler para probar excepciones de dominio → 404 / 409 / 500
  */
 class GlobalExceptionHandlerTest {
 
@@ -51,14 +51,12 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void manejarRuntimeException_ConMensajeYaExiste_DebeRetornar409() {
-        // Given
-        // El servicio lanza "Ya existe..." con mayúscula inicial, y el handler
-        // ahora usa contains() con toLowerCase() para ser case-insensitive.
-        RuntimeException ex = new RuntimeException("Ya existe un libro con ISBN: 1234567890123");
+    void manejarLibroDuplicado_DebeRetornar409() {
+        // Given: excepción de dominio para ISBN duplicado
+        LibroDuplicadoException ex = new LibroDuplicadoException("1234567890123");
 
         // When
-        ResponseEntity<Map<String, String>> response = handler.manejarRuntimeException(ex);
+        ResponseEntity<Map<String, String>> response = handler.manejarLibroDuplicado(ex);
 
         // Then
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
@@ -68,12 +66,12 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void manejarRuntimeException_ConMensajeNotFound_DebeRetornar404() {
-        // Given
-        RuntimeException ex = new RuntimeException("Libro no encontrado con id: 999");
+    void manejarLibroNoEncontrado_DebeRetornar404() {
+        // Given: excepción de dominio para libro no encontrado
+        LibroNotFoundException ex = new LibroNotFoundException(999L);
 
         // When
-        ResponseEntity<Map<String, String>> response = handler.manejarRuntimeException(ex);
+        ResponseEntity<Map<String, String>> response = handler.manejarLibroNoEncontrado(ex);
 
         // Then
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -83,29 +81,17 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void manejarRuntimeException_ConMensajeNull_DebeRetornar404() {
-        // Given
-        RuntimeException ex = new RuntimeException();
-
-        // When
-        ResponseEntity<Map<String, String>> response = handler.manejarRuntimeException(ex);
-
-        // Then: mensaje null → no contiene "ya existe" → 404 NOT_FOUND
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertTrue(response.getBody().containsKey("error"));
-    }
-
-    @Test
-    void manejarRuntimeException_ConMensajeGenerico_DebeRetornar404() {
-        // Given: mensaje que no contiene ni "ya existe" ni patrones especiales
+    void manejarRuntimeException_DebeRetornar500() {
+        // Given: RuntimeException genérica sin tipo específico
         RuntimeException ex = new RuntimeException("Error interno inesperado");
 
-        // When
+        // When: cae en el fallback genérico
         ResponseEntity<Map<String, String>> response = handler.manejarRuntimeException(ex);
 
-        // Then: mensaje genérico → 404 NOT_FOUND (default)
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        // Then: el fallback retorna 500 INTERNAL_SERVER_ERROR
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertTrue(response.getBody().containsKey("error"));
         assertEquals("Error interno inesperado", response.getBody().get("error"));
     }
 

@@ -2,6 +2,8 @@ package com.silvio.catalog.service;
 
 import com.silvio.catalog.dto.LibroRequestDTO;
 import com.silvio.catalog.dto.LibroResponseDTO;
+import com.silvio.catalog.exception.LibroDuplicadoException;
+import com.silvio.catalog.exception.LibroNotFoundException;
 import com.silvio.catalog.model.Libro;
 import com.silvio.catalog.repository.LibroRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,7 +81,7 @@ class CatalogServiceTest {
         when(libroRepository.findById(999L)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(RuntimeException.class, () -> catalogService.obtenerPorId(999L));
+        assertThrows(LibroNotFoundException.class, () -> catalogService.obtenerPorId(999L));
         verify(libroRepository).findById(999L);
     }
 
@@ -133,7 +135,7 @@ void buscar_PorTitulo_DebeRetornarLibrosCoincidentes() {
         when(libroRepository.findByIsbn("1234567890")).thenReturn(Optional.of(new Libro()));
 
         // When & Then
-        assertThrows(RuntimeException.class, () -> catalogService.agregar(request));
+        assertThrows(LibroDuplicadoException.class, () -> catalogService.agregar(request));
         verify(libroRepository).findByIsbn("1234567890");
     }
 
@@ -294,7 +296,7 @@ void buscar_PorTitulo_DebeRetornarLibrosCoincidentes() {
         LibroRequestDTO request = new LibroRequestDTO();
 
         // When & Then
-        assertThrows(RuntimeException.class, () -> catalogService.actualizar(999L, request));
+        assertThrows(LibroNotFoundException.class, () -> catalogService.actualizar(999L, request));
         verify(libroRepository).findById(999L);
         verify(libroRepository, never()).save(any());
     }
@@ -309,7 +311,7 @@ void buscar_PorTitulo_DebeRetornarLibrosCoincidentes() {
         when(libroRepository.findById(999L)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(RuntimeException.class, () -> catalogService.cambiarDisponibilidad(999L, false));
+        assertThrows(LibroNotFoundException.class, () -> catalogService.cambiarDisponibilidad(999L, false));
         verify(libroRepository).findById(999L);
         verify(libroRepository, never()).save(any());
     }
@@ -324,7 +326,7 @@ void buscar_PorTitulo_DebeRetornarLibrosCoincidentes() {
         when(libroRepository.findById(999L)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(RuntimeException.class, () -> catalogService.eliminar(999L));
+        assertThrows(LibroNotFoundException.class, () -> catalogService.eliminar(999L));
         verify(libroRepository).findById(999L);
         verify(libroRepository, never()).delete(any());
     }

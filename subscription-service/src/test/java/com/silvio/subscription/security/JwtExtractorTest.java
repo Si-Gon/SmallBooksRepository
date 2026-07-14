@@ -1,5 +1,6 @@
 package com.silvio.subscription.security;
 
+import com.silvio.subscription.exception.TokenExtraccionException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Base64;
@@ -65,7 +66,7 @@ class JwtExtractorTest {
     void extraerUsuario_tokenSinBearer_lanzaExcepcion() {
         // Sin el prefijo "Bearer ", substring(7) corta en el lugar equivocado
         assertThatThrownBy(() -> jwtExtractor.extraerUsuario("solo.el.token"))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(TokenExtraccionException.class)
                 .hasMessageContaining("No se pudo extraer el usuario del token");
     }
 
@@ -73,7 +74,7 @@ class JwtExtractorTest {
     void extraerUsuario_tokenSinPuntos_lanzaExcepcion() {
         // Sin separadores "." no se puede partir en [header, payload, signature]
         assertThatThrownBy(() -> jwtExtractor.extraerUsuario("Bearer tokensinpuntos"))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(TokenExtraccionException.class)
                 .hasMessageContaining("No se pudo extraer el usuario del token");
     }
 
@@ -81,7 +82,7 @@ class JwtExtractorTest {
     void extraerUsuario_payloadNoEsBase64_lanzaExcepcion() {
         // Payload con caracteres inválidos para Base64
         assertThatThrownBy(() -> jwtExtractor.extraerUsuario("Bearer header.!!!invalido!!!.sig"))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(TokenExtraccionException.class)
                 .hasMessageContaining("No se pudo extraer el usuario del token");
     }
 
@@ -92,7 +93,7 @@ class JwtExtractorTest {
                 .encodeToString("{\"roles\":\"ROLE_USER\"}".getBytes());
         assertThatThrownBy(() ->
                 jwtExtractor.extraerUsuario("Bearer header." + payloadSinSub + ".sig"))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(TokenExtraccionException.class)
                 .hasMessageContaining("No se pudo extraer el usuario del token");
     }
 }

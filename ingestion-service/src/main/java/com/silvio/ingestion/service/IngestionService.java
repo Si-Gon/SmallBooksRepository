@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.silvio.ingestion.exception.ArchivoNoEncontradoException;
+import com.silvio.ingestion.exception.ErrorLecturaArchivoException;
+import com.silvio.ingestion.exception.FormatoNoPermitidoException;
 import io.micrometer.observation.annotation.Observed;
 
 import java.io.IOException;
@@ -39,8 +42,7 @@ public class IngestionService {
         String contentType = archivo.getContentType();
         if (!FORMATOS_PERMITIDOS.contains(contentType)) {
             log.warn("Formato no permitido: {} para libro id: {}", contentType, libroId);
-            throw new RuntimeException(
-                    "Formato no permitido: " + contentType + ". Solo se aceptan PDF y EPUB");
+            throw new FormatoNoPermitidoException(contentType);
         }
 
         archivoRepository.findByLibroId(libroId).ifPresent(existente -> {
@@ -62,7 +64,7 @@ public class IngestionService {
         try {
             archivoLibro.setDatos(archivo.getBytes());
             } catch (IOException e) {
-            throw new RuntimeException("Error al leer los bytes del archivo: " + e.getMessage());
+            throw new ErrorLecturaArchivoException(e.getMessage());
         }
 
         ArchivoLibro guardado = archivoRepository.save(archivoLibro);
@@ -77,8 +79,7 @@ public class IngestionService {
         ArchivoLibro archivo = archivoRepository.findByLibroId(libroId)
                 .orElseThrow(() -> {
                     log.warn("No hay archivo para libro id: {}", libroId);
-                    return new RuntimeException(
-                            "No hay archivo subido para el libro con id: " + libroId);
+                    return new ArchivoNoEncontradoException(libroId);
                 });
         return mapearADto(archivo);
     }
@@ -87,8 +88,7 @@ public class IngestionService {
     public byte[] obtenerBytes(Long libroId) {
         log.info("Obteniendo bytes del archivo para libro id: {}", libroId);
         ArchivoLibro archivo = archivoRepository.findByLibroId(libroId)
-                .orElseThrow(() -> new RuntimeException(
-                        "No hay archivo subido para el libro con id: " + libroId));
+                .orElseThrow(() -> new ArchivoNoEncontradoException(libroId));
         return storageService.obtener(archivo.getRutaOClave());
     }
 
@@ -97,8 +97,7 @@ public class IngestionService {
     public void eliminar(Long libroId) {
         log.info("Eliminando archivo para libro id: {}", libroId);
         ArchivoLibro archivo = archivoRepository.findByLibroId(libroId)
-                .orElseThrow(() -> new RuntimeException(
-                        "No hay archivo para el libro con id: " + libroId));
+                .orElseThrow(() -> new ArchivoNoEncontradoException(libroId));
 
         storageService.eliminar(archivo.getRutaOClave());
         archivoRepository.delete(archivo);

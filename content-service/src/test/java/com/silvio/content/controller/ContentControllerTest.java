@@ -1,5 +1,8 @@
 package com.silvio.content.controller;
 
+import com.silvio.content.exception.AccesoDenegadoException;
+import com.silvio.content.exception.ArchivoNoEncontradoException;
+import com.silvio.content.exception.VerificacionPrestamoException;
 import com.silvio.content.service.ContentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,9 +59,9 @@ class ContentControllerTest {
 
     @Test
     void descargarArchivo_sinPrestamo_debeRetornar403() throws Exception {
-        // "Acceso denegado" en el mensaje → GlobalExceptionHandler devuelve 403
+        // AccesoDenegadoException → GlobalExceptionHandler devuelve 403
         when(contentService.obtenerArchivo(1L, "Bearer token"))
-            .thenThrow(new RuntimeException("Acceso denegado — no tienes un préstamo activo del libro con id: 1"));
+            .thenThrow(new AccesoDenegadoException(1L));
 
         mockMvc.perform(get("/api/content/1")
                         .header("Authorization", "Bearer token"))
@@ -68,9 +71,9 @@ class ContentControllerTest {
 
     @Test
     void descargarArchivo_errorEnLending_debeRetornar503() throws Exception {
-        // "No se pudo verificar" → GlobalExceptionHandler devuelve 503
+        // VerificacionPrestamoException → GlobalExceptionHandler devuelve 503
         when(contentService.obtenerArchivo(2L, "Bearer token"))
-            .thenThrow(new RuntimeException("No se pudo verificar el préstamo: Connection refused"));
+            .thenThrow(new VerificacionPrestamoException("Connection refused"));
 
         mockMvc.perform(get("/api/content/2")
                         .header("Authorization", "Bearer token"))
@@ -80,9 +83,9 @@ class ContentControllerTest {
 
     @Test
     void descargarArchivo_archivoNoEncontrado_debeRetornar404() throws Exception {
-        // "No se pudo obtener" → GlobalExceptionHandler devuelve 404
+        // ArchivoNoEncontradoException → GlobalExceptionHandler devuelve 404
         when(contentService.obtenerArchivo(3L, "Bearer token"))
-            .thenThrow(new RuntimeException("No se pudo obtener el archivo del libro con id: 3"));
+            .thenThrow(new ArchivoNoEncontradoException(3L));
 
         mockMvc.perform(get("/api/content/3")
                         .header("Authorization", "Bearer token"))

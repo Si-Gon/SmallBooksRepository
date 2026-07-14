@@ -2,6 +2,7 @@ package com.silvio.subscription.service;
 
 import com.silvio.subscription.dto.SuscripcionRequestDTO;
 import com.silvio.subscription.dto.SuscripcionResponseDTO;
+import com.silvio.subscription.exception.SuscripcionNotFoundException;
 import com.silvio.subscription.model.Suscripcion;
 import com.silvio.subscription.model.Suscripcion.PlanSuscripcion;
 import com.silvio.subscription.repository.SuscripcionRepository;
@@ -84,7 +85,7 @@ class SuscripcionServiceTest {
             .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> suscripcionService.obtenerPorUsuario("nuevo"))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(SuscripcionNotFoundException.class)
             .hasMessageContaining("No hay suscripción activa para el usuario: nuevo");
     }
 
@@ -200,7 +201,7 @@ class SuscripcionServiceTest {
             .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> suscripcionService.cancelar("fantasma"))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(SuscripcionNotFoundException.class)
             .hasMessageContaining("No hay suscripción activa para el usuario: fantasma");
 
         verify(suscripcionRepository, never()).save(any());

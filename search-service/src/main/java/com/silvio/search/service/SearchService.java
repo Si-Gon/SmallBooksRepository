@@ -3,6 +3,7 @@ package com.silvio.search.service;
 import com.silvio.search.client.CatalogClient;
 import com.silvio.search.dto.LibroCatalogDTO;
 import com.silvio.search.dto.SearchResultDTO;
+import com.silvio.search.exception.ErrorConsultaCatalogoException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class SearchService {
             return resultados.stream().map(this::mapearADto).collect(Collectors.toList());
         } catch (Exception e) {
             log.error("Error al consultar el catálogo: {}", e.getMessage());
-            throw new RuntimeException("Error al consultar el catálogo: " + e.getMessage());
+            throw new ErrorConsultaCatalogoException("consultar el catálogo", e.getMessage());
         }
     }
 
@@ -41,7 +42,7 @@ public class SearchService {
             return resultados.stream().map(this::mapearADto).collect(Collectors.toList());
         } catch (Exception e) {
             log.error("Error al consultar disponibles: {}", e.getMessage());
-            throw new RuntimeException("Error al consultar disponibles: " + e.getMessage());
+            throw new ErrorConsultaCatalogoException("consultar disponibles", e.getMessage());
         }
     }
 
@@ -54,7 +55,7 @@ public class SearchService {
             return resultados.stream().map(this::mapearADto).collect(Collectors.toList());
         } catch (Exception e) {
             log.error("Error al obtener catálogo: {}", e.getMessage());
-            throw new RuntimeException("Error al obtener catálogo: " + e.getMessage());
+            throw new ErrorConsultaCatalogoException("obtener catálogo", e.getMessage());
         }
     }
 

@@ -3,6 +3,8 @@ package com.silvio.analytics.service;
 import com.silvio.analytics.client.LendingClient;
 import com.silvio.analytics.dto.EstadisticasDTO;
 import com.silvio.analytics.dto.PrestamoAnalyticsDTO;
+import com.silvio.analytics.exception.ErrorDatosPrestamosException;
+import com.silvio.analytics.exception.ErrorHistorialUsuarioException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,7 +31,7 @@ public class AnalyticsService {
             log.info("Total préstamos obtenidos para análisis: {}", todos.size());
         } catch (Exception e) {
             log.error("Error al obtener datos de préstamos: {}", e.getMessage());
-            throw new RuntimeException("Error al obtener datos de préstamos: " + e.getMessage());
+            throw new ErrorDatosPrestamosException(e.getMessage());
         }
 
         EstadisticasDTO stats = new EstadisticasDTO();
@@ -79,7 +81,7 @@ public class AnalyticsService {
             return historial;
         } catch (Exception e) {
             log.error("Error al obtener historial del usuario {}: {}", usuarioId, e.getMessage());
-            throw new RuntimeException("Error al obtener historial del usuario: " + usuarioId);
+            throw new ErrorHistorialUsuarioException(usuarioId);
         }
     }
 }

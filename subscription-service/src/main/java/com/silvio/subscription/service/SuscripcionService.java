@@ -2,6 +2,7 @@ package com.silvio.subscription.service;
 
 import com.silvio.subscription.dto.SuscripcionRequestDTO;
 import com.silvio.subscription.dto.SuscripcionResponseDTO;
+import com.silvio.subscription.exception.SuscripcionNotFoundException;
 import com.silvio.subscription.model.Suscripcion;
 import com.silvio.subscription.model.Suscripcion.PlanSuscripcion;
 import com.silvio.subscription.repository.SuscripcionRepository;
@@ -33,8 +34,7 @@ public class SuscripcionService {
                 .findByUsuarioIdAndActivaTrue(usuarioId)
                 .orElseThrow(() -> {
                     log.warn("Sin suscripción activa para usuario: {}", usuarioId);
-                    return new RuntimeException(
-                            "No hay suscripción activa para el usuario: " + usuarioId);
+                    return new SuscripcionNotFoundException(usuarioId);
                 });
         return mapearADto(suscripcion);
     }
@@ -73,8 +73,7 @@ public class SuscripcionService {
         log.info("Cancelando suscripción del usuario: {}", usuarioId);
         Suscripcion suscripcion = suscripcionRepository
                 .findByUsuarioIdAndActivaTrue(usuarioId)
-                .orElseThrow(() -> new RuntimeException(
-                        "No hay suscripción activa para el usuario: " + usuarioId));
+                .orElseThrow(() -> new SuscripcionNotFoundException(usuarioId));
 
         suscripcion.setActiva(false);
         log.info("Suscripción cancelada — usuario: {}, plan: {}", usuarioId, suscripcion.getPlan());

@@ -3,6 +3,12 @@ package com.silvio.identity.service;
 import com.silvio.identity.config.JwtProperties;
 import com.silvio.identity.dto.UsuarioDTO;
 import com.silvio.identity.model.User;
+import com.silvio.identity.exception.ContrasenaIncorrectaException;
+import com.silvio.identity.exception.ErrorSeguridadException;
+import com.silvio.identity.exception.TokenExpiradoException;
+import com.silvio.identity.exception.TokenInvalidoException;
+import com.silvio.identity.exception.UsuarioDuplicadoException;
+import com.silvio.identity.exception.UsuarioNotFoundException;
 import com.silvio.identity.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +46,7 @@ public class UserService implements UserDetailsService {
         log.info("Registrando nuevo usuario: {}", username);
         if (userRepository.findByUsername(username).isPresent()) {
             log.warn("Intento de registro con username ya existente: {}", username);
-            throw new RuntimeException(" El usuario '" + username + "' ya existe");
+            throw new UsuarioDuplicadoException(username);
         }
 
         User user = new User();
@@ -75,7 +81,7 @@ public class UserService implements UserDetailsService {
     public String createPasswordResetToken(String username) {
         log.info("Generando token de recuperación para: {}", username);
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException(" Usuario no encontrado"));
+                .orElseThrow(() -> new UsuarioNotFoundException(username));
 
         String resetToken = UUID.randomUUID().toString();
         user.setResetToken(resetToken);
@@ -93,12 +99,12 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByResetToken(token)
                 .orElseThrow(() -> {
                     log.warn("Token de recuperación inválido");
-                    return new RuntimeException(" Token de recuperación inválido");
+                    return new TokenInvalidoException();
                 });
 
         if (user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
             log.warn("Token de recuperación expirado para usuario: {}", user.getUsername());
-            throw new RuntimeException(" El token de recuperación ha expirado");
+            throw new TokenExpiradoException();
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));
@@ -113,11 +119,11 @@ public class UserService implements UserDetailsService {
     public void changePassword(String username, String currentPassword, String newPassword) {
         log.info("Cambiando contraseña para usuario: {}", username);
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException(" Usuario no encontrado"));
+                .orElseThrow(() -> new UsuarioNotFoundException(username));
 
         if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
             log.warn("Contraseña actual incorrecta para usuario: {}", username);
-            throw new RuntimeException(" Contraseña actual incorrecta");
+            throw new ContrasenaIncorrectaException();
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));
@@ -137,7 +143,7 @@ public class UserService implements UserDetailsService {
             return HexFormat.of().formatHex(hash);
         } catch (NoSuchAlgorithmException e) {
             log.error("Error al generar hash del refresh token", e);
-            throw new RuntimeException("Error interno de seguridad");
+            throw new ErrorSeguridadException("Error interno de seguridad");
         }
     }
 
@@ -146,7 +152,7 @@ public class UserService implements UserDetailsService {
     public void storeRefreshTokenHash(String username, String refreshToken) {
         log.info("Almacenando hash de refresh token para usuario: {}", username);
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException(" Usuario no encontrado"));
+                .orElseThrow(() -> new UsuarioNotFoundException(username));
         user.setRefreshTokenHash(hashRefreshToken(refreshToken));
         userRepository.save(user);
     }
@@ -155,7 +161,7 @@ public class UserService implements UserDetailsService {
      * Valida que el refresh token coincida con el almacenado y lo rota.
      *
      * @return el nuevo hash almacenado si la validación es exitosa
-     * @throws RuntimeException si el token no coincide (posible robo)
+     * @throws TokenInvalidoException si el token no coincide (posible robo)
      */
     @Observed(name = "identity.rotateRefreshToken")
     @Transactional
@@ -165,7 +171,7 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByRefreshTokenHash(oldHash)
                 .orElseThrow(() -> {
                     log.warn("Intento de refresco con token inválido o ya rotado — posible robo de token");
-                    return new RuntimeException(" Refresh token inválido o ya utilizado");
+                    return new TokenInvalidoException();
                 });
 
         String newHash = hashRefreshToken(newRefreshToken);

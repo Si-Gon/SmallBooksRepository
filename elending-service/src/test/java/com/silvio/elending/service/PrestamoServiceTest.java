@@ -10,6 +10,13 @@ import com.silvio.elending.dto.PrestamoResponseDTO;
 import com.silvio.elending.dto.SuscripcionDTO;
 import com.silvio.elending.model.Prestamo;
 import com.silvio.elending.model.Prestamo.EstadoPrestamo;
+import com.silvio.elending.exception.CopiaNoDisponibleException;
+import com.silvio.elending.exception.ErrorCreacionPrestamoException;
+import com.silvio.elending.exception.ErrorRegistroPrestamoException;
+import com.silvio.elending.exception.LimitePrestamosExcedidoException;
+import com.silvio.elending.exception.PrestamoDuplicadoException;
+import com.silvio.elending.exception.UltimaCopiaNoDisponibleException;
+import com.silvio.elending.exception.VerificacionDisponibilidadException;
 import com.silvio.elending.repository.PrestamoRepository;
 import feign.FeignException;
 import org.junit.jupiter.api.BeforeEach;
@@ -165,7 +172,7 @@ class PrestamoServiceTest {
                 .thenReturn(Arrays.asList(new Prestamo(), new Prestamo())); // límite alcanzado
 
         // When & Then
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        LimitePrestamosExcedidoException ex = assertThrows(LimitePrestamosExcedidoException.class,
                 () -> prestamoService.crearPrestamo(request(3L), usuarioId));
 
         assertTrue(ex.getMessage().contains("límite") || ex.getMessage().contains("BASICO")
@@ -186,7 +193,7 @@ class PrestamoServiceTest {
                         new Prestamo(), new Prestamo())); // 5 = límite PREMIUM
 
         // When & Then
-        assertThrows(RuntimeException.class,
+        assertThrows(LimitePrestamosExcedidoException.class,
                 () -> prestamoService.crearPrestamo(request(4L), usuarioId));
         verify(prestamoRepository, never()).save(any(Prestamo.class));
     }
@@ -203,7 +210,7 @@ class PrestamoServiceTest {
         when(licenseClient.obtenerLicencia(5L)).thenReturn(licenciaSinCopias());
 
         // When & Then
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        CopiaNoDisponibleException ex = assertThrows(CopiaNoDisponibleException.class,
                 () -> prestamoService.crearPrestamo(request(5L), usuarioId));
 
         assertTrue(ex.getMessage().contains("copias") || ex.getMessage().contains("disponibles"));
@@ -227,7 +234,7 @@ class PrestamoServiceTest {
         when(licenseClient.obtenerLicencia(55L)).thenReturn(licenciaSinStock);
 
         // When & Then
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        CopiaNoDisponibleException ex = assertThrows(CopiaNoDisponibleException.class,
                 () -> prestamoService.crearPrestamo(request(55L), usuarioId));
 
         assertTrue(ex.getMessage().contains("copias") || ex.getMessage().contains("disponibles"));
@@ -250,7 +257,7 @@ class PrestamoServiceTest {
                 .thenReturn(Arrays.asList(prestamoExistente)); // ya tiene este libro
 
         // When & Then
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        PrestamoDuplicadoException ex = assertThrows(PrestamoDuplicadoException.class,
                 () -> prestamoService.crearPrestamo(request(6L), usuarioId));
 
         assertTrue(ex.getMessage().contains("Ya tienes"));
@@ -596,7 +603,7 @@ class PrestamoServiceTest {
                 .thenThrow(new RuntimeException("License service no disponible"));
 
         // When & Then
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        VerificacionDisponibilidadException ex = assertThrows(VerificacionDisponibilidadException.class,
                 () -> prestamoService.crearPrestamo(request(12L), usuarioId));
 
         assertTrue(ex.getMessage().contains("No se pudo verificar"));
@@ -618,7 +625,7 @@ class PrestamoServiceTest {
                 .thenThrow(new RuntimeException("License service error al prestar"));
 
         // When & Then
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        ErrorRegistroPrestamoException ex = assertThrows(ErrorRegistroPrestamoException.class,
                 () -> prestamoService.crearPrestamo(request(13L), usuarioId));
 
         assertTrue(ex.getMessage().contains("License Service"));
@@ -640,7 +647,7 @@ class PrestamoServiceTest {
                 .thenThrow(new RuntimeException("Error de base de datos"));
 
         // When & Then
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        ErrorCreacionPrestamoException ex = assertThrows(ErrorCreacionPrestamoException.class,
                 () -> prestamoService.crearPrestamo(request(14L), usuarioId));
 
         assertTrue(ex.getMessage().contains("revertida"));
@@ -668,7 +675,7 @@ class PrestamoServiceTest {
                 .thenThrow(new RuntimeException("License service no disponible para compensar"));
 
         // When & Then
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        ErrorCreacionPrestamoException ex = assertThrows(ErrorCreacionPrestamoException.class,
                 () -> prestamoService.crearPrestamo(request(15L), usuarioId));
 
         assertTrue(ex.getMessage().contains("revertida"));
@@ -1178,7 +1185,7 @@ class PrestamoServiceTest {
                 .thenThrow(mock(FeignException.Conflict.class));
 
         // When & Then
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        UltimaCopiaNoDisponibleException ex = assertThrows(UltimaCopiaNoDisponibleException.class,
                 () -> prestamoService.crearPrestamo(request(42L), usuarioId));
 
         assertTrue(ex.getMessage().contains("última copia")
@@ -1236,7 +1243,7 @@ class PrestamoServiceTest {
                 .thenThrow(new ObjectOptimisticLockingFailureException("prestamo", null));
 
         // When & Then
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        UltimaCopiaNoDisponibleException ex = assertThrows(UltimaCopiaNoDisponibleException.class,
                 () -> prestamoService.crearPrestamo(request(99L), usuarioId));
 
         assertTrue(ex.getMessage().contains("última copia")
@@ -1266,8 +1273,8 @@ class PrestamoServiceTest {
         when(licenseClient.devolver(55L))
                 .thenThrow(new RuntimeException("License service no disponible para compensar OL"));
 
-        // When & Then — debe lanzar RuntimeException a pesar del fallo en compensación
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        // When & Then — debe lanzar UltimaCopiaNoDisponibleException a pesar del fallo en compensación
+        UltimaCopiaNoDisponibleException ex = assertThrows(UltimaCopiaNoDisponibleException.class,
                 () -> prestamoService.crearPrestamo(request(55L), usuarioId));
 
         assertTrue(ex.getMessage().contains("última copia")

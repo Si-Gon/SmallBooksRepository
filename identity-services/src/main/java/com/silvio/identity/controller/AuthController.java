@@ -1,6 +1,7 @@
 package com.silvio.identity.controller;
 
 import com.silvio.identity.dto.*;
+import com.silvio.identity.exception.TokenInvalidoException;
 import com.silvio.identity.security.JwtUtil;
 import com.silvio.identity.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +17,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
@@ -119,8 +121,8 @@ public class AuthController {
             );
             response.add(linkTo(methodOn(AuthController.class).login(null)).withRel("login"));
             return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            // Token inválido, ya rotado o posible robo — forzar re-login
+        } catch (TokenInvalidoException | UsernameNotFoundException e) {
+            // Token inválido, ya rotado, usuario eliminado o posible robo — forzar re-login
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new AuthResponse(null, null,
                     " Refresh token inválido o ya utilizado. Por favor inicia sesión nuevamente.", null));

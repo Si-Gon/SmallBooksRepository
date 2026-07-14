@@ -32,25 +32,93 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error); // 409
     }
 
+    // Última copia tomada en License Service (conflicto de concurrencia)
+    @ExceptionHandler(UltimaCopiaNoDisponibleException.class)
+    public ResponseEntity<Map<String, String>> manejarUltimaCopia(
+            UltimaCopiaNoDisponibleException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error); // 409
+    }
+
+    // Límite de préstamos activos excedido
+    @ExceptionHandler(LimitePrestamosExcedidoException.class)
+    public ResponseEntity<Map<String, String>> manejarLimitePrestamos(
+            LimitePrestamosExcedidoException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error); // 422
+    }
+
+    // Préstamo duplicado del mismo libro
+    @ExceptionHandler(PrestamoDuplicadoException.class)
+    public ResponseEntity<Map<String, String>> manejarPrestamoDuplicado(
+            PrestamoDuplicadoException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error); // 409
+    }
+
+    // Error al verificar disponibilidad con License Service
+    @ExceptionHandler(VerificacionDisponibilidadException.class)
+    public ResponseEntity<Map<String, String>> manejarVerificacionDisponibilidad(
+            VerificacionDisponibilidadException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(error); // 503
+    }
+
+    // Sin copias disponibles del libro
+    @ExceptionHandler(CopiaNoDisponibleException.class)
+    public ResponseEntity<Map<String, String>> manejarCopiaNoDisponible(
+            CopiaNoDisponibleException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error); // 422
+    }
+
+    // Error al registrar préstamo en License Service
+    @ExceptionHandler(ErrorRegistroPrestamoException.class)
+    public ResponseEntity<Map<String, String>> manejarErrorRegistro(
+            ErrorRegistroPrestamoException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error); // 500
+    }
+
+    // Error al crear préstamo con compensación
+    @ExceptionHandler(ErrorCreacionPrestamoException.class)
+    public ResponseEntity<Map<String, String>> manejarErrorCreacion(
+            ErrorCreacionPrestamoException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error); // 500
+    }
+
+    // Préstamo no encontrado por ID
+    @ExceptionHandler(PrestamoNotFoundException.class)
+    public ResponseEntity<Map<String, String>> manejarPrestamoNotFound(
+            PrestamoNotFoundException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error); // 404
+    }
+
+    // Token JWT inválido
+    @ExceptionHandler(TokenExtraccionException.class)
+    public ResponseEntity<Map<String, String>> manejarTokenExtraccion(
+            TokenExtraccionException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error); // 401
+    }
+
+    // RuntimeException genérico (fallback)
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> manejarRuntimeException(
             RuntimeException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
-
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        if (ex.getMessage() != null) {
-            if (ex.getMessage().contains("No hay copias")) {
-                status = HttpStatus.UNPROCESSABLE_ENTITY; // 422
-            } else if (ex.getMessage().contains("límite")) {
-                status = HttpStatus.UNPROCESSABLE_ENTITY; // 422
-            } else if (ex.getMessage().contains("Ya tienes")) {
-                status = HttpStatus.CONFLICT;             // 409
-            } else if (ex.getMessage().contains("No se pudo verificar")) {
-                status = HttpStatus.SERVICE_UNAVAILABLE;  // 503
-            }
-        }
-
-        return ResponseEntity.status(status).body(error);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 }

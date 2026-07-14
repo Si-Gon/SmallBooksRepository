@@ -5,6 +5,10 @@ import com.silvio.identity.config.SecurityConfig;
 import com.silvio.identity.dto.*;
 import com.silvio.identity.security.JwtAuthenticationFilter;
 import com.silvio.identity.security.JwtUtil;
+import com.silvio.identity.exception.TokenExpiradoException;
+import com.silvio.identity.exception.TokenInvalidoException;
+import com.silvio.identity.exception.UsuarioDuplicadoException;
+import com.silvio.identity.exception.UsuarioNotFoundException;
 import com.silvio.identity.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -179,7 +183,7 @@ class AuthControllerTest {
         request.setUsername("existente");
         request.setPassword("Password123!");
 
-        doThrow(new RuntimeException("El usuario 'existente' ya existe"))
+        doThrow(new UsuarioDuplicadoException("existente"))
                 .when(userService).registerUser(any(), any(), any());
 
         mockMvc.perform(post("/auth/register").with(csrf())
@@ -233,8 +237,8 @@ class AuthControllerTest {
         request.setToken("expired-token");
         request.setNewPassword("NuevaPassword123!");
 
-        // "expirado" en el mensaje → GlobalExceptionHandler devuelve 401
-        doThrow(new RuntimeException("Token expirado o inválido"))
+        // TokenExpiradoException → GlobalExceptionHandler devuelve 401
+        doThrow(new TokenExpiradoException())
                 .when(userService).resetPassword(any(), any());
 
         mockMvc.perform(post("/auth/reset-password").with(csrf())
@@ -341,7 +345,7 @@ class AuthControllerTest {
         when(jwtUtil.generateRefreshToken("silvio")).thenReturn("nuevo.refresh.token");
 
         // rotateRefreshToken lanza excepción porque el token ya fue rotado (reuso detectado)
-        doThrow(new RuntimeException(" Refresh token inválido o ya utilizado"))
+        doThrow(new TokenInvalidoException())
                 .when(userService).rotateRefreshToken("refresh.token.ya.rotado", "nuevo.refresh.token");
 
         // When & Then
@@ -385,20 +389,20 @@ class AuthControllerTest {
     // =========================================================
 
     @Test
-    void forgotPassword_usuarioNoExistente_debeRetornar400() throws Exception {
+    void forgotPassword_usuarioNoExistente_debeRetornar404() throws Exception {
         // Given
         PasswordResetRequest request = new PasswordResetRequest();
         request.setUsername("usuario_inexistente");
 
-        // createPasswordResetToken lanza RuntimeException si el usuario no existe
-        doThrow(new RuntimeException("Usuario no encontrado"))
+        // createPasswordResetToken lanza UsuarioNotFoundException si el usuario no existe
+        doThrow(new UsuarioNotFoundException("usuario_inexistente"))
                 .when(userService).createPasswordResetToken("usuario_inexistente");
 
         // When & Then
         mockMvc.perform(post("/auth/forgot-password").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
 
         verify(userService).createPasswordResetToken("usuario_inexistente");
     }

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.silvio.ingestion.exception.ErrorAlmacenamientoException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,7 +44,7 @@ public class LocalStorageService implements StorageService {
             return rutaArchivo.toString();
 
         } catch (IOException e) {
-            throw new RuntimeException("Error al guardar el archivo: " + e.getMessage());
+            throw new ErrorAlmacenamientoException("Error al guardar el archivo: " + e.getMessage());
         }
     }
 
@@ -52,11 +53,11 @@ public class LocalStorageService implements StorageService {
         try {
             Path rutaArchivo = Paths.get(rutaOClave);
             if (!Files.exists(rutaArchivo)) {
-                throw new RuntimeException("Archivo no encontrado en: " + rutaOClave);
+                throw new ErrorAlmacenamientoException("Archivo no encontrado en: " + rutaOClave);
             }
             return Files.readAllBytes(rutaArchivo);
         } catch (IOException e) {
-            throw new RuntimeException("Error al leer el archivo: " + e.getMessage());
+            throw new ErrorAlmacenamientoException("Error al leer el archivo: " + e.getMessage());
         }
     }
 
@@ -66,7 +67,7 @@ public class LocalStorageService implements StorageService {
             Path rutaArchivo = Paths.get(rutaOClave);
             Files.deleteIfExists(rutaArchivo);
         } catch (IOException e) {
-            throw new RuntimeException("Error al eliminar el archivo: " + e.getMessage());
+            throw new ErrorAlmacenamientoException("Error al eliminar el archivo: " + e.getMessage());
         }
     }
 }

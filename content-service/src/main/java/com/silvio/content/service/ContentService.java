@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import com.silvio.content.exception.AccesoDenegadoException;
+import com.silvio.content.exception.ArchivoNoEncontradoException;
+import com.silvio.content.exception.VerificacionPrestamoException;
 import io.micrometer.observation.annotation.Observed;
 
 import java.util.List;
@@ -30,7 +33,7 @@ public class ContentService {
             log.info("Préstamos activos encontrados: {}", prestamosActivos.size());
         } catch (Exception e) {
             log.error("Error al verificar préstamos — libro: {}: {}", libroId, e.getMessage());
-            throw new RuntimeException("No se pudo verificar el préstamo: " + e.getMessage());
+            throw new VerificacionPrestamoException(e.getMessage());
         }
 
         // Paso 2: Verificar que tiene el libro
@@ -40,8 +43,7 @@ public class ContentService {
 
         if (!tienePrestamo) {
             log.warn("Acceso denegado — sin préstamo activo para libro id: {}", libroId);
-            throw new RuntimeException(
-                    "Acceso denegado — no tienes un préstamo activo del libro con id: " + libroId);
+            throw new AccesoDenegadoException(libroId);
         }
 
         log.info("Préstamo verificado — entregando archivo del libro id: {}", libroId);
@@ -54,8 +56,7 @@ public class ContentService {
             return bytes;
         } catch (Exception e) {
             log.error("Error al obtener archivo del libro {}: {}", libroId, e.getMessage());
-            throw new RuntimeException(
-                    "No se pudo obtener el archivo del libro con id: " + libroId);
+            throw new ArchivoNoEncontradoException(libroId);
         }
     }
 }

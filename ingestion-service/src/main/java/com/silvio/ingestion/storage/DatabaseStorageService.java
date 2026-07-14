@@ -1,5 +1,6 @@
 package com.silvio.ingestion.storage;
 
+import com.silvio.ingestion.exception.ErrorAlmacenamientoException;
 import com.silvio.ingestion.model.ArchivoLibro;
 import com.silvio.ingestion.repository.ArchivoLibroRepository;
 import org.springframework.context.annotation.Primary;
@@ -28,7 +29,7 @@ public String guardar(MultipartFile archivo, Long libroId) {
 public byte[] obtener(String rutaOClave) {
     Long libroId = Long.valueOf(rutaOClave.replace("db:", ""));
     ArchivoLibro entidad = repository.findByLibroId(libroId)
-            .orElseThrow(() -> new RuntimeException("Archivo no encontrado: " + rutaOClave));
+            .orElseThrow(() -> new ErrorAlmacenamientoException("Archivo no encontrado: " + rutaOClave));
     return entidad.getDatos();
 }
 

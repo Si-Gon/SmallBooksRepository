@@ -1,6 +1,7 @@
 package com.silvio.search.controller;
 
 import com.silvio.search.dto.SearchResultDTO;
+import com.silvio.search.exception.ErrorConsultaCatalogoException;
 import com.silvio.search.service.SearchService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +78,7 @@ class SearchControllerTest {
     @Test
     void obtenerTodos_errorServicio_debeRetornar503() throws Exception {
         when(searchService.obtenerTodos())
-            .thenThrow(new RuntimeException("Error al obtener catálogo: Connection refused"));
+            .thenThrow(new ErrorConsultaCatalogoException("obtener catálogo", "Connection refused"));
 
         mockMvc.perform(get("/api/search"))
                 .andExpect(status().isServiceUnavailable())
@@ -140,7 +141,7 @@ class SearchControllerTest {
     @Test
     void buscar_errorServicio_debeRetornar503() throws Exception {
         when(searchService.buscar(any(), any(), any()))
-            .thenThrow(new RuntimeException("Error al consultar el catálogo: timeout"));
+            .thenThrow(new ErrorConsultaCatalogoException("consultar el catálogo", "timeout"));
 
         mockMvc.perform(get("/api/search/buscar").param("titulo", "algo"))
                 .andExpect(status().isServiceUnavailable())

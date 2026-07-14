@@ -2,6 +2,8 @@ package com.silvio.notification.service;
 
 import com.silvio.notification.dto.NotificacionDTO;
 import com.silvio.notification.dto.NotificacionRequestDTO;
+import com.silvio.notification.exception.HashNoDisponibleException;
+import com.silvio.notification.exception.NotificacionNotFoundException;
 import com.silvio.notification.model.Notificacion;
 import com.silvio.notification.repository.NotificacionRepository;
 import lombok.RequiredArgsConstructor;
@@ -75,7 +77,7 @@ public class NotificacionService {
             byte[] hash = md.digest(raw.getBytes(StandardCharsets.UTF_8));
             return HexFormat.of().formatHex(hash);
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("SHA-256 no disponible", e);
+            throw new HashNoDisponibleException(e);
         }
     }
 
@@ -105,7 +107,7 @@ public class NotificacionService {
         Notificacion notificacion = notificacionRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Notificación no encontrada — id: {}", id);
-                    return new RuntimeException("Notificación no encontrada con id: " + id);
+                    return new NotificacionNotFoundException(id);
                 });
 
         notificacion.setLeida(true);

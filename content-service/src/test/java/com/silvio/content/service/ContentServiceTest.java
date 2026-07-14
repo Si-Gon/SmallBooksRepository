@@ -3,6 +3,9 @@ package com.silvio.content.service;
 import com.silvio.content.client.IngestionClient;
 import com.silvio.content.client.LendingClient;
 import com.silvio.content.dto.PrestamoDTO;
+import com.silvio.content.exception.AccesoDenegadoException;
+import com.silvio.content.exception.ArchivoNoEncontradoException;
+import com.silvio.content.exception.VerificacionPrestamoException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -75,7 +78,7 @@ class ContentServiceTest {
             .thenReturn(List.of(prestamo(1L, "VENCIDO")));
 
         assertThatThrownBy(() -> contentService.obtenerArchivo(1L, "Bearer token"))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(AccesoDenegadoException.class)
             .hasMessageContaining("Acceso denegado");
 
         // No debe ni intentar obtener el archivo si no tiene préstamo activo
@@ -93,7 +96,7 @@ class ContentServiceTest {
             .thenReturn(List.of(prestamo(99L, "ACTIVO")));
 
         assertThatThrownBy(() -> contentService.obtenerArchivo(1L, "Bearer token"))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(AccesoDenegadoException.class)
             .hasMessageContaining("Acceso denegado");
 
         verify(ingestionClient, never()).obtenerBytes(any());
@@ -109,7 +112,7 @@ class ContentServiceTest {
             .thenReturn(List.of());
 
         assertThatThrownBy(() -> contentService.obtenerArchivo(1L, "Bearer token"))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(AccesoDenegadoException.class)
             .hasMessageContaining("Acceso denegado");
 
         verify(ingestionClient, never()).obtenerBytes(any());
@@ -125,7 +128,7 @@ class ContentServiceTest {
             .thenThrow(new RuntimeException("Connection refused"));
 
         assertThatThrownBy(() -> contentService.obtenerArchivo(1L, "Bearer token"))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(VerificacionPrestamoException.class)
             .hasMessageContaining("No se pudo verificar el préstamo");
 
         verify(ingestionClient, never()).obtenerBytes(any());
@@ -143,7 +146,7 @@ class ContentServiceTest {
             .thenThrow(new RuntimeException("404 Not Found"));
 
         assertThatThrownBy(() -> contentService.obtenerArchivo(1L, "Bearer token"))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(ArchivoNoEncontradoException.class)
             .hasMessageContaining("No se pudo obtener el archivo");
     }
 }

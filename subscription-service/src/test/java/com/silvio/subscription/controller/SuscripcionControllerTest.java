@@ -3,6 +3,8 @@ package com.silvio.subscription.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.silvio.subscription.dto.SuscripcionRequestDTO;
 import com.silvio.subscription.dto.SuscripcionResponseDTO;
+import com.silvio.subscription.exception.SuscripcionNotFoundException;
+import com.silvio.subscription.exception.TokenExtraccionException;
 import com.silvio.subscription.model.Suscripcion.PlanSuscripcion;
 import com.silvio.subscription.security.JwtExtractor;
 import com.silvio.subscription.service.SuscripcionService;
@@ -116,7 +118,7 @@ class SuscripcionControllerTest {
     void miPlan_devuelve404_cuandoNoTieneSuscripcion() throws Exception {
         when(jwtExtractor.extraerUsuario("Bearer fake.token")).thenReturn("usuario_sin_plan");
         when(suscripcionService.obtenerPorUsuario("usuario_sin_plan"))
-                .thenThrow(new RuntimeException("No hay suscripción activa para el usuario: usuario_sin_plan"));
+                .thenThrow(new SuscripcionNotFoundException("usuario_sin_plan"));
 
         mockMvc.perform(get("/api/subscriptions/mi-plan")
                         .header("Authorization", "Bearer fake.token"))
@@ -125,14 +127,14 @@ class SuscripcionControllerTest {
     }
 
     @Test
-    void miPlan_devuelve404_cuandoTokenEsInvalido() throws Exception {
+    void miPlan_devuelve401_cuandoTokenEsInvalido() throws Exception {
         // JwtExtractor lanza excepción con token malformado
         when(jwtExtractor.extraerUsuario("Bearer token.invalido"))
-                .thenThrow(new RuntimeException("No se pudo extraer el usuario del token"));
+                .thenThrow(new TokenExtraccionException());
 
         mockMvc.perform(get("/api/subscriptions/mi-plan")
                         .header("Authorization", "Bearer token.invalido"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isUnauthorized());
 
         verify(suscripcionService, never()).obtenerPorUsuario(any());
     }
@@ -165,7 +167,7 @@ class SuscripcionControllerTest {
     @Test
     void obtenerPorUsuarioId_devuelve404_cuandoNoExiste() throws Exception {
         when(suscripcionService.obtenerPorUsuario("noexiste"))
-                .thenThrow(new RuntimeException("No hay suscripción activa para el usuario: noexiste"));
+                .thenThrow(new SuscripcionNotFoundException("noexiste"));
 
         mockMvc.perform(get("/api/subscriptions/usuario/noexiste"))
                 .andExpect(status().isNotFound())
@@ -243,7 +245,7 @@ class SuscripcionControllerTest {
     void cancelar_devuelve404_cuandoNoTieneSuscripcion() throws Exception {
         when(jwtExtractor.extraerUsuario("Bearer fake.token")).thenReturn("usuario_sin_plan");
         when(suscripcionService.cancelar("usuario_sin_plan"))
-                .thenThrow(new RuntimeException("No hay suscripción activa para el usuario: usuario_sin_plan"));
+                .thenThrow(new SuscripcionNotFoundException("usuario_sin_plan"));
 
         mockMvc.perform(patch("/api/subscriptions/cancelar")
                         .header("Authorization", "Bearer fake.token"))

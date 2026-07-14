@@ -12,26 +12,57 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Error específico cuando el archivo supera el tamaño máximo
+    // Archivo supera el tamaño máximo
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<Map<String, String>> manejarArchivoGrande(
             MaxUploadSizeExceededException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("error", "El archivo supera el tamaño máximo permitido (50MB)");
-        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(error);
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(error); // 413
     }
 
+    // Formato de archivo no permitido
+    @ExceptionHandler(FormatoNoPermitidoException.class)
+    public ResponseEntity<Map<String, String>> manejarFormatoNoPermitido(
+            FormatoNoPermitidoException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error); // 400
+    }
+
+    // Archivo no encontrado
+    @ExceptionHandler(ArchivoNoEncontradoException.class)
+    public ResponseEntity<Map<String, String>> manejarArchivoNoEncontrado(
+            ArchivoNoEncontradoException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error); // 404
+    }
+
+    // Error de lectura de archivo
+    @ExceptionHandler(ErrorLecturaArchivoException.class)
+    public ResponseEntity<Map<String, String>> manejarErrorLectura(
+            ErrorLecturaArchivoException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error); // 500
+    }
+
+    // Error de almacenamiento (I/O)
+    @ExceptionHandler(ErrorAlmacenamientoException.class)
+    public ResponseEntity<Map<String, String>> manejarErrorAlmacenamiento(
+            ErrorAlmacenamientoException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error); // 500
+    }
+
+    // RuntimeException genérico (fallback)
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> manejarRuntimeException(
             RuntimeException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
-
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        if (ex.getMessage() != null && ex.getMessage().contains("No hay archivo")) {
-            status = HttpStatus.NOT_FOUND;
-        }
-
-        return ResponseEntity.status(status).body(error);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 }

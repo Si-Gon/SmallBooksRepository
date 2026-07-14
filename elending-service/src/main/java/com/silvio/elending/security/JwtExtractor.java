@@ -1,5 +1,6 @@
 package com.silvio.elending.security;
 
+import com.silvio.elending.exception.TokenExtraccionException;
 import org.springframework.stereotype.Component;
 
 // Componente utilitario que extrae el username del token JWT
@@ -16,7 +17,7 @@ public class JwtExtractor {
                     java.util.Base64.getUrlDecoder().decode(payload));
             return decodedPayload.split("\"sub\":\"")[1].split("\"")[0];
         } catch (Exception e) {
-            throw new RuntimeException("No se pudo extraer el usuario del token");
+            throw new TokenExtraccionException();
         }
     }
 }

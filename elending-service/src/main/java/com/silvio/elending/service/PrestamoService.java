@@ -11,6 +11,13 @@ import com.silvio.elending.messaging.NotificacionPublisher;
 import com.silvio.elending.model.Prestamo;
 import com.silvio.elending.model.Prestamo.EstadoPrestamo;
 import com.silvio.elending.repository.PrestamoRepository;
+import com.silvio.elending.exception.CopiaNoDisponibleException;
+import com.silvio.elending.exception.ErrorCreacionPrestamoException;
+import com.silvio.elending.exception.ErrorRegistroPrestamoException;
+import com.silvio.elending.exception.LimitePrestamosExcedidoException;
+import com.silvio.elending.exception.PrestamoDuplicadoException;
+import com.silvio.elending.exception.UltimaCopiaNoDisponibleException;
+import com.silvio.elending.exception.VerificacionDisponibilidadException;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,8 +62,7 @@ public class PrestamoService {
                 if (++intento >= maxReintentos) {
                     log.warn("No se pudo crear préstamo tras {} intentos — libro: {}, usuario: {}",
                             maxReintentos, request.getLibroId(), usuarioId);
-                    throw new RuntimeException(
-                            "La última copia del libro fue tomada por otro usuario. Intenta de nuevo.");
+                    throw new UltimaCopiaNoDisponibleException();
                 }
                 log.warn("Conflicto de concurrencia al descontar copia — libro: {}, reintento {}/{}",
                         request.getLibroId(), intento, maxReintentos);
@@ -108,9 +114,8 @@ public class PrestamoService {
         if (prestamosActivos.size() >= suscripcion.getMaxPrestamos()) {
             log.warn("Usuario {} alcanzó límite de préstamos activos: {}/{}",
                     usuarioId, prestamosActivos.size(), suscripcion.getMaxPrestamos());
-            throw new RuntimeException(
-                    "Has alcanzado el límite de " + suscripcion.getMaxPrestamos() +
-                    " préstamos activos para tu plan " + suscripcion.getPlan());
+            throw new LimitePrestamosExcedidoException(
+                    suscripcion.getMaxPrestamos(), suscripcion.getPlan());
         }
 
         // Paso 3: Verificar duplicado
@@ -122,7 +127,7 @@ public class PrestamoService {
         if (yaLoTiene) {
             log.warn("Usuario {} ya tiene préstamo activo del libro {}", 
                     usuarioId, request.getLibroId());
-            throw new RuntimeException("Ya tienes este libro en préstamo activo");
+            throw new PrestamoDuplicadoException();
         }
 
         // Paso 4: Verificar copias disponibles
@@ -134,14 +139,12 @@ public class PrestamoService {
         } catch (Exception e) {
             log.error("Error al consultar licencia del libro {}: {}", 
                     request.getLibroId(), e.getMessage());
-            throw new RuntimeException(
-                    "No se pudo verificar disponibilidad del libro con id: " + request.getLibroId());
+            throw new VerificacionDisponibilidadException(request.getLibroId());
         }
 
         if (licencia.getCopiasDisponibles() == null || licencia.getCopiasDisponibles() <= 0) {
             log.warn("No hay copias disponibles del libro {}", request.getLibroId());
-            throw new RuntimeException(
-                    "No hay copias disponibles del libro con id: " + request.getLibroId());
+            throw new CopiaNoDisponibleException(request.getLibroId());
         }
 
         // Paso 5: Descontar copia
@@ -157,7 +160,7 @@ public class PrestamoService {
         } catch (Exception e) {
             log.error("Error al descontar copia en License Service — libro: {}: {}",
                     request.getLibroId(), e.getMessage());
-            throw new RuntimeException("Error al registrar el préstamo en License Service");
+            throw new ErrorRegistroPrestamoException();
         }
 
         // Paso 6: Crear préstamo
@@ -187,8 +190,7 @@ public class PrestamoService {
                 log.error("COMPENSACIÓN FALLIDA — inconsistencia en copias del libro: {}. " +
                         "Requiere revisión manual.", request.getLibroId());
             }
-            throw new RuntimeException(
-                    "La última copia del libro fue tomada por otro usuario. Intenta de nuevo.");
+            throw new UltimaCopiaNoDisponibleException();
         } catch (Exception e) {
             log.error("Error al guardar préstamo — intentando compensar descuento de copia — libro: {}",
             request.getLibroId());
@@ -200,7 +202,7 @@ public class PrestamoService {
                 log.error("COMPENSACIÓN FALLIDA — inconsistencia en copias del libro: {}. " +
                         "Requiere revisión manual.", request.getLibroId());
             }
-            throw new RuntimeException("Error al crear el préstamo. La operación fue revertida.");
+            throw new ErrorCreacionPrestamoException();
         }
 
         // Paso 7: Notificar vía RabbitMQ (asíncrono — reemplaza Feign)

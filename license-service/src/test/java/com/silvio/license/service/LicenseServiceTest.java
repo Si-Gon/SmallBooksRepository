@@ -2,6 +2,13 @@ package com.silvio.license.service;
 
 import com.silvio.license.dto.LicenseRequestDTO;
 import com.silvio.license.dto.LicenseResponseDTO;
+import com.silvio.license.exception.CopiaNoDisponibleException;
+import com.silvio.license.exception.ConflictosConcurrenciaException;
+import com.silvio.license.exception.DevolucionInvalidaException;
+import com.silvio.license.exception.ErrorDevolucionException;
+import com.silvio.license.exception.LicenciaDuplicadaException;
+import com.silvio.license.exception.LicenciaNotFoundException;
+import com.silvio.license.exception.ReduccionCopiasInvalidaException;
 import com.silvio.license.model.License;
 import com.silvio.license.repository.LicenseRepository;
 import org.junit.jupiter.api.Test;
@@ -101,11 +108,11 @@ class LicenseServiceTest {
     }
 
     @Test
-    void obtenerPorLibroId_noExiste_lanzaExcepcion() {
+    void obtenerPorLibroId_noExiste_lanzaLicenciaNotFoundException() {
         when(licenseRepository.findByLibroId(99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> licenseService.obtenerPorLibroId(99L))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(LicenciaNotFoundException.class)
             .hasMessageContaining("No existe licencia para el libro con id: 99");
     }
 
@@ -132,11 +139,11 @@ class LicenseServiceTest {
     }
 
     @Test
-    void crear_licenciaYaExiste_lanzaExcepcion() {
+    void crear_licenciaYaExiste_lanzaLicenciaDuplicadaException() {
         when(licenseRepository.findByLibroId(1L)).thenReturn(Optional.of(license(1L, 10, 8)));
 
         assertThatThrownBy(() -> licenseService.crear(request(1L, 5)))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(LicenciaDuplicadaException.class)
             .hasMessageContaining("Ya existe una licencia para el libro con id: 1");
 
         verify(licenseRepository, never()).save(any());
@@ -167,18 +174,18 @@ class LicenseServiceTest {
         when(licenseRepository.findByLibroId(1L)).thenReturn(Optional.of(l));
 
         assertThatThrownBy(() -> licenseService.prestar(1L))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(CopiaNoDisponibleException.class)
             .hasMessageContaining("No hay copias disponibles del libro con id: 1");
 
         verify(licenseRepository, never()).save(any());
     }
 
     @Test
-    void prestar_licenciaNoExiste_lanzaExcepcion() {
+    void prestar_licenciaNoExiste_lanzaLicenciaNotFoundException() {
         when(licenseRepository.findByLibroId(7L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> licenseService.prestar(7L))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(LicenciaNotFoundException.class)
             .hasMessageContaining("No existe licencia para el libro con id: 7");
     }
 
@@ -201,13 +208,13 @@ class LicenseServiceTest {
     }
 
     @Test
-    void devolver_todasDisponibles_lanzaExcepcion() {
+    void devolver_todasDisponibles_lanzaDevolucionInvalidaException() {
         // copias disponibles == total copias → ninguna prestada, no hay que devolver
         License l = license(1L, 5, 5);
         when(licenseRepository.findByLibroId(1L)).thenReturn(Optional.of(l));
 
         assertThatThrownBy(() -> licenseService.devolver(1L))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(DevolucionInvalidaException.class)
             .hasMessageContaining("Todas las copias del libro ya están disponibles");
 
         verify(licenseRepository, never()).save(any());
@@ -218,7 +225,7 @@ class LicenseServiceTest {
     // =====================================================================
 
     @Test
-    void prestar_con_3_conflictos_OL_consecutivos_lanza_RuntimeException() {
+    void prestar_con_3_conflictos_OL_consecutivos_lanza_ConflictosConcurrenciaException() {
         // Simula 3 conflictos de @Version seguidos — el wrapper agota reintentos
         License l = license(1L, 10, 3);
         when(licenseRepository.findByLibroId(1L)).thenReturn(Optional.of(l));
@@ -226,7 +233,7 @@ class LicenseServiceTest {
                 .thenThrow(new ObjectOptimisticLockingFailureException("license", null));
 
         assertThatThrownBy(() -> licenseService.prestar(1L))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(ConflictosConcurrenciaException.class)
             .hasMessageContaining("muchos usuarios");
 
         // save() se intentó 3 veces (una por cada reintento)
@@ -256,7 +263,7 @@ class LicenseServiceTest {
     // =====================================================================
 
     @Test
-    void devolver_con_3_conflictos_OL_consecutivos_lanza_RuntimeException() {
+    void devolver_con_3_conflictos_OL_consecutivos_lanza_ErrorDevolucionException() {
         // Simula 3 conflictos de @Version seguidos en devolver()
         License l = license(1L, 10, 3);
         when(licenseRepository.findByLibroId(1L)).thenReturn(Optional.of(l));
@@ -264,7 +271,7 @@ class LicenseServiceTest {
                 .thenThrow(new ObjectOptimisticLockingFailureException("license", null));
 
         assertThatThrownBy(() -> licenseService.devolver(1L))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(ErrorDevolucionException.class)
             .hasMessageContaining("Error al devolver copia");
 
         verify(licenseRepository, times(3)).save(any(License.class));
@@ -306,25 +313,25 @@ class LicenseServiceTest {
     }
 
     @Test
-    void actualizar_reduciendoPorDebajoDePrestatarios_lanzaExcepcion() {
+    void actualizar_reduciendoPorDebajoDePrestatarios_lanzaReduccionCopiasInvalidaException() {
         // total=5, disponibles=1 → 4 prestadas
         // No se puede reducir a 3 si hay 4 prestadas
         License l = license(1L, 5, 1);
         when(licenseRepository.findByLibroId(1L)).thenReturn(Optional.of(l));
 
         assertThatThrownBy(() -> licenseService.actualizar(1L, request(1L, 3)))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(ReduccionCopiasInvalidaException.class)
             .hasMessageContaining("No se puede reducir a 3 copias");
 
         verify(licenseRepository, never()).save(any());
     }
 
     @Test
-    void actualizar_licenciaNoExiste_lanzaExcepcion() {
+    void actualizar_licenciaNoExiste_lanzaLicenciaNotFoundException() {
         when(licenseRepository.findByLibroId(9L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> licenseService.actualizar(9L, request(9L, 5)))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(LicenciaNotFoundException.class)
             .hasMessageContaining("No existe licencia para el libro con id: 9");
     }
 }

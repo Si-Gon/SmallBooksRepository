@@ -32,25 +32,75 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error); // 409
     }
 
+    // Licencia no encontrada
+    @ExceptionHandler(LicenciaNotFoundException.class)
+    public ResponseEntity<Map<String, String>> manejarLicenciaNoEncontrada(
+            LicenciaNotFoundException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error); // 404
+    }
+
+    // Licencia duplicada
+    @ExceptionHandler(LicenciaDuplicadaException.class)
+    public ResponseEntity<Map<String, String>> manejarLicenciaDuplicada(
+            LicenciaDuplicadaException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error); // 409
+    }
+
+    // Conflictos de concurrencia tras agotar reintentos
+    @ExceptionHandler(ConflictosConcurrenciaException.class)
+    public ResponseEntity<Map<String, String>> manejarConflictosConcurrencia(
+            ConflictosConcurrenciaException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error); // 409
+    }
+
+    // Sin copias disponibles
+    @ExceptionHandler(CopiaNoDisponibleException.class)
+    public ResponseEntity<Map<String, String>> manejarCopiaNoDisponible(
+            CopiaNoDisponibleException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error); // 422
+    }
+
+    // Devolución inválida (todas las copias ya están disponibles)
+    @ExceptionHandler(DevolucionInvalidaException.class)
+    public ResponseEntity<Map<String, String>> manejarDevolucionInvalida(
+            DevolucionInvalidaException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error); // 400
+    }
+
+    // Reducción de copias inválida
+    @ExceptionHandler(ReduccionCopiasInvalidaException.class)
+    public ResponseEntity<Map<String, String>> manejarReduccionCopias(
+            ReduccionCopiasInvalidaException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error); // 422
+    }
+
+    // Error al devolver copia (OL agotado)
+    @ExceptionHandler(ErrorDevolucionException.class)
+    public ResponseEntity<Map<String, String>> manejarErrorDevolucion(
+            ErrorDevolucionException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error); // 500
+    }
+
+    // RuntimeException genérico (fallback)
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> manejarRuntimeException(
             RuntimeException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
-
-        HttpStatus status = HttpStatus.NOT_FOUND;
-        if (ex.getMessage() != null) {
-            if (ex.getMessage().contains("ya existe")) {
-                status = HttpStatus.CONFLICT;         // 409
-            } else if (ex.getMessage().contains("No hay copias")) {
-                status = HttpStatus.UNPROCESSABLE_ENTITY; // 422
-            } else if (ex.getMessage().contains("muchos usuarios")) {
-                status = HttpStatus.CONFLICT;             // 409 — OL agotado tras 3 reintentos
-            } else if (ex.getMessage().contains("No se puede reducir")) {
-                status = HttpStatus.UNPROCESSABLE_ENTITY; // 422
-            }
-        }
-
-        return ResponseEntity.status(status).body(error);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 }

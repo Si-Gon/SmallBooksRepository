@@ -3,6 +3,8 @@ package com.silvio.elending.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.silvio.elending.dto.PrestamoRequestDTO;
 import com.silvio.elending.dto.PrestamoResponseDTO;
+import com.silvio.elending.exception.LimitePrestamosExcedidoException;
+import com.silvio.elending.exception.TokenExtraccionException;
 import com.silvio.elending.model.Prestamo.EstadoPrestamo;
 import com.silvio.elending.security.JwtExtractor;
 import com.silvio.elending.service.PrestamoService;
@@ -118,7 +120,7 @@ class PrestamoControllerTest {
     void crearPrestamo_limiteAlcanzado_debeRetornar4xx() throws Exception {
         when(jwtExtractor.extraerUsuario(FAKE_JWT)).thenReturn(USUARIO_ID);
         when(prestamoService.crearPrestamo(any(PrestamoRequestDTO.class), eq(USUARIO_ID)))
-                .thenThrow(new RuntimeException("Has alcanzado el límite de 2 préstamos activos para tu plan BASICO"));
+                .thenThrow(new LimitePrestamosExcedidoException(2, "BASICO"));
 
         PrestamoRequestDTO request = new PrestamoRequestDTO();
         request.setLibroId(1L);
@@ -135,7 +137,7 @@ class PrestamoControllerTest {
     void crearPrestamo_tokenInvalido_debeRetornar4xx() throws Exception {
         // JwtExtractor lanza excepción cuando el token no puede parsearse
         when(jwtExtractor.extraerUsuario(any())).thenThrow(
-                new RuntimeException("No se pudo extraer el usuario del token"));
+                new TokenExtraccionException());
 
         PrestamoRequestDTO request = new PrestamoRequestDTO();
         request.setLibroId(1L);
@@ -174,7 +176,7 @@ class PrestamoControllerTest {
     void obtenerActivos_tokenInvalido_debeRetornar4xx() throws Exception {
         // JwtExtractor lanza excepción con token inválido
         when(jwtExtractor.extraerUsuario(any())).thenThrow(
-                new RuntimeException("No se pudo extraer el usuario del token"));
+                new TokenExtraccionException());
 
         mockMvc.perform(get("/api/lending/prestamos/activos")
                         .header("Authorization", "Bearer token_invalido"))
@@ -219,7 +221,7 @@ class PrestamoControllerTest {
     @Test
     void obtenerHistorial_tokenInvalido_debeRetornar4xx() throws Exception {
         when(jwtExtractor.extraerUsuario(any())).thenThrow(
-                new RuntimeException("No se pudo extraer el usuario del token"));
+                new TokenExtraccionException());
 
         mockMvc.perform(get("/api/lending/prestamos/historial")
                         .header("Authorization", "Bearer token_invalido"))

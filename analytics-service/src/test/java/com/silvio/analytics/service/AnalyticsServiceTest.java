@@ -3,6 +3,8 @@ package com.silvio.analytics.service;
 import com.silvio.analytics.client.LendingClient;
 import com.silvio.analytics.dto.EstadisticasDTO;
 import com.silvio.analytics.dto.PrestamoAnalyticsDTO;
+import com.silvio.analytics.exception.ErrorDatosPrestamosException;
+import com.silvio.analytics.exception.ErrorHistorialUsuarioException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -101,13 +103,13 @@ class AnalyticsServiceTest {
     }
 
     @Test
-    void obtenerEstadisticas_errorEnFeign_lanzaRuntimeException() {
+    void obtenerEstadisticas_errorEnFeign_lanzaErrorDatosPrestamosException() {
         // Si el FeignClient falla (elending-service caído), el servicio
-        // debe capturar la excepción y relanzar un RuntimeException descriptivo
+        // debe capturar la excepción y relanzar ErrorDatosPrestamosException
         when(lendingClient.obtenerTodos()).thenThrow(new RuntimeException("Connection refused"));
 
         assertThatThrownBy(() -> analyticsService.obtenerEstadisticas())
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(ErrorDatosPrestamosException.class)
             .hasMessageContaining("Error al obtener datos de préstamos");
     }
 
@@ -161,12 +163,12 @@ class AnalyticsServiceTest {
     }
 
     @Test
-    void historialUsuario_errorEnFeign_lanzaRuntimeException() {
+    void historialUsuario_errorEnFeign_lanzaErrorHistorialUsuarioException() {
         when(lendingClient.obtenerHistorial("silvio"))
             .thenThrow(new RuntimeException("Feign error"));
 
         assertThatThrownBy(() -> analyticsService.historialUsuario("silvio"))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(ErrorHistorialUsuarioException.class)
             .hasMessageContaining("Error al obtener historial del usuario");
     }
 }

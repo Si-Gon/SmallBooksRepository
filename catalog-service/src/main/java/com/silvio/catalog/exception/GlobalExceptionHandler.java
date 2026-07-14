@@ -22,17 +22,27 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errores);
     }
 
+    @ExceptionHandler(LibroNotFoundException.class)
+    public ResponseEntity<Map<String, String>> manejarLibroNoEncontrado(
+            LibroNotFoundException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(LibroDuplicadoException.class)
+    public ResponseEntity<Map<String, String>> manejarLibroDuplicado(
+            LibroDuplicadoException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> manejarRuntimeException(
             RuntimeException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
-
-        HttpStatus status = HttpStatus.NOT_FOUND;
-        if (ex.getMessage() != null && ex.getMessage().toLowerCase().contains("ya existe")) {
-            status = HttpStatus.CONFLICT; // 409
-        }
-
-        return ResponseEntity.status(status).body(error);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 }

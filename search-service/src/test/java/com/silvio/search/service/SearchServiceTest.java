@@ -3,6 +3,7 @@ package com.silvio.search.service;
 import com.silvio.search.client.CatalogClient;
 import com.silvio.search.dto.LibroCatalogDTO;
 import com.silvio.search.dto.SearchResultDTO;
+import com.silvio.search.exception.ErrorConsultaCatalogoException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.*;
  * recibe la lista del catálogo, la mapea a SearchResultDTO y la devuelve.
  * Testeamos:
  *  - Que el mapeo de campos funciona correctamente
- *  - Que errores del FeignClient se convierten en RuntimeException descriptiva
+ *  - Que errores del FeignClient se convierten en ErrorConsultaCatalogoException
  *  - Que listas vacías se manejan correctamente
  */
 @ExtendWith(MockitoExtension.class)
@@ -86,11 +87,11 @@ class SearchServiceTest {
     }
 
     @Test
-    void obtenerTodos_errorFeign_lanzaRuntimeException() {
+    void obtenerTodos_errorFeign_lanzaErrorConsultaCatalogoException() {
         when(catalogClient.obtenerTodos()).thenThrow(new RuntimeException("catalog-service no disponible"));
 
         assertThatThrownBy(() -> searchService.obtenerTodos())
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(ErrorConsultaCatalogoException.class)
             .hasMessageContaining("Error al obtener catálogo");
     }
 
@@ -121,12 +122,12 @@ class SearchServiceTest {
     }
 
     @Test
-    void buscarDisponibles_errorFeign_lanzaRuntimeException() {
+    void buscarDisponibles_errorFeign_lanzaErrorConsultaCatalogoException() {
         when(catalogClient.obtenerDisponibles())
             .thenThrow(new RuntimeException("timeout"));
 
         assertThatThrownBy(() -> searchService.buscarDisponibles())
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(ErrorConsultaCatalogoException.class)
             .hasMessageContaining("Error al consultar disponibles");
     }
 
@@ -168,12 +169,12 @@ class SearchServiceTest {
     }
 
     @Test
-    void buscar_errorFeign_lanzaRuntimeException() {
+    void buscar_errorFeign_lanzaErrorConsultaCatalogoException() {
         when(catalogClient.buscar(any(), any(), any()))
             .thenThrow(new RuntimeException("Connection refused"));
 
         assertThatThrownBy(() -> searchService.buscar("titulo", null, null))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(ErrorConsultaCatalogoException.class)
             .hasMessageContaining("Error al consultar el catálogo");
     }
 }

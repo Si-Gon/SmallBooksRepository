@@ -2,6 +2,7 @@ package com.silvio.search.config;
 
 import com.silvio.search.client.CatalogClient;
 import com.silvio.search.dto.LibroCatalogDTO;
+import com.silvio.search.exception.ErrorConsultaCatalogoException;
 import com.silvio.search.service.SearchService;
 import io.micrometer.tracing.Tracer;
 import org.junit.jupiter.api.Test;
@@ -85,7 +86,7 @@ class FeignTracingPropagationTest {
         when(catalogClient.buscar("error", null, null))
                 .thenThrow(new RuntimeException("Error en catalog-service"));
 
-        RuntimeException ex = assertThrows(RuntimeException.class,
+        ErrorConsultaCatalogoException ex = assertThrows(ErrorConsultaCatalogoException.class,
                 () -> searchService.buscar("error", null, null));
         assertTrue(ex.getMessage().contains("Error al consultar el catálogo"));
     }

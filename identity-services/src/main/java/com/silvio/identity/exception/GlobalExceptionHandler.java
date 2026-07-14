@@ -1,4 +1,4 @@
-package com.silvio.identity.exception; 
+package com.silvio.identity.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errores);
     }
 
-    //  Manejo específico para credenciales incorrectas
+    // Credenciales incorrectas
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Map<String, String>> manejarBadCredentials(BadCredentialsException ex) {
         Map<String, String> error = new HashMap<>();
@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
-    //  Manejo para usuario no encontrado
+    // Usuario no encontrado (Spring Security)
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<Map<String, String>> manejarUsernameNotFound(UsernameNotFoundException ex) {
         Map<String, String> error = new HashMap<>();
@@ -40,20 +40,51 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    //  Manejo para RuntimeException (errores de negocio)
+    // Usuario no encontrado (dominio)
+    @ExceptionHandler(UsuarioNotFoundException.class)
+    public ResponseEntity<Map<String, String>> manejarUsuarioNoEncontrado(UsuarioNotFoundException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    // Usuario duplicado
+    @ExceptionHandler(UsuarioDuplicadoException.class)
+    public ResponseEntity<Map<String, String>> manejarUsuarioDuplicado(UsuarioDuplicadoException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    // Token expirado o inválido
+    @ExceptionHandler({TokenExpiradoException.class, TokenInvalidoException.class})
+    public ResponseEntity<Map<String, String>> manejarTokenInvalido(RuntimeException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
+    // Contraseña incorrecta
+    @ExceptionHandler(ContrasenaIncorrectaException.class)
+    public ResponseEntity<Map<String, String>> manejarContrasenaIncorrecta(ContrasenaIncorrectaException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    // Error interno de seguridad
+    @ExceptionHandler(ErrorSeguridadException.class)
+    public ResponseEntity<Map<String, String>> manejarErrorSeguridad(ErrorSeguridadException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+    // RuntimeException genérico (fallback)
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> manejarRuntimeException(RuntimeException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
-        
-        // Clasificar por mensaje para dar status code apropiado
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        if (ex.getMessage().contains("ya existe")) {
-            status = HttpStatus.CONFLICT;  // 409
-        } else if (ex.getMessage().contains("expirado") || ex.getMessage().contains("inválido")) {
-            status = HttpStatus.UNAUTHORIZED;  // 401
-        }
-        
-        return ResponseEntity.status(status).body(error);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 }

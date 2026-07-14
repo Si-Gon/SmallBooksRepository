@@ -3,6 +3,8 @@ package com.silvio.catalog.service;
 import com.silvio.catalog.dto.LibroRequestDTO;
 import com.silvio.catalog.dto.LibroResponseDTO;
 import com.silvio.catalog.model.Libro;
+import com.silvio.catalog.exception.LibroDuplicadoException;
+import com.silvio.catalog.exception.LibroNotFoundException;
 import com.silvio.catalog.repository.LibroRepository;
 
 import lombok.NonNull;
@@ -47,7 +49,7 @@ public class CatalogService {
         Libro libro = libroRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Libro no encontrado con id: {}", id);
-                    return new RuntimeException("Libro no encontrado con id: " + id);
+                    return new LibroNotFoundException(id);
                 });
         return mapearADto(libro);
     }
@@ -74,7 +76,7 @@ public class CatalogService {
         libroRepository.findByIsbn(request.getIsbn())
                 .ifPresent(l -> {
                     log.warn("ISBN duplicado: {}", request.getIsbn());
-                    throw new RuntimeException("Ya existe un libro con ISBN: " + request.getIsbn());
+                    throw new LibroDuplicadoException(request.getIsbn());
                 });
 
         Libro libro = new Libro();
@@ -101,7 +103,7 @@ public class CatalogService {
         Libro libro = libroRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Libro no encontrado para actualizar — id: {}", id);
-                    return new RuntimeException("Libro no encontrado con id: " + id);
+                    return new LibroNotFoundException(id);
                 });
 
         libro.setTitulo(request.getTitulo());
@@ -122,7 +124,7 @@ public class CatalogService {
     public LibroResponseDTO cambiarDisponibilidad(@NonNull Long id, Boolean disponible) {
         log.info("Cambiando disponibilidad libro id: {} → {}", id, disponible);
         Libro libro = libroRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Libro no encontrado con id: " + id));
+                .orElseThrow(() -> new LibroNotFoundException(id));
         libro.setDisponible(disponible);
         return mapearADto(libroRepository.save(libro));
     }
@@ -131,7 +133,7 @@ public class CatalogService {
     public void eliminar(@NonNull Long id) {
         log.info("Eliminando libro id: {}", id);
         Libro libro = libroRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Libro no encontrado con id: " + id));
+                .orElseThrow(() -> new LibroNotFoundException(id));
         libroRepository.delete(libro);
         log.info("Libro eliminado exitosamente — id: {}", id);
     }

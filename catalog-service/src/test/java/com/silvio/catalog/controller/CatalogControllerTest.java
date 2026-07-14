@@ -3,6 +3,8 @@ package com.silvio.catalog.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.silvio.catalog.dto.LibroRequestDTO;
 import com.silvio.catalog.dto.LibroResponseDTO;
+import com.silvio.catalog.exception.LibroNotFoundException;
+import com.silvio.catalog.exception.LibroDuplicadoException;
 import com.silvio.catalog.service.CatalogService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,9 +115,8 @@ class CatalogControllerTest {
 
     @Test
     void obtenerPorId_ConIdInexistente_DebeRetornar404() throws Exception {
-        // El GlobalExceptionHandler convierte RuntimeException → 404
         when(catalogService.obtenerPorId(999L))
-                .thenThrow(new RuntimeException("Libro no encontrado con id: 999"));
+                .thenThrow(new LibroNotFoundException(999L));
 
         mockMvc.perform(get("/api/catalog/999"))
                 .andExpect(status().isNotFound());
@@ -164,16 +165,15 @@ class CatalogControllerTest {
     }
 
     @Test
-    void agregar_ConISBNDuplicado_DebeRetornar404o409() throws Exception {
+    void agregar_ConISBNDuplicado_DebeRetornar409() throws Exception {
         LibroRequestDTO request = crearLibroRequest();
         when(catalogService.agregar(any(LibroRequestDTO.class)))
-                .thenThrow(new RuntimeException("Ya existe un libro con ISBN: 1234567890123"));
+                .thenThrow(new LibroDuplicadoException("1234567890123"));
 
         mockMvc.perform(post("/api/catalog")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                // El GlobalExceptionHandler maneja RuntimeException
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().isConflict());
     }
 
     @Test
@@ -211,7 +211,7 @@ class CatalogControllerTest {
     void actualizar_ConIdInexistente_DebeRetornar404() throws Exception {
         LibroRequestDTO request = crearLibroRequest();
         when(catalogService.actualizar(eq(999L), any(LibroRequestDTO.class)))
-                .thenThrow(new RuntimeException("Libro no encontrado con id: 999"));
+                .thenThrow(new LibroNotFoundException(999L));
 
         mockMvc.perform(put("/api/catalog/999")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -251,7 +251,7 @@ class CatalogControllerTest {
 
     @Test
     void eliminar_ConIdInexistente_DebeRetornar404() throws Exception {
-        doThrow(new RuntimeException("Libro no encontrado con id: 999"))
+        doThrow(new LibroNotFoundException(999L))
                 .when(catalogService).eliminar(999L);
 
         mockMvc.perform(delete("/api/catalog/999"))
@@ -310,7 +310,7 @@ class CatalogControllerTest {
     @Test
     void cambiarDisponibilidad_ConIdInexistente_DebeRetornar404() throws Exception {
         when(catalogService.cambiarDisponibilidad(999L, false))
-                .thenThrow(new RuntimeException("Libro no encontrado con id: 999"));
+                .thenThrow(new LibroNotFoundException(999L));
 
         mockMvc.perform(patch("/api/catalog/999/disponibilidad")
                         .param("disponible", "false"))

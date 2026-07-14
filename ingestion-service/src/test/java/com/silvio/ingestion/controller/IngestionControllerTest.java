@@ -1,6 +1,8 @@
 package com.silvio.ingestion.controller;
 
 import com.silvio.ingestion.dto.ArchivoLibroDTO;
+import com.silvio.ingestion.exception.ArchivoNoEncontradoException;
+import com.silvio.ingestion.exception.FormatoNoPermitidoException;
 import com.silvio.ingestion.service.IngestionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,9 +79,9 @@ class IngestionControllerTest {
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             "contenido".getBytes());
 
-        // "Formato no permitido" → GlobalExceptionHandler devuelve 400
+        // FormatoNoPermitidoException → GlobalExceptionHandler devuelve 400
         when(ingestionService.subirArchivo(eq(1L), any()))
-            .thenThrow(new RuntimeException("Formato no permitido: application/vnd.openxmlformats..."));
+            .thenThrow(new FormatoNoPermitidoException("docx"));
 
         mockMvc.perform(multipart("/api/ingestion/upload/1").file(archivo))
                 .andExpect(status().isBadRequest())
@@ -103,9 +105,9 @@ class IngestionControllerTest {
 
     @Test
     void obtenerInfo_archivoNoExiste_debeRetornar404() throws Exception {
-        // "No hay archivo" → GlobalExceptionHandler devuelve 404
+        // ArchivoNoEncontradoException → GlobalExceptionHandler devuelve 404
         when(ingestionService.obtenerInfo(99L))
-            .thenThrow(new RuntimeException("No hay archivo subido para el libro con id: 99"));
+            .thenThrow(new ArchivoNoEncontradoException(99L));
 
         mockMvc.perform(get("/api/ingestion/99"))
                 .andExpect(status().isNotFound())
@@ -130,7 +132,7 @@ class IngestionControllerTest {
     @Test
     void obtenerBytes_archivoNoExiste_debeRetornar404() throws Exception {
         when(ingestionService.obtenerBytes(5L))
-            .thenThrow(new RuntimeException("No hay archivo subido para el libro con id: 5"));
+            .thenThrow(new ArchivoNoEncontradoException(5L));
 
         mockMvc.perform(get("/api/ingestion/5/bytes"))
                 .andExpect(status().isNotFound());
@@ -152,7 +154,7 @@ class IngestionControllerTest {
 
     @Test
     void eliminar_archivoNoExiste_debeRetornar404() throws Exception {
-        doThrow(new RuntimeException("No hay archivo para el libro con id: 7"))
+        doThrow(new ArchivoNoEncontradoException(7L))
             .when(ingestionService).eliminar(7L);
 
         mockMvc.perform(delete("/api/ingestion/7"))

@@ -11,23 +11,35 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(VerificacionPrestamoException.class)
+    public ResponseEntity<Map<String, String>> manejarVerificacionPrestamo(
+            VerificacionPrestamoException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(error); // 503
+    }
+
+    @ExceptionHandler(AccesoDenegadoException.class)
+    public ResponseEntity<Map<String, String>> manejarAccesoDenegado(
+            AccesoDenegadoException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error); // 403
+    }
+
+    @ExceptionHandler(ArchivoNoEncontradoException.class)
+    public ResponseEntity<Map<String, String>> manejarArchivoNoEncontrado(
+            ArchivoNoEncontradoException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error); // 404
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> manejarRuntimeException(
             RuntimeException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
-
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        if (ex.getMessage() != null) {
-            if (ex.getMessage().contains("Acceso denegado")) {
-                status = HttpStatus.FORBIDDEN;          // 403
-            } else if (ex.getMessage().contains("No se pudo verificar")) {
-                status = HttpStatus.SERVICE_UNAVAILABLE; // 503
-            } else if (ex.getMessage().contains("No se pudo obtener")) {
-                status = HttpStatus.NOT_FOUND;           // 404
-            }
-        }
-
-        return ResponseEntity.status(status).body(error);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 }
