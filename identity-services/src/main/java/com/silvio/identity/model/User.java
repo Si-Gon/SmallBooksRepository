@@ -3,6 +3,7 @@ package com.silvio.identity.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -21,6 +22,7 @@ public class User {
     private String username;
 
     @Column(nullable = false)
+    @ToString.Exclude
     private String password; // almacenar siempre el hash BCrypt
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -29,9 +31,11 @@ public class User {
     private Set<String> roles; // ej: "ROLE_ADMIN", "ROLE_USER"
 
     // Campos para recuperación de contraseña
+    @ToString.Exclude
     private String resetToken;
     private LocalDateTime resetTokenExpiry;
 
     // Hash SHA-256 del refresh token vigente para rotación
+    @ToString.Exclude
     private String refreshTokenHash;
 }

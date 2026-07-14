@@ -2,6 +2,7 @@ package com.silvio.identity.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 public class PasswordUpdateRequest {
@@ -9,5 +10,6 @@ public class PasswordUpdateRequest {
     private String token;
     
     @NotBlank(message = "Nueva contraseña es obligatoria")
+    @ToString.Exclude
     private String newPassword;
 }
