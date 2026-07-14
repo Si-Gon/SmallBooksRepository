@@ -51,6 +51,7 @@ services:
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+      - JWT_SECRET=Duoc.1983Duoc.1983Duoc.1983Duoc.1983
     depends_on:
       config:
         condition: service_healthy
@@ -76,6 +77,7 @@ services:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
       - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_identity?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - JWT_SECRET=Duoc.1983Duoc.1983Duoc.1983Duoc.1983
     depends_on:
       config:
         condition: service_healthy

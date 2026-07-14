@@ -20,7 +20,7 @@ spring:
     validate-on-migrate: false
 
 jwt:
-  secret: Duoc.1983Duoc.1983Duoc.1983Duoc.1983
+  secret: ${JWT_SECRET}
   access-token-expiration: 1800000     # 30 minutos
   refresh-token-expiration: 604800000  # 7 días
 

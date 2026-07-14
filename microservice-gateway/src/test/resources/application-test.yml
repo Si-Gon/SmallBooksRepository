@@ -27,6 +27,13 @@ rate-limiting:
     capacity: 10
     refill-per-minute: 10
 
+# ─── CORS — orígenes permitidos para tests ──────────────────────
+# Se definen explícitamente para que CorsConfigTest pueda verificar
+# que los valores se inyectan correctamente.
+gateway:
+  cors:
+    allowed-origins: http://localhost:4200,http://localhost:3000,http://localhost:5173
+
 # Secret de 32+ caracteres requerido por HMAC-SHA256
 # En producción viene del Config Server — aquí lo ponemos fijo para tests
 jwt:

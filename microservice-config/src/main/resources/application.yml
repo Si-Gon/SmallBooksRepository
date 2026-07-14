@@ -9,6 +9,16 @@ spring:
   cloud:
     config:
       server:
+        # ── SEGURIDAD: NO resolver placeholders del lado del servidor ─────
+        # Por defecto, Config Server resuelve ${...} con su propio Environment.
+        # Esto obligaria a poner JWT_SECRET (y otros secretos) en el entorno
+        # del Config Server, exponiendolos a todos los servicios.
+        #
+        # Con resolve-placeholders: false, cada microservicio resuelve sus
+        # propias variables de entorno. El Config Server pasa el texto ${...}
+        # sin modificar, y el cliente (gateway, identity, etc.) lo interpreta
+        # contra su propio Environment, manteniendo los secretos aislados.
+        resolve-placeholders: false
         native:
           search-locations: classpath:/configurations
 logging:

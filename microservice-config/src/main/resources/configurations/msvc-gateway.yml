@@ -110,5 +110,16 @@ rate-limiting:
     capacity: 50            # Máximo de tokens por IP
     refill-per-minute: 50   # Tokens que se regeneran cada minuto por IP
 
+# ──────────────────────────────────────────────
+# Configuración CORS — orígenes permitidos
+# ──────────────────────────────────────────────
+# Lista separada por comas de orígenes que pueden
+# hacer peticiones al gateway desde el navegador.
+# En producción, reemplazar con los dominios reales
+# del frontend (ej: https://admin.misitio.com).
+gateway:
+  cors:
+    allowed-origins: http://localhost:4200,http://localhost:3000,http://localhost:5173
+
 jwt:
-  secret: Duoc.1983Duoc.1983Duoc.1983Duoc.1983
+  secret: ${JWT_SECRET}
