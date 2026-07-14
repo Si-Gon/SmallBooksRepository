@@ -46,6 +46,8 @@
     <maven.compiler.release>17</maven.compiler.release>
     <!-- BOM de Spring Cloud compatible con Spring Boot 3.1.x -->
     <spring-cloud.version>2023.0.5</spring-cloud.version>
+    <!-- JWT (jjwt) — version centralizada para todos los módulos -->
+    <jjwt.version>0.12.6</jjwt.version>
   </properties>
 
   
@@ -111,6 +113,28 @@
         <version>${spring-cloud.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+
+      <!-- ============================================================ -->
+      <!-- JWT — jjwt 0.12.x                                            -->
+      <!-- Versión centralizada para identity-services y gateway        -->
+      <!-- ============================================================ -->
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-api</artifactId>
+        <version>${jjwt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-impl</artifactId>
+        <version>${jjwt.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-jackson</artifactId>
+        <version>${jjwt.version}</version>
+        <scope>runtime</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

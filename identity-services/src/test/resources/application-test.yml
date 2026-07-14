@@ -24,3 +24,10 @@ eureka:
 logging:
   level:
     root: WARN
+
+# JWT — Para que JwtProperties y JwtUtil funcionen en tests de integración
+# La clave debe tener al menos 32 caracteres (256 bits) para HS256
+jwt:
+  secret: "miClaveSecretaSuperSeguraParaJWT256Bits2024!"
+  access-token-expiration: 3600000
+  refresh-token-expiration: 604800000

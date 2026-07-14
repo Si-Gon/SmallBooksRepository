@@ -84,7 +84,7 @@ Cliente → API Gateway (:8080) → JwtAuthFilter (valida JWT) →
 | **Base de Datos** | MySQL | 8.4 |
 | **Migraciones** | Flyway | (Spring Boot) |
 | **ORM** | Spring Data JPA + Hibernate | 6.5 |
-| **Seguridad** | Spring Security + JWT (jjwt 0.11.5) | — |
+| **Seguridad** | Spring Security + JWT (jjwt 0.12.6) | — |
 | **Documentación API** | SpringDoc OpenAPI | 2.5.0 |
 | **Hipermedia** | Spring HATEOAS | (Spring Boot) |
 | **Comunicación MS** | OpenFeign | (Spring Cloud) |

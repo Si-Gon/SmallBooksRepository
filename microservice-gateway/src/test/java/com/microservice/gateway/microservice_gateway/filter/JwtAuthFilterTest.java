@@ -1,7 +1,6 @@
 package com.microservice.gateway.microservice_gateway.filter;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.lang.reflect.Field;
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +58,7 @@ class JwtAuthFilterTest {
 
     private JwtAuthFilter filter;
     private GatewayFilterChain chain;
-    private Key signingKey;
+    private SecretKey signingKey;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -88,11 +87,11 @@ class JwtAuthFilterTest {
         claims.put("roles", "ROLE_USER");
 
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject("silvio")
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
-                .signWith(signingKey, SignatureAlgorithm.HS256)
+                .claims(claims)
+                .subject("silvio")
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + expirationMs))
+                .signWith(signingKey, Jwts.SIG.HS256)
                 .compact();
     }
 
@@ -198,12 +197,12 @@ class JwtAuthFilterTest {
     @Test
     void tokenConFirmaIncorrecta_debeRechazarCon401() {
         // Generamos con una clave diferente — la validación de firma fallará
-        Key otraKey = Keys.hmacShaKeyFor("otra-clave-completamente-diferente-32c".getBytes());
+        SecretKey otraKey = Keys.hmacShaKeyFor("otra-clave-completamente-diferente-32c".getBytes());
         String jwt = Jwts.builder()
-                .setSubject("hacker")
+                .subject("hacker")
                 .claim("type", "access")
-                .setExpiration(new Date(System.currentTimeMillis() + 60_000))
-                .signWith(otraKey, SignatureAlgorithm.HS256)
+                .expiration(new Date(System.currentTimeMillis() + 60_000))
+                .signWith(otraKey, Jwts.SIG.HS256)
                 .compact();
 
         MockServerHttpRequest request = MockServerHttpRequest
@@ -295,10 +294,10 @@ class JwtAuthFilterTest {
         // Token sin el claim "roles" — el filtro debe mandar "" en lugar de null
         String jwt = Jwts.builder()
                 .claim("type", "access")
-                .setSubject("silvio")
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 60_000))
-                .signWith(signingKey, SignatureAlgorithm.HS256)
+                .subject("silvio")
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 60_000))
+                .signWith(signingKey, Jwts.SIG.HS256)
                 .compact();
 
         MockServerHttpRequest request = MockServerHttpRequest
@@ -451,13 +450,13 @@ class JwtAuthFilterTest {
 
     @Test
     void tokenSinSubjectClaim_rechazaCon401() {
-        // Token sin setSubject() → claims.getSubject() = null
+        // Token sin subject() → claims.getSubject() = null
         String jwt = Jwts.builder()
                 .claim("type", "access")
                 .claim("roles", "ROLE_USER")
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 60_000))
-                .signWith(signingKey, SignatureAlgorithm.HS256)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 60_000))
+                .signWith(signingKey, Jwts.SIG.HS256)
                 .compact();
 
         MockServerHttpRequest request = MockServerHttpRequest
@@ -481,9 +480,9 @@ class JwtAuthFilterTest {
         String jwt = Jwts.builder()
                 .claim("type", "access")
                 .claim("roles", "ROLE_USER")
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 60_000))
-                .signWith(signingKey, SignatureAlgorithm.HS256)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 60_000))
+                .signWith(signingKey, Jwts.SIG.HS256)
                 .compact();
 
         MockServerHttpRequest request = MockServerHttpRequest
@@ -510,11 +509,11 @@ class JwtAuthFilterTest {
         // - X-User-Id debe propagarse normalmente
         // - X-User-Roles debe ser "" (no null)
         String jwt = Jwts.builder()
-                .setSubject("maria")
+                .subject("maria")
                 .claim("type", "access")
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 60_000))
-                .signWith(signingKey, SignatureAlgorithm.HS256)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 60_000))
+                .signWith(signingKey, Jwts.SIG.HS256)
                 .compact();
 
         MockServerHttpRequest request = MockServerHttpRequest
