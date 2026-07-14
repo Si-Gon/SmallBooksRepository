@@ -52,7 +52,9 @@ public class SuscripcionController {
                description = "Endpoint interno usado por E-Lending Service via Feign")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Suscripción obtenida exitosamente"),
-        @ApiResponse(responseCode = "404", description = "Usuario sin suscripción activa")
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "404", description = "Usuario sin suscripción activa"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<SuscripcionResponseDTO> obtenerPorUsuarioId(

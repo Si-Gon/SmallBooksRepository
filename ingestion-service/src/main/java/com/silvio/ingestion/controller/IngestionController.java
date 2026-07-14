@@ -31,7 +31,10 @@ public class IngestionController {
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Archivo subido exitosamente"),
         @ApiResponse(responseCode = "400", description = "Formato no permitido — solo PDF y EPUB"),
-        @ApiResponse(responseCode = "404", description = "Libro no encontrado en el catálogo")
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "404", description = "Libro no encontrado en el catálogo"),
+        @ApiResponse(responseCode = "413", description = "El archivo supera el tamaño máximo permitido (50MB)"),
+        @ApiResponse(responseCode = "500", description = "Error de almacenamiento o lectura del archivo")
     })
     @PostMapping(value = "/upload/{libroId}",
                  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -55,7 +58,10 @@ public class IngestionController {
                description = "Devuelve la metadata del archivo asociado a un libro: nombre, formato, tamaño y fecha de subida")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Información obtenida exitosamente"),
-        @ApiResponse(responseCode = "404", description = "No hay archivo subido para este libro")
+        @ApiResponse(responseCode = "400", description = "ID del libro inválido"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "404", description = "No hay archivo subido para este libro"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/{libroId}")
     public ResponseEntity<ArchivoLibroDTO> obtenerInfo(
@@ -76,7 +82,9 @@ public class IngestionController {
                              "Devuelve los bytes raw del archivo para entrega al usuario final")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Bytes del archivo obtenidos exitosamente"),
-        @ApiResponse(responseCode = "404", description = "Archivo no encontrado")
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "404", description = "Archivo no encontrado"),
+        @ApiResponse(responseCode = "500", description = "Error de lectura del archivo")
     })
     @GetMapping("/{libroId}/bytes")
     public ResponseEntity<byte[]> obtenerBytes(
@@ -92,7 +100,9 @@ public class IngestionController {
                description = "Elimina el archivo asociado a un libro tanto de la base de datos como del registro")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Archivo eliminado exitosamente"),
-        @ApiResponse(responseCode = "404", description = "No hay archivo para este libro")
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "404", description = "No hay archivo para este libro"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @DeleteMapping("/{libroId}")
     public ResponseEntity<Void> eliminar(

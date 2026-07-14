@@ -135,7 +135,8 @@ public class AuthController {
                              "en desarrollo se devuelve directamente en la respuesta")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Token de recuperación generado"),
-        @ApiResponse(responseCode = "400", description = "Datos inválidos o incompletos")
+        @ApiResponse(responseCode = "400", description = "Datos inválidos o incompletos"),
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado para el username indicado")
     })
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@Valid @RequestBody PasswordResetRequest request) {
@@ -151,7 +152,8 @@ public class AuthController {
                description = "Actualiza la contraseña usando el token de recuperación obtenido en /forgot-password")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Contraseña actualizada exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Token inválido, expirado o nueva contraseña no válida")
+        @ApiResponse(responseCode = "400", description = "Nueva contraseña no válida"),
+        @ApiResponse(responseCode = "401", description = "Token inválido, expirado o ya utilizado")
     })
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody PasswordUpdateRequest request) {

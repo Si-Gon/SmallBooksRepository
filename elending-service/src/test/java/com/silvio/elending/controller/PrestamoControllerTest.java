@@ -299,6 +299,19 @@ class PrestamoControllerTest {
                 .andExpect(jsonPath("$[0].usuarioId").value("usuario1"));
     }
 
+    @Test
+    void obtenerHistorialPorId_listaVacia_debeRetornar200() throws Exception {
+        // El servicio retorna lista vacía (sin excepción) — debe dar 200, no 404
+        when(prestamoService.obtenerHistorial("usuario_sin_prestamos")).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/lending/prestamos/historial/usuario_sin_prestamos"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").isEmpty());
+
+        verify(prestamoService).obtenerHistorial("usuario_sin_prestamos");
+    }
+
     // =========================================================
     // Helper
     // =========================================================

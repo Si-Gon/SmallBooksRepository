@@ -30,7 +30,9 @@ public class NotificacionController {
                description = "Endpoint REST disponible para pruebas manuales. En producción, las notificaciones se crean vía RabbitMQ desde E-Lending Service.")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Notificación creada exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Datos de notificación inválidos")
+        @ApiResponse(responseCode = "400", description = "Datos de notificación inválidos"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @PostMapping
     public ResponseEntity<NotificacionDTO> crear(
@@ -50,7 +52,9 @@ public class NotificacionController {
     @Operation(summary = "Obtener notificaciones por usuario")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista de notificaciones obtenida"),
-        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<NotificacionDTO>> obtenerPorUsuario(
@@ -71,7 +75,9 @@ public class NotificacionController {
     @Operation(summary = "Obtener notificaciones no leídas")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista de notificaciones no leídas"),
-        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/usuario/{usuarioId}/no-leidas")
     public ResponseEntity<List<NotificacionDTO>> obtenerNoLeidas(
@@ -90,6 +96,8 @@ public class NotificacionController {
     @Operation(summary = "Marcar notificación como leída")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Notificación marcada como leída"),
+        @ApiResponse(responseCode = "400", description = "ID de notificación inválido"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
         @ApiResponse(responseCode = "404", description = "Notificación no encontrada")
     })
     @PatchMapping("/{id}/leer")
@@ -109,6 +117,7 @@ public class NotificacionController {
     @Operation(summary = "Marcar todas las notificaciones como leídas")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Todas marcadas como leídas"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
         @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     @PatchMapping("/usuario/{usuarioId}/leer-todas")

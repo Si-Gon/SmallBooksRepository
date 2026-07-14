@@ -59,7 +59,8 @@ public class PrestamoController {
                              "El usuario se identifica desde el token JWT")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista de préstamos activos"),
-        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente")
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/prestamos/activos")
     public ResponseEntity<List<PrestamoResponseDTO>> obtenerActivos(
@@ -80,7 +81,8 @@ public class PrestamoController {
                description = "Lista todos los préstamos (activos y vencidos) del usuario autenticado")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Historial completo obtenido"),
-        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente")
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/prestamos/historial")
     public ResponseEntity<List<PrestamoResponseDTO>> obtenerHistorial(
@@ -101,7 +103,8 @@ public class PrestamoController {
                description = "Endpoint interno usado por Analytics Service via Feign. " +
                              "Devuelve todos los préstamos del sistema para cálculo de estadísticas globales")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Lista completa de préstamos")
+        @ApiResponse(responseCode = "200", description = "Lista completa de préstamos"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/prestamos/todos")
     public ResponseEntity<List<PrestamoResponseDTO>> obtenerTodos() {
@@ -114,10 +117,12 @@ public class PrestamoController {
 
     @Operation(summary = "Obtener historial por usuario",
                description = "Endpoint interno usado por Analytics Service via Feign. " +
-                             "Devuelve el historial de préstamos de un usuario específico")
+                              "Devuelve el historial de préstamos de un usuario específico. " +
+                              "Si el usuario no tiene préstamos, devuelve lista vacía (200)")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Historial obtenido exitosamente"),
-        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+        @ApiResponse(responseCode = "200", description = "Historial obtenido exitosamente (puede ser lista vacía)"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/prestamos/historial/{usuarioId}")
     public ResponseEntity<List<PrestamoResponseDTO>> obtenerHistorialPorId(

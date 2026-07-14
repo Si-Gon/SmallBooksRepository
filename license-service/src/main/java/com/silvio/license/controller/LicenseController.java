@@ -30,6 +30,7 @@ public class LicenseController {
                description = "Devuelve todas las licencias registradas con su cantidad de copias totales y disponibles")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista de licencias obtenida exitosamente"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
         @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping
@@ -50,6 +51,8 @@ public class LicenseController {
                              "para verificar si hay copias disponibles")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Licencia encontrada"),
+        @ApiResponse(responseCode = "400", description = "ID del libro inválido"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
         @ApiResponse(responseCode = "404", description = "No existe licencia para este libro")
     })
     @GetMapping("/{libroId}")
@@ -74,6 +77,7 @@ public class LicenseController {
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Licencia creada exitosamente"),
         @ApiResponse(responseCode = "400", description = "Datos de licencia inválidos"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
         @ApiResponse(responseCode = "409", description = "Ya existe una licencia para este libro")
     })
     @PostMapping
@@ -92,7 +96,10 @@ public class LicenseController {
     @Operation(summary = "Actualizar licencia")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Licencia actualizada exitosamente"),
-        @ApiResponse(responseCode = "404", description = "Licencia no encontrada")
+        @ApiResponse(responseCode = "400", description = "Datos de licencia inválidos"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "404", description = "Licencia no encontrada"),
+        @ApiResponse(responseCode = "409", description = "Conflicto de concurrencia — otro usuario actualizó la licencia simultáneamente")
     })
     @PutMapping("/{libroId}")
     public ResponseEntity<LicenseResponseDTO> actualizar(
@@ -112,7 +119,9 @@ public class LicenseController {
     @Operation(summary = "Descontar copia al prestar")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Copia descontada exitosamente"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
         @ApiResponse(responseCode = "404", description = "Licencia no encontrada"),
+        @ApiResponse(responseCode = "409", description = "Conflicto de concurrencia — la última copia fue tomada por otro usuario"),
         @ApiResponse(responseCode = "422", description = "No hay copias disponibles para prestar")
     })
     @PutMapping("/{libroId}/prestar")
@@ -132,8 +141,10 @@ public class LicenseController {
     @Operation(summary = "Sumar copia al devolver")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Copia devuelta exitosamente"),
+        @ApiResponse(responseCode = "400", description = "La devolución no es válida — todas las copias ya están disponibles"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
         @ApiResponse(responseCode = "404", description = "Licencia no encontrada"),
-        @ApiResponse(responseCode = "422", description = "Todas las copias ya están disponibles")
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor — reintentos de concurrencia agotados")
     })
     @PutMapping("/{libroId}/devolver")
     public ResponseEntity<LicenseResponseDTO> devolver(

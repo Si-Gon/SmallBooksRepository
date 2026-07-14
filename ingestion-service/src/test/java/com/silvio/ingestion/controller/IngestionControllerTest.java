@@ -2,6 +2,7 @@ package com.silvio.ingestion.controller;
 
 import com.silvio.ingestion.dto.ArchivoLibroDTO;
 import com.silvio.ingestion.exception.ArchivoNoEncontradoException;
+import com.silvio.ingestion.exception.ErrorAlmacenamientoException;
 import com.silvio.ingestion.exception.FormatoNoPermitidoException;
 import com.silvio.ingestion.service.IngestionService;
 import org.junit.jupiter.api.Test;
@@ -160,5 +161,53 @@ class IngestionControllerTest {
         mockMvc.perform(delete("/api/ingestion/7"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").exists());
+    }
+
+    // =====================================================================
+    // Errores de almacenamiento e internos
+    // =====================================================================
+
+    @Test
+    void subirArchivo_errorAlmacenamiento_debeRetornar500() throws Exception {
+        MockMultipartFile archivo = new MockMultipartFile(
+            "archivo", "libro.pdf", "application/pdf", "contenido".getBytes());
+
+        // ErrorAlmacenamientoException → GlobalExceptionHandler devuelve 500
+        when(ingestionService.subirArchivo(eq(1L), any()))
+            .thenThrow(new ErrorAlmacenamientoException("Error de escritura: Disco lleno"));
+
+        mockMvc.perform(multipart("/api/ingestion/upload/1").file(archivo))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(ingestionService).subirArchivo(eq(1L), any());
+    }
+
+    @Test
+    void obtenerInfo_errorInterno_debeRetornar500() throws Exception {
+        // RuntimeException → GlobalExceptionHandler devuelve 500
+        when(ingestionService.obtenerInfo(1L))
+            .thenThrow(new RuntimeException("Error inesperado de base de datos"));
+
+        mockMvc.perform(get("/api/ingestion/1"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error").exists());
+    }
+
+    @Test
+    void subirArchivo_libroNoEncontrado_debeRetornar404() throws Exception {
+        MockMultipartFile archivo = new MockMultipartFile(
+            "archivo", "libro.pdf", "application/pdf", "contenido".getBytes());
+
+        // ArchivoNoEncontradoException → GlobalExceptionHandler devuelve 404
+        // (cuando el libroId no existe en el catálogo)
+        when(ingestionService.subirArchivo(eq(99L), any()))
+            .thenThrow(new ArchivoNoEncontradoException(99L));
+
+        mockMvc.perform(multipart("/api/ingestion/upload/99").file(archivo))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(ingestionService).subirArchivo(eq(99L), any());
     }
 }

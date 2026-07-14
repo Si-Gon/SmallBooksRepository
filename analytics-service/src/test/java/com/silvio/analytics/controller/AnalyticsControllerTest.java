@@ -135,4 +135,32 @@ class AnalyticsControllerTest {
                 .andExpect(status().isServiceUnavailable())
                 .andExpect(jsonPath("$.error").exists());
     }
+
+    // =====================================================================
+    // Error interno (RuntimeException) → 500 en todos los endpoints
+    // =====================================================================
+
+    @Test
+    void obtenerEstadisticas_errorInterno_debeRetornar500() throws Exception {
+        when(analyticsService.obtenerEstadisticas())
+            .thenThrow(new RuntimeException("Error inesperado al calcular estadísticas"));
+
+        mockMvc.perform(get("/api/analytics/estadisticas"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(analyticsService).obtenerEstadisticas();
+    }
+
+    @Test
+    void historialUsuario_errorInterno_debeRetornar500() throws Exception {
+        when(analyticsService.historialUsuario("error500"))
+            .thenThrow(new RuntimeException("Error inesperado al consultar historial"));
+
+        mockMvc.perform(get("/api/analytics/historial/error500"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(analyticsService).historialUsuario("error500");
+    }
 }

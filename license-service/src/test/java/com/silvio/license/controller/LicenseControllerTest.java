@@ -5,7 +5,9 @@ import com.silvio.license.dto.LicenseRequestDTO;
 import com.silvio.license.dto.LicenseResponseDTO;
 import com.silvio.license.exception.CopiaNoDisponibleException;
 import com.silvio.license.exception.DevolucionInvalidaException;
+import com.silvio.license.exception.ErrorDevolucionException;
 import com.silvio.license.exception.LicenciaNotFoundException;
+import com.silvio.license.exception.ConflictosConcurrenciaException;
 import com.silvio.license.service.LicenseService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -250,4 +252,75 @@ class LicenseControllerTest {
 
         verify(licenseService).devolver(1L);
      }
+
+    // ─── PUT /api/licenses/{libroId}/devolver — más casos de error ───────────
+
+    @Test
+    void devolver_devuelve_404_cuando_licencia_no_existe() throws Exception {
+        // LicenciaNotFoundException → GlobalExceptionHandler devuelve 404
+        when(licenseService.devolver(999L))
+            .thenThrow(new LicenciaNotFoundException(999L));
+
+        mockMvc.perform(put("/api/licenses/999/devolver"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(licenseService).devolver(999L);
+    }
+
+    @Test
+    void devolver_devuelve_500_cuando_errorDevolucion() throws Exception {
+        // ErrorDevolucionException → GlobalExceptionHandler devuelve 500
+        when(licenseService.devolver(1L))
+            .thenThrow(new ErrorDevolucionException());
+
+        mockMvc.perform(put("/api/licenses/1/devolver"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(licenseService).devolver(1L);
+    }
+
+    // ─── PUT /api/licenses/{libroId}/prestar — más casos de error ───────────
+
+    @Test
+    void prestar_devuelve_404_cuando_licencia_no_existe() throws Exception {
+        // LicenciaNotFoundException → GlobalExceptionHandler devuelve 404
+        when(licenseService.prestar(999L))
+            .thenThrow(new LicenciaNotFoundException(999L));
+
+        mockMvc.perform(put("/api/licenses/999/prestar"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(licenseService).prestar(999L);
+    }
+
+    @Test
+    void prestar_devuelve_409_cuando_concurrencia() throws Exception {
+        // ConflictosConcurrenciaException → GlobalExceptionHandler devuelve 409
+        when(licenseService.prestar(1L))
+            .thenThrow(new ConflictosConcurrenciaException());
+
+        mockMvc.perform(put("/api/licenses/1/prestar"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(licenseService).prestar(1L);
+    }
+
+    // ─── GET /api/licenses — error interno ──────────────────────────────────
+
+    @Test
+    void obtenerTodas_devuelve_500_cuando_errorInterno() throws Exception {
+        // RuntimeException → GlobalExceptionHandler devuelve 500
+        when(licenseService.obtenerTodas())
+            .thenThrow(new RuntimeException("Error inesperado de base de datos"));
+
+        mockMvc.perform(get("/api/licenses"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(licenseService).obtenerTodas();
+    }
 }

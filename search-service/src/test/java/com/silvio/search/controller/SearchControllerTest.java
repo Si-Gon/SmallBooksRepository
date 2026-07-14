@@ -147,4 +147,44 @@ class SearchControllerTest {
                 .andExpect(status().isServiceUnavailable())
                 .andExpect(jsonPath("$.error").exists());
     }
+
+    // =====================================================================
+    // Error interno (RuntimeException) → 500 en todos los endpoints
+    // =====================================================================
+
+    @Test
+    void obtenerTodos_errorInterno_debeRetornar500() throws Exception {
+        when(searchService.obtenerTodos())
+            .thenThrow(new RuntimeException("Error inesperado en la base de datos"));
+
+        mockMvc.perform(get("/api/search"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(searchService).obtenerTodos();
+    }
+
+    @Test
+    void disponibles_errorInterno_debeRetornar500() throws Exception {
+        when(searchService.buscarDisponibles())
+            .thenThrow(new RuntimeException("Error inesperado en la base de datos"));
+
+        mockMvc.perform(get("/api/search/disponibles"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(searchService).buscarDisponibles();
+    }
+
+    @Test
+    void buscar_errorInterno_debeRetornar500() throws Exception {
+        when(searchService.buscar(any(), any(), any()))
+            .thenThrow(new RuntimeException("Error inesperado en la base de datos"));
+
+        mockMvc.perform(get("/api/search/buscar").param("titulo", "java"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(searchService).buscar("java", null, null);
+    }
 }

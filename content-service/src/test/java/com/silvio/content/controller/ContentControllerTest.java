@@ -85,11 +85,25 @@ class ContentControllerTest {
     void descargarArchivo_archivoNoEncontrado_debeRetornar404() throws Exception {
         // ArchivoNoEncontradoException → GlobalExceptionHandler devuelve 404
         when(contentService.obtenerArchivo(3L, "Bearer token"))
-            .thenThrow(new ArchivoNoEncontradoException(3L));
+                .thenThrow(new ArchivoNoEncontradoException(3L));
 
         mockMvc.perform(get("/api/content/3")
                         .header("Authorization", "Bearer token"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").exists());
+    }
+
+    @Test
+    void descargarArchivo_errorInterno_debeRetornar500() throws Exception {
+        // RuntimeException → GlobalExceptionHandler devuelve 500
+        when(contentService.obtenerArchivo(4L, "Bearer token"))
+                .thenThrow(new RuntimeException("Error inesperado de E/S al leer el archivo"));
+
+        mockMvc.perform(get("/api/content/4")
+                        .header("Authorization", "Bearer token"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(contentService).obtenerArchivo(4L, "Bearer token");
     }
 }

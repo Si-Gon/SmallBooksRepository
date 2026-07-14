@@ -32,6 +32,7 @@ public class CatalogController {
                description = "Devuelve la lista completa de libros registrados en el catálogo")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista obtenida exitosamente"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
         @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping
@@ -48,7 +49,9 @@ public class CatalogController {
     @Operation(summary = "Listar libros disponibles",
                description = "Devuelve solo los libros marcados como disponibles para préstamo")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Lista obtenida exitosamente")
+        @ApiResponse(responseCode = "200", description = "Lista obtenida exitosamente"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/disponibles")
     public ResponseEntity<List<LibroResponseDTO>> obtenerDisponibles() {
@@ -65,6 +68,8 @@ public class CatalogController {
                description = "Devuelve un libro específico según su identificador")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Libro encontrado"),
+        @ApiResponse(responseCode = "400", description = "ID del libro inválido"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
         @ApiResponse(responseCode = "404", description = "Libro no encontrado")
     })
     @GetMapping("/{id}")
@@ -85,7 +90,8 @@ public class CatalogController {
                description = "Búsqueda por título, autor o género. Los parámetros son opcionales y combinables")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Búsqueda realizada exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Parámetros de búsqueda inválidos")
+        @ApiResponse(responseCode = "400", description = "Parámetros de búsqueda inválidos"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente")
     })
     @GetMapping("/buscar")
     public ResponseEntity<List<LibroResponseDTO>> buscar(
@@ -102,7 +108,9 @@ public class CatalogController {
                description = "Registra un nuevo libro en el catálogo")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Libro creado exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Datos del libro inválidos o incompletos")
+        @ApiResponse(responseCode = "400", description = "Datos del libro inválidos o incompletos"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "409", description = "El ISBN del libro ya existe")
     })
     @PostMapping
     public ResponseEntity<LibroResponseDTO> agregar(
@@ -120,7 +128,8 @@ public class CatalogController {
                description = "Actualiza todos los campos de un libro existente")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Libro actualizado exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+        @ApiResponse(responseCode = "400", description = "Datos inválidos o ID incorrecto"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
         @ApiResponse(responseCode = "404", description = "Libro no encontrado")
     })
     @PutMapping("/{id}")
@@ -141,6 +150,8 @@ public class CatalogController {
                              "Usado internamente por E-Lending via Feign al crear/devolver préstamos")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Disponibilidad actualizada"),
+        @ApiResponse(responseCode = "400", description = "Parámetro 'disponible' inválido o ausente"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
         @ApiResponse(responseCode = "404", description = "Libro no encontrado")
     })
     @PatchMapping("/{id}/disponibilidad")
@@ -156,6 +167,7 @@ public class CatalogController {
                description = "Elimina permanentemente un libro del catálogo")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Libro eliminado exitosamente"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
         @ApiResponse(responseCode = "404", description = "Libro no encontrado")
     })
     @DeleteMapping("/{id}")

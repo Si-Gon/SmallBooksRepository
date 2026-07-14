@@ -26,10 +26,12 @@ public class AnalyticsController {
 
     @Operation(summary = "Obtener estadísticas globales",
                description = "Devuelve métricas generales del sistema: total de préstamos, " +
-                             "libros más prestados, usuarios activos y estadísticas por plan")
+                              "libros más prestados, usuarios activos y estadísticas por plan")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Estadísticas obtenidas exitosamente"),
-        @ApiResponse(responseCode = "500", description = "Error al calcular estadísticas")
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "503", description = "Error de comunicación con servicios externos"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/estadisticas")
     public ResponseEntity<EstadisticasDTO> obtenerEstadisticas() {
@@ -43,10 +45,13 @@ public class AnalyticsController {
 
     @Operation(summary = "Historial de préstamos por usuario",
                description = "Devuelve el historial completo de préstamos de un usuario específico " +
-                             "para análisis de comportamiento de lectura")
+                              "para análisis de comportamiento de lectura")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Historial obtenido exitosamente"),
-        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado en el sistema de préstamos"),
+        @ApiResponse(responseCode = "503", description = "Error de comunicación con servicios externos"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/historial/{usuarioId}")
     public ResponseEntity<List<PrestamoAnalyticsDTO>> historialUsuario(

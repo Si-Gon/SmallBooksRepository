@@ -266,4 +266,58 @@ class NotificacionControllerTest {
 
         verify(notificacionService).marcarTodasLeidas("usuario1");
     }
+
+    // ─── Error interno (RuntimeException) → 500 ─────────────────────────────
+
+    @Test
+    void crear_errorInterno_debeRetornar500() throws Exception {
+        // Given
+        NotificacionRequestDTO request = notificacionRequest(
+                "usuario1", TipoNotificacion.PRESTAMO_CREADO);
+        when(notificacionService.crear(any(NotificacionRequestDTO.class)))
+                .thenThrow(new RuntimeException("Error inesperado de base de datos"));
+
+        // When & Then
+        mockMvc.perform(post("/api/notifications")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error").exists());
+    }
+
+    @Test
+    void obtenerPorUsuario_errorInterno_debeRetornar500() throws Exception {
+        // Given
+        when(notificacionService.obtenerPorUsuario("error500"))
+                .thenThrow(new RuntimeException("Error inesperado de base de datos"));
+
+        // When & Then
+        mockMvc.perform(get("/api/notifications/usuario/error500"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error").exists());
+    }
+
+    @Test
+    void obtenerNoLeidas_errorInterno_debeRetornar500() throws Exception {
+        // Given
+        when(notificacionService.obtenerNoLeidas("error500"))
+                .thenThrow(new RuntimeException("Error inesperado de base de datos"));
+
+        // When & Then
+        mockMvc.perform(get("/api/notifications/usuario/error500/no-leidas"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error").exists());
+    }
+
+    @Test
+    void marcarLeida_errorInterno_debeRetornar500() throws Exception {
+        // Given
+        when(notificacionService.marcarLeida(1L))
+                .thenThrow(new RuntimeException("Error inesperado de base de datos"));
+
+        // When & Then
+        mockMvc.perform(patch("/api/notifications/1/leer"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error").exists());
+    }
 }  

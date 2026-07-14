@@ -26,9 +26,11 @@ public class ContentController {
                              "El usuario se identifica desde el token JWT")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Archivo descargado exitosamente"),
+        @ApiResponse(responseCode = "400", description = "ID del libro inválido"),
         @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
         @ApiResponse(responseCode = "403", description = "El usuario no tiene préstamo activo para este libro"),
-        @ApiResponse(responseCode = "404", description = "Archivo no encontrado para el libro indicado")
+        @ApiResponse(responseCode = "404", description = "Archivo no encontrado para el libro indicado"),
+        @ApiResponse(responseCode = "500", description = "Error al obtener el archivo o verificar el préstamo")
     })
     @GetMapping("/{libroId}")
     public ResponseEntity<byte[]> descargarArchivo(

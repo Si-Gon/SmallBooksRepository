@@ -27,7 +27,9 @@ public class SearchController {
                description = "Devuelve el catálogo completo de libros disponibles en la plataforma")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista completa obtenida exitosamente"),
-        @ApiResponse(responseCode = "500", description = "Error al consultar el catálogo")
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "503", description = "Error de comunicación con el catálogo"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping
     public ResponseEntity<List<SearchResultDTO>> obtenerTodos() {
@@ -44,7 +46,10 @@ public class SearchController {
     @Operation(summary = "Listar libros disponibles",
                description = "Devuelve solo los libros disponibles para préstamo en este momento")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Lista de disponibles obtenida exitosamente")
+        @ApiResponse(responseCode = "200", description = "Lista de disponibles obtenida exitosamente"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "503", description = "Error de comunicación con el catálogo"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/disponibles")
     public ResponseEntity<List<SearchResultDTO>> disponibles() {
@@ -60,11 +65,14 @@ public class SearchController {
 
     @Operation(summary = "Buscar libros",
                description = "Búsqueda combinable por título, autor o género. " +
-                             "Todos los parámetros son opcionales. " +
-                             "Ejemplo: /api/search/buscar?titulo=harry&genero=fantasia")
+                              "Todos los parámetros son opcionales. " +
+                              "Ejemplo: /api/search/buscar?titulo=harry&genero=fantasia")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Resultados de búsqueda obtenidos"),
-        @ApiResponse(responseCode = "400", description = "Parámetros de búsqueda inválidos")
+        @ApiResponse(responseCode = "400", description = "Parámetros de búsqueda inválidos"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "503", description = "Error de comunicación con el catálogo"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/buscar")
     public ResponseEntity<List<SearchResultDTO>> buscar(
