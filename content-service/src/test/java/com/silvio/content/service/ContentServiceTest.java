@@ -4,8 +4,6 @@ import com.silvio.content.client.IngestionClient;
 import com.silvio.content.client.LendingClient;
 import com.silvio.content.dto.PrestamoDTO;
 import com.silvio.content.exception.AccesoDenegadoException;
-import com.silvio.content.exception.ArchivoNoEncontradoException;
-import com.silvio.content.exception.VerificacionPrestamoException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -127,9 +125,10 @@ class ContentServiceTest {
         when(lendingClient.obtenerPrestamosActivos("Bearer token"))
             .thenThrow(new RuntimeException("Connection refused"));
 
+        // El servicio ya no envuelve excepciones — se propagan directamente
         assertThatThrownBy(() -> contentService.obtenerArchivo(1L, "Bearer token"))
-            .isInstanceOf(VerificacionPrestamoException.class)
-            .hasMessageContaining("No se pudo verificar el préstamo");
+            .isInstanceOf(RuntimeException.class)
+            .hasMessageContaining("Connection refused");
 
         verify(ingestionClient, never()).obtenerBytes(any());
     }
@@ -145,8 +144,9 @@ class ContentServiceTest {
         when(ingestionClient.obtenerBytes(1L))
             .thenThrow(new RuntimeException("404 Not Found"));
 
+        // El servicio ya no envuelve excepciones — se propagan directamente
         assertThatThrownBy(() -> contentService.obtenerArchivo(1L, "Bearer token"))
-            .isInstanceOf(ArchivoNoEncontradoException.class)
-            .hasMessageContaining("No se pudo obtener el archivo");
+            .isInstanceOf(RuntimeException.class)
+            .hasMessageContaining("404 Not Found");
     }
 }

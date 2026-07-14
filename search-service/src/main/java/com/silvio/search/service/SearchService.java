@@ -3,7 +3,6 @@ package com.silvio.search.service;
 import com.silvio.search.client.CatalogClient;
 import com.silvio.search.dto.LibroCatalogDTO;
 import com.silvio.search.dto.SearchResultDTO;
-import com.silvio.search.exception.ErrorConsultaCatalogoException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,40 +22,25 @@ public class SearchService {
     @Observed(name = "search.buscar")
     public List<SearchResultDTO> buscar(String titulo, String autor, String genero) {
         log.info("Búsqueda — titulo: {}, autor: {}, genero: {}", titulo, autor, genero);
-        try {
-            List<LibroCatalogDTO> resultados = catalogClient.buscar(titulo, autor, genero);
-            log.info("Resultados encontrados: {}", resultados.size());
-            return resultados.stream().map(this::mapearADto).collect(Collectors.toList());
-        } catch (Exception e) {
-            log.error("Error al consultar el catálogo: {}", e.getMessage());
-            throw new ErrorConsultaCatalogoException("consultar el catálogo", e.getMessage());
-        }
+        List<LibroCatalogDTO> resultados = catalogClient.buscar(titulo, autor, genero);
+        log.info("Resultados encontrados: {}", resultados.size());
+        return resultados.stream().map(this::mapearADto).collect(Collectors.toList());
     }
 
     @Observed(name = "search.buscarDisponibles")
     public List<SearchResultDTO> buscarDisponibles() {
         log.info("Consultando libros disponibles via Catalog Service");
-        try {
-            List<LibroCatalogDTO> resultados = catalogClient.obtenerDisponibles();
-            log.info("Libros disponibles encontrados: {}", resultados.size());
-            return resultados.stream().map(this::mapearADto).collect(Collectors.toList());
-        } catch (Exception e) {
-            log.error("Error al consultar disponibles: {}", e.getMessage());
-            throw new ErrorConsultaCatalogoException("consultar disponibles", e.getMessage());
-        }
+        List<LibroCatalogDTO> resultados = catalogClient.obtenerDisponibles();
+        log.info("Libros disponibles encontrados: {}", resultados.size());
+        return resultados.stream().map(this::mapearADto).collect(Collectors.toList());
     }
 
     @Observed(name = "search.obtenerTodos")
     public List<SearchResultDTO> obtenerTodos() {
         log.info("Consultando catálogo completo via Catalog Service");
-        try {
-            List<LibroCatalogDTO> resultados = catalogClient.obtenerTodos();
-            log.info("Total libros en catálogo: {}", resultados.size());
-            return resultados.stream().map(this::mapearADto).collect(Collectors.toList());
-        } catch (Exception e) {
-            log.error("Error al obtener catálogo: {}", e.getMessage());
-            throw new ErrorConsultaCatalogoException("obtener catálogo", e.getMessage());
-        }
+        List<LibroCatalogDTO> resultados = catalogClient.obtenerTodos();
+        log.info("Total libros en catálogo: {}", resultados.size());
+        return resultados.stream().map(this::mapearADto).collect(Collectors.toList());
     }
 
     private SearchResultDTO mapearADto(LibroCatalogDTO libro) {

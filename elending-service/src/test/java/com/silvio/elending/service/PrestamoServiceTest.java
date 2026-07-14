@@ -12,11 +12,9 @@ import com.silvio.elending.model.Prestamo;
 import com.silvio.elending.model.Prestamo.EstadoPrestamo;
 import com.silvio.elending.exception.CopiaNoDisponibleException;
 import com.silvio.elending.exception.ErrorCreacionPrestamoException;
-import com.silvio.elending.exception.ErrorRegistroPrestamoException;
 import com.silvio.elending.exception.LimitePrestamosExcedidoException;
 import com.silvio.elending.exception.PrestamoDuplicadoException;
 import com.silvio.elending.exception.UltimaCopiaNoDisponibleException;
-import com.silvio.elending.exception.VerificacionDisponibilidadException;
 import com.silvio.elending.repository.PrestamoRepository;
 import feign.FeignException;
 import org.junit.jupiter.api.BeforeEach;
@@ -602,11 +600,11 @@ class PrestamoServiceTest {
         when(licenseClient.obtenerLicencia(12L))
                 .thenThrow(new RuntimeException("License service no disponible"));
 
-        // When & Then
-        VerificacionDisponibilidadException ex = assertThrows(VerificacionDisponibilidadException.class,
+        // When & Then — la excepción se propaga directamente sin envolver
+        RuntimeException ex = assertThrows(RuntimeException.class,
                 () -> prestamoService.crearPrestamo(request(12L), usuarioId));
 
-        assertTrue(ex.getMessage().contains("No se pudo verificar"));
+        assertTrue(ex.getMessage().contains("License service no disponible"));
         verify(licenseClient, never()).prestar(anyLong());
         verify(prestamoRepository, never()).save(any(Prestamo.class));
     }
@@ -624,11 +622,11 @@ class PrestamoServiceTest {
         when(licenseClient.prestar(13L))
                 .thenThrow(new RuntimeException("License service error al prestar"));
 
-        // When & Then
-        ErrorRegistroPrestamoException ex = assertThrows(ErrorRegistroPrestamoException.class,
+        // When & Then — la excepción se propaga directamente sin envolver
+        RuntimeException ex = assertThrows(RuntimeException.class,
                 () -> prestamoService.crearPrestamo(request(13L), usuarioId));
 
-        assertTrue(ex.getMessage().contains("License Service"));
+        assertTrue(ex.getMessage().contains("License service error al prestar"));
         verify(prestamoRepository, never()).save(any(Prestamo.class));
     }
 

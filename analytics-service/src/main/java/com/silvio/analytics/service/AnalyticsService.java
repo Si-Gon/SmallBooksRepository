@@ -3,8 +3,6 @@ package com.silvio.analytics.service;
 import com.silvio.analytics.client.LendingClient;
 import com.silvio.analytics.dto.EstadisticasDTO;
 import com.silvio.analytics.dto.PrestamoAnalyticsDTO;
-import com.silvio.analytics.exception.ErrorDatosPrestamosException;
-import com.silvio.analytics.exception.ErrorHistorialUsuarioException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,14 +23,8 @@ public class AnalyticsService {
     @Observed(name = "analytics.obtenerEstadisticas")
     public EstadisticasDTO obtenerEstadisticas() {
         log.info("Calculando estadísticas globales del sistema");
-        List<PrestamoAnalyticsDTO> todos;
-        try {
-            todos = lendingClient.obtenerTodos();
-            log.info("Total préstamos obtenidos para análisis: {}", todos.size());
-        } catch (Exception e) {
-            log.error("Error al obtener datos de préstamos: {}", e.getMessage());
-            throw new ErrorDatosPrestamosException(e.getMessage());
-        }
+        List<PrestamoAnalyticsDTO> todos = lendingClient.obtenerTodos();
+        log.info("Total préstamos obtenidos para análisis: {}", todos.size());
 
         EstadisticasDTO stats = new EstadisticasDTO();
         stats.setTotalPrestamos((long) todos.size());
@@ -75,13 +67,8 @@ public class AnalyticsService {
     @Observed(name = "analytics.historialUsuario")
     public List<PrestamoAnalyticsDTO> historialUsuario(String usuarioId) {
         log.info("Consultando historial del usuario: {}", usuarioId);
-        try {
-            List<PrestamoAnalyticsDTO> historial = lendingClient.obtenerHistorial(usuarioId);
-            log.info("Historial del usuario {}: {} préstamos", usuarioId, historial.size());
-            return historial;
-        } catch (Exception e) {
-            log.error("Error al obtener historial del usuario {}: {}", usuarioId, e.getMessage());
-            throw new ErrorHistorialUsuarioException(usuarioId);
-        }
+        List<PrestamoAnalyticsDTO> historial = lendingClient.obtenerHistorial(usuarioId);
+        log.info("Historial del usuario {}: {} préstamos", usuarioId, historial.size());
+        return historial;
     }
 }

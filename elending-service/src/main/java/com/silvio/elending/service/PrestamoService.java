@@ -13,11 +13,9 @@ import com.silvio.elending.model.Prestamo.EstadoPrestamo;
 import com.silvio.elending.repository.PrestamoRepository;
 import com.silvio.elending.exception.CopiaNoDisponibleException;
 import com.silvio.elending.exception.ErrorCreacionPrestamoException;
-import com.silvio.elending.exception.ErrorRegistroPrestamoException;
 import com.silvio.elending.exception.LimitePrestamosExcedidoException;
 import com.silvio.elending.exception.PrestamoDuplicadoException;
 import com.silvio.elending.exception.UltimaCopiaNoDisponibleException;
-import com.silvio.elending.exception.VerificacionDisponibilidadException;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -131,16 +129,9 @@ public class PrestamoService {
         }
 
         // Paso 4: Verificar copias disponibles
-        LicenciaDTO licencia;
-        try {
-            licencia = licenseClient.obtenerLicencia(request.getLibroId());
-            log.info("Licencia libro {}: {}/{} copias disponibles",
-                    request.getLibroId(), licencia.getCopiasDisponibles(), licencia.getTotalCopias());
-        } catch (Exception e) {
-            log.error("Error al consultar licencia del libro {}: {}", 
-                    request.getLibroId(), e.getMessage());
-            throw new VerificacionDisponibilidadException(request.getLibroId());
-        }
+        LicenciaDTO licencia = licenseClient.obtenerLicencia(request.getLibroId());
+        log.info("Licencia libro {}: {}/{} copias disponibles",
+                request.getLibroId(), licencia.getCopiasDisponibles(), licencia.getTotalCopias());
 
         if (licencia.getCopiasDisponibles() == null || licencia.getCopiasDisponibles() <= 0) {
             log.warn("No hay copias disponibles del libro {}", request.getLibroId());
@@ -157,10 +148,6 @@ public class PrestamoService {
         } catch (FeignException.Conflict e) {
             // No se captura aquí — el wrapper (crearPrestamo) lo reintenta
             throw e;
-        } catch (Exception e) {
-            log.error("Error al descontar copia en License Service — libro: {}: {}",
-                    request.getLibroId(), e.getMessage());
-            throw new ErrorRegistroPrestamoException();
         }
 
         // Paso 6: Crear préstamo

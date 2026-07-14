@@ -2,7 +2,6 @@ package com.silvio.analytics.config;
 
 import com.silvio.analytics.client.LendingClient;
 import com.silvio.analytics.dto.PrestamoAnalyticsDTO;
-import com.silvio.analytics.exception.ErrorHistorialUsuarioException;
 import com.silvio.analytics.service.AnalyticsService;
 import io.micrometer.tracing.Tracer;
 import org.junit.jupiter.api.Test;
@@ -97,8 +96,9 @@ class FeignTracingPropagationTest {
         when(lendingClient.obtenerHistorial("user-error"))
                 .thenThrow(new RuntimeException("Error en elending-service"));
 
-        ErrorHistorialUsuarioException ex = assertThrows(ErrorHistorialUsuarioException.class,
+        // El servicio ya no envuelve excepciones — se propagan directamente
+        RuntimeException ex = assertThrows(RuntimeException.class,
                 () -> analyticsService.historialUsuario("user-error"));
-        assertTrue(ex.getMessage().contains("Error al obtener historial"));
+        assertTrue(ex.getMessage().contains("Error en elending-service"));
     }
 }

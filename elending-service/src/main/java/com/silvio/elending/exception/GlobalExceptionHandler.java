@@ -1,5 +1,6 @@
 package com.silvio.elending.exception;
 
+import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -21,6 +22,21 @@ public class GlobalExceptionHandler {
                 errores.put(error.getField(), error.getDefaultMessage())
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errores);
+    }
+
+    // Error de comunicación con servicio externo (Feign)
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<Map<String, String>> manejarFeignException(
+            FeignException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Error de comunicación con servicio externo");
+        error.put("detalle", ex.getMessage());
+        // ex.status() retorna -1 si no hay respuesta HTTP (timeout, conexión rechazada)
+        int status = ex.status();
+        if (status <= 0) {
+            status = HttpStatus.SERVICE_UNAVAILABLE.value(); // fallback 503
+        }
+        return ResponseEntity.status(status).body(error);
     }
 
     // Optimistic locking en Prestamo — dos requests concurrentes sobre el mismo préstamo

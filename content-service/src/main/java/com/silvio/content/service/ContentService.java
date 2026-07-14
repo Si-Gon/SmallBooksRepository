@@ -8,8 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.silvio.content.exception.AccesoDenegadoException;
-import com.silvio.content.exception.ArchivoNoEncontradoException;
-import com.silvio.content.exception.VerificacionPrestamoException;
 import io.micrometer.observation.annotation.Observed;
 
 import java.util.List;
@@ -27,14 +25,8 @@ public class ContentService {
         log.info("Solicitud de acceso al archivo del libro id: {}", libroId);
 
         // Paso 1: Verificar préstamo activo
-        List<PrestamoDTO> prestamosActivos;
-        try {
-            prestamosActivos = lendingClient.obtenerPrestamosActivos(authHeader);
-            log.info("Préstamos activos encontrados: {}", prestamosActivos.size());
-        } catch (Exception e) {
-            log.error("Error al verificar préstamos — libro: {}: {}", libroId, e.getMessage());
-            throw new VerificacionPrestamoException(e.getMessage());
-        }
+        List<PrestamoDTO> prestamosActivos = lendingClient.obtenerPrestamosActivos(authHeader);
+        log.info("Préstamos activos encontrados: {}", prestamosActivos.size());
 
         // Paso 2: Verificar que tiene el libro
         boolean tienePrestamo = prestamosActivos.stream()
@@ -49,14 +41,9 @@ public class ContentService {
         log.info("Préstamo verificado — entregando archivo del libro id: {}", libroId);
 
         // Paso 3: Obtener el archivo
-        try {
-            byte[] bytes = ingestionClient.obtenerBytes(libroId);
-            log.info("Archivo entregado exitosamente — libro: {}, tamaño: {} bytes",
-                    libroId, bytes.length);
-            return bytes;
-        } catch (Exception e) {
-            log.error("Error al obtener archivo del libro {}: {}", libroId, e.getMessage());
-            throw new ArchivoNoEncontradoException(libroId);
-        }
+        byte[] bytes = ingestionClient.obtenerBytes(libroId);
+        log.info("Archivo entregado exitosamente — libro: {}, tamaño: {} bytes",
+                libroId, bytes.length);
+        return bytes;
     }
 }

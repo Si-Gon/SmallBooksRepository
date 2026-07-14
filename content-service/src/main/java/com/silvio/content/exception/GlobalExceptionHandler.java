@@ -1,5 +1,6 @@
 package com.silvio.content.exception;
 
+import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,6 +34,21 @@ public class GlobalExceptionHandler {
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error); // 404
+    }
+
+    // Error de comunicación con servicio externo (Feign)
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<Map<String, String>> manejarFeignException(
+            FeignException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Error de comunicación con servicio externo");
+        error.put("detalle", ex.getMessage());
+        // ex.status() retorna -1 si no hay respuesta HTTP (timeout, conexión rechazada)
+        int status = ex.status();
+        if (status <= 0) {
+            status = HttpStatus.SERVICE_UNAVAILABLE.value(); // fallback 503
+        }
+        return ResponseEntity.status(status).body(error);
     }
 
     @ExceptionHandler(RuntimeException.class)

@@ -3,8 +3,6 @@ package com.silvio.analytics.service;
 import com.silvio.analytics.client.LendingClient;
 import com.silvio.analytics.dto.EstadisticasDTO;
 import com.silvio.analytics.dto.PrestamoAnalyticsDTO;
-import com.silvio.analytics.exception.ErrorDatosPrestamosException;
-import com.silvio.analytics.exception.ErrorHistorialUsuarioException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -103,14 +101,14 @@ class AnalyticsServiceTest {
     }
 
     @Test
-    void obtenerEstadisticas_errorEnFeign_lanzaErrorDatosPrestamosException() {
-        // Si el FeignClient falla (elending-service caído), el servicio
-        // debe capturar la excepción y relanzar ErrorDatosPrestamosException
+    void obtenerEstadisticas_errorEnFeign_lanzaRuntimeException() {
+        // Si el FeignClient falla (elending-service caído), la excepción se propaga directamente
         when(lendingClient.obtenerTodos()).thenThrow(new RuntimeException("Connection refused"));
 
+        // El servicio ya no envuelve excepciones — se propagan directamente
         assertThatThrownBy(() -> analyticsService.obtenerEstadisticas())
-            .isInstanceOf(ErrorDatosPrestamosException.class)
-            .hasMessageContaining("Error al obtener datos de préstamos");
+            .isInstanceOf(RuntimeException.class)
+            .hasMessageContaining("Connection refused");
     }
 
     @Test
@@ -163,12 +161,13 @@ class AnalyticsServiceTest {
     }
 
     @Test
-    void historialUsuario_errorEnFeign_lanzaErrorHistorialUsuarioException() {
+    void historialUsuario_errorEnFeign_lanzaRuntimeException() {
         when(lendingClient.obtenerHistorial("silvio"))
             .thenThrow(new RuntimeException("Feign error"));
 
+        // El servicio ya no envuelve excepciones — se propagan directamente
         assertThatThrownBy(() -> analyticsService.historialUsuario("silvio"))
-            .isInstanceOf(ErrorHistorialUsuarioException.class)
-            .hasMessageContaining("Error al obtener historial del usuario");
+            .isInstanceOf(RuntimeException.class)
+            .hasMessageContaining("Feign error");
     }
 }
