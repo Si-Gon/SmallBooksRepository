@@ -2,12 +2,16 @@ package com.silvio.notification.config;
 
 import io.micrometer.observation.ObservationRegistry;
 import io.micrometer.observation.aop.ObservedAspect;
+import io.micrometer.tracing.Tracer;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import zipkin2.reporter.BytesMessageSender;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -23,6 +27,15 @@ class TracingConfigTest {
     @Autowired(required = false)
     private ObservationRegistry observationRegistry;
 
+    @Autowired(required = false)
+    private Tracer tracer;
+
+    @Autowired(required = false)
+    private BytesMessageSender zipkinSender;
+
+    @Autowired
+    private Environment environment;
+
     @Test
     void observedAspect_beanExiste() {
         assertNotNull(observedAspect);
@@ -37,5 +50,23 @@ class TracingConfigTest {
     void observedAspect_usaObservationRegistry() {
         ObservedAspect aspecto = new ObservedAspect(observationRegistry);
         assertNotNull(aspecto);
+    }
+
+    @Test
+    void tracer_beanExiste() {
+        assertNotNull(tracer);
+    }
+
+    @Test
+    void zipkinSender_beanExiste() {
+        assertNotNull(zipkinSender);
+    }
+
+    @Test
+    void zipkinEndpoint_configurado() {
+        String endpoint = environment.getProperty("management.zipkin.tracing.endpoint");
+        assertNotNull(endpoint);
+        assertFalse(endpoint.isBlank());
+        assertTrue(endpoint.contains("zipkin"));
     }
 }

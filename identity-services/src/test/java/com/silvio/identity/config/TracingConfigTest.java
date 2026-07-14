@@ -2,10 +2,13 @@ package com.silvio.identity.config;
 
 import io.micrometer.observation.ObservationRegistry;
 import io.micrometer.observation.aop.ObservedAspect;
+import io.micrometer.tracing.Tracer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
+import zipkin2.reporter.BytesMessageSender;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,6 +25,15 @@ class TracingConfigTest {
 
     @Autowired(required = false)
     private ObservationRegistry observationRegistry;
+
+    @Autowired(required = false)
+    private Tracer tracer;
+
+    @Autowired(required = false)
+    private BytesMessageSender zipkinSender;
+
+    @Autowired
+    private Environment environment;
 
     @Test
     void observedAspect_beanExiste() {
@@ -41,5 +53,30 @@ class TracingConfigTest {
         // Simula la creación del bean manualmente para validar el constructor
         ObservedAspect aspecto = new ObservedAspect(observationRegistry);
         assertNotNull(aspecto);
+    }
+
+    @Test
+    void tracer_beanExiste() {
+        assertNotNull(tracer,
+                "Tracer (Brave) debe estar disponible para generar traceId/spanId");
+    }
+
+    @Test
+    void zipkinSender_beanExiste() {
+        assertNotNull(zipkinSender,
+                "Sender de Zipkin debe estar registrado para exportar trazas");
+    }
+
+    @Test
+    void zipkinEndpoint_configurado() {
+        // Verifica que el endpoint de Zipkin esté configurado en el entorno
+        // para que los spans se exporten correctamente al servidor Zipkin
+        String endpoint = environment.getProperty("management.zipkin.tracing.endpoint");
+        assertNotNull(endpoint,
+                "management.zipkin.tracing.endpoint debe estar configurado");
+        assertFalse(endpoint.isBlank(),
+                "El endpoint de Zipkin no debe estar vacío");
+        assertTrue(endpoint.contains("zipkin"),
+                "El endpoint debe contener 'zipkin' (servicio Docker): " + endpoint);
     }
 }
