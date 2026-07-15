@@ -142,13 +142,8 @@ public class PrestamoService {
         // El License Service usa @Version + reintentos (optimistic locking).
         // Si tras 3 reintentos persiste el conflicto, responde 409 Conflict,
         // que el wrapper captura y reintenta.
-        try {
-            licenseClient.prestar(request.getLibroId());
-            log.info("Copia descontada exitosamente — libro: {}", request.getLibroId());
-        } catch (FeignException.Conflict e) {
-            // No se captura aquí — el wrapper (crearPrestamo) lo reintenta
-            throw e;
-        }
+        licenseClient.prestar(request.getLibroId());
+        log.info("Copia descontada exitosamente — libro: {}", request.getLibroId());
 
         // Paso 6: Crear préstamo
         LocalDateTime ahora = LocalDateTime.now();

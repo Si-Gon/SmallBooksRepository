@@ -75,15 +75,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error); // 409
     }
 
-    // Error al verificar disponibilidad con License Service
-    @ExceptionHandler(VerificacionDisponibilidadException.class)
-    public ResponseEntity<Map<String, String>> manejarVerificacionDisponibilidad(
-            VerificacionDisponibilidadException ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(error); // 503
-    }
-
     // Sin copias disponibles del libro
     @ExceptionHandler(CopiaNoDisponibleException.class)
     public ResponseEntity<Map<String, String>> manejarCopiaNoDisponible(
@@ -91,15 +82,6 @@ public class GlobalExceptionHandler {
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error); // 422
-    }
-
-    // Error al registrar préstamo en License Service
-    @ExceptionHandler(ErrorRegistroPrestamoException.class)
-    public ResponseEntity<Map<String, String>> manejarErrorRegistro(
-            ErrorRegistroPrestamoException ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error); // 500
     }
 
     // Error al crear préstamo con compensación

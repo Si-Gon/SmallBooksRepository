@@ -79,15 +79,6 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void verificacionDisponibilidad_debeRetornar503() {
-        var response = handler.manejarVerificacionDisponibilidad(
-                new VerificacionDisponibilidadException(1L));
-
-        assertEquals(503, response.getStatusCode().value());
-        assertTrue(response.getBody().get("error").contains("No se pudo verificar"));
-    }
-
-    @Test
     void ultimaCopiaNoDisponible_debeRetornar409() {
         var response = handler.manejarUltimaCopia(
                 new UltimaCopiaNoDisponibleException());
@@ -102,14 +93,6 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(401, response.getStatusCode().value());
         assertTrue(response.getBody().get("error").contains("No se pudo extraer"));
-    }
-
-    @Test
-    void errorRegistroPrestamo_debeRetornar500() {
-        var response = handler.manejarErrorRegistro(
-                new ErrorRegistroPrestamoException());
-
-        assertEquals(500, response.getStatusCode().value());
     }
 
     @Test
