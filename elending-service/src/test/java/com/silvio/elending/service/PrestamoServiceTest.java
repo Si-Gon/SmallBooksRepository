@@ -20,6 +20,7 @@ import feign.FeignException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -36,6 +37,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -100,6 +102,10 @@ class PrestamoServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        // Configurar auto-inyeccion: el proxy real usaria @Autowired @Lazy,
+        // pero en tests unitarios Mockito no procesa anotaciones Spring.
+        // Asignamos this mismo para evitar NPE y mantener la cobertura del flujo.
+        ReflectionTestUtils.setField(prestamoService, "self", prestamoService);
     }
 
     // ─── tests crearPrestamo ─────────────────────────────────────────────────
@@ -1622,5 +1628,259 @@ class PrestamoServiceTest {
                         || excepcionCapturada.get().getMessage().contains("otro usuario"));
         verify(licenseClient, times(1 + 3 * (numHilos - 1))).prestar(libroId);
         verify(prestamoRepository, times(1)).save(any(Prestamo.class));
+    }
+
+    // ─── test self-injection — verificar que self no es null ──────────────
+
+    @Test
+    void crearPrestamo_selfInjectionConfigurada_correctamente() {
+        // Given — el @BeforeEach ya asignó prestamoService a self via ReflectionTestUtils
+        // Este test verifica explícitamente que la auto-inyección esté configurada
+        // para evitar NPE en cualquier test que invoque crearPrestamo()
+
+        // Then — self debe estar inicializada (no null)
+        Object self = ReflectionTestUtils.getField(prestamoService, "self");
+        assertNotNull(self,
+                "self debe estar inicializada via ReflectionTestUtils en @BeforeEach");
+
+        // Verificar que es exactamente la misma instancia (en tests unitarios no hay proxy Spring)
+        assertSame(prestamoService, self,
+                "En tests unitarios self debe apuntar a la misma instancia");
+    }
+
+    // ─── tests crearPrestamo — límites del fallback (<= 0) ────────────────
+
+    @Test
+    void crearPrestamo_cuandoMaxPrestamosEsCero_aplicaFallback() {
+        // Given — maxPrestamos = 0, el código detecta <= 0 y aplica fallback BASICO
+        String usuarioId = "usuario_max_cero";
+        SuscripcionDTO suscripcion = new SuscripcionDTO();
+        suscripcion.setPlan("PREMIUM");
+        suscripcion.setMaxPrestamos(0);   // ← 0, no null
+        suscripcion.setDiasPrestamo(14);
+        suscripcion.setActiva(true);
+
+        when(subscriptionClient.obtenerSuscripcion(usuarioId)).thenReturn(suscripcion);
+        when(prestamoRepository.findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(prestamoRepository.findByLibroIdAndEstado(200L, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(licenseClient.obtenerLicencia(200L)).thenReturn(licenciaDisponible());
+        when(licenseClient.prestar(200L)).thenReturn(licenciaDisponible());
+        when(prestamoRepository.save(any(Prestamo.class))).thenAnswer(i -> i.getArgument(0));
+
+        // When — fallback asigna maxPrestamos=2, diasPrestamo se conserva (14 > 0)
+        PrestamoResponseDTO resultado = prestamoService.crearPrestamo(request(200L), usuarioId);
+
+        // Then
+        assertNotNull(resultado);
+        assertEquals(200L, resultado.getLibroId());
+        // diasPrestamo era 14 (válido), maxPrestamos se reemplazó por 2
+        assertEquals(
+                resultado.getFechaInicio().plusDays(14),
+                resultado.getFechaVencimiento());
+        verify(prestamoRepository).save(any(Prestamo.class));
+        verify(licenseClient).prestar(200L);
+    }
+
+    @Test
+    void crearPrestamo_cuandoMaxPrestamosEsNegativo_aplicaFallback() {
+        // Given — maxPrestamos = -1, el código detecta <= 0 y aplica fallback
+        String usuarioId = "usuario_max_neg";
+        SuscripcionDTO suscripcion = new SuscripcionDTO();
+        suscripcion.setPlan("PREMIUM");
+        suscripcion.setMaxPrestamos(-1);  // ← negativo
+        suscripcion.setDiasPrestamo(14);
+        suscripcion.setActiva(true);
+
+        when(subscriptionClient.obtenerSuscripcion(usuarioId)).thenReturn(suscripcion);
+        when(prestamoRepository.findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(prestamoRepository.findByLibroIdAndEstado(201L, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(licenseClient.obtenerLicencia(201L)).thenReturn(licenciaDisponible());
+        when(licenseClient.prestar(201L)).thenReturn(licenciaDisponible());
+        when(prestamoRepository.save(any(Prestamo.class))).thenAnswer(i -> i.getArgument(0));
+
+        // When
+        PrestamoResponseDTO resultado = prestamoService.crearPrestamo(request(201L), usuarioId);
+
+        // Then
+        assertNotNull(resultado);
+        assertEquals(201L, resultado.getLibroId());
+        assertEquals(
+                resultado.getFechaInicio().plusDays(14),
+                resultado.getFechaVencimiento());
+        verify(prestamoRepository).save(any(Prestamo.class));
+        verify(licenseClient).prestar(201L);
+    }
+
+    @Test
+    void crearPrestamo_cuandoDiasPrestamoEsCero_aplicaFallback() {
+        // Given — diasPrestamo = 0, el código detecta <= 0 y aplica fallback BASICO
+        String usuarioId = "usuario_dias_cero";
+        SuscripcionDTO suscripcion = new SuscripcionDTO();
+        suscripcion.setPlan("PREMIUM");
+        suscripcion.setMaxPrestamos(5);
+        suscripcion.setDiasPrestamo(0);   // ← 0, no null
+        suscripcion.setActiva(true);
+
+        when(subscriptionClient.obtenerSuscripcion(usuarioId)).thenReturn(suscripcion);
+        when(prestamoRepository.findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(prestamoRepository.findByLibroIdAndEstado(202L, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(licenseClient.obtenerLicencia(202L)).thenReturn(licenciaDisponible());
+        when(licenseClient.prestar(202L)).thenReturn(licenciaDisponible());
+        when(prestamoRepository.save(any(Prestamo.class))).thenAnswer(i -> i.getArgument(0));
+
+        // When — fallback asigna diasPrestamo=7, maxPrestamos se conserva (5 > 0)
+        PrestamoResponseDTO resultado = prestamoService.crearPrestamo(request(202L), usuarioId);
+
+        // Then
+        assertNotNull(resultado);
+        assertEquals(202L, resultado.getLibroId());
+        // diasPrestamo se reemplazó por 7 (BASICO), maxPrestamos era 5 (válido)
+        assertEquals(
+                resultado.getFechaInicio().plusDays(7),
+                resultado.getFechaVencimiento());
+        verify(prestamoRepository).save(any(Prestamo.class));
+        verify(licenseClient).prestar(202L);
+    }
+
+    @Test
+    void crearPrestamo_cuandoDiasPrestamoEsNegativo_aplicaFallback() {
+        // Given — diasPrestamo = -1, el código detecta <= 0 y aplica fallback
+        String usuarioId = "usuario_dias_neg";
+        SuscripcionDTO suscripcion = new SuscripcionDTO();
+        suscripcion.setPlan("PREMIUM");
+        suscripcion.setMaxPrestamos(5);
+        suscripcion.setDiasPrestamo(-1);  // ← negativo
+        suscripcion.setActiva(true);
+
+        when(subscriptionClient.obtenerSuscripcion(usuarioId)).thenReturn(suscripcion);
+        when(prestamoRepository.findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(prestamoRepository.findByLibroIdAndEstado(203L, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(licenseClient.obtenerLicencia(203L)).thenReturn(licenciaDisponible());
+        when(licenseClient.prestar(203L)).thenReturn(licenciaDisponible());
+        when(prestamoRepository.save(any(Prestamo.class))).thenAnswer(i -> i.getArgument(0));
+
+        // When
+        PrestamoResponseDTO resultado = prestamoService.crearPrestamo(request(203L), usuarioId);
+
+        // Then
+        assertNotNull(resultado);
+        assertEquals(203L, resultado.getLibroId());
+        assertEquals(
+                resultado.getFechaInicio().plusDays(7),
+                resultado.getFechaVencimiento());
+        verify(prestamoRepository).save(any(Prestamo.class));
+        verify(licenseClient).prestar(203L);
+    }
+
+    @Test
+    void crearPrestamo_cuandoAmbosSonInvalidos_aplicaFallbackCompleto() {
+        // Given — maxPrestamos = 0 Y diasPrestamo = -1, ambos inválidos
+        String usuarioId = "usuario_ambos_inv";
+        SuscripcionDTO suscripcion = new SuscripcionDTO();
+        suscripcion.setPlan("PREMIUM");
+        suscripcion.setMaxPrestamos(0);   // ← inválido
+        suscripcion.setDiasPrestamo(-1);  // ← inválido
+        suscripcion.setActiva(true);
+
+        when(subscriptionClient.obtenerSuscripcion(usuarioId)).thenReturn(suscripcion);
+        when(prestamoRepository.findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(prestamoRepository.findByLibroIdAndEstado(204L, EstadoPrestamo.ACTIVO))
+                .thenReturn(new ArrayList<>());
+        when(licenseClient.obtenerLicencia(204L)).thenReturn(licenciaDisponible());
+        when(licenseClient.prestar(204L)).thenReturn(licenciaDisponible());
+        when(prestamoRepository.save(any(Prestamo.class))).thenAnswer(i -> i.getArgument(0));
+
+        // When — ambos se reemplazan por BASICO (2 y 7)
+        PrestamoResponseDTO resultado = prestamoService.crearPrestamo(request(204L), usuarioId);
+
+        // Then
+        assertNotNull(resultado);
+        assertEquals(204L, resultado.getLibroId());
+        // Ambos con fallback BASICO: 7 días
+        assertEquals(
+                resultado.getFechaInicio().plusDays(7),
+                resultado.getFechaVencimiento());
+        verify(prestamoRepository).save(any(Prestamo.class));
+        verify(licenseClient).prestar(204L);
+    }
+
+    // ─── tests obtenerPrestamosActivos — filtrado ──────────────────────────
+
+    @Test
+    void obtenerPrestamosActivos_devuelveSoloActivos_cuandoHayVencidosEActivos() {
+        // Given — usuario con préstamos ACTIVOS y VENCIDOS
+        String usuarioId = "usuario_mix";
+        Prestamo activo = new Prestamo();
+        activo.setUsuarioId(usuarioId);
+        activo.setLibroId(1L);
+        activo.setEstado(EstadoPrestamo.ACTIVO);
+
+        Prestamo vencido = new Prestamo();
+        vencido.setUsuarioId(usuarioId);
+        vencido.setLibroId(2L);
+        vencido.setEstado(EstadoPrestamo.VENCIDO);
+
+        when(prestamoRepository.findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO))
+                .thenReturn(Arrays.asList(activo)); // solo activos
+
+        // When
+        List<PrestamoResponseDTO> resultado = prestamoService.obtenerPrestamosActivos(usuarioId);
+
+        // Then
+        assertNotNull(resultado);
+        assertEquals(1, resultado.size());
+        assertEquals(1L, resultado.get(0).getLibroId());
+        assertEquals(EstadoPrestamo.ACTIVO, resultado.get(0).getEstado());
+        verify(prestamoRepository).findByUsuarioIdAndEstado(usuarioId, EstadoPrestamo.ACTIVO);
+        // No debe llamar a findAll() ni findByUsuarioId()
+        verify(prestamoRepository, never()).findByUsuarioId(anyString());
+        verify(prestamoRepository, never()).findAll();
+    }
+
+    // ─── tests obtenerHistorial — cobertura de estados mixtos ──────────────
+
+    @Test
+    void obtenerHistorial_incluyeTodosLosEstados_paraUnMismoUsuario() {
+        // Given — usuario con préstamos ACTIVO, VENCIDO y cualquiera otro estado
+        String usuarioId = "usuario_hist_mix";
+        Prestamo activo = new Prestamo();
+        activo.setUsuarioId(usuarioId);
+        activo.setLibroId(10L);
+        activo.setEstado(EstadoPrestamo.ACTIVO);
+
+        Prestamo vencido = new Prestamo();
+        vencido.setUsuarioId(usuarioId);
+        vencido.setLibroId(20L);
+        vencido.setEstado(EstadoPrestamo.VENCIDO);
+
+        Prestamo activo2 = new Prestamo();
+        activo2.setUsuarioId(usuarioId);
+        activo2.setLibroId(30L);
+        activo2.setEstado(EstadoPrestamo.ACTIVO);
+
+        when(prestamoRepository.findByUsuarioId(usuarioId))
+                .thenReturn(Arrays.asList(activo, vencido, activo2));
+
+        // When
+        List<PrestamoResponseDTO> resultado = prestamoService.obtenerHistorial(usuarioId);
+
+        // Then — devuelve todos sin filtrar por estado
+        assertNotNull(resultado);
+        assertEquals(3, resultado.size());
+        // Puede venir en cualquier orden, solo verificar que están todos
+        List<Long> libroIds = resultado.stream()
+                .map(PrestamoResponseDTO::getLibroId)
+                .collect(Collectors.toList());
+        assertTrue(libroIds.containsAll(Arrays.asList(10L, 20L, 30L)));
+        verify(prestamoRepository).findByUsuarioId(usuarioId);
     }
 }

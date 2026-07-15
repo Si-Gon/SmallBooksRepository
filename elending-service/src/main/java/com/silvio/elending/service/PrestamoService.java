@@ -20,6 +20,8 @@ import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,13 @@ public class PrestamoService {
     private final SubscriptionClient subscriptionClient;
     private final NotificacionPublisher notificacionPublisher;
 
+    // Auto-inyeccion para sortear self-invocation de @Transactional.
+    // Sin esto, llamar doCrearPrestamo() desde crearPrestamo() bypassearia
+    // el proxy AOP y @Transactional no se aplicaria.
+    @Autowired
+    @Lazy
+    private PrestamoService self;
+
     // ─── crearPrestamo con optimistic locking ────────────────────────────────
     // Wrapper no transaccional: reintenta hasta 3 veces si el License Service
     // responde 409 Conflict (otro usuario tomó la última copia justo antes).
@@ -54,7 +63,7 @@ public class PrestamoService {
         int intento = 0;
         while (true) {
             try {
-                return doCrearPrestamo(request, usuarioId);
+                return self.doCrearPrestamo(request, usuarioId);
             } catch (FeignException.Conflict e) {
                 // 409 del License Service — otro usuario tomó la última copia justo antes
                 if (++intento >= maxReintentos) {
