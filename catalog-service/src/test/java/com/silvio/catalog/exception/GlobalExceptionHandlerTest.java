@@ -11,13 +11,17 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -78,6 +82,64 @@ class GlobalExceptionHandlerTest {
         assertNotNull(response.getBody());
         assertTrue(response.getBody().containsKey("error"));
         assertEquals("Libro no encontrado con id: 999", response.getBody().get("error"));
+    }
+
+    // =========================================================
+    // MethodArgumentTypeMismatchException → 400 BAD_REQUEST
+    // =========================================================
+
+    @Test
+    void argumentoInvalido_debeRetornar400() {
+        // Given: tipo de argumento incorrecto (ej. string en path variable Long)
+        MethodArgumentTypeMismatchException ex = mock(MethodArgumentTypeMismatchException.class);
+        when(ex.getName()).thenReturn("id");
+        when(ex.getValue()).thenReturn("texto");
+
+        // When
+        ResponseEntity<Map<String, String>> response = handler.manejarArgumentoInvalido(ex);
+
+        // Then
+        assertEquals(400, response.getStatusCode().value());
+        assertEquals("El valor proporcionado para id no es válido", response.getBody().get("error"));
+        assertEquals("ERR-400", response.getBody().get("codigo"));
+    }
+
+    // =========================================================
+    // HttpMessageNotReadableException → 400 BAD_REQUEST
+    // =========================================================
+
+    @Test
+    void cuerpoInvalido_debeRetornar400() {
+        // Given: JSON mal formado en el cuerpo de la solicitud
+        HttpMessageNotReadableException ex = mock(HttpMessageNotReadableException.class);
+
+        // When
+        ResponseEntity<Map<String, String>> response = handler.manejarCuerpoInvalido(ex);
+
+        // Then
+        assertEquals(400, response.getStatusCode().value());
+        assertEquals("El cuerpo de la solicitud contiene datos inválidos o está mal formado",
+                response.getBody().get("error"));
+        assertEquals("ERR-400", response.getBody().get("codigo"));
+    }
+
+    // =========================================================
+    // MissingServletRequestParameterException → 400 BAD_REQUEST
+    // =========================================================
+
+    @Test
+    void parametroFaltante_debeRetornar400() {
+        // Given: query parameter obligatorio ausente
+        MissingServletRequestParameterException ex = mock(MissingServletRequestParameterException.class);
+        when(ex.getParameterName()).thenReturn("usuarioId");
+
+        // When
+        ResponseEntity<Map<String, String>> response = handler.manejarParametroFaltante(ex);
+
+        // Then
+        assertEquals(400, response.getStatusCode().value());
+        assertEquals("El parámetro usuarioId es obligatorio", response.getBody().get("error"));
+        assertEquals("ERR-400", response.getBody().get("codigo"));
     }
 
     @Test
