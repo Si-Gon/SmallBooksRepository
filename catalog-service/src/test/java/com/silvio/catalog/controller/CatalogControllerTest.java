@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -94,6 +95,43 @@ class CatalogControllerTest {
                 .andExpect(jsonPath("$[0].titulo").value("El Quijote"));
 
         verify(catalogService).obtenerDisponibles();
+    }
+
+    // =========================================================
+    // GET /api/catalog/{id}  — @Positive validation
+    // =========================================================
+
+    @Test
+    void obtenerPorId_conIdNegativo_debeRetornar400() throws Exception {
+        // @Validated + @Positive — id negativo debe disparar ConstraintViolationException
+        mockMvc.perform(get("/api/catalog/-1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.id").value("El ID debe ser un número positivo"))
+                .andExpect(jsonPath("$.codigo").value("ERR-400"));
+
+        verify(catalogService, never()).obtenerPorId(anyLong());
+    }
+
+    @Test
+    void obtenerPorId_conIdCero_debeRetornar400() throws Exception {
+        // Cero no es positivo — debe disparar ConstraintViolationException
+        mockMvc.perform(get("/api/catalog/0"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.id").value("El ID debe ser un número positivo"))
+                .andExpect(jsonPath("$.codigo").value("ERR-400"));
+
+        verify(catalogService, never()).obtenerPorId(anyLong());
+    }
+
+    @Test
+    void obtenerPorId_conIdNoNumerico_debeRetornar400() throws Exception {
+        // "abc" no es Long — dispara MethodArgumentTypeMismatchException
+        mockMvc.perform(get("/api/catalog/abc"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("El valor proporcionado para id no es válido"))
+                .andExpect(jsonPath("$.codigo").value("ERR-400"));
+
+        verify(catalogService, never()).obtenerPorId(anyLong());
     }
 
     // =========================================================
@@ -191,6 +229,23 @@ class CatalogControllerTest {
     }
 
     // =========================================================
+    // PUT /api/catalog/{id}  — @Positive validation
+    // =========================================================
+
+    @Test
+    void actualizar_conIdNegativo_debeRetornar400() throws Exception {
+        LibroRequestDTO request = crearLibroRequest();
+        mockMvc.perform(put("/api/catalog/-1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.id").value("El ID debe ser un número positivo"))
+                .andExpect(jsonPath("$.codigo").value("ERR-400"));
+
+        verify(catalogService, never()).actualizar(anyLong(), any());
+    }
+
+    // =========================================================
     // PUT /api/catalog/{id}  — actualizar libro
     // =========================================================
 
@@ -220,6 +275,21 @@ class CatalogControllerTest {
     }
 
     // =========================================================
+    // PATCH /api/catalog/{id}/disponibilidad  — @Positive validation
+    // =========================================================
+
+    @Test
+    void cambiarDisponibilidad_conIdNegativo_debeRetornar400() throws Exception {
+        mockMvc.perform(patch("/api/catalog/-1/disponibilidad")
+                        .param("disponible", "true"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.id").value("El ID debe ser un número positivo"))
+                .andExpect(jsonPath("$.codigo").value("ERR-400"));
+
+        verify(catalogService, never()).cambiarDisponibilidad(anyLong(), anyBoolean());
+    }
+
+    // =========================================================
     // PATCH /api/catalog/{id}/disponibilidad  — cambiar disponibilidad
     // =========================================================
 
@@ -233,6 +303,20 @@ class CatalogControllerTest {
                         .param("disponible", "false"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.disponible").value(false));
+    }
+
+    // =========================================================
+    // DELETE /api/catalog/{id}  — @Positive validation
+    // =========================================================
+
+    @Test
+    void eliminar_conIdNegativo_debeRetornar400() throws Exception {
+        mockMvc.perform(delete("/api/catalog/-1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.id").value("El ID debe ser un número positivo"))
+                .andExpect(jsonPath("$.codigo").value("ERR-400"));
+
+        verify(catalogService, never()).eliminar(anyLong());
     }
 
     // =========================================================

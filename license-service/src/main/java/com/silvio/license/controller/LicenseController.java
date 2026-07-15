@@ -9,9 +9,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +24,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 @RestController
 @RequestMapping("/api/licenses")
 @RequiredArgsConstructor
+@Validated
 public class LicenseController {
 
     private final LicenseService licenseService;
@@ -58,7 +61,7 @@ public class LicenseController {
     @GetMapping("/{libroId}")
     public ResponseEntity<LicenseResponseDTO> obtenerPorLibroId(
             @Parameter(description = "ID del libro", required = true)
-            @PathVariable Long libroId) {
+            @PathVariable @Positive(message = "El ID debe ser un número positivo") Long libroId) {
         LicenseResponseDTO dto = licenseService.obtenerPorLibroId(libroId);
 
         dto.add(linkTo(methodOn(LicenseController.class)
@@ -104,7 +107,7 @@ public class LicenseController {
     @PutMapping("/{libroId}")
     public ResponseEntity<LicenseResponseDTO> actualizar(
             @Parameter(description = "ID del libro", required = true)
-            @PathVariable Long libroId,
+            @PathVariable @Positive(message = "El ID debe ser un número positivo") Long libroId,
             @Valid @RequestBody LicenseRequestDTO request) {
         LicenseResponseDTO dto = licenseService.actualizar(libroId, request);
 
@@ -127,7 +130,7 @@ public class LicenseController {
     @PutMapping("/{libroId}/prestar")
     public ResponseEntity<LicenseResponseDTO> prestar(
             @Parameter(description = "ID del libro", required = true)
-            @PathVariable Long libroId) {
+            @PathVariable @Positive(message = "El ID debe ser un número positivo") Long libroId) {
         LicenseResponseDTO dto = licenseService.prestar(libroId);
 
         dto.add(linkTo(methodOn(LicenseController.class)
@@ -149,7 +152,7 @@ public class LicenseController {
     @PutMapping("/{libroId}/devolver")
     public ResponseEntity<LicenseResponseDTO> devolver(
             @Parameter(description = "ID del libro", required = true)
-            @PathVariable Long libroId) {
+            @PathVariable @Positive(message = "El ID debe ser un número positivo") Long libroId) {
         LicenseResponseDTO dto = licenseService.devolver(libroId);
 
         dto.add(linkTo(methodOn(LicenseController.class)

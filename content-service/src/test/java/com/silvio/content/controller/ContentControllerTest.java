@@ -40,6 +40,33 @@ class ContentControllerTest {
     // GET /api/content/{libroId}
     // =====================================================================
 
+    // ─── @Positive validation ─────────────────────────────────────────
+
+    @Test
+    void descargarArchivo_conIdNegativo_debeRetornar400() throws Exception {
+        // @Validated + @Positive — libroId negativo debe disparar ConstraintViolationException
+        mockMvc.perform(get("/api/content/-1")
+                        .header("Authorization", "Bearer token_valido"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.libroId").value("El ID debe ser un número positivo"))
+                .andExpect(jsonPath("$.codigo").value("ERR-400"));
+
+        verify(contentService, never()).obtenerArchivo(anyLong(), anyString());
+    }
+
+    @Test
+    void descargarArchivo_conIdNoNumerico_debeRetornar400() throws Exception {
+        // "abc" no es Long — dispara MethodArgumentTypeMismatchException
+        mockMvc.perform(get("/api/content/abc")
+                        .header("Authorization", "Bearer token_valido"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.codigo").value("ERR-400"));
+
+        verify(contentService, never()).obtenerArchivo(anyLong(), anyString());
+    }
+
+    // ─── Tests existentes ─────────────────────────────────────────────
+
     @Test
     void descargarArchivo_conPrestamoActivo_debeRetornar200ConBytes() throws Exception {
         byte[] bytes = "PDF de prueba".getBytes();

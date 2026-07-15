@@ -9,9 +9,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -24,6 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/catalog")
 @RequiredArgsConstructor
+@Validated
 public class CatalogController {
 
     private final CatalogService catalogService;
@@ -75,7 +78,7 @@ public class CatalogController {
     @GetMapping("/{id}")
     public ResponseEntity<LibroResponseDTO> obtenerPorId(
             @Parameter(description = "ID del libro", required = true)
-            @PathVariable Long id) {
+            @PathVariable @Positive(message = "El ID debe ser un número positivo") Long id) {
             LibroResponseDTO dto = catalogService.obtenerPorId(id);
             dto.add(linkTo(methodOn(CatalogController.class).obtenerPorId(id)).withSelfRel());
             dto.add(linkTo(methodOn(CatalogController.class).obtenerTodos()).withRel("todos"));
@@ -135,7 +138,7 @@ public class CatalogController {
     @PutMapping("/{id}")
     public ResponseEntity<LibroResponseDTO> actualizar(
             @Parameter(description = "ID del libro a actualizar", required = true)
-            @PathVariable Long id,
+            @PathVariable @Positive(message = "El ID debe ser un número positivo") Long id,
             @Valid @RequestBody LibroRequestDTO request) {
         LibroResponseDTO dto = catalogService.actualizar(id, request);
 
@@ -157,7 +160,7 @@ public class CatalogController {
     @PatchMapping("/{id}/disponibilidad")
     public ResponseEntity<LibroResponseDTO> cambiarDisponibilidad(
             @Parameter(description = "ID del libro", required = true)
-            @PathVariable Long id,
+            @PathVariable @Positive(message = "El ID debe ser un número positivo") Long id,
             @Parameter(description = "true = disponible, false = prestado", required = true)
             @RequestParam Boolean disponible) {
         return ResponseEntity.ok(catalogService.cambiarDisponibilidad(id, disponible));
@@ -173,7 +176,7 @@ public class CatalogController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(
             @Parameter(description = "ID del libro a eliminar", required = true)
-            @PathVariable Long id) {
+            @PathVariable @Positive(message = "El ID debe ser un número positivo") Long id) {
         catalogService.eliminar(id);
         return ResponseEntity.noContent().build();
     }

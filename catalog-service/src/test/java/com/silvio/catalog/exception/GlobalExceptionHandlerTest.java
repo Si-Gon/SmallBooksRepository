@@ -18,7 +18,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Path;
+
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -139,6 +144,29 @@ class GlobalExceptionHandlerTest {
         // Then
         assertEquals(400, response.getStatusCode().value());
         assertEquals("El parámetro usuarioId es obligatorio", response.getBody().get("error"));
+        assertEquals("ERR-400", response.getBody().get("codigo"));
+    }
+
+    // =========================================================
+    // ConstraintViolationException → 400 BAD_REQUEST
+    // =========================================================
+
+    @Test
+    void constraintViolation_debeRetornar400ConErrores() {
+        ConstraintViolation<?> violation = mock(ConstraintViolation.class);
+        Path path = mock(Path.class);
+        when(violation.getPropertyPath()).thenReturn(path);
+        when(path.toString()).thenReturn("obtenerPorId.id");
+        when(violation.getMessage()).thenReturn("El ID debe ser un número positivo");
+
+        Set<ConstraintViolation<?>> violations = Set.of(violation);
+        ConstraintViolationException ex = new ConstraintViolationException(violations);
+
+        ResponseEntity<Map<String, String>> response = handler.manejarConstraintViolation(ex);
+
+        assertEquals(400, response.getStatusCode().value());
+        assertTrue(response.getBody().containsKey("id"));
+        assertEquals("El ID debe ser un número positivo", response.getBody().get("id"));
         assertEquals("ERR-400", response.getBody().get("codigo"));
     }
 

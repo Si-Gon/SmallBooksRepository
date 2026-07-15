@@ -7,10 +7,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +22,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 @RestController
 @RequestMapping("/api/ingestion")
 @RequiredArgsConstructor
+@Validated
 public class IngestionController {
 
     private final IngestionService ingestionService;
@@ -40,7 +43,7 @@ public class IngestionController {
                  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ArchivoLibroDTO> subirArchivo(
             @Parameter(description = "ID del libro al que pertenece el archivo", required = true)
-            @PathVariable Long libroId,
+            @PathVariable @Positive(message = "El ID debe ser un número positivo") Long libroId,
             @Parameter(description = "Archivo PDF o EPUB a subir", required = true)
             @RequestParam("archivo") MultipartFile archivo) {
 
@@ -66,7 +69,7 @@ public class IngestionController {
     @GetMapping("/{libroId}")
     public ResponseEntity<ArchivoLibroDTO> obtenerInfo(
             @Parameter(description = "ID del libro", required = true)
-            @PathVariable Long libroId) {
+            @PathVariable @Positive(message = "El ID debe ser un número positivo") Long libroId) {
         ArchivoLibroDTO dto = ingestionService.obtenerInfo(libroId);
 
     dto.add(linkTo(methodOn(IngestionController.class)
@@ -89,7 +92,7 @@ public class IngestionController {
     @GetMapping("/{libroId}/bytes")
     public ResponseEntity<byte[]> obtenerBytes(
             @Parameter(description = "ID del libro", required = true)
-            @PathVariable Long libroId) {
+            @PathVariable @Positive(message = "El ID debe ser un número positivo") Long libroId) {
         byte[] bytes = ingestionService.obtenerBytes(libroId);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
@@ -107,7 +110,7 @@ public class IngestionController {
     @DeleteMapping("/{libroId}")
     public ResponseEntity<Void> eliminar(
             @Parameter(description = "ID del libro", required = true)
-            @PathVariable Long libroId) {
+            @PathVariable @Positive(message = "El ID debe ser un número positivo") Long libroId) {
         ingestionService.eliminar(libroId);
         return ResponseEntity.noContent().build();
     }

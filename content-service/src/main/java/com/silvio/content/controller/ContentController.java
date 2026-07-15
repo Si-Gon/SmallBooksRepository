@@ -6,16 +6,19 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Content Delivery", description = "Entrega de contenido digital — descarga archivos PDF/EPUB solo si el usuario tiene préstamo activo")
 @RestController
 @RequestMapping("/api/content")
 @RequiredArgsConstructor
+@Validated
 public class ContentController {
 
     private final ContentService contentService;
@@ -35,7 +38,7 @@ public class ContentController {
     @GetMapping("/{libroId}")
     public ResponseEntity<byte[]> descargarArchivo(
             @Parameter(description = "ID del libro a descargar", required = true)
-            @PathVariable Long libroId,
+            @PathVariable @Positive(message = "El ID debe ser un número positivo") Long libroId,
             @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
             @RequestHeader("Authorization") String authHeader) {
 

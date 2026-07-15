@@ -149,11 +149,14 @@ class AuthControllerTest {
 
         doNothing().when(userService).registerUser(any(), any(), any());
 
+        // Verificar que retorna Map<String, Object> con message, username y status
         mockMvc.perform(post("/auth/register").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.message").exists());
+                .andExpect(jsonPath("$.message").value(" Usuario 'nuevousuario' registrado exitosamente"))
+                .andExpect(jsonPath("$.username").value("nuevousuario"))
+                .andExpect(jsonPath("$.status").value("CREATED"));
 
         verify(userService).registerUser(eq("nuevousuario"), eq("Password123!"), any());
     }

@@ -54,7 +54,7 @@ public class AuthController {
         @ApiResponse(responseCode = "409", description = "El username ya existe")
     })
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<Map<String, Object>> register(@Valid @RequestBody RegisterRequest request) {
         userService.registerUser(request.getUsername(), request.getPassword(), request.getRoles());
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(Map.of(

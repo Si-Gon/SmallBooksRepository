@@ -1,5 +1,6 @@
 package com.silvio.ingestion.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -95,6 +96,21 @@ public class GlobalExceptionHandler {
         error.put("codigo", "ERR-400");
         log.warn("MissingServletRequestParameterException - parámetro: {}", ex.getParameterName(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    // Violación de restricciones de validación en parámetros (@Positive, @NotBlank, etc.)
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Map<String, String>> manejarConstraintViolation(
+            ConstraintViolationException ex) {
+        Map<String, String> errores = new HashMap<>();
+        ex.getConstraintViolations().forEach(violation -> {
+            String path = violation.getPropertyPath().toString();
+            String field = path.contains(".") ? path.substring(path.lastIndexOf(".") + 1) : path;
+            errores.put(field, violation.getMessage());
+        });
+        errores.put("codigo", "ERR-400");
+        log.warn("ConstraintViolationException: {}", errores);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errores);
     }
 
     // RuntimeException genérico (fallback)

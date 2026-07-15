@@ -87,6 +87,51 @@ class LicenseControllerTest {
                 .andExpect(jsonPath("$.length()").value(0));
     }
 
+    // ─── @Positive validation ────────────────────────────────────────────────
+
+    @Test
+    void obtenerPorLibroId_conIdNegativo_debeRetornar400() throws Exception {
+        mockMvc.perform(get("/api/licenses/-1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.libroId").value("El ID debe ser un número positivo"))
+                .andExpect(jsonPath("$.codigo").value("ERR-400"));
+
+        verify(licenseService, never()).obtenerPorLibroId(anyLong());
+    }
+
+    @Test
+    void actualizar_conIdNegativo_debeRetornar400() throws Exception {
+        LicenseRequestDTO request = licenseRequest(1L, 5);
+        mockMvc.perform(put("/api/licenses/-1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.libroId").value("El ID debe ser un número positivo"))
+                .andExpect(jsonPath("$.codigo").value("ERR-400"));
+
+        verify(licenseService, never()).actualizar(anyLong(), any());
+    }
+
+    @Test
+    void prestar_conIdNegativo_debeRetornar400() throws Exception {
+        mockMvc.perform(put("/api/licenses/-1/prestar"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.libroId").value("El ID debe ser un número positivo"))
+                .andExpect(jsonPath("$.codigo").value("ERR-400"));
+
+        verify(licenseService, never()).prestar(anyLong());
+    }
+
+    @Test
+    void devolver_conIdNegativo_debeRetornar400() throws Exception {
+        mockMvc.perform(put("/api/licenses/-1/devolver"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.libroId").value("El ID debe ser un número positivo"))
+                .andExpect(jsonPath("$.codigo").value("ERR-400"));
+
+        verify(licenseService, never()).devolver(anyLong());
+    }
+
     // ─── GET /api/licenses/{libroId} ─────────────────────────────────────────
 
     @Test

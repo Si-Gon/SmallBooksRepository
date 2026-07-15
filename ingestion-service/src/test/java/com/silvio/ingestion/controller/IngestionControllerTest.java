@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -41,6 +42,53 @@ class IngestionControllerTest {
 
     @MockBean
     private IngestionService ingestionService;
+
+    // =====================================================================
+    // Validación @Positive en @PathVariable Long
+    // =====================================================================
+
+    @Test
+    void subirArchivo_conIdNegativo_debeRetornar400() throws Exception {
+        MockMultipartFile archivo = new MockMultipartFile(
+            "archivo", "test.pdf", "application/pdf", "test".getBytes());
+
+        mockMvc.perform(multipart("/api/ingestion/upload/-1").file(archivo))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.libroId").value("El ID debe ser un número positivo"))
+                .andExpect(jsonPath("$.codigo").value("ERR-400"));
+
+        verify(ingestionService, never()).subirArchivo(any(), any());
+    }
+
+    @Test
+    void obtenerInfo_conIdNegativo_debeRetornar400() throws Exception {
+        mockMvc.perform(get("/api/ingestion/-1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.libroId").value("El ID debe ser un número positivo"))
+                .andExpect(jsonPath("$.codigo").value("ERR-400"));
+
+        verify(ingestionService, never()).obtenerInfo(anyLong());
+    }
+
+    @Test
+    void obtenerBytes_conIdNegativo_debeRetornar400() throws Exception {
+        mockMvc.perform(get("/api/ingestion/-1/bytes"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.libroId").value("El ID debe ser un número positivo"))
+                .andExpect(jsonPath("$.codigo").value("ERR-400"));
+
+        verify(ingestionService, never()).obtenerBytes(anyLong());
+    }
+
+    @Test
+    void eliminar_conIdNegativo_debeRetornar400() throws Exception {
+        mockMvc.perform(delete("/api/ingestion/-1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.libroId").value("El ID debe ser un número positivo"))
+                .andExpect(jsonPath("$.codigo").value("ERR-400"));
+
+        verify(ingestionService, never()).eliminar(anyLong());
+    }
 
     private ArchivoLibroDTO dto(Long libroId) {
         ArchivoLibroDTO dto = new ArchivoLibroDTO();

@@ -220,6 +220,18 @@ class NotificacionControllerTest {
                 .andExpect(jsonPath("$.length()").value(0));
     }
 
+    // ─── @Positive validation ────────────────────────────────────────────────
+
+    @Test
+    void marcarLeida_conIdNegativo_debeRetornar400() throws Exception {
+        mockMvc.perform(patch("/api/notifications/-1/leer"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.id").value("El ID debe ser un número positivo"))
+                .andExpect(jsonPath("$.codigo").value("ERR-400"));
+
+        verify(notificacionService, never()).marcarLeida(anyLong());
+    }
+
     // ─── PATCH /api/notifications/{id}/leer ──────────────────────────────────
 
     @Test
