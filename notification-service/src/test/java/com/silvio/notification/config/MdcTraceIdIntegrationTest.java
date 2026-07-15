@@ -5,7 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+
+import com.rabbitmq.client.ConnectionFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,6 +19,10 @@ import org.junit.jupiter.api.Disabled;
 @ActiveProfiles("test")
 class MdcTraceIdIntegrationTest {
 
+
+    @MockBean
+    private ConnectionFactory connectionFactory;
+    
     @Autowired(required = false)
     private Tracer tracer;
 

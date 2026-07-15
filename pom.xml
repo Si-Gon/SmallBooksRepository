@@ -43,11 +43,12 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.release>17</maven.compiler.release>
-    <!-- BOM de Spring Cloud compatible con Spring Boot 3.1.x -->
+    <!-- BOM de Spring Cloud compatible con Spring Boot 3.3.x -->
     <spring-cloud.version>2023.0.5</spring-cloud.version>
     <!-- JWT (jjwt) — version centralizada para todos los módulos -->
     <jjwt.version>0.12.6</jjwt.version>
+    <!-- Lombok — version centralizada para dependencia y annotationProcessorPaths -->
+    <lombok.version>1.18.38</lombok.version>
   </properties>
 
   
@@ -58,7 +59,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.38</version>
+      <version>${lombok.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency> <!-- Documentacion automatica con OpenAPI/Swagger en todos los microservicios -->
@@ -145,7 +146,8 @@
         <plugin>
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>
-          <version>3.1.5</version>
+          <!-- La versión se hereda de spring-boot-starter-parent (3.3.11).
+               No hardcodear — debe coincidir con la versión del parent. -->
           <configuration>
             <excludes>
               <exclude>
@@ -155,24 +157,30 @@
             </excludes>
           </configuration>
         </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-            <annotationProcessorPaths>
-            <path>
-          <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.38</version>
-            </path>
-            </annotationProcessorPaths>
-          </configuration>
-        </plugin>
       </plugins>
     </pluginManagement>
 
-    <!-- NUEVO: plugins que se ejecutan en todos los módulos -->
+    <!-- Plugins que se heredan en todos los módulos -->
     <plugins>
+        <!-- maven-compiler-plugin: configurado con annotationProcessorPaths para
+             que Lombok procese sus anotaciones (@Data, @Slf4j, etc.) en tiempo de
+             compilación. Se hereda automáticamente a todos los módulos hijos. -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <!-- Versión explícita para reproducibilidad en CI/CD (heredada del parent) -->
+            <version>${maven-compiler-plugin.version}</version>
+            <configuration>
+                <release>17</release>
+                <annotationProcessorPaths>
+                    <path>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok</artifactId>
+                        <version>${lombok.version}</version>
+                    </path>
+                </annotationProcessorPaths>
+            </configuration>
+        </plugin>
         <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
