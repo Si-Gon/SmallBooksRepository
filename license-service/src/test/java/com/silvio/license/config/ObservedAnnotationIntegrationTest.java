@@ -13,6 +13,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -62,9 +66,10 @@ class ObservedAnnotationIntegrationTest {
 
     @Test
     void observedAspect_obtenerTodas_creaSpanCorrectamente() {
-        when(licenseRepository.findAll()).thenReturn(java.util.Collections.emptyList());
+        when(licenseRepository.findAll(any(Pageable.class)))
+                .thenReturn(new PageImpl<>(java.util.Collections.emptyList()));
         assertDoesNotThrow(() -> {
-            var resultado = licenseService.obtenerTodas();
+            var resultado = licenseService.obtenerTodas(Pageable.unpaged());
             assertNotNull(resultado);
             assertTrue(resultado.isEmpty());
         });

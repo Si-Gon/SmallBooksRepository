@@ -18,6 +18,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -58,27 +63,98 @@ class CatalogControllerTest {
     void obtenerTodos_DebeRetornar200ConListaDeLibros() throws Exception {
         // Preparamos qué va a devolver el mock del servicio
         LibroResponseDTO libro = crearLibroResponse(1L, "Cien años de soledad", "García Márquez");
-        List<LibroResponseDTO> libros = Arrays.asList(libro);
-        when(catalogService.obtenerTodos()).thenReturn(libros);
+        Page<LibroResponseDTO> page = new PageImpl<>(Arrays.asList(libro));
+        when(catalogService.obtenerTodos(any(Pageable.class))).thenReturn(page);
 
-        // Ejecutamos la petición GET y verificamos la respuesta
+        // Ejecutamos la petición GET y verificamos la respuesta paginada
         mockMvc.perform(get("/api/catalog"))
                 .andExpect(status().isOk())
-                // jsonPath navega el JSON: "$" = raíz, "[0]" = primer elemento
-                .andExpect(jsonPath("$[0].titulo").value("Cien años de soledad"))
-                .andExpect(jsonPath("$[0].autor").value("García Márquez"));
+                // jsonPath navega el JSON de la página: "$.content" = array interno
+                .andExpect(jsonPath("$.content[0].titulo").value("Cien años de soledad"))
+                .andExpect(jsonPath("$.content[0].autor").value("García Márquez"))
+                .andExpect(jsonPath("$.totalElements").value(1));
 
-        verify(catalogService).obtenerTodos();
+        verify(catalogService).obtenerTodos(any(Pageable.class));
     }
 
     @Test
     void obtenerTodos_ConListaVacia_DebeRetornar200() throws Exception {
-        when(catalogService.obtenerTodos()).thenReturn(Collections.emptyList());
+        Page<LibroResponseDTO> page = new PageImpl<>(Collections.emptyList());
+        when(catalogService.obtenerTodos(any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/api/catalog"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$").isEmpty());
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content").isEmpty())
+                .andExpect(jsonPath("$.totalElements").value(0));
+    }
+
+    @Test
+    void obtenerTodos_ConTamanioPersonalizado_DebeRetornarPaginaConSizeCorrecto() throws Exception {
+        // Given: 2 libros en página de tamaño 2 de 5 totales
+        LibroResponseDTO libro1 = crearLibroResponse(1L, "Cien años de soledad", "García Márquez");
+        LibroResponseDTO libro2 = crearLibroResponse(2L, "El Quijote", "Cervantes");
+        Page<LibroResponseDTO> page = new PageImpl<>(
+                Arrays.asList(libro1, libro2),
+                PageRequest.of(0, 2),
+                5L
+        );
+        when(catalogService.obtenerTodos(any(Pageable.class))).thenReturn(page);
+
+        // When & Then: usar ?size=2
+        mockMvc.perform(get("/api/catalog").param("size", "2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.totalElements").value(5))
+                .andExpect(jsonPath("$.size").value(2))
+                .andExpect(jsonPath("$.number").value(0))
+                .andExpect(jsonPath("$.totalPages").value(3))
+                .andExpect(jsonPath("$.first").value(true))
+                .andExpect(jsonPath("$.last").value(false));
+
+        verify(catalogService).obtenerTodos(any(Pageable.class));
+    }
+
+    @Test
+    void obtenerTodos_ConPaginaYSortPersonalizados_DebeRetornarPaginaCorrecta() throws Exception {
+        // Given: página 1 (índice 1) con size=1, sort=autor,desc
+        LibroResponseDTO libro = crearLibroResponse(3L, "Rayuela", "Cortázar");
+        Page<LibroResponseDTO> page = new PageImpl<>(
+                Arrays.asList(libro),
+                PageRequest.of(1, 1),
+                3L
+        );
+        when(catalogService.obtenerTodos(any(Pageable.class))).thenReturn(page);
+
+        // When & Then: usar ?page=1&size=1&sort=autor,desc
+        mockMvc.perform(get("/api/catalog")
+                        .param("page", "1")
+                        .param("size", "1")
+                        .param("sort", "autor,desc"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(1))
+                .andExpect(jsonPath("$.content[0].titulo").value("Rayuela"))
+                .andExpect(jsonPath("$.number").value(1))
+                .andExpect(jsonPath("$.totalElements").value(3))
+                .andExpect(jsonPath("$.first").value(false))
+                .andExpect(jsonPath("$.last").value(false));
+
+        verify(catalogService).obtenerTodos(any(Pageable.class));
+    }
+
+    @Test
+    void obtenerTodos_ConPageInvalido_DebeUsarDefaultYRetornar200() throws Exception {
+        // Given: Spring Data Web Support trata page negativa como 0
+        LibroResponseDTO libro = crearLibroResponse(1L, "Test", "Autor");
+        Page<LibroResponseDTO> page = new PageImpl<>(Arrays.asList(libro));
+        when(catalogService.obtenerTodos(any(Pageable.class))).thenReturn(page);
+
+        // When: page=-1 debería ser manejado por Spring (default a 0)
+        mockMvc.perform(get("/api/catalog").param("page", "-1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].titulo").value("Test"));
+
+        verify(catalogService).obtenerTodos(any(Pageable.class));
     }
 
     // =========================================================
@@ -568,16 +644,17 @@ class CatalogControllerTest {
         // Given
         LibroResponseDTO libro1 = crearLibroResponse(1L, "Cien años de soledad", "García Márquez");
         LibroResponseDTO libro2 = crearLibroResponse(2L, "El Quijote", "Cervantes");
-        when(catalogService.obtenerTodos()).thenReturn(Arrays.asList(libro1, libro2));
+        Page<LibroResponseDTO> page = new PageImpl<>(Arrays.asList(libro1, libro2));
+        when(catalogService.obtenerTodos(any(Pageable.class))).thenReturn(page);
 
-        // When & Then: respuesta en application/json, links como array
-        // "links": [{"rel":"self","href":"http://localhost/api/catalog/1"}]
+        // When & Then: respuesta paginada, links dentro de $.content
+        // "content": [{"links": [{"rel":"self","href":"http://localhost/api/catalog/1"}]}]
         mockMvc.perform(get("/api/catalog"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].links[0].rel").value("self"))
-                .andExpect(jsonPath("$[0].links[0].href").value(org.hamcrest.Matchers.containsString("/api/catalog/1")))
-                .andExpect(jsonPath("$[1].links[0].rel").value("self"))
-                .andExpect(jsonPath("$[1].links[0].href").value(org.hamcrest.Matchers.containsString("/api/catalog/2")));
+                .andExpect(jsonPath("$.content[0].links[0].rel").value("self"))
+                .andExpect(jsonPath("$.content[0].links[0].href").value(org.hamcrest.Matchers.containsString("/api/catalog/1")))
+                .andExpect(jsonPath("$.content[1].links[0].rel").value("self"))
+                .andExpect(jsonPath("$.content[1].links[0].href").value(org.hamcrest.Matchers.containsString("/api/catalog/2")));
     }
 
     @Test

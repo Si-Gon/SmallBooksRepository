@@ -11,12 +11,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
@@ -30,22 +31,23 @@ public class LicenseController {
     private final LicenseService licenseService;
 
     @Operation(summary = "Listar todas las licencias",
-               description = "Devuelve todas las licencias registradas con su cantidad de copias totales y disponibles")
+               description = "Devuelve todas las licencias registradas con paginación, incluyendo cantidad de copias totales y disponibles")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Lista de licencias obtenida exitosamente"),
+        @ApiResponse(responseCode = "200", description = "Lista paginada de licencias obtenida exitosamente"),
         @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
         @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping
-    public ResponseEntity<List<LicenseResponseDTO>> obtenerTodas() {
-        List<LicenseResponseDTO> lista = licenseService.obtenerTodas();
+    public ResponseEntity<Page<LicenseResponseDTO>> obtenerTodas(
+            @PageableDefault(size = 20, sort = "id") Pageable pageable) {
+        Page<LicenseResponseDTO> pagina = licenseService.obtenerTodas(pageable);
 
-        lista.forEach(dto ->
+        pagina.getContent().forEach(dto ->
             dto.add(linkTo(methodOn(LicenseController.class)
                     .obtenerPorLibroId(dto.getLibroId())).withSelfRel())
         );
 
-        return ResponseEntity.ok(lista);
+        return ResponseEntity.ok(pagina);
     }
 
     @Operation(summary = "Obtener licencia por libro",
@@ -67,7 +69,7 @@ public class LicenseController {
         dto.add(linkTo(methodOn(LicenseController.class)
                 .obtenerPorLibroId(libroId)).withSelfRel());
         dto.add(linkTo(methodOn(LicenseController.class)
-                .obtenerTodas()).withRel("todas"));
+                .obtenerTodas(Pageable.unpaged())).withRel("todas"));
         dto.add(linkTo(methodOn(LicenseController.class)
                 .prestar(libroId)).withRel("prestar"));
         dto.add(linkTo(methodOn(LicenseController.class)
@@ -91,7 +93,7 @@ public class LicenseController {
         dto.add(linkTo(methodOn(LicenseController.class)
                 .obtenerPorLibroId(dto.getLibroId())).withSelfRel());
         dto.add(linkTo(methodOn(LicenseController.class)
-                .obtenerTodas()).withRel("todas"));
+                .obtenerTodas(Pageable.unpaged())).withRel("todas"));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
@@ -114,7 +116,7 @@ public class LicenseController {
         dto.add(linkTo(methodOn(LicenseController.class)
                 .obtenerPorLibroId(libroId)).withSelfRel());
         dto.add(linkTo(methodOn(LicenseController.class)
-                .obtenerTodas()).withRel("todas"));
+                .obtenerTodas(Pageable.unpaged())).withRel("todas"));
 
         return ResponseEntity.ok(dto);
     }

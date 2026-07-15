@@ -14,6 +14,12 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.*;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -34,15 +40,16 @@ class CatalogServiceTest {
     @Test
     void obtenerTodos_DebeRetornarListaDeLibros() {
         // Given
-        List<Libro> libros = Arrays.asList(new Libro(), new Libro());
-        when(libroRepository.findAll()).thenReturn(libros);
+        Page<Libro> page = new PageImpl<>(Arrays.asList(new Libro(), new Libro()));
+        when(libroRepository.findAll(any(Pageable.class))).thenReturn(page);
 
         // When
-        List<LibroResponseDTO> result = catalogService.obtenerTodos();
+        Page<LibroResponseDTO> result = catalogService.obtenerTodos(Pageable.unpaged());
 
         // Then
-        assertEquals(2, result.size());
-        verify(libroRepository).findAll();
+        assertEquals(2, result.getTotalElements());
+        assertEquals(2, result.getContent().size());
+        verify(libroRepository).findAll(any(Pageable.class));
     }
 
     @Test
@@ -338,14 +345,91 @@ void buscar_PorTitulo_DebeRetornarLibrosCoincidentes() {
     @Test
     void obtenerTodos_CuandoNoHayLibros_DebeRetornarListaVacia() {
         // Given
-        when(libroRepository.findAll()).thenReturn(Collections.emptyList());
+        Page<Libro> page = new PageImpl<>(Collections.emptyList());
+        when(libroRepository.findAll(any(Pageable.class))).thenReturn(page);
 
         // When
-        List<LibroResponseDTO> result = catalogService.obtenerTodos();
+        Page<LibroResponseDTO> result = catalogService.obtenerTodos(Pageable.unpaged());
 
         // Then
         assertTrue(result.isEmpty());
-        verify(libroRepository).findAll();
+        verify(libroRepository).findAll(any(Pageable.class));
+    }
+
+    // =========================================================
+    // obtenerTodos() — paginación con PageRequest
+    // =========================================================
+
+    @Test
+    void obtenerTodos_ConPageRequest_DebeRetornarPaginaConMetadatos() {
+        // Given: 5 libros en total, página de tamaño 2
+        List<Libro> todos = Arrays.asList(new Libro(), new Libro(), new Libro(), new Libro(), new Libro());
+        Page<Libro> page = new PageImpl<>(todos.subList(0, 2), PageRequest.of(0, 2), 5);
+        when(libroRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        // When
+        Page<LibroResponseDTO> result = catalogService.obtenerTodos(PageRequest.of(0, 2));
+
+        // Then: verificar metadatos de paginación
+        assertEquals(2, result.getSize());
+        assertEquals(0, result.getNumber());
+        assertEquals(5, result.getTotalElements());
+        assertEquals(3, result.getTotalPages());
+        assertTrue(result.isFirst());
+        assertFalse(result.isLast());
+        verify(libroRepository).findAll(any(Pageable.class));
+    }
+
+    @Test
+    void obtenerTodos_ConPageRequestSegundaPagina_DebeRetornarPaginaCorrecta() {
+        // Given: 5 libros en total, solicitamos página 2 (índice 1) de tamaño 2
+        List<Libro> todos = Arrays.asList(new Libro(), new Libro(), new Libro(), new Libro(), new Libro());
+        Page<Libro> page = new PageImpl<>(todos.subList(2, 4), PageRequest.of(1, 2), 5);
+        when(libroRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        // When
+        Page<LibroResponseDTO> result = catalogService.obtenerTodos(PageRequest.of(1, 2));
+
+        // Then
+        assertEquals(2, result.getContent().size());
+        assertEquals(1, result.getNumber());
+        assertEquals(5, result.getTotalElements());
+        assertFalse(result.isFirst());
+        assertFalse(result.isLast());
+        verify(libroRepository).findAll(any(Pageable.class));
+    }
+
+    @Test
+    void obtenerTodos_ConSort_DebePasarSortAlRepositorio() {
+        // Given
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "autor"));
+        Page<Libro> page = new PageImpl<>(Arrays.asList(new Libro(), new Libro()));
+        when(libroRepository.findAll(pageable)).thenReturn(page);
+
+        // When
+        Page<LibroResponseDTO> result = catalogService.obtenerTodos(pageable);
+
+        // Then
+        assertEquals(2, result.getTotalElements());
+        verify(libroRepository).findAll(pageable);
+        // Verificar que el Pageable contenía el sort esperado
+        assertEquals(Sort.by(Sort.Direction.DESC, "autor"), pageable.getSort());
+    }
+
+    @Test
+    void obtenerTodos_ConPaginaFueraDeRango_DebeRetornarVacio() {
+        // Given: 3 libros, solicitamos página 10 (índice 10) de tamaño 5 — fuera de rango
+        Page<Libro> page = new PageImpl<>(Collections.emptyList(), PageRequest.of(10, 5), 3);
+        when(libroRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        // When
+        Page<LibroResponseDTO> result = catalogService.obtenerTodos(PageRequest.of(10, 5));
+
+        // Then
+        assertTrue(result.isEmpty());
+        assertEquals(0, result.getNumberOfElements());
+        assertEquals(3, result.getTotalElements());
+        verify(libroRepository).findAll(any(Pageable.class));
     }
 
     @Test

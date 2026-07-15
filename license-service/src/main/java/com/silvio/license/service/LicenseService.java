@@ -18,9 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.micrometer.observation.annotation.Observed;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Slf4j
 @Service
@@ -30,12 +29,15 @@ public class LicenseService {
     private final LicenseRepository licenseRepository;
 
     @Observed(name = "license.obtenerTodas")
-    public List<LicenseResponseDTO> obtenerTodas() {
-        log.info("Consultando todas las licencias");
-        return licenseRepository.findAll()
-                .stream()
-                .map(this::mapearADto)
-                .collect(Collectors.toList());
+    public Page<LicenseResponseDTO> obtenerTodas(Pageable pageable) {
+        if (pageable.isUnpaged()) {
+            log.info("Consultando todas las licencias — sin paginación");
+        } else {
+            log.info("Consultando todas las licencias — página: {}, tamaño: {}",
+                    pageable.getPageNumber(), pageable.getPageSize());
+        }
+        return licenseRepository.findAll(pageable)
+                .map(this::mapearADto);
     }
 
     @Observed(name = "license.obtenerPorLibroId")

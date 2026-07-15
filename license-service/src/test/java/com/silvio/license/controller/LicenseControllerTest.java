@@ -19,11 +19,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.hamcrest.Matchers.containsString;
 
 @WebMvcTest(LicenseController.class)
 class LicenseControllerTest {
@@ -64,27 +70,115 @@ class LicenseControllerTest {
                 licenseResponse(1L, 5, 3),
                 licenseResponse(2L, 10, 8)
         );
-        when(licenseService.obtenerTodas()).thenReturn(lista);
+        Page<LicenseResponseDTO> page = new PageImpl<>(lista);
+        when(licenseService.obtenerTodas(any(Pageable.class))).thenReturn(page);
 
         // When & Then
         mockMvc.perform(get("/api/licenses"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].libroId").value(1))
-                .andExpect(jsonPath("$[1].libroId").value(2));
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.content[0].libroId").value(1))
+                .andExpect(jsonPath("$.content[1].libroId").value(2))
+                .andExpect(jsonPath("$.totalElements").value(2));
 
-        verify(licenseService).obtenerTodas();
+        verify(licenseService).obtenerTodas(any(Pageable.class));
     }
 
     @Test
     void obtenerTodas_devuelve_200_con_lista_vacia() throws Exception {
         // Given
-        when(licenseService.obtenerTodas()).thenReturn(List.of());
+        Page<LicenseResponseDTO> page = new PageImpl<>(List.of());
+        when(licenseService.obtenerTodas(any(Pageable.class))).thenReturn(page);
 
         // When & Then
         mockMvc.perform(get("/api/licenses"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(0));
+                .andExpect(jsonPath("$.content.length()").value(0))
+                .andExpect(jsonPath("$.totalElements").value(0));
+    }
+
+    @Test
+    void obtenerTodas_conTamanioPersonalizado_devuelve_200_con_metadatos() throws Exception {
+        // Given: 5 licencias totales, tamaño 2
+        List<LicenseResponseDTO> lista = Arrays.asList(
+                licenseResponse(1L, 5, 3),
+                licenseResponse(2L, 10, 8)
+        );
+        Page<LicenseResponseDTO> page = new PageImpl<>(lista, PageRequest.of(0, 2), 5L);
+        when(licenseService.obtenerTodas(any(Pageable.class))).thenReturn(page);
+
+        // When & Then: usar ?size=2
+        mockMvc.perform(get("/api/licenses").param("size", "2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.totalElements").value(5))
+                .andExpect(jsonPath("$.size").value(2))
+                .andExpect(jsonPath("$.number").value(0))
+                .andExpect(jsonPath("$.totalPages").value(3))
+                .andExpect(jsonPath("$.first").value(true))
+                .andExpect(jsonPath("$.last").value(false));
+
+        verify(licenseService).obtenerTodas(any(Pageable.class));
+    }
+
+    @Test
+    void obtenerTodas_conPaginaYSortPersonalizados_devuelve_200() throws Exception {
+        // Given: página 2 (índice 1) de tamaño 1, ordenado por totalCopias desc
+        // 2 totales con page=1, size=1 → página 1 es la última
+        LicenseResponseDTO licencia = licenseResponse(3L, 8, 5);
+        Page<LicenseResponseDTO> page = new PageImpl<>(
+                Arrays.asList(licencia),
+                PageRequest.of(1, 1),
+                2L
+        );
+        when(licenseService.obtenerTodas(any(Pageable.class))).thenReturn(page);
+
+        // When & Then
+        mockMvc.perform(get("/api/licenses")
+                        .param("page", "1")
+                        .param("size", "1")
+                        .param("sort", "totalCopias,desc"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(1))
+                .andExpect(jsonPath("$.content[0].libroId").value(3))
+                .andExpect(jsonPath("$.number").value(1))
+                .andExpect(jsonPath("$.totalElements").value(2))
+                .andExpect(jsonPath("$.first").value(false))
+                .andExpect(jsonPath("$.last").value(true));
+
+        verify(licenseService).obtenerTodas(any(Pageable.class));
+    }
+
+    @Test
+    void obtenerTodas_conPaginaNegativa_devuelve_200_conDefault() throws Exception {
+        // Given: Spring Data Web Support maneja page negativa como 0
+        LicenseResponseDTO licencia = licenseResponse(1L, 5, 3);
+        Page<LicenseResponseDTO> page = new PageImpl<>(Arrays.asList(licencia));
+        when(licenseService.obtenerTodas(any(Pageable.class))).thenReturn(page);
+
+        // When: page=-1 debería default a 0
+        mockMvc.perform(get("/api/licenses").param("page", "-1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].libroId").value(1));
+
+        verify(licenseService).obtenerTodas(any(Pageable.class));
+    }
+
+    @Test
+    void obtenerTodas_DebeIncluirEnlacesHATEOASEnContenido() throws Exception {
+        // Given
+        List<LicenseResponseDTO> lista = Arrays.asList(
+                licenseResponse(1L, 5, 3)
+        );
+        Page<LicenseResponseDTO> page = new PageImpl<>(lista);
+        when(licenseService.obtenerTodas(any(Pageable.class))).thenReturn(page);
+
+        // Then: cada elemento en content debe tener su self link
+        mockMvc.perform(get("/api/licenses"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].links[0].rel").value("self"))
+                .andExpect(jsonPath("$.content[0].links[0].href")
+                        .value(containsString("/api/licenses/1")));
     }
 
     // ─── @Positive validation ────────────────────────────────────────────────
@@ -359,13 +453,13 @@ class LicenseControllerTest {
     @Test
     void obtenerTodas_devuelve_500_cuando_errorInterno() throws Exception {
         // RuntimeException → GlobalExceptionHandler devuelve 500
-        when(licenseService.obtenerTodas())
+        when(licenseService.obtenerTodas(any(Pageable.class)))
             .thenThrow(new RuntimeException("Error inesperado de base de datos"));
 
         mockMvc.perform(get("/api/licenses"))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.error").exists());
 
-        verify(licenseService).obtenerTodas();
+        verify(licenseService).obtenerTodas(any(Pageable.class));
     }
 }

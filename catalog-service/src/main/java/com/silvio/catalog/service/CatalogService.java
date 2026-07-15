@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import io.micrometer.observation.annotation.Observed;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,12 +28,15 @@ public class CatalogService {
     private final LibroRepository libroRepository;
 
     @Observed(name = "catalog.obtenerTodos")
-    public List<LibroResponseDTO> obtenerTodos() {
-        log.info("Consultando todos los libros del catálogo");
-        return libroRepository.findAll()
-                .stream()
-                .map(this::mapearADto)
-                .collect(Collectors.toList());
+    public Page<LibroResponseDTO> obtenerTodos(Pageable pageable) {
+        if (pageable.isUnpaged()) {
+            log.info("Consultando todos los libros del catálogo — sin paginación");
+        } else {
+            log.info("Consultando todos los libros del catálogo — página: {}, tamaño: {}",
+                    pageable.getPageNumber(), pageable.getPageSize());
+        }
+        return libroRepository.findAll(pageable)
+                .map(this::mapearADto);
     }
 
     @Observed(name = "catalog.obtenerDisponibles")

@@ -11,6 +11,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -32,21 +35,22 @@ public class CatalogController {
     private final CatalogService catalogService;
 
     @Operation(summary = "Listar todos los libros",
-               description = "Devuelve la lista completa de libros registrados en el catálogo")
+               description = "Devuelve la lista paginada de libros registrados en el catálogo")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Lista obtenida exitosamente"),
+        @ApiResponse(responseCode = "200", description = "Lista paginada obtenida exitosamente"),
         @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
         @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping
-    public ResponseEntity<List<LibroResponseDTO>> obtenerTodos() {
-        List<LibroResponseDTO> libros = catalogService.obtenerTodos();
+    public ResponseEntity<Page<LibroResponseDTO>> obtenerTodos(
+            @PageableDefault(size = 20, sort = "titulo") Pageable pageable) {
+        Page<LibroResponseDTO> pagina = catalogService.obtenerTodos(pageable);
 
-    libros.forEach(dto ->
-            dto.add(linkTo(methodOn(CatalogController.class).obtenerPorId(dto.getId())).withSelfRel())
-    );
+        pagina.getContent().forEach(dto ->
+                dto.add(linkTo(methodOn(CatalogController.class).obtenerPorId(dto.getId())).withSelfRel())
+        );
 
-    return ResponseEntity.ok(libros);
+        return ResponseEntity.ok(pagina);
     }
 
     @Operation(summary = "Listar libros disponibles",
@@ -81,7 +85,7 @@ public class CatalogController {
             @PathVariable @Positive(message = "El ID debe ser un número positivo") Long id) {
             LibroResponseDTO dto = catalogService.obtenerPorId(id);
             dto.add(linkTo(methodOn(CatalogController.class).obtenerPorId(id)).withSelfRel());
-            dto.add(linkTo(methodOn(CatalogController.class).obtenerTodos()).withRel("todos"));
+            dto.add(linkTo(methodOn(CatalogController.class).obtenerTodos(Pageable.unpaged())).withRel("todos"));
             dto.add(linkTo(methodOn(CatalogController.class).obtenerDisponibles()).withRel("disponibles"));
             dto.add(linkTo(methodOn(CatalogController.class).eliminar(id)).withRel("eliminar"));
 
@@ -121,7 +125,7 @@ public class CatalogController {
                  LibroResponseDTO dto = catalogService.agregar(request);
 
             dto.add(linkTo(methodOn(CatalogController.class).obtenerPorId(dto.getId())).withSelfRel());
-            dto.add(linkTo(methodOn(CatalogController.class).obtenerTodos()).withRel("todos"));
+            dto.add(linkTo(methodOn(CatalogController.class).obtenerTodos(Pageable.unpaged())).withRel("todos"));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
         
@@ -143,7 +147,7 @@ public class CatalogController {
         LibroResponseDTO dto = catalogService.actualizar(id, request);
 
             dto.add(linkTo(methodOn(CatalogController.class).obtenerPorId(id)).withSelfRel());
-            dto.add(linkTo(methodOn(CatalogController.class).obtenerTodos()).withRel("todos"));
+            dto.add(linkTo(methodOn(CatalogController.class).obtenerTodos(Pageable.unpaged())).withRel("todos"));
 
         return ResponseEntity.ok(dto);
     }

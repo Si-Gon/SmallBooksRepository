@@ -20,12 +20,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 /**
  * Tests unitarios de LicenseService.
@@ -72,24 +77,107 @@ class LicenseServiceTest {
 
     @Test
     void obtenerTodas_conLicencias_retornaListaMapeada() {
-        when(licenseRepository.findAll()).thenReturn(List.of(
+        Page<License> page = new PageImpl<>(List.of(
             license(1L, 10, 8),
             license(2L, 5, 5)
         ));
+        when(licenseRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        List<LicenseResponseDTO> resultado = licenseService.obtenerTodas();
+        Page<LicenseResponseDTO> resultado = licenseService.obtenerTodas(Pageable.unpaged());
 
         assertThat(resultado).hasSize(2);
-        assertThat(resultado.get(0).getLibroId()).isEqualTo(1L);
-        assertThat(resultado.get(0).getTotalCopias()).isEqualTo(10);
-        assertThat(resultado.get(0).getCopiasDisponibles()).isEqualTo(8);
+        assertThat(resultado.getContent().get(0).getLibroId()).isEqualTo(1L);
+        assertThat(resultado.getContent().get(0).getTotalCopias()).isEqualTo(10);
+        assertThat(resultado.getContent().get(0).getCopiasDisponibles()).isEqualTo(8);
     }
 
     @Test
     void obtenerTodas_sinLicencias_retornaListaVacia() {
-        when(licenseRepository.findAll()).thenReturn(List.of());
+        Page<License> page = new PageImpl<>(List.of());
+        when(licenseRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        assertThat(licenseService.obtenerTodas()).isEmpty();
+        assertThat(licenseService.obtenerTodas(Pageable.unpaged())).isEmpty();
+    }
+
+    // =====================================================================
+    // obtenerTodas() — paginación con PageRequest
+    // =====================================================================
+
+    @Test
+    void obtenerTodas_conPageRequest_retornaPaginaConMetadatos() {
+        // Given: 10 licencias en total, página de tamaño 3
+        Page<License> page = new PageImpl<>(
+            List.of(license(1L, 10, 8), license(2L, 5, 5), license(3L, 8, 8)),
+            PageRequest.of(0, 3),
+            10L
+        );
+        when(licenseRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        // When
+        Page<LicenseResponseDTO> resultado = licenseService.obtenerTodas(PageRequest.of(0, 3));
+
+        // Then: verificar metadatos de paginación
+        assertThat(resultado.getSize()).isEqualTo(3);
+        assertThat(resultado.getNumber()).isZero();
+        assertThat(resultado.getTotalElements()).isEqualTo(10);
+        assertThat(resultado.getTotalPages()).isEqualTo(4);
+        assertThat(resultado.isFirst()).isTrue();
+        assertThat(resultado.isLast()).isFalse();
+        verify(licenseRepository).findAll(any(Pageable.class));
+    }
+
+    @Test
+    void obtenerTodas_conPageRequestSegundaPagina_retornaPaginaCorrecta() {
+        // Given: 7 licencias, segunda página (índice 1) de tamaño 3
+        Page<License> page = new PageImpl<>(
+            List.of(license(4L, 3, 1), license(5L, 6, 6)),
+            PageRequest.of(1, 3),
+            7L
+        );
+        when(licenseRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        // When
+        Page<LicenseResponseDTO> resultado = licenseService.obtenerTodas(PageRequest.of(1, 3));
+
+        // Then
+        assertThat(resultado.getContent()).hasSize(2);
+        assertThat(resultado.getNumber()).isEqualTo(1);
+        assertThat(resultado.getTotalElements()).isEqualTo(7);
+        assertThat(resultado.isFirst()).isFalse();
+        assertThat(resultado.isLast()).isFalse();
+        verify(licenseRepository).findAll(any(Pageable.class));
+    }
+
+    @Test
+    void obtenerTodas_conSort_retornaPaginaOrdenada() {
+        // Given: ordenar por totalCopias descendente
+        Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "totalCopias"));
+        Page<License> page = new PageImpl<>(List.of(license(1L, 10, 8)));
+        when(licenseRepository.findAll(pageable)).thenReturn(page);
+
+        // When
+        Page<LicenseResponseDTO> resultado = licenseService.obtenerTodas(pageable);
+
+        // Then
+        assertThat(resultado.getTotalElements()).isEqualTo(1);
+        verify(licenseRepository).findAll(pageable);
+        assertThat(pageable.getSort()).isEqualTo(Sort.by(Sort.Direction.DESC, "totalCopias"));
+    }
+
+    @Test
+    void obtenerTodas_conPaginaFueraDeRango_retornaVacio() {
+        // Given: 3 licencias, página 10 de tamaño 5 — fuera de rango
+        Page<License> page = new PageImpl<>(List.of(), PageRequest.of(10, 5), 3L);
+        when(licenseRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        // When
+        Page<LicenseResponseDTO> resultado = licenseService.obtenerTodas(PageRequest.of(10, 5));
+
+        // Then
+        assertThat(resultado).isEmpty();
+        assertThat(resultado.getNumberOfElements()).isZero();
+        assertThat(resultado.getTotalElements()).isEqualTo(3);
+        verify(licenseRepository).findAll(any(Pageable.class));
     }
 
     // =====================================================================
