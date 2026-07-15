@@ -92,7 +92,7 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertNotNull(response.getBody());
         assertTrue(response.getBody().containsKey("error"));
-        assertEquals("Error interno inesperado", response.getBody().get("error"));
+        assertEquals("Error interno del servidor", response.getBody().get("error"));
     }
 
     @Test

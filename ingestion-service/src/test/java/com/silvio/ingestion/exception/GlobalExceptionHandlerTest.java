@@ -100,7 +100,7 @@ class GlobalExceptionHandlerTest {
         ResponseEntity<Map<String, String>> response = handler.manejarRuntimeException(ex);
 
         assertEquals(500, response.getStatusCode().value());
-        assertEquals("Error inesperado", response.getBody().get("error"));
+        assertEquals("Error interno del servidor", response.getBody().get("error"));
     }
 
     @Test

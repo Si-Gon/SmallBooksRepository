@@ -109,7 +109,7 @@ class GlobalExceptionHandlerTest {
                 new RuntimeException("Error genérico"));
 
         assertEquals(500, response.getStatusCode().value());
-        assertEquals("Error genérico", response.getBody().get("error"));
+        assertEquals("Error interno del servidor", response.getBody().get("error"));
     }
 
     @Test
@@ -134,7 +134,7 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(404, response.getStatusCode().value());
         assertEquals("Error de comunicación con servicio externo", response.getBody().get("error"));
-        assertEquals("[404] Not Found", response.getBody().get("detalle"));
+        assertEquals("ERR-503", response.getBody().get("codigo"));
     }
 
     @Test
@@ -162,7 +162,7 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(503, response.getStatusCode().value());
         assertEquals("Error de comunicación con servicio externo", response.getBody().get("error"));
-        assertEquals("Connection refused executing GET", response.getBody().get("detalle"));
+        assertEquals("ERR-503", response.getBody().get("codigo"));
     }
 
     @Test
@@ -188,7 +188,8 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(500, response.getStatusCode().value());
         assertEquals("Error de comunicación con servicio externo", response.getBody().get("error"));
-        assertNull(response.getBody().get("detalle"));
+        assertNull(response.getBody().get("detalle")); // ya no se expone; ahora se usa 'codigo'
+        assertEquals("ERR-503", response.getBody().get("codigo"));
     }
 
     // =========================================================

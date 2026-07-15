@@ -65,7 +65,7 @@ class GlobalExceptionHandlerTest {
         assertEquals(404, response.getStatusCode().value());
         Map<String, String> body = response.getBody();
         assertEquals("Error de comunicación con servicio externo", body.get("error"));
-        assertEquals("[404] Not Found", body.get("detalle"));
+        assertEquals("ERR-503", body.get("codigo"));
     }
 
     @Test
@@ -92,7 +92,7 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(503, response.getStatusCode().value());
         assertEquals("Error de comunicación con servicio externo", response.getBody().get("error"));
-        assertEquals("Connection refused executing GET http://elending/api", response.getBody().get("detalle"));
+        assertEquals("ERR-503", response.getBody().get("codigo"));
     }
 
     @Test
@@ -119,7 +119,8 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(500, response.getStatusCode().value());
         assertEquals("Error de comunicación con servicio externo", response.getBody().get("error"));
-        assertNull(response.getBody().get("detalle"));
+        assertNull(response.getBody().get("detalle")); // ya no se expone; ahora se usa 'codigo'
+        assertEquals("ERR-503", response.getBody().get("codigo"));
     }
 
     // =========================================================
@@ -132,7 +133,7 @@ class GlobalExceptionHandlerTest {
                 new RuntimeException("Error inesperado en analytics"));
 
         assertEquals(500, response.getStatusCode().value());
-        assertEquals("Error inesperado en analytics", response.getBody().get("error"));
+        assertEquals("Error interno del servidor", response.getBody().get("error"));
     }
 
     @Test
