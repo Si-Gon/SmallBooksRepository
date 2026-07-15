@@ -7,8 +7,6 @@ services:
     build:
       context: ./microservice-config
     container_name: config-server
-    ports:
-      - "8888:8888"
     depends_on:
       zipkin:
         condition: service_healthy
@@ -24,8 +22,6 @@ services:
     build:
       context: ./microservice-eureka
     container_name: eureka-server
-    ports:
-      - "8761:8761"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
@@ -51,7 +47,7 @@ services:
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
-      - JWT_SECRET=Duoc.1983Duoc.1983Duoc.1983Duoc.1983
+      - JWT_SECRET=${JWT_SECRET}
     depends_on:
       config:
         condition: service_healthy
@@ -71,13 +67,11 @@ services:
     build:
       context: ./identity-services
     container_name: identity
-    ports:
-      - "8084:8084"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
-      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_identity?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-      - JWT_SECRET=Duoc.1983Duoc.1983Duoc.1983Duoc.1983
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL_IDENTITY}
+      - JWT_SECRET=${JWT_SECRET}
     depends_on:
       config:
         condition: service_healthy
@@ -91,12 +85,10 @@ services:
     build:
       context: ./catalog-service
     container_name: catalog
-    ports:
-      - "8085:8085"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
-      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_catalog?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL_CATALOG}
     depends_on:
       config:
         condition: service_healthy
@@ -110,12 +102,10 @@ services:
     build:
       context: ./license-service
     container_name: license
-    ports:
-      - "8086:8086"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
-      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_license?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL_LICENSE}
     depends_on:
       config:
         condition: service_healthy
@@ -129,12 +119,10 @@ services:
     build:
       context: ./elending-service
     container_name: elending
-    ports:
-      - "8087:8087"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
-      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_lending?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL_ELENDING}
       - SPRING_RABBITMQ_HOST=rabbitmq
     depends_on:
       config:
@@ -151,12 +139,10 @@ services:
     build:
       context: ./notification-service
     container_name: notification
-    ports:
-      - "8088:8088"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
-      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_notifications?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL_NOTIFICATION}
       - SPRING_RABBITMQ_HOST=rabbitmq
     depends_on:
       config:
@@ -173,12 +159,10 @@ services:
     build:
       context: ./subscription-service
     container_name: subscription
-    ports:
-      - "8089:8089"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
-      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_subscriptions?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL_SUBSCRIPTION}
     depends_on:
       config:
         condition: service_healthy
@@ -192,8 +176,6 @@ services:
     build:
       context: ./search-service
     container_name: search
-    ports:
-      - "8090:8090"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
@@ -210,8 +192,6 @@ services:
     build:
       context: ./analytics-service
     container_name: analytics
-    ports:
-      - "8091:8091"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
@@ -228,12 +208,10 @@ services:
     build:
       context: ./ingestion-service
     container_name: ingestion
-    ports:
-      - "8092:8092"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
-      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/db_ingestion?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL_INGESTION}
     depends_on:
       config:
         condition: service_healthy
@@ -247,8 +225,6 @@ services:
     build:
       context: ./content-service
     container_name: content
-    ports:
-      - "8093:8093"
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
@@ -262,7 +238,7 @@ services:
 
   # ─── 14. ZIPKIN ──────────────────────────────────────────────────────────────
   zipkin:
-    image: openzipkin/zipkin:latest
+    image: openzipkin/zipkin:3.4.2
     container_name: zipkin
     ports:
       - "9411:9411"     # UI — http://localhost:9411

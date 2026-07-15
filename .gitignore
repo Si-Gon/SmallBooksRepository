@@ -38,6 +38,8 @@ Thumbs.db
 # --- Variables de entorno (nunca subir secrets) ---
 .env
 *.env
+# ... pero el template .env.example sí se sube
+!.env.example
 
 # --- Maven wrapper jar (se descarga automáticamente) ---
 !**/mvnw
