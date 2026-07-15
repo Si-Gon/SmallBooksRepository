@@ -1,6 +1,9 @@
 package com.silvio.identity.service;
 
 import com.silvio.identity.config.JwtProperties;
+import com.silvio.identity.dto.AuthRequest;
+import com.silvio.identity.dto.AuthResponse;
+import com.silvio.identity.dto.RefreshTokenRequest;
 import com.silvio.identity.dto.UsuarioDTO;
 import com.silvio.identity.model.User;
 import com.silvio.identity.exception.ContrasenaIncorrectaException;
@@ -10,8 +13,12 @@ import com.silvio.identity.exception.TokenInvalidoException;
 import com.silvio.identity.exception.UsuarioDuplicadoException;
 import com.silvio.identity.exception.UsuarioNotFoundException;
 import com.silvio.identity.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import com.silvio.identity.security.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,12 +40,25 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProperties jwtProperties;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+
+    public UserService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder,
+                       JwtProperties jwtProperties,
+                       @Lazy AuthenticationManager authenticationManager,
+                       JwtUtil jwtUtil) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtProperties = jwtProperties;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+    }
 
     @Observed(name = "identity.registerUser")
     @Transactional
@@ -55,6 +75,59 @@ public class UserService implements UserDetailsService {
         user.setRoles(roles != null && !roles.isEmpty() ? roles : Set.of("ROLE_USER"));
         userRepository.save(user);
         log.info("Usuario registrado exitosamente: {} con roles: {}", username, user.getRoles());
+    }
+
+    @Observed(name = "identity.login")
+    @Transactional
+    public AuthResponse login(AuthRequest request) {
+        log.info("Autenticando usuario: {}", request.getUsername());
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String accessToken = jwtUtil.generateAccessToken(userDetails);
+        String refreshToken = jwtUtil.generateRefreshToken(userDetails.getUsername());
+        // Almacenar hash del refresh token para poder rotarlo después
+        storeRefreshTokenHash(userDetails.getUsername(), refreshToken);
+        log.info("Login exitoso para: {}", userDetails.getUsername());
+        return new AuthResponse(accessToken, refreshToken,
+                " Login exitoso. Bienvenido " + userDetails.getUsername(),
+                userDetails.getUsername());
+    }
+
+    @Observed(name = "identity.refreshToken")
+    @Transactional
+    public AuthResponse refreshToken(RefreshTokenRequest request) {
+        String refreshToken = request.getRefreshToken();
+        log.info("Procesando solicitud de refresco de token");
+
+        // Verificar expiración primero antes de cualquier otra validación JWT
+        if (jwtUtil.isTokenExpired(refreshToken)) {
+            log.warn("Refresh token expirado");
+            throw new TokenExpiradoException(" Refresh token expirado");
+        }
+
+        String tokenType = jwtUtil.extractTokenType(refreshToken);
+        if (!"refresh".equals(tokenType)) {
+            log.warn("Token inválido: no es un refresh token");
+            throw new TokenInvalidoException(" Token inválido: no es un refresh token");
+        }
+
+        String username = jwtUtil.extractUsername(refreshToken);
+        try {
+            UserDetails userDetails = loadUserByUsername(username);
+            String newAccessToken = jwtUtil.generateAccessToken(userDetails);
+            String newRefreshToken = jwtUtil.generateRefreshToken(username);
+            // Rotar: invalida el viejo, almacena el nuevo hash
+            rotateRefreshToken(refreshToken, newRefreshToken);
+            log.info("Token refrescado exitosamente para: {}", username);
+            return new AuthResponse(newAccessToken, newRefreshToken,
+                    " Token refrescado exitosamente", username);
+        } catch (TokenInvalidoException | UsernameNotFoundException e) {
+            // Token inválido, ya rotado, usuario eliminado o posible robo — forzar re-login
+            log.warn("Refresh token inválido o ya utilizado para: {}", username);
+            throw new TokenInvalidoException(
+                    " Refresh token inválido o ya utilizado. Por favor inicia sesión nuevamente.");
+        }
     }
 
     @Override
@@ -129,6 +202,18 @@ public class UserService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
         log.info("Contraseña cambiada exitosamente para usuario: {}", username);
+    }
+
+    /**
+     * Cambia la contraseña del usuario autenticado extrayendo el username desde el token JWT.
+     * Sigue el patrón CSR: el Controller delega toda la lógica de negocio al Service.
+     */
+    @Observed(name = "identity.changePasswordFromToken")
+    @Transactional
+    public void changePasswordFromToken(String authHeader, String currentPassword, String newPassword) {
+        String token = authHeader.substring(7);
+        String username = jwtUtil.extractUsername(token);
+        changePassword(username, currentPassword, newPassword);
     }
 
     // ─── Refresh Token Rotation ──────────────────────────────────────────────

@@ -53,7 +53,7 @@ class UserControllerIntegrationTest {
         // When & Then — autenticado pero el username no existe en BD → 404
         mockMvc.perform(get("/api/users/noexiste"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").exists());
+                .andExpect(jsonPath("$.message").exists());
     }
 
     @Test

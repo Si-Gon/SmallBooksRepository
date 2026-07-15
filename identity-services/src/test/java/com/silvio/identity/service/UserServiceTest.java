@@ -1,6 +1,9 @@
 package com.silvio.identity.service;
 
 import com.silvio.identity.config.JwtProperties;
+import com.silvio.identity.dto.AuthRequest;
+import com.silvio.identity.dto.AuthResponse;
+import com.silvio.identity.dto.RefreshTokenRequest;
 import com.silvio.identity.dto.UsuarioDTO;
 import com.silvio.identity.exception.ContrasenaIncorrectaException;
 import com.silvio.identity.exception.TokenExpiradoException;
@@ -9,11 +12,16 @@ import com.silvio.identity.exception.UsuarioDuplicadoException;
 import com.silvio.identity.exception.UsuarioNotFoundException;
 import com.silvio.identity.model.User;
 import com.silvio.identity.repository.UserRepository;
+import com.silvio.identity.security.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,6 +54,12 @@ class UserServiceTest {
 
     @Mock
     private JwtProperties jwtProperties;
+
+    @Mock
+    private AuthenticationManager authenticationManager;
+
+    @Mock
+    private JwtUtil jwtUtil;
 
     // ─── helpers ─────────────────────────────────────────────────────────────
 
@@ -507,5 +521,218 @@ class UserServiceTest {
 
         assertTrue(ex.getMessage().contains("no encontrado"));
         verify(userRepository).findByUsername(null);
+    }
+
+    // ─── tests login ─────────────────────────────────────────────────────────
+
+    @Test
+    void login_exitoso_debeRetornarAuthResponse() {
+        // Given
+        AuthRequest request = new AuthRequest();
+        request.setUsername("silvio");
+        request.setPassword("password123");
+
+        Authentication authentication = mock(Authentication.class);
+        UserDetails userDetails = mock(UserDetails.class);
+        when(userDetails.getUsername()).thenReturn("silvio");
+        when(authentication.getPrincipal()).thenReturn(userDetails);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(authentication);
+        when(jwtUtil.generateAccessToken(userDetails)).thenReturn("access.token.test");
+        when(jwtUtil.generateRefreshToken("silvio")).thenReturn("refresh.token.test");
+
+        // storeRefreshTokenHash necesita un usuario en BD
+        User user = usuarioBase("silvio");
+        when(userRepository.findByUsername("silvio")).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
+
+        // When
+        AuthResponse response = userService.login(request);
+
+        // Then
+        assertNotNull(response);
+        assertEquals("access.token.test", response.getAccessToken());
+        assertEquals("refresh.token.test", response.getRefreshToken());
+        assertEquals("silvio", response.getUsername());
+        assertTrue(response.getMessage().contains("Login exitoso"));
+        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(jwtUtil).generateAccessToken(userDetails);
+        verify(jwtUtil).generateRefreshToken("silvio");
+        // Verify refresh token hash stored
+        verify(userRepository).findByUsername("silvio");
+        verify(userRepository, atLeast(1)).save(any(User.class));
+    }
+
+    @Test
+    void login_credencialesInvalidas_debePropagarBadCredentials() {
+        // Given
+        AuthRequest request = new AuthRequest();
+        request.setUsername("silvio");
+        request.setPassword("wrongpassword");
+
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenThrow(new BadCredentialsException("Bad credentials"));
+
+        // When & Then
+        assertThrows(BadCredentialsException.class, () -> userService.login(request));
+        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(jwtUtil, never()).generateAccessToken(any());
+        verify(jwtUtil, never()).generateRefreshToken(any());
+    }
+
+    // ─── tests refreshToken ──────────────────────────────────────────────────
+
+    @Test
+    void refreshToken_exitoso_debeRotarYRetornarNuevosTokens() {
+        // Given
+        String oldRefreshToken = "refresh.token.valido.para.rotar";
+        RefreshTokenRequest request = new RefreshTokenRequest();
+        request.setRefreshToken(oldRefreshToken);
+
+        when(jwtUtil.isTokenExpired(oldRefreshToken)).thenReturn(false);
+        when(jwtUtil.extractTokenType(oldRefreshToken)).thenReturn("refresh");
+        when(jwtUtil.extractUsername(oldRefreshToken)).thenReturn("silvio");
+
+        UserDetails userDetails = mock(UserDetails.class);
+        when(userDetails.getUsername()).thenReturn("silvio");
+        // loadUserByUsername busca en repo
+        User user = usuarioBase("silvio");
+        when(userRepository.findByUsername("silvio")).thenReturn(Optional.of(user));
+
+        when(jwtUtil.generateAccessToken(any(UserDetails.class))).thenReturn("nuevo.access.token");
+        when(jwtUtil.generateRefreshToken("silvio")).thenReturn("nuevo.refresh.token");
+
+        // rotateRefreshToken: hash del old token debe coincidir con BD
+        String expectedOldHash = hashTokenForTest(oldRefreshToken);
+        user.setRefreshTokenHash(expectedOldHash);
+        when(userRepository.findByRefreshTokenHash(expectedOldHash)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
+
+        // When
+        AuthResponse response = userService.refreshToken(request);
+
+        // Then
+        assertNotNull(response);
+        assertEquals("nuevo.access.token", response.getAccessToken());
+        assertEquals("nuevo.refresh.token", response.getRefreshToken());
+        assertEquals("silvio", response.getUsername());
+        assertTrue(response.getMessage().contains("refrescado"));
+        verify(jwtUtil).isTokenExpired(oldRefreshToken);
+        verify(jwtUtil).extractTokenType(oldRefreshToken);
+        verify(jwtUtil).extractUsername(oldRefreshToken);
+        verify(jwtUtil).generateAccessToken(any(UserDetails.class));
+        verify(jwtUtil).generateRefreshToken("silvio");
+        // Verify rotation: hash debe haber cambiado (nuevo hash almacenado)
+        assertNotNull(user.getRefreshTokenHash());
+        assertEquals(hashTokenForTest("nuevo.refresh.token"), user.getRefreshTokenHash());
+    }
+
+    @Test
+    void refreshToken_expirado_debeLanzarTokenExpiradoException() {
+        // Given
+        String expiredToken = "refresh.token.expirado";
+        RefreshTokenRequest request = new RefreshTokenRequest();
+        request.setRefreshToken(expiredToken);
+
+        when(jwtUtil.isTokenExpired(expiredToken)).thenReturn(true);
+
+        // When & Then
+        TokenExpiradoException ex = assertThrows(TokenExpiradoException.class,
+                () -> userService.refreshToken(request));
+        assertTrue(ex.getMessage().contains("expirado"));
+        verify(jwtUtil).isTokenExpired(expiredToken);
+        verify(jwtUtil, never()).extractTokenType(anyString());
+        verify(jwtUtil, never()).extractUsername(anyString());
+    }
+
+    @Test
+    void refreshToken_tipoAccess_debeLanzarTokenInvalidoException() {
+        // Given
+        String accessToken = "access.token.no.refresh";
+        RefreshTokenRequest request = new RefreshTokenRequest();
+        request.setRefreshToken(accessToken);
+
+        when(jwtUtil.isTokenExpired(accessToken)).thenReturn(false);
+        when(jwtUtil.extractTokenType(accessToken)).thenReturn("access");
+
+        // When & Then
+        TokenInvalidoException ex = assertThrows(TokenInvalidoException.class,
+                () -> userService.refreshToken(request));
+        assertTrue(ex.getMessage().contains("no es un refresh token"));
+        verify(jwtUtil).isTokenExpired(accessToken);
+        verify(jwtUtil).extractTokenType(accessToken);
+        verify(jwtUtil, never()).extractUsername(anyString());
+    }
+
+    @Test
+    void refreshToken_yaRotado_debeLanzarTokenInvalidoException() {
+        // Given — el token existía pero su hash ya no está en BD (ya fue rotado)
+        String oldRefreshToken = "refresh.token.ya.rotado";
+        RefreshTokenRequest request = new RefreshTokenRequest();
+        request.setRefreshToken(oldRefreshToken);
+
+        when(jwtUtil.isTokenExpired(oldRefreshToken)).thenReturn(false);
+        when(jwtUtil.extractTokenType(oldRefreshToken)).thenReturn("refresh");
+        when(jwtUtil.extractUsername(oldRefreshToken)).thenReturn("silvio");
+
+        User user = usuarioBase("silvio");
+        when(userRepository.findByUsername("silvio")).thenReturn(Optional.of(user));
+
+        // El hash del old token NO existe en BD — simula token ya rotado
+        String expectedOldHash = hashTokenForTest(oldRefreshToken);
+        when(userRepository.findByRefreshTokenHash(expectedOldHash)).thenReturn(Optional.empty());
+
+        // When & Then
+        TokenInvalidoException ex = assertThrows(TokenInvalidoException.class,
+                () -> userService.refreshToken(request));
+        assertTrue(ex.getMessage().contains("inválido") || ex.getMessage().contains("ya utilizado"));
+        // loadUserByUsername y generateAccessToken NO deben alcanzarse
+        // porque rotateRefreshToken falla primero
+        verify(userRepository).findByRefreshTokenHash(expectedOldHash);
+    }
+
+    // ─── tests changePassword(authHeader) ─────────────────────────────────────
+
+    @Test
+    void changePasswordFromToken_exitoso_debeExtraerUsernameYCambiarPassword() {
+        // Given
+        String authHeader = "Bearer jwt.token.para.silvio";
+        String currentPassword = "miPasswordActual";
+        String newPassword = "miNuevaPassword123!";
+
+        when(jwtUtil.extractUsername("jwt.token.para.silvio")).thenReturn("silvio");
+
+        User user = usuarioBase("silvio");
+        when(userRepository.findByUsername("silvio")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(currentPassword, user.getPassword())).thenReturn(true);
+        when(passwordEncoder.encode(newPassword)).thenReturn("$2a$10$nuevoHash");
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
+
+        // When
+        userService.changePasswordFromToken(authHeader, currentPassword, newPassword);
+
+        // Then
+        verify(jwtUtil).extractUsername("jwt.token.para.silvio");
+        verify(passwordEncoder).matches(currentPassword, "$2a$10$hashedpassword");
+        verify(passwordEncoder).encode(newPassword);
+        verify(userRepository).save(any(User.class));
+        // Verify delegation to changePassword(username, ...)
+        verify(userRepository).findByUsername("silvio");
+    }
+
+    @Test
+    void changePasswordFromToken_usuarioNoExistente_debeLanzarUsuarioNotFoundException() {
+        // Given
+        String authHeader = "Bearer jwt.token.inexistente";
+        when(jwtUtil.extractUsername("jwt.token.inexistente")).thenReturn("noexiste");
+        when(userRepository.findByUsername("noexiste")).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(UsuarioNotFoundException.class,
+                () -> userService.changePasswordFromToken(authHeader, "pass", "nueva"));
+        verify(jwtUtil).extractUsername("jwt.token.inexistente");
+        verify(userRepository).findByUsername("noexiste");
+        verify(passwordEncoder, never()).matches(anyString(), anyString());
+        verify(userRepository, never()).save(any(User.class));
     }
 }

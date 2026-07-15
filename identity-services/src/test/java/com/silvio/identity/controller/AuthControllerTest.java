@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.silvio.identity.config.SecurityConfig;
 import com.silvio.identity.dto.*;
 import com.silvio.identity.security.JwtAuthenticationFilter;
-import com.silvio.identity.security.JwtUtil;
 import com.silvio.identity.exception.TokenExpiradoException;
 import com.silvio.identity.exception.TokenInvalidoException;
 import com.silvio.identity.exception.UsuarioDuplicadoException;
@@ -19,21 +18,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -59,6 +53,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Al excluir SecurityConfig, Spring Boot aplica su auto-configuración de
  * seguridad por defecto: httpBasic con todas las rutas autenticadas.
  * El TestSecurityConfig reemplaza eso con "permitAll".
+ *
+ * Patrón CSR: el controller delega toda la lógica de negocio a UserService.
+ * Los tests verifican que el controller orquesta correctamente las llamadas
+ * al servicio y construye las respuestas HTTP adecuadas.
  */
 @WebMvcTest(
     value = AuthController.class,
@@ -75,12 +73,6 @@ class AuthControllerTest {
 
     @MockBean
     private UserService userService;
-
-    @MockBean
-    private JwtUtil jwtUtil;
-
-    @MockBean
-    private AuthenticationManager authenticationManager;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -103,11 +95,6 @@ class AuthControllerTest {
         }
     }
 
-    private UserDetails userDetailsTest(String username) {
-        return new User(username, "$2a$10$hash",
-                List.of(new SimpleGrantedAuthority("ROLE_USER")));
-    }
-
     // =========================================================
     // POST /auth/login
     // =========================================================
@@ -118,15 +105,11 @@ class AuthControllerTest {
         request.setUsername("silvio");
         request.setPassword("password123");
 
-        UserDetails userDetails = userDetailsTest("silvio");
-        UsernamePasswordAuthenticationToken authToken =
-                new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
+        AuthResponse expectedResponse = new AuthResponse(
+                "access.token.fake", "refresh.token.fake",
+                " Login exitoso. Bienvenido silvio", "silvio");
 
-        when(authenticationManager.authenticate(any())).thenReturn(authToken);
-        when(jwtUtil.generateAccessToken(any())).thenReturn("access.token.fake");
-        when(jwtUtil.generateRefreshToken(any())).thenReturn("refresh.token.fake");
-        doNothing().when(userService).storeRefreshTokenHash(any(), any());
+        when(userService.login(any(AuthRequest.class))).thenReturn(expectedResponse);
 
         mockMvc.perform(post("/auth/login").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -135,9 +118,7 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.accessToken").value("access.token.fake"))
                 .andExpect(jsonPath("$.refreshToken").value("refresh.token.fake"));
 
-        verify(authenticationManager).authenticate(any());
-        verify(jwtUtil).generateAccessToken(any());
-        verify(userService).storeRefreshTokenHash(eq("silvio"), any());
+        verify(userService).login(any(AuthRequest.class));
     }
 
     @Test
@@ -146,7 +127,7 @@ class AuthControllerTest {
         request.setUsername("silvio");
         request.setPassword("wrongpassword");
 
-        when(authenticationManager.authenticate(any()))
+        when(userService.login(any(AuthRequest.class)))
                 .thenThrow(new BadCredentialsException("Credenciales incorrectas"));
 
         mockMvc.perform(post("/auth/login").with(csrf())
@@ -257,8 +238,7 @@ class AuthControllerTest {
         request.setCurrentPassword("passwordActual");
         request.setNewPassword("NuevaPassword123!");
 
-        when(jwtUtil.extractUsername("fake.jwt.token")).thenReturn("silvio");
-        doNothing().when(userService).changePassword(any(), any(), any());
+        doNothing().when(userService).changePasswordFromToken(anyString(), anyString(), anyString());
 
         mockMvc.perform(post("/auth/change-password").with(csrf())
                         .header("Authorization", "Bearer fake.jwt.token")
@@ -267,8 +247,7 @@ class AuthControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").exists());
 
-        verify(jwtUtil).extractUsername("fake.jwt.token");
-        verify(userService).changePassword(eq("silvio"), any(), any());
+        verify(userService).changePasswordFromToken(eq("Bearer fake.jwt.token"), eq("passwordActual"), eq("NuevaPassword123!"));
     }
 
     // =========================================================
@@ -277,21 +256,15 @@ class AuthControllerTest {
 
     @Test
     void refreshToken_exitoso_debeRetornar200ConNuevosTokens() throws Exception {
-        // Given
         RefreshTokenRequest request = new RefreshTokenRequest();
         request.setRefreshToken("refresh.token.valido");
 
-        UserDetails userDetails = userDetailsTest("silvio");
+        AuthResponse expectedResponse = new AuthResponse(
+                "nuevo.access.token", "nuevo.refresh.token",
+                " Token refrescado exitosamente", "silvio");
 
-        when(jwtUtil.isTokenExpired("refresh.token.valido")).thenReturn(false);
-        when(jwtUtil.extractTokenType("refresh.token.valido")).thenReturn("refresh");
-        when(jwtUtil.extractUsername("refresh.token.valido")).thenReturn("silvio");
-        when(userService.loadUserByUsername("silvio")).thenReturn(userDetails);
-        when(jwtUtil.generateAccessToken(userDetails)).thenReturn("nuevo.access.token");
-        when(jwtUtil.generateRefreshToken("silvio")).thenReturn("nuevo.refresh.token");
-        doNothing().when(userService).rotateRefreshToken("refresh.token.valido", "nuevo.refresh.token");
+        when(userService.refreshToken(any(RefreshTokenRequest.class))).thenReturn(expectedResponse);
 
-        // When & Then
         mockMvc.perform(post("/auth/refresh").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -301,54 +274,37 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.message").value(" Token refrescado exitosamente"))
                 .andExpect(jsonPath("$.username").value("silvio"));
 
-        verify(jwtUtil).isTokenExpired("refresh.token.valido");
-        verify(jwtUtil).extractTokenType("refresh.token.valido");
-        verify(userService).rotateRefreshToken("refresh.token.valido", "nuevo.refresh.token");
+        verify(userService).refreshToken(any(RefreshTokenRequest.class));
     }
 
     @Test
     void refreshToken_expirado_debeRetornar401() throws Exception {
-        // Given
         RefreshTokenRequest request = new RefreshTokenRequest();
         request.setRefreshToken("refresh.token.expirado");
 
-        // isTokenExpired retorna true — se verifica ANTES de cualquier otra validación
-        when(jwtUtil.isTokenExpired("refresh.token.expirado")).thenReturn(true);
+        // El servicio lanza TokenExpiradoException → GlobalExceptionHandler devuelve 401
+        when(userService.refreshToken(any(RefreshTokenRequest.class)))
+                .thenThrow(new TokenExpiradoException(" Refresh token expirado"));
 
-        // When & Then
         mockMvc.perform(post("/auth/refresh").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.message").value(" Refresh token expirado"));
 
-        verify(jwtUtil).isTokenExpired("refresh.token.expirado");
-        // No deben invocarse métodos posteriores si el token ya expiró
-        verify(jwtUtil, never()).extractTokenType(any());
-        verify(userService, never()).rotateRefreshToken(any(), any());
+        verify(userService).refreshToken(any(RefreshTokenRequest.class));
     }
 
     @Test
     void refreshToken_tokenYaRotado_debeRetornar401() throws Exception {
-        // Given
         RefreshTokenRequest request = new RefreshTokenRequest();
         request.setRefreshToken("refresh.token.ya.rotado");
 
-        UserDetails userDetails = userDetailsTest("silvio");
+        // El servicio lanza TokenInvalidoException cuando el token ya fue rotado
+        when(userService.refreshToken(any(RefreshTokenRequest.class)))
+                .thenThrow(new TokenInvalidoException(
+                        " Refresh token inválido o ya utilizado. Por favor inicia sesión nuevamente."));
 
-        // El token no está expirado y es de tipo refresh
-        when(jwtUtil.isTokenExpired("refresh.token.ya.rotado")).thenReturn(false);
-        when(jwtUtil.extractTokenType("refresh.token.ya.rotado")).thenReturn("refresh");
-        when(jwtUtil.extractUsername("refresh.token.ya.rotado")).thenReturn("silvio");
-        when(userService.loadUserByUsername("silvio")).thenReturn(userDetails);
-        when(jwtUtil.generateAccessToken(userDetails)).thenReturn("nuevo.access.token");
-        when(jwtUtil.generateRefreshToken("silvio")).thenReturn("nuevo.refresh.token");
-
-        // rotateRefreshToken lanza excepción porque el token ya fue rotado (reuso detectado)
-        doThrow(new TokenInvalidoException())
-                .when(userService).rotateRefreshToken("refresh.token.ya.rotado", "nuevo.refresh.token");
-
-        // When & Then
         mockMvc.perform(post("/auth/refresh").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -356,32 +312,25 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.message").value(
                         " Refresh token inválido o ya utilizado. Por favor inicia sesión nuevamente."));
 
-        verify(jwtUtil).isTokenExpired("refresh.token.ya.rotado");
-        verify(jwtUtil).extractTokenType("refresh.token.ya.rotado");
-        verify(userService).rotateRefreshToken("refresh.token.ya.rotado", "nuevo.refresh.token");
+        verify(userService).refreshToken(any(RefreshTokenRequest.class));
     }
 
     @Test
     void refreshToken_tokenTipoAccess_debeRetornar401() throws Exception {
-        // Given
         RefreshTokenRequest request = new RefreshTokenRequest();
         request.setRefreshToken("access.token.falso");
 
-        // Token no expirado pero es de tipo "access", no "refresh"
-        when(jwtUtil.isTokenExpired("access.token.falso")).thenReturn(false);
-        when(jwtUtil.extractTokenType("access.token.falso")).thenReturn("access");
+        // El servicio lanza TokenInvalidoException si el token no es de tipo refresh
+        when(userService.refreshToken(any(RefreshTokenRequest.class)))
+                .thenThrow(new TokenInvalidoException(" Token inválido: no es un refresh token"));
 
-        // When & Then
         mockMvc.perform(post("/auth/refresh").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.message").value(" Token inválido: no es un refresh token"));
 
-        verify(jwtUtil).isTokenExpired("access.token.falso");
-        verify(jwtUtil).extractTokenType("access.token.falso");
-        // No debe llegar a rotar si el tipo es incorrecto
-        verify(userService, never()).rotateRefreshToken(any(), any());
+        verify(userService).refreshToken(any(RefreshTokenRequest.class));
     }
 
     // =========================================================
@@ -390,7 +339,6 @@ class AuthControllerTest {
 
     @Test
     void forgotPassword_usuarioNoExistente_debeRetornar404() throws Exception {
-        // Given
         PasswordResetRequest request = new PasswordResetRequest();
         request.setUsername("usuario_inexistente");
 
@@ -398,7 +346,6 @@ class AuthControllerTest {
         doThrow(new UsuarioNotFoundException("usuario_inexistente"))
                 .when(userService).createPasswordResetToken("usuario_inexistente");
 
-        // When & Then
         mockMvc.perform(post("/auth/forgot-password").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))

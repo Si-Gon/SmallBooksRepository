@@ -27,8 +27,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Map<String, String>> manejarBadCredentials(BadCredentialsException ex) {
         Map<String, String> error = new HashMap<>();
-        error.put("error", "Credenciales inválidas");
-        error.put("message", ex.getMessage());
+        error.put("message", "Credenciales inválidas");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
@@ -36,7 +35,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<Map<String, String>> manejarUsernameNotFound(UsernameNotFoundException ex) {
         Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
+        error.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
@@ -44,7 +43,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UsuarioNotFoundException.class)
     public ResponseEntity<Map<String, String>> manejarUsuarioNoEncontrado(UsuarioNotFoundException ex) {
         Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
+        error.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
@@ -52,7 +51,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UsuarioDuplicadoException.class)
     public ResponseEntity<Map<String, String>> manejarUsuarioDuplicado(UsuarioDuplicadoException ex) {
         Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
+        error.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
@@ -60,7 +59,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({TokenExpiradoException.class, TokenInvalidoException.class})
     public ResponseEntity<Map<String, String>> manejarTokenInvalido(RuntimeException ex) {
         Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
+        error.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
@@ -68,7 +67,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ContrasenaIncorrectaException.class)
     public ResponseEntity<Map<String, String>> manejarContrasenaIncorrecta(ContrasenaIncorrectaException ex) {
         Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
+        error.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
@@ -76,7 +75,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ErrorSeguridadException.class)
     public ResponseEntity<Map<String, String>> manejarErrorSeguridad(ErrorSeguridadException ex) {
         Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
+        error.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
@@ -84,7 +83,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> manejarRuntimeException(RuntimeException ex) {
         Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
+        error.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 }

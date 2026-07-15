@@ -122,6 +122,28 @@ class SecurityConfigYamlTest {
     }
 
     @Test
+    void gatewayYaml_actuatorShowDetailsEsWhenAuthorized() throws IOException {
+        // Verifica que show-details en Gateway esté en "when-authorized" (no "always")
+        // Issue 1: Restrict Actuator endpoints — cambio de "always" a "when-authorized"
+        Path projectRoot = findProjectRoot();
+        assertThat(projectRoot).as("Debe encontrar la raíz del proyecto").isNotNull();
+
+        Path gatewayYaml = projectRoot.resolve(
+                "microservice-gateway/src/main/resources/application.yml");
+        assertThat(gatewayYaml).as("Gateway application.yml debe existir").exists();
+
+        String content = Files.readString(gatewayYaml);
+
+        assertThat(content)
+                .as("Gateway application.yml debe tener show-details: when-authorized")
+                .contains("show-details: when-authorized");
+
+        assertThat(content)
+                .as("Gateway application.yml NO debe tener show-details: always")
+                .doesNotContain("show-details: always");
+    }
+
+    @Test
     void ningunYamlTieneAllowedOriginsWildcard() throws IOException {
         // Verifica que ningún YAML tenga allowedOrigins: "*"
         Path projectRoot = findProjectRoot();
