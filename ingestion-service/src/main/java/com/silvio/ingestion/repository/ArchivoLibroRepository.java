@@ -10,5 +10,8 @@ import java.util.Optional;
 public interface ArchivoLibroRepository extends JpaRepository<ArchivoLibro, Long> {
 
     Optional<ArchivoLibro> findByLibroId(Long libroId);
+
+    Optional<ArchivoLibroInfo> findInfoByLibroId(Long libroId);
+
     boolean existsByLibroId(Long libroId);
 }

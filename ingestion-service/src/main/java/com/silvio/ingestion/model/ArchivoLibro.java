@@ -38,7 +38,9 @@ public class ArchivoLibro {
     private LocalDateTime fechaSubida;
     
     // En Opción B (futura): id del BLOB en MySQL
+    // Cargado bajo demanda — evitar tráfico innecesario de LONGBLOB en consultas de metadatos
     @Lob
+    @Basic(fetch = FetchType.LAZY)
     @Column(columnDefinition = "LONGBLOB")
     private byte[] datos;
 }

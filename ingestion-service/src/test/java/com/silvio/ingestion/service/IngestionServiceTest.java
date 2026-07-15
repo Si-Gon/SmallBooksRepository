@@ -2,8 +2,10 @@ package com.silvio.ingestion.service;
 
 import com.silvio.ingestion.dto.ArchivoLibroDTO;
 import com.silvio.ingestion.exception.ArchivoNoEncontradoException;
+import com.silvio.ingestion.exception.ErrorLecturaArchivoException;
 import com.silvio.ingestion.exception.FormatoNoPermitidoException;
 import com.silvio.ingestion.model.ArchivoLibro;
+import com.silvio.ingestion.repository.ArchivoLibroInfo;
 import com.silvio.ingestion.repository.ArchivoLibroRepository;
 import com.silvio.ingestion.storage.StorageService;
 import org.junit.jupiter.api.Test;
@@ -12,7 +14,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -57,6 +61,19 @@ class IngestionServiceTest {
         a.setFechaSubida(LocalDateTime.now());
         a.setDatos("contenido".getBytes());
         return a;
+    }
+
+    // Proyección ligera para pruebas de obtenerInfo() — sin LONGBLOB
+    private ArchivoLibroInfo archivoInfo(Long libroId) {
+        LocalDateTime now = LocalDateTime.now();
+        ArchivoLibroInfo info = mock(ArchivoLibroInfo.class);
+        when(info.getId()).thenReturn(10L);
+        when(info.getLibroId()).thenReturn(libroId);
+        when(info.getNombreArchivo()).thenReturn("libro.pdf");
+        when(info.getFormato()).thenReturn("PDF");
+        when(info.getTamanio()).thenReturn(1024L);
+        when(info.getFechaSubida()).thenReturn(now);
+        return info;
     }
 
     // =====================================================================
@@ -157,7 +174,8 @@ class IngestionServiceTest {
 
     @Test
     void obtenerInfo_archivoExiste_retornaDTO() {
-        when(archivoRepository.findByLibroId(1L)).thenReturn(Optional.of(archivoEntity(1L)));
+        ArchivoLibroInfo info = archivoInfo(1L);
+        when(archivoRepository.findInfoByLibroId(1L)).thenReturn(Optional.of(info));
 
         ArchivoLibroDTO resultado = ingestionService.obtenerInfo(1L);
 
@@ -167,7 +185,7 @@ class IngestionServiceTest {
 
     @Test
     void obtenerInfo_archivoNoExiste_lanzaExcepcion() {
-        when(archivoRepository.findByLibroId(99L)).thenReturn(Optional.empty());
+        when(archivoRepository.findInfoByLibroId(99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> ingestionService.obtenerInfo(99L))
             .isInstanceOf(ArchivoNoEncontradoException.class)
@@ -224,6 +242,115 @@ class IngestionServiceTest {
             .hasMessageContaining("No hay archivo subido para el libro con id: 7");
 
         verify(storageService, never()).eliminar(any());
+        verify(archivoRepository, never()).delete(any());
+    }
+
+    // =====================================================================
+    // obtenerInfo() — validación de proyección contra LONGBLOB
+    // =====================================================================
+
+    @Test
+    void obtenerInfo_noDebeUsarFindByLibroId() {
+        // Verifica que obtenerInfo() use la proyección (findInfoByLibroId)
+        // y NO cargue la entidad completa (findByLibroId) que dispararía
+        // el query al LONGBLOB
+        ArchivoLibroInfo info = archivoInfo(1L);
+        when(archivoRepository.findInfoByLibroId(1L)).thenReturn(Optional.of(info));
+
+        ingestionService.obtenerInfo(1L);
+
+        verify(archivoRepository).findInfoByLibroId(1L);
+        verify(archivoRepository, never()).findByLibroId(anyLong());
+    }
+
+    // =====================================================================
+    // subirArchivo() — IOException al leer bytes del MultipartFile
+    // =====================================================================
+
+    @Test
+    void subirArchivo_ioException_alLeerBytes_lanzaError() throws Exception {
+        // MockMultipartFile real no lanza IOException, pero el service llama
+        // a archivo.getBytes() que sí puede fallar con un archivo corrupto.
+        // Simulamos un archivo que lance IOException al llamar getBytes().
+        MultipartFile archivoCorrupto = mock(MultipartFile.class);
+        when(archivoCorrupto.getContentType()).thenReturn("application/pdf");
+        when(archivoCorrupto.getOriginalFilename()).thenReturn("libro.pdf");
+        when(archivoCorrupto.getSize()).thenReturn(1024L);
+        when(archivoCorrupto.getBytes()).thenThrow(new IOException("Archivo corrupto"));
+
+        when(archivoRepository.findByLibroId(1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> ingestionService.subirArchivo(1L, archivoCorrupto))
+            .isInstanceOf(ErrorLecturaArchivoException.class)
+            .hasMessageContaining("Error al leer los bytes del archivo");
+
+        // storageService.guardar() se invoca ANTES de archivo.getBytes()
+        // en el flujo de subirArchivo(), por lo tanto sí se llama.
+        // Lo que NO debe ocurrir es que se persista la entidad.
+        verify(storageService).guardar(any(), anyLong());
+        verify(archivoRepository, never()).save(any());
+    }
+
+    // =====================================================================
+    // subirArchivo() + obtenerInfo() — reemplazo y verificación de nuevos metadatos
+    // =====================================================================
+
+    @Test
+    void subirArchivo_reemplazoYInfoReflejaNuevosMetadatos() {
+        // Arrange: existe un archivo anterior
+        ArchivoLibro existente = archivoEntity(1L);
+        when(archivoRepository.findByLibroId(1L)).thenReturn(Optional.of(existente));
+
+        // Nuevo archivo con metadatos distintos
+        MockMultipartFile nuevoArchivo = new MockMultipartFile(
+            "archivo", "nueva_edicion.pdf", "application/pdf", "nuevo contenido".getBytes());
+
+        when(storageService.guardar(nuevoArchivo, 1L)).thenReturn("db:nuevo");
+        when(archivoRepository.save(any())).thenAnswer(inv -> {
+            ArchivoLibro a = inv.getArgument(0);
+            a.setId(99L);
+            return a;
+        });
+
+        // Act: reemplazar archivo
+        ingestionService.subirArchivo(1L, nuevoArchivo);
+
+        // Arrange para obtenerInfo: simular que la proyección devuelve los nuevos datos
+        ArchivoLibroInfo infoNueva = mock(ArchivoLibroInfo.class);
+        when(infoNueva.getId()).thenReturn(99L);
+        when(infoNueva.getLibroId()).thenReturn(1L);
+        when(infoNueva.getNombreArchivo()).thenReturn("nueva_edicion.pdf");
+        when(infoNueva.getFormato()).thenReturn("PDF");
+        when(infoNueva.getTamanio()).thenReturn(15L);
+        when(archivoRepository.findInfoByLibroId(1L)).thenReturn(Optional.of(infoNueva));
+
+        ArchivoLibroDTO resultado = ingestionService.obtenerInfo(1L);
+
+        // Assert: los metadatos deben reflejar el archivo nuevo
+        assertThat(resultado.getNombreArchivo()).isEqualTo("nueva_edicion.pdf");
+        assertThat(resultado.getTamanio()).isEqualTo(15L);
+        assertThat(resultado.getId()).isEqualTo(99L);
+    }
+
+    // =====================================================================
+    // eliminar() — transaccionalidad: si storageService falla, no borrar de BD
+    // =====================================================================
+
+    @Test
+    void eliminar_cuandoStorageFalla_noDebeBorrarDeBD() {
+        // Arrange: existe un archivo
+        ArchivoLibro archivo = archivoEntity(1L);
+        when(archivoRepository.findByLibroId(1L)).thenReturn(Optional.of(archivo));
+        // Storage falla al eliminar
+        doThrow(new RuntimeException("Disco lleno")).when(storageService).eliminar("db:10");
+
+        // Act & Assert
+        assertThatThrownBy(() -> ingestionService.eliminar(1L))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessageContaining("Disco lleno");
+
+        // Verify: repository.delete NUNCA debe llamarse si storage falla
+        // (la transacción de Spring debe hacer rollback automático)
         verify(archivoRepository, never()).delete(any());
     }
 }

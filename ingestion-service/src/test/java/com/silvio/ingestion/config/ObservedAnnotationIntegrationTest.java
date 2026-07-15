@@ -1,6 +1,7 @@
 package com.silvio.ingestion.config;
 
 import com.silvio.ingestion.model.ArchivoLibro;
+import com.silvio.ingestion.repository.ArchivoLibroInfo;
 import com.silvio.ingestion.repository.ArchivoLibroRepository;
 import com.silvio.ingestion.service.IngestionService;
 import com.silvio.ingestion.storage.StorageService;
@@ -14,7 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 // Tests de integracion para verificar que las 4 anotaciones @Observed
 // en IngestionService crean spans de tracing correctamente.
@@ -64,9 +65,10 @@ class ObservedAnnotationIntegrationTest {
 
     @Test
     void observedAspect_obtenerInfo_creaSpanCorrectamente() {
-        ArchivoLibro archivo = new ArchivoLibro();
-        archivo.setLibroId(1L);
-        when(archivoRepository.findByLibroId(1L)).thenReturn(java.util.Optional.of(archivo));
+        ArchivoLibroInfo info = mock(ArchivoLibroInfo.class);
+        when(info.getId()).thenReturn(1L);
+        when(info.getLibroId()).thenReturn(1L);
+        when(archivoRepository.findInfoByLibroId(1L)).thenReturn(java.util.Optional.of(info));
         assertDoesNotThrow(() -> {
             var resultado = ingestionService.obtenerInfo(1L);
             assertNotNull(resultado);

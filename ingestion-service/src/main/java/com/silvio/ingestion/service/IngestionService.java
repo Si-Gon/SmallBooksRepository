@@ -2,6 +2,7 @@ package com.silvio.ingestion.service;
 
 import com.silvio.ingestion.dto.ArchivoLibroDTO;
 import com.silvio.ingestion.model.ArchivoLibro;
+import com.silvio.ingestion.repository.ArchivoLibroInfo;
 import com.silvio.ingestion.repository.ArchivoLibroRepository;
 import com.silvio.ingestion.storage.StorageService;
 import lombok.RequiredArgsConstructor;
@@ -76,12 +77,12 @@ public class IngestionService {
     @Observed(name = "ingestion.obtenerInfo")
     public ArchivoLibroDTO obtenerInfo(Long libroId) {
         log.info("Consultando info de archivo para libro id: {}", libroId);
-        ArchivoLibro archivo = archivoRepository.findByLibroId(libroId)
+        ArchivoLibroInfo info = archivoRepository.findInfoByLibroId(libroId)
                 .orElseThrow(() -> {
                     log.warn("No hay archivo para libro id: {}", libroId);
                     return new ArchivoNoEncontradoException(libroId);
                 });
-        return mapearADto(archivo);
+        return mapearADto(info);
     }
 
     @Observed(name = "ingestion.obtenerBytes")
@@ -112,6 +113,17 @@ public class IngestionService {
         dto.setFormato(archivo.getFormato());
         dto.setTamanio(archivo.getTamanio());
         dto.setFechaSubida(archivo.getFechaSubida());
+        return dto;
+    }
+
+    private ArchivoLibroDTO mapearADto(ArchivoLibroInfo info) {
+        ArchivoLibroDTO dto = new ArchivoLibroDTO();
+        dto.setId(info.getId());
+        dto.setLibroId(info.getLibroId());
+        dto.setNombreArchivo(info.getNombreArchivo());
+        dto.setFormato(info.getFormato());
+        dto.setTamanio(info.getTamanio());
+        dto.setFechaSubida(info.getFechaSubida());
         return dto;
     }
 }
