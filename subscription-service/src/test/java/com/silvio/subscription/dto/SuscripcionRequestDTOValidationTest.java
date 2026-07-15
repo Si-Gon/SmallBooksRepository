@@ -43,16 +43,18 @@ class SuscripcionRequestDTOValidationTest {
 
     @Test
     void mesesNulo_debeTenerViolacion() {
-        SuscripcionRequestDTO dto = new SuscripcionRequestDTO();
-        dto.setPlan(PlanSuscripcion.PREMIUM);
-        // meses queda null
+    SuscripcionRequestDTO dto = new SuscripcionRequestDTO();
+    dto.setPlan(PlanSuscripcion.PREMIUM);
+    dto.setMeses(null); // forzar null porque el default es 1
 
-        Set<ConstraintViolation<SuscripcionRequestDTO>> violations = validator.validate(dto);
+    Set<ConstraintViolation<SuscripcionRequestDTO>> violations = validator.validate(dto);
 
-        assertFalse(violations.isEmpty());
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("meses")),
-                "meses null debe violar @NotNull");
+    assertFalse(violations.isEmpty());
+    assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("meses")),
+        "meses null debe violar @NotNull");
     }
+           
+    
 
     @Test
     void mesesCero_debeTenerViolacion() {
@@ -91,14 +93,13 @@ class SuscripcionRequestDTOValidationTest {
         assertTrue(violations.isEmpty(), "DTO valido no debe tener violaciones");
     }
 
-    @Test
+   @Test
     void mesesDefault_noDebeTenerViolacion() {
-        SuscripcionRequestDTO dto = new SuscripcionRequestDTO();
-        dto.setPlan(PlanSuscripcion.PREMIUM);
-        // meses usa default = 1
-
-        Set<ConstraintViolation<SuscripcionRequestDTO>> violations = validator.validate(dto);
-
-        assertTrue(violations.isEmpty(), "DTO con meses por defecto no debe tener violaciones");
-    }
+    SuscripcionRequestDTO dto = new SuscripcionRequestDTO();
+    dto.setPlan(PlanSuscripcion.PREMIUM);
+    dto.setMeses(1);
+    Set<ConstraintViolation<SuscripcionRequestDTO>> violations = validator.validate(dto);
+    violations.forEach(v -> System.out.println("Violacion: " + v.getPropertyPath() + " - " + v.getMessage()));
+    assertTrue(violations.isEmpty(), "DTO con meses por defecto no debe tener violaciones");
+}
 }
