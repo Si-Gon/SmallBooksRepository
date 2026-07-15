@@ -49,6 +49,7 @@ Thumbs.db
 # Agentes y contexto
 .opencode-context.md
 .opencode-history/
+doc/context/
 BACKLOG.md
 
 # Reportes de auditoría 
