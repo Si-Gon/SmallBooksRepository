@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 class TracingConfigTest {
 
+
     @Autowired(required = false)
     private ObservedAspect observedAspect;
 
