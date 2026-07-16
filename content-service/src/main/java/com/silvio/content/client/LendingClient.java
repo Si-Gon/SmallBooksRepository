@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
-@FeignClient(name = "elending-service")
+@FeignClient(name = "elending-service", fallbackFactory = LendingClientFallbackFactory.class)
 public interface LendingClient {
 
     // Obtener préstamos activos del usuario autenticado

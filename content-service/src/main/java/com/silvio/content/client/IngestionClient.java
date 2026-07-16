@@ -4,7 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "ingestion-service")
+@FeignClient(name = "ingestion-service", fallbackFactory = IngestionClientFallbackFactory.class)
 public interface IngestionClient {
 
     // Obtener los bytes del archivo del libro

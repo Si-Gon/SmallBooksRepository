@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(name = "elending-service")
+@FeignClient(name = "elending-service", fallbackFactory = LendingClientFallbackFactory.class)
 public interface LendingClient {
 
     // Historial completo de un usuario

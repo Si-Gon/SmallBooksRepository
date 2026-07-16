@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "catalog-service")
+@FeignClient(name = "catalog-service", fallbackFactory = CatalogClientFallbackFactory.class)
 public interface CatalogClient {
 
     // Obtener todos los libros del catálogo (paginado)

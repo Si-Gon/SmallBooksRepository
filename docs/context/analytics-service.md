@@ -1,19 +1,20 @@
 ## Última Actualización
-- Fecha: 2026-07-15 22:30
-- Pipeline: Fix JPA performance issue — refactor LendingClient.obtenerTodos() return type and AnalyticsService to consume Paginated response
+- Fecha: 2026-07-16
+- Pipeline: Agregar Circuit Breaker y FallbackFactory a Feign Clients en analytics-service
 
 ## Estado Actual del Servicio
 - Clases principales:
   - `AnalyticsService` — Capa de negocio de estadísticas. Consulta datos de préstamos vía Feign client hacia elending-service, sin acceso directo a JPA/Hibernate. Usa `page.getContent()` para obtener la lista de préstamos desde la respuesta paginada.
-  - `LendingClient` — Feign client hacia elending-service. `obtenerTodos()` retorna `Page<PrestamoAnalyticsDTO>` (respuesta paginada), `obtenerHistorial(usuarioId)` retorna `List<PrestamoAnalyticsDTO>`.
+  - `LendingClient` — Feign client hacia elending-service. `obtenerTodos()` retorna `Page<PrestamoAnalyticsDTO>` (respuesta paginada), `obtenerHistorial(usuarioId)` retorna `List<PrestamoAnalyticsDTO>`. Circuit Breaker habilitado con `fallbackFactory`.
+  - `LendingClientFallbackFactory` — FallbackFactory para LendingClient. Cuando elending-service no responde, `obtenerTodos()` devuelve `Page.empty()` y `obtenerHistorial()` devuelve `Collections.emptyList()`.
   - `AnalyticsController` — REST controller para endpoints de estadísticas.
   - `EstadisticasDTO` — DTO de respuesta con totalPrestamos, prestamosActivos, prestamosVencidos, librosMasPrestados (top 5), usuariosMasActivos (top 5).
   - `PrestamoAnalyticsDTO` — DTO de préstamo para analytics (id, libroId, usuarioId, estado, fechaInicio, fechaVencimiento). Con `@JsonIgnoreProperties(ignoreUnknown = true)`.
 - Endpoints expuestos:
   - `GET /api/analytics/estadisticas` — Estadísticas globales del sistema.
   - `GET /api/analytics/historial/{usuarioId}` — Historial de préstamos de un usuario específico.
-- Dependencias externas: elending-service (Feign), Micrometer Tracing (observabilidad), Spring Data Commons (para deserializar `Page<T>`)
-- Cobertura de tests: AnalyticsServiceTest (8 tests), LendingClientPageDeserializationTest (5 tests de deserialización Page)
+- Dependencias externas: elending-service (Feign), Micrometer Tracing (observabilidad), Spring Data Commons (para deserializar `Page<T>`), Resilience4j (Circuit Breaker)
+- Cobertura de tests: 74 tests (LendingClientFallbackFactoryTest: 12, Resilience4jConfigIntegrationTest: 7, más tests existentes). 0 fallos.
 
 ## Decisiones Técnicas
 - `LendingClient.obtenerTodos()` cambió de `List<PrestamoAnalyticsDTO>` a `Page<PrestamoAnalyticsDTO>` — consistente con el endpoint paginado de elending-service. El FeignClient no pasa parámetros de paginación explícitos, por lo que aplican los defaults del servidor (page=0, size=50, sort=fechaInicio,DESC), suficientes para AnalyticsService que procesa la primera página.
@@ -22,6 +23,10 @@
 - Log mejorado con detalles de paginación: `"Total préstamos obtenidos para análisis: {} (página {}/{}, total {})"` — útil para monitorear cuántos datos se están procesando realmente.
 - `@JsonIgnoreProperties(ignoreUnknown = true)` en `PrestamoAnalyticsDTO` — protege contra cambios en el DTO de elending-service que agreguen campos nuevos. La deserialización de `Page` no se ve afectada por campos extra en el JSON.
 - `@Transactional(readOnly = true)` agregado a `obtenerEstadisticas()` e `historialUsuario()` — aunque el servicio solo usa Feign Clients (sin JPA directo), la anotación marca la intención de solo-lectura y habilita optimizaciones si en el futuro se agrega acceso a base de datos.
+- FallbackFactory en lugar de `fallback` simple — permite loguear la causa exacta del error de conexión. Consistente con el patrón de elending-service.
+- `spring.cloud.openfeign.circuitbreaker.enabled: true` — habilita el wrapper de Circuit Breaker de Resilience4j sobre cada `@FeignClient`.
+- El nombre de instancia `elending-service` en `resilience4j.circuitbreaker.instances` coincide exactamente con el `name` del `@FeignClient`.
+- Configuración de Resilience4j idéntica a elending-service: sliding-window-size=10, failure-rate-threshold=50%, wait-duration-in-open-state=30s, timeout global de 5s.
 
 ## Criterios de Aceptación Cumplidos
 - Cambiar return type de `LendingClient.obtenerTodos()` de `List<PrestamoAnalyticsDTO>` a `Page<PrestamoAnalyticsDTO>` → Implementado con import de `Page`
@@ -29,7 +34,12 @@
 - Agregar `spring-data-commons` en pom.xml para soporte de deserialización `Page<T>` → Implementado.
 - Tests actualizados: AnalyticsServiceTest usa `new PageImpl<>(...)` en mocks. Nuevo test `obtenerEstadisticas_conPageConMetadatos_usaGetContentCorrectamente` verifica que solo se usa `getContent()`, no `totalElements`. Nuevo `LendingClientPageDeserializationTest` con 5 tests cubre deserialización JSON de Page (2 elementos, 1 elemento, vacío, multipágina, campos ignorados).
 - Agregar `@Transactional(readOnly = true)` a métodos read-only de analytics-service → Implementado previamente en `obtenerEstadisticas()` e `historialUsuario()`.
+- Agregar FallbackFactory para LendingClient (fallback retorna `Page.empty()` para `obtenerTodos` y `Collections.emptyList()` para `obtenerHistorial`) → Implementado en `LendingClientFallbackFactory`.
+- Agregar `spring.cloud.openfeign.circuitbreaker.enabled: true` en application.yml → Implementado.
+- Agregar Resilience4j circuitbreaker + timelimiter config en application.yml → Implementado con valores idénticos a elending-service.
+- Agregar dependencia `spring-cloud-starter-circuitbreaker-resilience4j` en pom.xml → Implementado.
 
 ## Historial de Cambios
 - 2026-07-15 — Agregado `@Transactional(readOnly = true)` a `obtenerEstadisticas()` e `historialUsuario()` para optimización de rendimiento JPA y consistencia con el código base.
 - 2026-07-15 — `LendingClient.obtenerTodos()` cambió a `Page<PrestamoAnalyticsDTO>`. `AnalyticsService` actualizado para usar `page.getContent()`. Dependencia `spring-data-commons` agregada. Tests de deserialización Page agregados.
+- 2026-07-16 — Agregado Circuit Breaker + FallbackFactory a LendingClient siguiendo el patrón de elending-service. Resilience4j config en application.yml. Dependencia en pom.xml.

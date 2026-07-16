@@ -4,6 +4,12 @@ spring:
   config:
     import: optional:configserver:http://localhost:8888
 
+  # Resilience4j — Circuit Breaker para Feign Clients
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+
   # Sin BD propia — toda la data via Catalog Service Feign
   autoconfigure:
     exclude: >
@@ -19,6 +25,29 @@ logging:
     com.silvio: DEBUG
   pattern:
     level: "%5p [%mdc{traceId:-NONE} %mdc{spanId:-NONE}]"
+
+# Resilience4j Circuit Breaker — configuracion global y por cliente Feign
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+        slow-call-rate-threshold: 50
+        slow-call-duration-threshold: 5s
+    instances:
+      catalog-service:
+        base-config: default
+
+  # Timeout global para Feign calls (evita hilos colgados)
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 5s
+        cancel-running-future: true
 
 # Tracing distribuido — fallback local cuando el Config Server no está disponible
 management:
