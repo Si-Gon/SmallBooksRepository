@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,7 +41,7 @@ class FeignTracingPropagationTest {
     @Test
     void llamadaFeign_obtenerEstadisticas_propagaTrace() {
         when(lendingClient.obtenerTodos())
-                .thenReturn(java.util.Collections.emptyList());
+                .thenReturn(new PageImpl<>(java.util.Collections.emptyList()));
 
         assertDoesNotThrow(() -> {
             var resultado = analyticsService.obtenerEstadisticas();
@@ -78,7 +79,7 @@ class FeignTracingPropagationTest {
         p2.setEstado("VENCIDO");
 
         when(lendingClient.obtenerTodos())
-                .thenReturn(java.util.List.of(p1, p2));
+                .thenReturn(new PageImpl<>(java.util.List.of(p1, p2)));
 
         assertDoesNotThrow(() -> {
             var resultado = analyticsService.obtenerEstadisticas();

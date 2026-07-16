@@ -28,6 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.micrometer.observation.annotation.Observed;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -233,12 +235,9 @@ public class PrestamoService {
 
     @Observed(name = "elending.obtenerTodos")
     @Transactional(readOnly = true)
-    public List<PrestamoResponseDTO> obtenerTodos() {
-        log.info("Consultando todos los préstamos para Analytics");
-        return prestamoRepository.findAll()
-                .stream()
-                .map(this::mapearADto)
-                .collect(Collectors.toList());
+    public Page<PrestamoResponseDTO> obtenerTodos(Pageable pageable) {
+        log.info("Consultando todos los préstamos para Analytics (paginado: {})", pageable);
+        return prestamoRepository.findAll(pageable).map(this::mapearADto);
     }
 
     // ShedLock: bloqueo distribuido para multi-instancia.

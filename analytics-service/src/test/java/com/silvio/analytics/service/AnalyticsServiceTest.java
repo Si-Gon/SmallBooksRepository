@@ -9,6 +9,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -57,13 +60,14 @@ class AnalyticsServiceTest {
     void obtenerEstadisticas_conPrestamos_calculaCorrectamente() {
         // Simulamos 5 préstamos: 3 activos, 2 vencidos
         // El libro 1 se presta 3 veces → debe aparecer primero en librosMasPrestados
-        List<PrestamoAnalyticsDTO> mock = List.of(
+        List<PrestamoAnalyticsDTO> content = List.of(
             prestamo(1L, "silvio", 1L, "ACTIVO"),
             prestamo(2L, "silvio", 1L, "ACTIVO"),
             prestamo(3L, "ana",    1L, "VENCIDO"),
             prestamo(4L, "ana",    2L, "ACTIVO"),
             prestamo(5L, "pedro",  2L, "VENCIDO")
         );
+        Page<PrestamoAnalyticsDTO> mock = new PageImpl<>(content);
         when(lendingClient.obtenerTodos()).thenReturn(mock);
 
         EstadisticasDTO resultado = analyticsService.obtenerEstadisticas();
@@ -89,7 +93,7 @@ class AnalyticsServiceTest {
 
     @Test
     void obtenerEstadisticas_listaVacia_retornaEstadisticasEnCero() {
-        when(lendingClient.obtenerTodos()).thenReturn(List.of());
+        when(lendingClient.obtenerTodos()).thenReturn(new PageImpl<>(List.of()));
 
         EstadisticasDTO resultado = analyticsService.obtenerEstadisticas();
 
@@ -114,7 +118,7 @@ class AnalyticsServiceTest {
     @Test
     void obtenerEstadisticas_soloMaximoCincoLibros_enTopLibros() {
         // Si hay más de 5 libros distintos, el top debe limitarse a 5
-        List<PrestamoAnalyticsDTO> mock = List.of(
+        List<PrestamoAnalyticsDTO> content = List.of(
             prestamo(1L,  "u1", 10L, "ACTIVO"),
             prestamo(2L,  "u2", 20L, "ACTIVO"),
             prestamo(3L,  "u3", 30L, "ACTIVO"),
@@ -123,6 +127,7 @@ class AnalyticsServiceTest {
             prestamo(6L,  "u6", 60L, "ACTIVO"),  // este 6to libro no debe aparecer en el top 5
             prestamo(7L,  "u7", 70L, "ACTIVO")   // tampoco este
         );
+        Page<PrestamoAnalyticsDTO> mock = new PageImpl<>(content);
         when(lendingClient.obtenerTodos()).thenReturn(mock);
 
         EstadisticasDTO resultado = analyticsService.obtenerEstadisticas();
@@ -130,6 +135,32 @@ class AnalyticsServiceTest {
         // El top 5 no debe tener más de 5 entradas
         assertThat(resultado.getLibrosMasPrestados()).hasSizeLessThanOrEqualTo(5);
         assertThat(resultado.getUsuariosMasActivos()).hasSizeLessThanOrEqualTo(5);
+    }
+
+    @Test
+    void obtenerEstadisticas_conPageConMetadatos_usaGetContentCorrectamente() {
+        // Simula una respuesta paginada con multiples paginas
+        // El servicio solo debe usar page.getContent() para los calculos
+        List<PrestamoAnalyticsDTO> content = List.of(
+            prestamo(1L, "silvio", 1L, "ACTIVO"),
+            prestamo(2L, "silvio", 1L, "ACTIVO"),
+            prestamo(3L, "ana",    2L, "VENCIDO")
+        );
+        // Page con metadata: pagina 1 de 3, total 13 elementos
+        Page<PrestamoAnalyticsDTO> mock = new PageImpl<>(content,
+                org.springframework.data.domain.PageRequest.of(1, 5), 13);
+        when(lendingClient.obtenerTodos()).thenReturn(mock);
+
+        EstadisticasDTO resultado = analyticsService.obtenerEstadisticas();
+
+        // Los calculos solo usan el contenido de la pagina actual
+        assertThat(resultado.getTotalPrestamos()).isEqualTo(3L); // content.size(), no totalElements
+        assertThat(resultado.getPrestamosActivos()).isEqualTo(2L);
+        assertThat(resultado.getPrestamosVencidos()).isEqualTo(1L);
+        assertThat(resultado.getLibrosMasPrestados()).hasSize(2);
+        assertThat(resultado.getUsuariosMasActivos()).hasSize(2);
+
+        verify(lendingClient).obtenerTodos();
     }
 
     // =====================================================================

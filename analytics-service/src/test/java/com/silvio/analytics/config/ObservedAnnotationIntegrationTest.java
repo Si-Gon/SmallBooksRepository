@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,7 +63,7 @@ class ObservedAnnotationIntegrationTest {
     @Test
     void observedAspect_obtenerEstadisticas_creaSpanCorrectamente() {
         when(lendingClient.obtenerTodos())
-                .thenReturn(java.util.Collections.emptyList());
+                .thenReturn(new PageImpl<>(java.util.Collections.emptyList()));
         assertDoesNotThrow(() -> {
             var resultado = analyticsService.obtenerEstadisticas();
             assertNotNull(resultado);

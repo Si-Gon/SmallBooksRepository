@@ -13,9 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 // Tests de integracion que verifican que las anotaciones @Observed
@@ -86,12 +90,13 @@ class ObservedAnnotationIntegrationTest {
     void observedAspect_creaSpan_cuandoSeLlamaMetodoObservado() {
         // Verifica que @Observed en obtenerTodos() no interfiere
         // con la ejecucion normal del metodo.
-        when(prestamoRepository.findAll()).thenReturn(java.util.Collections.emptyList());
+        when(prestamoRepository.findAll(any(Pageable.class)))
+                .thenReturn(new PageImpl<>(java.util.Collections.emptyList()));
 
         assertDoesNotThrow(() -> {
-            var resultado = prestamoService.obtenerTodos();
+            var resultado = prestamoService.obtenerTodos(PageRequest.of(0, Integer.MAX_VALUE));
             assertNotNull(resultado);
-            assertTrue(resultado.isEmpty());
+            assertTrue(resultado.getContent().isEmpty());
         });
     }
 

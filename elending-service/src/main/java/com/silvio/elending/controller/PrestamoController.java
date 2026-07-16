@@ -11,6 +11,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -99,19 +103,19 @@ public class PrestamoController {
         return ResponseEntity.ok(prestamos);
     }
 
-    @Operation(summary = "Obtener todos los préstamos",
+    @Operation(summary = "Obtener todos los préstamos (paginado)",
                description = "Endpoint interno usado por Analytics Service via Feign. " +
-                             "Devuelve todos los préstamos del sistema para cálculo de estadísticas globales")
+                              "Devuelve todos los préstamos del sistema con paginación para cálculo de estadísticas globales. " +
+                              "Ordenado por fechaInicio descendente por defecto, 50 elementos por página.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Lista completa de préstamos"),
+        @ApiResponse(responseCode = "200", description = "Página de préstamos obtenida correctamente (contiene content, totalElements, totalPages, number, size)"),
         @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/prestamos/todos")
-    public ResponseEntity<List<PrestamoResponseDTO>> obtenerTodos() {
-        List<PrestamoResponseDTO> prestamos = prestamoService.obtenerTodos();
-        prestamos.forEach(p ->
-            p.add(linkTo(methodOn(PrestamoController.class)
-                    .obtenerTodos()).withSelfRel()));
+    public ResponseEntity<Page<PrestamoResponseDTO>> obtenerTodos(
+            @PageableDefault(size = 50, sort = "fechaInicio", direction = Sort.Direction.DESC)
+            Pageable pageable) {
+        Page<PrestamoResponseDTO> prestamos = prestamoService.obtenerTodos(pageable);
         return ResponseEntity.ok(prestamos);
     }
 

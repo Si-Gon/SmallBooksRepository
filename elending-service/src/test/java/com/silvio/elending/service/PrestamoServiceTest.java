@@ -19,6 +19,11 @@ import com.silvio.elending.repository.PrestamoRepository;
 import feign.FeignException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.mockito.ArgumentCaptor;
@@ -550,7 +555,7 @@ class PrestamoServiceTest {
         verify(prestamoRepository).findByUsuarioId(usuarioId);
     }
 
-    // ─── tests obtenerTodos ──────────────────────────────────────────────────
+    // ─── tests obtenerTodos (paginado) ──────────────────────────────────────
 
     @Test
     void obtenerTodos_devuelve_todos_los_prestamos() {
@@ -567,29 +572,162 @@ class PrestamoServiceTest {
         p2.setLibroId(2L);
         p2.setEstado(EstadoPrestamo.VENCIDO);
 
-        when(prestamoRepository.findAll()).thenReturn(Arrays.asList(p1, p2));
+        Page<Prestamo> page = new PageImpl<>(Arrays.asList(p1, p2));
+        when(prestamoRepository.findAll(any(Pageable.class))).thenReturn(page);
 
         // When
-        List<PrestamoResponseDTO> resultado = prestamoService.obtenerTodos();
+        Page<PrestamoResponseDTO> resultado = prestamoService.obtenerTodos(PageRequest.of(0, Integer.MAX_VALUE));
 
         // Then
         assertNotNull(resultado);
-        assertEquals(2, resultado.size());
-        verify(prestamoRepository).findAll();
+        assertEquals(2, resultado.getTotalElements());
+        assertEquals(2, resultado.getContent().size());
+        verify(prestamoRepository).findAll(any(Pageable.class));
     }
 
     @Test
     void obtenerTodos_devuelve_lista_vacia_si_no_hay_prestamos() {
         // Given
-        when(prestamoRepository.findAll()).thenReturn(new ArrayList<>());
+        Page<Prestamo> page = new PageImpl<>(new ArrayList<>());
+        when(prestamoRepository.findAll(any(Pageable.class))).thenReturn(page);
 
         // When
-        List<PrestamoResponseDTO> resultado = prestamoService.obtenerTodos();
+        Page<PrestamoResponseDTO> resultado = prestamoService.obtenerTodos(PageRequest.of(0, Integer.MAX_VALUE));
 
         // Then
         assertNotNull(resultado);
-        assertTrue(resultado.isEmpty());
-        verify(prestamoRepository).findAll();
+        assertTrue(resultado.getContent().isEmpty());
+        assertEquals(0, resultado.getTotalElements());
+        verify(prestamoRepository).findAll(any(Pageable.class));
+    }
+
+    @Test
+    void obtenerTodos_conPageablePersonalizado_retornaPaginaCorrecta() {
+        // Given — 2 prestamos de 10 totales, primera pagina con size=5
+        Prestamo p1 = new Prestamo();
+        p1.setId(10L); p1.setUsuarioId("u1"); p1.setLibroId(10L); p1.setEstado(EstadoPrestamo.ACTIVO);
+        Prestamo p2 = new Prestamo();
+        p2.setId(11L); p2.setUsuarioId("u2"); p2.setLibroId(11L); p2.setEstado(EstadoPrestamo.VENCIDO);
+
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<Prestamo> page = new PageImpl<>(Arrays.asList(p1, p2), pageable, 10);
+        when(prestamoRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        // When
+        Page<PrestamoResponseDTO> resultado = prestamoService.obtenerTodos(pageable);
+
+        // Then
+        assertNotNull(resultado);
+        assertEquals(2, resultado.getContent().size());
+        assertEquals(10, resultado.getTotalElements());
+        assertEquals(0, resultado.getNumber());
+        assertEquals(5, resultado.getSize());
+        assertEquals(2, resultado.getTotalPages());
+        assertTrue(resultado.isFirst());
+        assertFalse(resultado.isLast());
+        verify(prestamoRepository).findAll(any(Pageable.class));
+    }
+
+    @Test
+    void obtenerTodos_segundaPagina_retornaContenidoCorrecto() {
+        // Given — 3 prestamos en segunda pagina de size=5, total 8
+        Prestamo p1 = new Prestamo();
+        p1.setId(6L); p1.setUsuarioId("u6"); p1.setLibroId(6L); p1.setEstado(EstadoPrestamo.ACTIVO);
+        Prestamo p2 = new Prestamo();
+        p2.setId(7L); p2.setUsuarioId("u7"); p2.setLibroId(7L); p2.setEstado(EstadoPrestamo.VENCIDO);
+        Prestamo p3 = new Prestamo();
+        p3.setId(8L); p3.setUsuarioId("u8"); p3.setLibroId(8L); p3.setEstado(EstadoPrestamo.ACTIVO);
+
+        Pageable pageable = PageRequest.of(1, 5);
+        Page<Prestamo> page = new PageImpl<>(Arrays.asList(p1, p2, p3), pageable, 8);
+        when(prestamoRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        // When
+        Page<PrestamoResponseDTO> resultado = prestamoService.obtenerTodos(pageable);
+
+        // Then — debe reflejar segunda pagina correctamente
+        assertNotNull(resultado);
+        assertEquals(3, resultado.getContent().size());
+        assertEquals(8, resultado.getTotalElements());
+        assertEquals(1, resultado.getNumber());
+        assertEquals(2, resultado.getTotalPages()); // 8/5 = 2 paginas
+        assertFalse(resultado.isFirst());
+        assertTrue(resultado.isLast());
+        assertEquals(6L, resultado.getContent().get(0).getId());
+        verify(prestamoRepository).findAll(any(Pageable.class));
+    }
+
+    @Test
+    void obtenerTodos_conSort_retornaContenidoOrdenado() {
+        // Given — prestamos ordenados por fechaInicio DESC (simulado en mock)
+        Prestamo p1 = new Prestamo();
+        p1.setId(1L); p1.setUsuarioId("u1"); p1.setLibroId(1L); p1.setEstado(EstadoPrestamo.ACTIVO);
+        Prestamo p2 = new Prestamo();
+        p2.setId(2L); p2.setUsuarioId("u2"); p2.setLibroId(2L); p2.setEstado(EstadoPrestamo.VENCIDO);
+
+        Sort sort = Sort.by(Sort.Order.desc("fechaInicio"));
+        Pageable pageable = PageRequest.of(0, 50, sort);
+        Page<Prestamo> page = new PageImpl<>(Arrays.asList(p1, p2), pageable, 2);
+        when(prestamoRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        // When
+        Page<PrestamoResponseDTO> resultado = prestamoService.obtenerTodos(pageable);
+
+        // Then — verificar que el pageable con sort se pasa al repositorio
+        assertNotNull(resultado);
+        assertEquals(2, resultado.getTotalElements());
+        assertEquals(50, resultado.getSize());
+        // Verificar que el sort pedido esta contenido en el pageable recibido por el repo
+        ArgumentCaptor<Pageable> captor = ArgumentCaptor.forClass(Pageable.class);
+        verify(prestamoRepository).findAll(captor.capture());
+        Pageable capturado = captor.getValue();
+        assertNotNull(capturado.getSort().getOrderFor("fechaInicio"));
+        assertEquals(Sort.Direction.DESC,
+                capturado.getSort().getOrderFor("fechaInicio").getDirection());
+    }
+
+    @Test
+    void obtenerTodos_pageFueraDeRango_retornaPaginaVacia() {
+        // Given — pagina 10 cuando solo hay 2 paginas (total 8 elementos, size=5)
+        Pageable pageable = PageRequest.of(10, 5);
+        Page<Prestamo> page = new PageImpl<>(new ArrayList<>(), pageable, 8);
+        when(prestamoRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        // When
+        Page<PrestamoResponseDTO> resultado = prestamoService.obtenerTodos(pageable);
+
+        // Then — pagina vacia pero con metadata correcta
+        assertNotNull(resultado);
+        assertTrue(resultado.getContent().isEmpty());
+        assertEquals(8, resultado.getTotalElements());
+        assertEquals(10, resultado.getNumber());
+        assertEquals(0, resultado.getContent().size());
+        assertFalse(resultado.isFirst());
+        assertTrue(resultado.isLast()); // mas alla de la ultima pagina
+        verify(prestamoRepository).findAll(any(Pageable.class));
+    }
+
+    @Test
+    void obtenerTodos_conPageableUnpaged_retornaTodosLosElementos() {
+        // Given — Pageable.unpaged() debe devolver todos los elementos
+        Prestamo p1 = new Prestamo();
+        p1.setId(1L); p1.setUsuarioId("u1"); p1.setLibroId(1L); p1.setEstado(EstadoPrestamo.ACTIVO);
+        Prestamo p2 = new Prestamo();
+        p2.setId(2L); p2.setUsuarioId("u2"); p2.setLibroId(2L); p2.setEstado(EstadoPrestamo.VENCIDO);
+        Prestamo p3 = new Prestamo();
+        p3.setId(3L); p3.setUsuarioId("u3"); p3.setLibroId(3L); p3.setEstado(EstadoPrestamo.ACTIVO);
+
+        Page<Prestamo> page = new PageImpl<>(Arrays.asList(p1, p2, p3));
+        when(prestamoRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        // When
+        Page<PrestamoResponseDTO> resultado = prestamoService.obtenerTodos(Pageable.unpaged());
+
+        // Then — devuelve todo sin paginacion
+        assertNotNull(resultado);
+        assertEquals(3, resultado.getContent().size());
+        assertTrue(resultado.getTotalElements() >= 3);
+        verify(prestamoRepository).findAll(any(Pageable.class));
     }
 
     // ─── tests crearPrestamo — errores en Feign clients ──────────────────────

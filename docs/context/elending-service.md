@@ -1,38 +1,44 @@
 ## Última Actualización
-- Fecha: 2026-07-15
-- Pipeline: Fix Feign client type mismatch after catalog-service pagination
+- Fecha: 2026-07-15 22:30
+- Pipeline: Fix JPA performance issue — refactor PrestamoService.obtenerTodos() to accept Pageable and return Page<PrestamoResponseDTO>
 
 ## Estado Actual del Servicio
 - Clases principales:
   - `CatalogClient` (com.silvio.elending.client) — Feign client hacia catalog-service. `obtenerTodos()` retorna `Page<LibroDTO>` con parámetros page, size, sort. Circuit breaker habilitado via spring.cloud.openfeign.circuitbreaker.enabled=true.
   - `CatalogClientFallbackFactory` (com.silvio.elending.client) — Fallback factory para CatalogClient. `obtenerTodos()` retorna `Page.empty()` cuando el circuito está abierto.
-  - `PrestamoService` — Capa de negocio de préstamos. Usa optimistic locking, compensación, reintentos contra License Service.
-  - `PrestamoController` — REST controller para operaciones CRUD de préstamos.
+  - `PrestamoService` — Capa de negocio de préstamos. Usa optimistic locking, compensación, reintentos contra License Service. `obtenerTodos(Pageable)` retorna `Page<PrestamoResponseDTO>` usando `findAll(pageable).map(this::mapearADto)`.
+  - `PrestamoController` — REST controller para operaciones CRUD de préstamos. Endpoint `/todos` acepta `Pageable` via `@PageableDefault(size=50, sort=fechaInicio,DESC)`.
   - `Prestamo` (model) — Entidad JPA con `@Version` para optimistic locking.
-  - `PrestamoRepository` — Spring Data JPA repository.
+  - `PrestamoRepository` — Spring Data JPA repository. Hereda `findAll(Pageable)` de `JpaRepository`.
   - `LibroDTO` (com.silvio.elending.dto) — DTO de Catalog Service (id, titulo, autor, isbn, genero, disponible).
 - Endpoints expuestos:
   - `GET /api/lending/prestamos/activos` — Préstamos activos del usuario autenticado (requiere JWT).
   - `GET /api/lending/prestamos/historial` — Historial completo del usuario autenticado (requiere JWT).
-  - `GET /api/lending/prestamos/todos` — Todos los préstamos del sistema (interno, usado por Analytics Service).
+  - `GET /api/lending/prestamos/todos` — Todos los préstamos del sistema con paginación (interno, usado por Analytics Service). Acepta `page`, `size`, `sort` como query params. Default: size=50, sort=fechaInicio,DESC.
   - `GET /api/lending/prestamos/historial/{usuarioId}` — Historial por usuario (interno, usado por Analytics Service).
   - `POST /api/lending/prestamos` — Crear préstamo (requiere JWT).
 - Dependencias externas: catalog-service (Feign), license-service (Feign), subscription-service (Feign), RabbitMQ (notificaciones), MySQL/PostgreSQL (base de datos), ShedLock (bloqueo distribuido)
-- Cobertura de tests: 25 clases de test (PrestamoServiceTest, PrestamoControllerTest, CatalogClientFallbackFactoryTest, etc.)
+- Cobertura de tests: 25+ clases de test (PrestamoServiceTest, PrestamoControllerTest, CatalogClientFallbackFactoryTest, etc.) — cobertura 100% línea en obtenerTodos()
 
 ## Decisiones Técnicas
+- `PrestamoService.obtenerTodos(Pageable)` en lugar de `List<PrestamoResponseDTO>` sin parámetros — elimina la carga de toda la tabla en memoria para Analytics. Usa `prestamoRepository.findAll(pageable).map(this::mapearADto)` para que JPA genere SQL con LIMIT/OFFSET, reduciendo drásticamente el uso de memoria y el tiempo de respuesta.
+- `@PageableDefault(size = 50, sort = "fechaInicio", direction = Sort.Direction.DESC)` en el controller — define defaults consistentes para el endpoint interno. Analytics Service obtiene la primera página con estos defaults, suficiente para sus cálculos de estadísticas globales.
+- Se eliminaron los HATEOAS links con `forEach` en el endpoint `/todos` porque: 1) `Page` no itera directamente como `List`; 2) el endpoint es interno (solo Feign), no expuesto a clientes externos; 3) los links no tienen sentido en una respuesta paginada interna.
+- Swagger `@ApiResponse` actualizado para reflejar la estructura `Page` (content, totalElements, totalPages, number, size).
 - `Page<LibroDTO>` como retorno de Feign Client en lugar de `List<LibroDTO>` — el catalog-service cambió `GET /api/catalog` a respuesta paginada.
 - Parámetros `page`, `size`, `sort` con valores default (0, 20, "titulo,asc") — compatibilidad con clientes existentes.
 - `Page.empty()` en el fallback en lugar de lista vacía — consistente con el nuevo tipo de retorno paginado.
-- CatalogClient no es usado directamente por PrestamoService en producción — está definido como interfaz Feign para ser usado por otros componentes o futuros endpoints. Su fallback factory igualmente se actualizó por consistencia.
 - FallbackFactory en lugar de `fallback` simple — permite loguear la causa exacta del error de conexión, útil para diagnóstico en multi-instancia.
 
 ## Criterios de Aceptación Cumplidos
-- Cambiar return type de `obtenerTodos()` en CatalogClient de `List<LibroDTO>` a `Page<LibroDTO>` → Implementado con `@RequestParam` page, size, sort
-- Actualizar `CatalogClientFallbackFactory.obtenerTodos()` para retornar `Page.empty()` → Implementado
-- Tests actualizados para la nueva firma del Feign Client y el fallback → CatalogClientFallbackFactoryTest con 5 tests adicionales (page/size/sort variados, page negativa, sort inválido, params default)
+- Refactorizar `PrestamoService.obtenerTodos()` para aceptar `Pageable` y retornar `Page<PrestamoResponseDTO>` → Implementado con `findAll(pageable).map(this::mapearADto)`
+- Actualizar endpoint `GET /api/lending/prestamos/todos` con `@PageableDefault(size=50, sort=fechaInicio, direction=DESC)` → Implementado, retorna `ResponseEntity<Page<PrestamoResponseDTO>>`
+- Actualizar Swagger `@ApiResponse` para reflejar respuesta paginada → Implementado con descripción "Página de préstamos obtenida correctamente (contiene content, totalElements, totalPages, number, size)"
+- Actualizar tests existentes → PrestamoServiceTest: +6 tests (PageRequest, segunda página, sort, fuera de rango, unpaged, sort con captor). PrestamoControllerTest: +5 tests (size personalizado, page+sort, page inválido, múltiples sorts, defaults con captor). Todos pasan `Pageable` o `PageRequest` donde necesario.
 - Comentarios en español consistentes con el código existente
-- Sin cambio necesario en PrestamoService — no invoca `CatalogClient.obtenerTodos()`
+- Cambiar return type de `obtenerTodos()` en CatalogClient de `List<LibroDTO>` a `Page<LibroDTO>` → Implementado previamente con `@RequestParam` page, size, sort
+- Tests actualizados para la nueva firma del Feign Client y el fallback → CatalogClientFallbackFactoryTest con 5 tests adicionales
 
 ## Historial de Cambios
 - 2026-07-15 — Feign Client CatalogClient actualizado a `Page<LibroDTO>` con parámetros page/size/sort. FallbackFactory retorna `Page.empty()`. Tests de fallback actualizados.
+- 2026-07-15 — `PrestamoService.obtenerTodos()` refactorizado a `Page<PrestamoResponseDTO> obtenerTodos(Pageable)`. Controller actualizado con `@PageableDefault`. Tests expandidos con casos de paginación. AnalyticsService actualizado para usar `page.getContent()`. LendingClient retorna `Page<PrestamoAnalyticsDTO>`.

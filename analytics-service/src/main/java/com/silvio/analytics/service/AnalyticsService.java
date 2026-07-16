@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import io.micrometer.observation.annotation.Observed;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Map;
@@ -23,8 +24,10 @@ public class AnalyticsService {
     @Observed(name = "analytics.obtenerEstadisticas")
     public EstadisticasDTO obtenerEstadisticas() {
         log.info("Calculando estadísticas globales del sistema");
-        List<PrestamoAnalyticsDTO> todos = lendingClient.obtenerTodos();
-        log.info("Total préstamos obtenidos para análisis: {}", todos.size());
+        Page<PrestamoAnalyticsDTO> page = lendingClient.obtenerTodos();
+        List<PrestamoAnalyticsDTO> todos = page.getContent();
+        log.info("Total préstamos obtenidos para análisis: {} (página {}/{}, total {})",
+                todos.size(), page.getNumber(), page.getTotalPages(), page.getTotalElements());
 
         EstadisticasDTO stats = new EstadisticasDTO();
         stats.setTotalPrestamos((long) todos.size());
