@@ -30,14 +30,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errores);
     }
 
-    @ExceptionHandler(TokenExtraccionException.class)
-    public ResponseEntity<Map<String, String>> manejarTokenExtraccion(
-            TokenExtraccionException ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error); // 401
-    }
-
     @ExceptionHandler(SuscripcionNotFoundException.class)
     public ResponseEntity<Map<String, String>> manejarSuscripcionNotFound(
             SuscripcionNotFoundException ex) {

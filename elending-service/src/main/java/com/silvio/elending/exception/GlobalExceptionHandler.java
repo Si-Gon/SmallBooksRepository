@@ -114,15 +114,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error); // 404
     }
 
-    // Token JWT inválido
-    @ExceptionHandler(TokenExtraccionException.class)
-    public ResponseEntity<Map<String, String>> manejarTokenExtraccion(
-            TokenExtraccionException ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error); // 401
-    }
-
     // Error de tipo de argumento inválido (path variable, request param)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Map<String, String>> manejarArgumentoInvalido(

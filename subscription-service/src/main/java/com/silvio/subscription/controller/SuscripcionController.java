@@ -2,7 +2,6 @@ package com.silvio.subscription.controller;
 
 import com.silvio.subscription.dto.SuscripcionRequestDTO;
 import com.silvio.subscription.dto.SuscripcionResponseDTO;
-import com.silvio.subscription.security.JwtExtractor;
 import com.silvio.subscription.service.SuscripcionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,26 +23,25 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 public class SuscripcionController {
 
     private final SuscripcionService suscripcionService;
-    private final JwtExtractor jwtExtractor;  // inyectado — responsabilidad delegada
 
     @Operation(summary = "Consultar mi plan actual",
                description = "Devuelve la suscripción activa del usuario autenticado")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Plan obtenido exitosamente"),
-        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "400", description = "Header X-User-Id faltante"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente (Gateway)"),
         @ApiResponse(responseCode = "404", description = "El usuario no tiene suscripción activa")
     })
     @GetMapping("/mi-plan")
     public ResponseEntity<SuscripcionResponseDTO> miPlan(
-            @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
-            @RequestHeader("Authorization") String authHeader) {
-        String usuarioId = jwtExtractor.extraerUsuario(authHeader);
+            @Parameter(description = "ID del usuario autenticado propagado por el Gateway", required = true)
+            @RequestHeader("X-User-Id") String usuarioId) {
         SuscripcionResponseDTO dto = suscripcionService.obtenerPorUsuario(usuarioId);
 
         dto.add(linkTo(methodOn(SuscripcionController.class)
-                .miPlan(authHeader)).withSelfRel());
+                .miPlan(usuarioId)).withSelfRel());
         dto.add(linkTo(methodOn(SuscripcionController.class)
-                .cancelar(authHeader)).withRel("cancelar"));
+                .cancelar(usuarioId)).withRel("cancelar"));
 
         return ResponseEntity.ok(dto);
     }
@@ -52,7 +50,7 @@ public class SuscripcionController {
                description = "Endpoint interno usado por E-Lending Service via Feign")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Suscripción obtenida exitosamente"),
-        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente (Gateway)"),
         @ApiResponse(responseCode = "404", description = "Usuario sin suscripción activa"),
         @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
@@ -72,21 +70,20 @@ public class SuscripcionController {
                description = "Crea una nueva suscripción o cambia el plan actual del usuario")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Suscripción creada exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Plan inválido o datos incorrectos"),
-        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente")
+        @ApiResponse(responseCode = "400", description = "Plan inválido, datos incorrectos o header faltante"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente (Gateway)")
     })
     @PostMapping
     public ResponseEntity<SuscripcionResponseDTO> crear(
             @Valid @RequestBody SuscripcionRequestDTO request,
-            @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
-            @RequestHeader("Authorization") String authHeader) {
-        String usuarioId = jwtExtractor.extraerUsuario(authHeader);
+            @Parameter(description = "ID del usuario autenticado propagado por el Gateway", required = true)
+            @RequestHeader("X-User-Id") String usuarioId) {
         SuscripcionResponseDTO dto = suscripcionService.crear(request, usuarioId);
 
         dto.add(linkTo(methodOn(SuscripcionController.class)
-                .miPlan(authHeader)).withRel("mi-plan"));
+                .miPlan(usuarioId)).withRel("mi-plan"));
         dto.add(linkTo(methodOn(SuscripcionController.class)
-                .cancelar(authHeader)).withRel("cancelar"));
+                .cancelar(usuarioId)).withRel("cancelar"));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
@@ -95,18 +92,18 @@ public class SuscripcionController {
                description = "Cancela la suscripción activa — el usuario vuelve al plan BASICO")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Suscripción cancelada exitosamente"),
-        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "400", description = "Header X-User-Id faltante"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente (Gateway)"),
         @ApiResponse(responseCode = "404", description = "No hay suscripción activa para cancelar")
     })
     @PatchMapping("/cancelar")
     public ResponseEntity<SuscripcionResponseDTO> cancelar(
-            @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
-            @RequestHeader("Authorization") String authHeader) {
-        String usuarioId = jwtExtractor.extraerUsuario(authHeader);
+            @Parameter(description = "ID del usuario autenticado propagado por el Gateway", required = true)
+            @RequestHeader("X-User-Id") String usuarioId) {
         SuscripcionResponseDTO dto = suscripcionService.cancelar(usuarioId);
 
         dto.add(linkTo(methodOn(SuscripcionController.class)
-                .miPlan(authHeader)).withRel("mi-plan"));
+                .miPlan(usuarioId)).withRel("mi-plan"));
 
         return ResponseEntity.ok(dto);
     }

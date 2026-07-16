@@ -18,8 +18,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Tests del ContentController.
  *
- * ContentController es simple: recibe GET /{libroId} con header Authorization
- * y delega todo al ContentService. El controller NO tiene Spring Security propio,
+ * ContentController es simple: recibe GET /{libroId} con header X-User-Id
+ * propagado por el Gateway y delega todo al ContentService. El controller NO tiene Spring Security propio,
  * así que @WebMvcTest funciona directamente sin configuración adicional.
  *
  * Verificamos que:
@@ -46,7 +46,7 @@ class ContentControllerTest {
     void descargarArchivo_conIdNegativo_debeRetornar400() throws Exception {
         // @Validated + @Positive — libroId negativo debe disparar ConstraintViolationException
         mockMvc.perform(get("/api/content/-1")
-                        .header("Authorization", "Bearer token_valido"))
+                        .header("X-User-Id", "silvio"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.libroId").value("El ID debe ser un número positivo"))
                 .andExpect(jsonPath("$.codigo").value("ERR-400"));
@@ -58,7 +58,7 @@ class ContentControllerTest {
     void descargarArchivo_conIdNoNumerico_debeRetornar400() throws Exception {
         // "abc" no es Long — dispara MethodArgumentTypeMismatchException
         mockMvc.perform(get("/api/content/abc")
-                        .header("Authorization", "Bearer token_valido"))
+                        .header("X-User-Id", "silvio"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.codigo").value("ERR-400"));
 
@@ -70,28 +70,28 @@ class ContentControllerTest {
     @Test
     void descargarArchivo_conPrestamoActivo_debeRetornar200ConBytes() throws Exception {
         byte[] bytes = "PDF de prueba".getBytes();
-        when(contentService.obtenerArchivo(1L, "Bearer token_valido"))
+        when(contentService.obtenerArchivo(1L, "silvio"))
             .thenReturn(bytes);
 
         mockMvc.perform(get("/api/content/1")
-                        .header("Authorization", "Bearer token_valido"))
+                        .header("X-User-Id", "silvio"))
                 .andExpect(status().isOk())
                 .andExpect(header().string("Content-Disposition",
                         "attachment; filename=\"libro_1\""))
                 .andExpect(content().contentType("application/octet-stream"))
                 .andExpect(content().bytes(bytes));
 
-        verify(contentService).obtenerArchivo(1L, "Bearer token_valido");
+        verify(contentService).obtenerArchivo(1L, "silvio");
     }
 
     @Test
     void descargarArchivo_sinPrestamo_debeRetornar403() throws Exception {
         // AccesoDenegadoException → GlobalExceptionHandler devuelve 403
-        when(contentService.obtenerArchivo(1L, "Bearer token"))
+        when(contentService.obtenerArchivo(1L, "silvio"))
             .thenThrow(new AccesoDenegadoException(1L));
 
         mockMvc.perform(get("/api/content/1")
-                        .header("Authorization", "Bearer token"))
+                        .header("X-User-Id", "silvio"))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.error").exists());
     }
@@ -99,11 +99,11 @@ class ContentControllerTest {
     @Test
     void descargarArchivo_errorEnLending_debeRetornar503() throws Exception {
         // VerificacionPrestamoException → GlobalExceptionHandler devuelve 503
-        when(contentService.obtenerArchivo(2L, "Bearer token"))
+        when(contentService.obtenerArchivo(2L, "silvio"))
             .thenThrow(new VerificacionPrestamoException("Connection refused"));
 
         mockMvc.perform(get("/api/content/2")
-                        .header("Authorization", "Bearer token"))
+                        .header("X-User-Id", "silvio"))
                 .andExpect(status().isServiceUnavailable())
                 .andExpect(jsonPath("$.error").exists());
     }
@@ -111,11 +111,11 @@ class ContentControllerTest {
     @Test
     void descargarArchivo_archivoNoEncontrado_debeRetornar404() throws Exception {
         // ArchivoNoEncontradoException → GlobalExceptionHandler devuelve 404
-        when(contentService.obtenerArchivo(3L, "Bearer token"))
+        when(contentService.obtenerArchivo(3L, "silvio"))
                 .thenThrow(new ArchivoNoEncontradoException(3L));
 
         mockMvc.perform(get("/api/content/3")
-                        .header("Authorization", "Bearer token"))
+                        .header("X-User-Id", "silvio"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").exists());
     }
@@ -123,14 +123,14 @@ class ContentControllerTest {
     @Test
     void descargarArchivo_errorInterno_debeRetornar500() throws Exception {
         // RuntimeException → GlobalExceptionHandler devuelve 500
-        when(contentService.obtenerArchivo(4L, "Bearer token"))
+        when(contentService.obtenerArchivo(4L, "silvio"))
                 .thenThrow(new RuntimeException("Error inesperado de E/S al leer el archivo"));
 
         mockMvc.perform(get("/api/content/4")
-                        .header("Authorization", "Bearer token"))
+                        .header("X-User-Id", "silvio"))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.error").exists());
 
-        verify(contentService).obtenerArchivo(4L, "Bearer token");
+        verify(contentService).obtenerArchivo(4L, "silvio");
     }
 }

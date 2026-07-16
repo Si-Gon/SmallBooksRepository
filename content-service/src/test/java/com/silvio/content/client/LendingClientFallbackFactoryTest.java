@@ -27,7 +27,7 @@ class LendingClientFallbackFactoryTest {
 
         // When
         LendingClient clienteFallback = fallbackFactory.create(causa);
-        List<PrestamoDTO> resultado = clienteFallback.obtenerPrestamosActivos("Bearer token");
+        List<PrestamoDTO> resultado = clienteFallback.obtenerPrestamosActivos("silvio");
 
         // Then — lista vacia, no null
         assertNotNull(resultado);
@@ -41,7 +41,7 @@ class LendingClientFallbackFactoryTest {
 
         // When
         LendingClient clienteFallback = fallbackFactory.create(causa);
-        List<PrestamoDTO> resultado = clienteFallback.obtenerPrestamosActivos("Bearer token");
+        List<PrestamoDTO> resultado = clienteFallback.obtenerPrestamosActivos("silvio");
 
         // Then — debe funcionar sin NPE
         assertNotNull(resultado);
@@ -49,8 +49,8 @@ class LendingClientFallbackFactoryTest {
     }
 
     @Test
-    void create_conExcepcion_authHeaderNull_retornaListaVacia() {
-        // Given — auth header null (caso borde)
+    void create_conExcepcion_usuarioIdNull_retornaListaVacia() {
+        // Given — usuarioId null (caso borde)
         RuntimeException causa = new RuntimeException("Timeout");
 
         // When
@@ -63,7 +63,7 @@ class LendingClientFallbackFactoryTest {
     }
 
     @Test
-    void create_conExcepcion_authHeaderVacio_retornaListaVacia() {
+    void create_conExcepcion_usuarioIdVacio_retornaListaVacia() {
         // Given
         RuntimeException causa = new RuntimeException("Service unavailable");
 
@@ -83,7 +83,7 @@ class LendingClientFallbackFactoryTest {
 
         // When
         LendingClient clienteFallback = fallbackFactory.create(causa);
-        List<PrestamoDTO> resultado = clienteFallback.obtenerPrestamosActivos("Bearer token");
+        List<PrestamoDTO> resultado = clienteFallback.obtenerPrestamosActivos("silvio");
 
         // Then — Collections.emptyList() retorna una lista inmutable
         assertNotNull(resultado);
@@ -99,7 +99,7 @@ class LendingClientFallbackFactoryTest {
 
         // When
         LendingClient clienteFallback = fallbackFactory.create(causa);
-        List<PrestamoDTO> resultado = clienteFallback.obtenerPrestamosActivos("Bearer token");
+        List<PrestamoDTO> resultado = clienteFallback.obtenerPrestamosActivos("silvio");
 
         // Then — respuesta consistente independientemente del tipo de excepcion
         assertNotNull(resultado);
@@ -113,8 +113,8 @@ class LendingClientFallbackFactoryTest {
         LendingClient clienteFallback = fallbackFactory.create(causa);
 
         // When & Then — multiples llamadas siempre retornan lista vacia
-        assertTrue(clienteFallback.obtenerPrestamosActivos("Bearer token1").isEmpty());
-        assertTrue(clienteFallback.obtenerPrestamosActivos("Bearer token2").isEmpty());
-        assertTrue(clienteFallback.obtenerPrestamosActivos("Bearer token3").isEmpty());
+        assertTrue(clienteFallback.obtenerPrestamosActivos("silvio1").isEmpty());
+        assertTrue(clienteFallback.obtenerPrestamosActivos("silvio2").isEmpty());
+        assertTrue(clienteFallback.obtenerPrestamosActivos("silvio3").isEmpty());
     }
 }

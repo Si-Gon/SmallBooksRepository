@@ -19,7 +19,7 @@ public class LendingClientFallbackFactory implements FallbackFactory<LendingClie
 
         return new LendingClient() {
             @Override
-            public List<PrestamoDTO> obtenerPrestamosActivos(String authHeader) {
+            public List<PrestamoDTO> obtenerPrestamosActivos(String usuarioId) {
                 log.warn("Fallback — obtenerPrestamosActivos() — devolviendo lista vacia");
                 return Collections.emptyList();
             }

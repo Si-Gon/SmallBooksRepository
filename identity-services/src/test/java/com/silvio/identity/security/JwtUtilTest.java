@@ -16,6 +16,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 
@@ -169,11 +171,35 @@ class JwtUtilTest {
         String token = jwtUtil.generateAccessToken(userDetails);
 
         // Usar Jwts.parser() con otra clave para verificar que el token es rechazado
-        SecretKey differentKey = Keys.hmacShaKeyFor("otraClaveDiferenteQueTambienTiene32BytesMinimos!".getBytes());
+        SecretKey differentKey = Keys.hmacShaKeyFor("otraClaveDiferenteQueTambienTiene32BytesMinimos!".getBytes(StandardCharsets.UTF_8));
 
         assertThrows(SecurityException.class, () ->
                 Jwts.parser()
                         .verifyWith(differentKey)
+                        .build()
+                        .parseSignedClaims(token)
+        );
+    }
+
+    @Test
+    @DisplayName("validateToken: secreto con caracteres no ASCII usa UTF-8 de forma consistente")
+    void validateToken_secretoUtf8CrossPlatform_debeValidarCorrectamente() {
+        // '€' y 'ñ' tienen representaciones de bytes distintas en UTF-8 vs Cp1252/ISO-8859-1.
+        // Este test garantiza que JwtUtil use siempre StandardCharsets.UTF_8 para derivar la clave,
+        // evitando claves diferentes entre Windows (Cp1252 por defecto) y Linux (UTF-8).
+        String secretUtf8 = "secreto€ñoño-clave-para-jwt-mas-de-32-bytes!";
+        properties.setSecret(secretUtf8);
+        jwtUtil = new JwtUtil(properties);
+
+        String token = jwtUtil.generateAccessToken(userDetails);
+        assertDoesNotThrow(() -> jwtUtil.validateToken(token));
+
+        // Si el mismo String se interpreta con Cp1252, la clave derivada es distinta
+        // y la firma del token generado con UTF-8 no coincide.
+        SecretKey keyCp1252 = Keys.hmacShaKeyFor(secretUtf8.getBytes(Charset.forName("Windows-1252")));
+        assertThrows(SecurityException.class, () ->
+                Jwts.parser()
+                        .verifyWith(keyCp1252)
                         .build()
                         .parseSignedClaims(token)
         );
@@ -206,7 +232,7 @@ class JwtUtilTest {
     @DisplayName("validateToken: rechaza token expirado (creado con expiración en pasado)")
     void validateToken_expirado_debeLanzarExpiredJwtException() {
         // Generar token con expiración forzada en el pasado usando la API fluida de jjwt 0.12.x
-        SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
+        SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
         String expiredToken = Jwts.builder()
                 .claims()
                     .subject("silvio")
@@ -222,7 +248,7 @@ class JwtUtilTest {
     @Test
     @DisplayName("isTokenExpired: retorna true para token expirado")
     void isTokenExpired_tokenExpirado_debeRetornarTrue() {
-        SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
+        SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
         String expiredToken = Jwts.builder()
                 .claims()
                     .subject("silvio")

@@ -95,15 +95,6 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void tokenExtraccion_debeRetornar401() {
-        var response = handler.manejarTokenExtraccion(
-                new TokenExtraccionException());
-
-        assertEquals(401, response.getStatusCode().value());
-        assertTrue(response.getBody().get("error").contains("No se pudo extraer"));
-    }
-
-    @Test
     void errorCreacionPrestamo_debeRetornar500() {
         var response = handler.manejarErrorCreacion(
                 new ErrorCreacionPrestamoException());

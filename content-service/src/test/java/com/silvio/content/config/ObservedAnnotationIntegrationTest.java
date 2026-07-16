@@ -69,11 +69,11 @@ class ObservedAnnotationIntegrationTest {
         PrestamoDTO prestamo = new PrestamoDTO();
         prestamo.setLibroId(1L);
         prestamo.setEstado("ACTIVO");
-        when(lendingClient.obtenerPrestamosActivos("Bearer test-token"))
+        when(lendingClient.obtenerPrestamosActivos("silvio"))
                 .thenReturn(java.util.List.of(prestamo));
         when(ingestionClient.obtenerBytes(1L)).thenReturn(new byte[]{1, 2, 3});
         assertDoesNotThrow(() -> {
-            var resultado = contentService.obtenerArchivo(1L, "Bearer test-token");
+            var resultado = contentService.obtenerArchivo(1L, "silvio");
             assertNotNull(resultado);
         });
     }

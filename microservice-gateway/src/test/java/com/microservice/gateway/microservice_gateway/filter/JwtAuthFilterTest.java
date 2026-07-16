@@ -15,6 +15,8 @@ import reactor.test.StepVerifier;
 
 import java.lang.reflect.Field;
 import javax.crypto.SecretKey;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,7 +73,7 @@ class JwtAuthFilterTest {
         secretField.set(filter, SECRET);
 
         // La misma clave que usará el filtro internamente
-        signingKey = Keys.hmacShaKeyFor(SECRET.getBytes());
+        signingKey = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
 
         // Mock de la cadena de filtros — cuando se llama filter(exchange), devuelve Mono.empty()
         // Mono.empty() equivale a "completado exitosamente sin valor" — el request pasó
@@ -197,7 +199,7 @@ class JwtAuthFilterTest {
     @Test
     void tokenConFirmaIncorrecta_debeRechazarCon401() {
         // Generamos con una clave diferente — la validación de firma fallará
-        SecretKey otraKey = Keys.hmacShaKeyFor("otra-clave-completamente-diferente-32c".getBytes());
+        SecretKey otraKey = Keys.hmacShaKeyFor("otra-clave-completamente-diferente-32c".getBytes(StandardCharsets.UTF_8));
         String jwt = Jwts.builder()
                 .subject("hacker")
                 .claim("type", "access")
@@ -538,5 +540,75 @@ class JwtAuthFilterTest {
         assertThat(captured.getRequest().getHeaders().getFirst("X-User-Roles"))
                 .as("X-User-Roles debe ser cadena vacía cuando no hay claim 'roles'")
                 .isEqualTo("");
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // C-02 — DERIVACIÓN DE CLAVE UTF-8 CROSS-PLATFORM
+    // ═════════════════════════════════════════════════════════════════════════
+
+    @Test
+    void tokenGeneradoConSecretoUtf8_seValidaConUtf8() throws Exception {
+        // '€' y 'ñ' tienen bytes distintos en UTF-8 vs Cp1252.
+        // El filtro debe usar StandardCharsets.UTF_8 para que la clave sea la misma
+        // en Windows y Linux.
+        String secretUtf8 = "secreto€ñoño-clave-para-jwt-mas-de-32-bytes!";
+        SecretKey keyUtf8 = Keys.hmacShaKeyFor(secretUtf8.getBytes(StandardCharsets.UTF_8));
+        String jwt = Jwts.builder()
+                .claim("type", "access")
+                .claim("roles", "ROLE_USER")
+                .subject("silvio")
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 60_000))
+                .signWith(keyUtf8, Jwts.SIG.HS256)
+                .compact();
+
+        Field secretField = JwtAuthFilter.class.getDeclaredField("secret");
+        secretField.setAccessible(true);
+        secretField.set(filter, secretUtf8);
+
+        MockServerHttpRequest request = MockServerHttpRequest
+                .get("/api/catalog")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)
+                .build();
+        MockServerWebExchange exchange = MockServerWebExchange.from(request);
+
+        var gatewayFilter = filter.apply(new JwtAuthFilter.Config());
+        StepVerifier.create(gatewayFilter.filter(exchange, chain))
+                .verifyComplete();
+
+        assertThat(exchange.getResponse().getStatusCode()).isNull();
+    }
+
+    @Test
+    void tokenFirmadoConCp1252_noValidaConFiltroUtf8() throws Exception {
+        // Simula un emisor que usó Cp1252 (charset por defecto en algunas plataformas Windows).
+        // El filtro usa UTF-8, por lo que la firma no coincide y debe rechazar el token.
+        String secretUtf8 = "secreto€ñoño-clave-para-jwt-mas-de-32-bytes!";
+        SecretKey keyCp1252 = Keys.hmacShaKeyFor(secretUtf8.getBytes(Charset.forName("Windows-1252")));
+        String jwt = Jwts.builder()
+                .claim("type", "access")
+                .subject("silvio")
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 60_000))
+                .signWith(keyCp1252, Jwts.SIG.HS256)
+                .compact();
+
+        Field secretField = JwtAuthFilter.class.getDeclaredField("secret");
+        secretField.setAccessible(true);
+        secretField.set(filter, secretUtf8);
+
+        MockServerHttpRequest request = MockServerHttpRequest
+                .get("/api/catalog")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)
+                .build();
+        MockServerWebExchange exchange = MockServerWebExchange.from(request);
+
+        var gatewayFilter = filter.apply(new JwtAuthFilter.Config());
+        StepVerifier.create(gatewayFilter.filter(exchange, chain))
+                .verifyComplete();
+
+        assertThat(exchange.getResponse().getStatusCode())
+                .as("Token firmado con Cp1252 no debe validar contra clave UTF-8")
+                .isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 }

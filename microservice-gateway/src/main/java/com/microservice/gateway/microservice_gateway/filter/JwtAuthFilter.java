@@ -13,6 +13,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
  
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
  
 // ¿QUÉ HACE ESTE FILTRO?
 //
@@ -65,7 +66,7 @@ public class JwtAuthFilter extends AbstractGatewayFilterFactory<JwtAuthFilter.Co
                 // --- Paso 2: Validar firma y expiración del token ---
                 // Keys.hmacShaKeyFor convierte el String secret en una Key criptográfica
                 // parseSignedClaims lanza excepción si el token es inválido o expiró
-                SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
+                SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
                 Claims claims = Jwts.parser()
                         .verifyWith(key)
                         .build()

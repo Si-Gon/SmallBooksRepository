@@ -2,7 +2,6 @@ package com.silvio.elending.controller;
 
 import com.silvio.elending.dto.PrestamoRequestDTO;
 import com.silvio.elending.dto.PrestamoResponseDTO;
-import com.silvio.elending.security.JwtExtractor;
 import com.silvio.elending.service.PrestamoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,53 +29,50 @@ import java.util.List;
 public class PrestamoController {
 
     private final PrestamoService prestamoService;
-    private final JwtExtractor jwtExtractor;  // inyectado — responsabilidad delegada
 
     @Operation(summary = "Crear préstamo",
-               description = "Crea un nuevo préstamo digital. El usuario se identifica desde el token JWT — " +
-                             "no es necesario enviar el usuarioId en el body. " +
+               description = "Crea un nuevo préstamo digital. El usuario se identifica desde el header X-User-Id " +
+                             "propagado por el Gateway — no es necesario enviar el usuarioId en el body. " +
                              "Valida límites de plan: BASICO (máx 2 activos), PREMIUM (máx 5 activos)")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Préstamo creado exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Límite de préstamos alcanzado según el plan"),
-        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "400", description = "Límite de préstamos alcanzado según el plan o header faltante"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente (Gateway)"),
         @ApiResponse(responseCode = "404", description = "Libro no encontrado o no disponible")
     })
     @PostMapping("/prestamos")
     public ResponseEntity<PrestamoResponseDTO> crearPrestamo(
             @Valid @RequestBody PrestamoRequestDTO request,
-            @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
-            @RequestHeader("Authorization") String authHeader) {
+            @Parameter(description = "ID del usuario autenticado propagado por el Gateway", required = true)
+            @RequestHeader("X-User-Id") String usuarioId) {
 
-        String usuarioId = jwtExtractor.extraerUsuario(authHeader);
         PrestamoResponseDTO prestamo = prestamoService.crearPrestamo(request, usuarioId);
         prestamo.add(linkTo(methodOn(PrestamoController.class)
-                .obtenerActivos(authHeader)).withRel("mis-activos"));
+                .obtenerActivos(null)).withRel("mis-activos"));
         prestamo.add(linkTo(methodOn(PrestamoController.class)
-                .obtenerHistorial(authHeader)).withRel("mi-historial"));
+                .obtenerHistorial(null)).withRel("mi-historial"));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(prestamo);
     }
 
     @Operation(summary = "Obtener préstamos activos",
                description = "Lista los préstamos activos del usuario autenticado. " +
-                             "El usuario se identifica desde el token JWT")
+                             "El usuario se identifica desde el header X-User-Id propagado por el Gateway")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista de préstamos activos"),
-        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente (Gateway)"),
         @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/prestamos/activos")
     public ResponseEntity<List<PrestamoResponseDTO>> obtenerActivos(
-            @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
-            @RequestHeader("Authorization") String authHeader) {
+            @Parameter(description = "ID del usuario autenticado propagado por el Gateway", required = true)
+            @RequestHeader("X-User-Id") String usuarioId) {
 
-        String usuarioId = jwtExtractor.extraerUsuario(authHeader);
         List<PrestamoResponseDTO> prestamos = prestamoService.obtenerPrestamosActivos(usuarioId);
 
         prestamos.forEach(p ->
             p.add(linkTo(methodOn(PrestamoController.class)
-                    .obtenerHistorial(authHeader)).withRel("mi-historial")));
+                    .obtenerHistorial(null)).withRel("mi-historial")));
 
         return ResponseEntity.ok(prestamos);
     }
@@ -85,20 +81,19 @@ public class PrestamoController {
                description = "Lista todos los préstamos (activos y vencidos) del usuario autenticado")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Historial completo obtenido"),
-        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente (Gateway)"),
         @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/prestamos/historial")
     public ResponseEntity<List<PrestamoResponseDTO>> obtenerHistorial(
-            @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
-            @RequestHeader("Authorization") String authHeader) {
+            @Parameter(description = "ID del usuario autenticado propagado por el Gateway", required = true)
+            @RequestHeader("X-User-Id") String usuarioId) {
 
-        String usuarioId = jwtExtractor.extraerUsuario(authHeader);
         List<PrestamoResponseDTO> prestamos = prestamoService.obtenerHistorial(usuarioId);
 
         prestamos.forEach(p ->
             p.add(linkTo(methodOn(PrestamoController.class)
-                    .obtenerActivos(authHeader)).withRel("mis-activos")));
+                    .obtenerActivos(null)).withRel("mis-activos")));
 
         return ResponseEntity.ok(prestamos);
     }
@@ -125,7 +120,7 @@ public class PrestamoController {
                               "Si el usuario no tiene préstamos, devuelve lista vacía (200)")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Historial obtenido exitosamente (puede ser lista vacía)"),
-        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente (Gateway)"),
         @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/prestamos/historial/{usuarioId}")

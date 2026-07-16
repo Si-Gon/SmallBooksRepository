@@ -12,9 +12,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 // Filtro que extrae el token JWT del header Authorization
-// y lo almacena en SecurityContextHolder para que:
-//   1. JwtExtractor pueda leerlo sin depender del header directo
-//   2. FeignRequestInterceptor lo propague automáticamente a los Feign Clients
+// y lo almacena en SecurityContextHolder para que el FeignRequestInterceptor
+// lo propague automáticamente a los Feign Clients.
 // La autenticación real se delega al API Gateway — este filtro solo
 // preserva el token para comunicación entre microservicios.
 @Component

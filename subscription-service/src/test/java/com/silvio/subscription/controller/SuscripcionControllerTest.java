@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.silvio.subscription.dto.SuscripcionRequestDTO;
 import com.silvio.subscription.dto.SuscripcionResponseDTO;
 import com.silvio.subscription.exception.SuscripcionNotFoundException;
-import com.silvio.subscription.exception.TokenExtraccionException;
 import com.silvio.subscription.model.Suscripcion.PlanSuscripcion;
-import com.silvio.subscription.security.JwtExtractor;
 import com.silvio.subscription.service.SuscripcionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,22 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Tests del SuscripcionController.
  *
- * Problema original: el test anterior NO mockeaba JwtExtractor, que es un
- * @Component inyectado en el controller. @WebMvcTest carga el controller y
- * sus dependencias directas — si JwtExtractor no está mockeado, Spring no
- * puede crear el contexto y TODOS los tests se saltan (0 ejecutados, 0 fallos,
- * pero tampoco hay cobertura).
- *
- * Solución: agregar @MockBean JwtExtractor y configurar su comportamiento
- * en cada test con when(jwtExtractor.extraerUsuario(...)).thenReturn("usuario").
- *
- * Estrategia del token falso:
- * - El token real que usa JwtExtractor tiene el formato: Bearer header.payload.sig
- *   donde payload es Base64({"sub":"usuario"})
- * - En los tests mockeamos directamente JwtExtractor, así que el formato
- *   del token no importa — solo nos interesa el valor que devuelve el mock.
- * - Usamos "Bearer fake.token" como valor constante y configuramos el mock
- *   para que devuelva el usuario correspondiente a ese header.
+ * El usuario se identifica desde el header X-User-Id propagado por el Gateway.
+ * No se requiere ni se valida token JWT en este microservicio.
  */
 @WebMvcTest(SuscripcionController.class)
 @ActiveProfiles("test")
@@ -56,10 +40,6 @@ class SuscripcionControllerTest {
 
     @MockBean
     private SuscripcionService suscripcionService;
-
-    // ← Esta es la clave que faltaba en el test original
-    @MockBean
-    private JwtExtractor jwtExtractor;
 
     // ─── helpers ──────────────────────────────────────────────────────────────
 
@@ -100,11 +80,10 @@ class SuscripcionControllerTest {
 
     @Test
     void miPlan_devuelve200_conSuscripcionActiva() throws Exception {
-        when(jwtExtractor.extraerUsuario("Bearer fake.token")).thenReturn("silvio");
         when(suscripcionService.obtenerPorUsuario("silvio")).thenReturn(responseBasico("silvio"));
 
         mockMvc.perform(get("/api/subscriptions/mi-plan")
-                        .header("Authorization", "Bearer fake.token"))
+                        .header("X-User-Id", "silvio"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.usuarioId").value("silvio"))
                 .andExpect(jsonPath("$.plan").value("BASICO"))
@@ -116,25 +95,19 @@ class SuscripcionControllerTest {
 
     @Test
     void miPlan_devuelve404_cuandoNoTieneSuscripcion() throws Exception {
-        when(jwtExtractor.extraerUsuario("Bearer fake.token")).thenReturn("usuario_sin_plan");
         when(suscripcionService.obtenerPorUsuario("usuario_sin_plan"))
                 .thenThrow(new SuscripcionNotFoundException("usuario_sin_plan"));
 
         mockMvc.perform(get("/api/subscriptions/mi-plan")
-                        .header("Authorization", "Bearer fake.token"))
+                        .header("X-User-Id", "usuario_sin_plan"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").exists());
     }
 
     @Test
-    void miPlan_devuelve401_cuandoTokenEsInvalido() throws Exception {
-        // JwtExtractor lanza excepción con token malformado
-        when(jwtExtractor.extraerUsuario("Bearer token.invalido"))
-                .thenThrow(new TokenExtraccionException());
-
-        mockMvc.perform(get("/api/subscriptions/mi-plan")
-                        .header("Authorization", "Bearer token.invalido"))
-                .andExpect(status().isUnauthorized());
+    void miPlan_devuelve400_cuandoHeaderXUserIdAusente() throws Exception {
+        mockMvc.perform(get("/api/subscriptions/mi-plan"))
+                .andExpect(status().isBadRequest());
 
         verify(suscripcionService, never()).obtenerPorUsuario(any());
     }
@@ -178,12 +151,11 @@ class SuscripcionControllerTest {
 
     @Test
     void crear_devuelve201_planBasico() throws Exception {
-        when(jwtExtractor.extraerUsuario("Bearer fake.token")).thenReturn("silvio");
         when(suscripcionService.crear(any(SuscripcionRequestDTO.class), eq("silvio")))
                 .thenReturn(responseBasico("silvio"));
 
         mockMvc.perform(post("/api/subscriptions")
-                        .header("Authorization", "Bearer fake.token")
+                        .header("X-User-Id", "silvio")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestPlan(PlanSuscripcion.BASICO, 1))))
                 .andExpect(status().isCreated())
@@ -195,12 +167,11 @@ class SuscripcionControllerTest {
 
     @Test
     void crear_devuelve201_planPremium() throws Exception {
-        when(jwtExtractor.extraerUsuario("Bearer fake.token")).thenReturn("ana");
         when(suscripcionService.crear(any(SuscripcionRequestDTO.class), eq("ana")))
                 .thenReturn(responsePremium("ana"));
 
         mockMvc.perform(post("/api/subscriptions")
-                        .header("Authorization", "Bearer fake.token")
+                        .header("X-User-Id", "ana")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestPlan(PlanSuscripcion.PREMIUM, 6))))
                 .andExpect(status().isCreated())
@@ -215,7 +186,7 @@ class SuscripcionControllerTest {
         request.setPlan(null);
 
         mockMvc.perform(post("/api/subscriptions")
-                        .header("Authorization", "Bearer fake.token")
+                        .header("X-User-Id", "silvio")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
@@ -230,11 +201,10 @@ class SuscripcionControllerTest {
         SuscripcionResponseDTO cancelada = responseBasico("silvio");
         cancelada.setActiva(false);
 
-        when(jwtExtractor.extraerUsuario("Bearer fake.token")).thenReturn("silvio");
         when(suscripcionService.cancelar("silvio")).thenReturn(cancelada);
 
         mockMvc.perform(patch("/api/subscriptions/cancelar")
-                        .header("Authorization", "Bearer fake.token"))
+                        .header("X-User-Id", "silvio"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.activa").value(false));
 
@@ -243,12 +213,11 @@ class SuscripcionControllerTest {
 
     @Test
     void cancelar_devuelve404_cuandoNoTieneSuscripcion() throws Exception {
-        when(jwtExtractor.extraerUsuario("Bearer fake.token")).thenReturn("usuario_sin_plan");
         when(suscripcionService.cancelar("usuario_sin_plan"))
                 .thenThrow(new SuscripcionNotFoundException("usuario_sin_plan"));
 
         mockMvc.perform(patch("/api/subscriptions/cancelar")
-                        .header("Authorization", "Bearer fake.token"))
+                        .header("X-User-Id", "usuario_sin_plan"))
                 .andExpect(status().isNotFound());
     }
 }

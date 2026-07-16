@@ -26,11 +26,11 @@ public class ContentController {
     @Operation(summary = "Descargar archivo de libro",
                description = "Descarga el archivo PDF o EPUB del libro indicado. " +
                              "Requiere que el usuario autenticado tenga un préstamo activo para ese libro. " +
-                             "El usuario se identifica desde el token JWT")
+                             "El usuario se identifica desde el header X-User-Id propagado por el Gateway")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Archivo descargado exitosamente"),
-        @ApiResponse(responseCode = "400", description = "ID del libro inválido"),
-        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "400", description = "ID del libro inválido o header faltante"),
+        @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente (Gateway)"),
         @ApiResponse(responseCode = "403", description = "El usuario no tiene préstamo activo para este libro"),
         @ApiResponse(responseCode = "404", description = "Archivo no encontrado para el libro indicado"),
         @ApiResponse(responseCode = "500", description = "Error al obtener el archivo o verificar el préstamo")
@@ -39,10 +39,10 @@ public class ContentController {
     public ResponseEntity<byte[]> descargarArchivo(
             @Parameter(description = "ID del libro a descargar", required = true)
             @PathVariable @Positive(message = "El ID debe ser un número positivo") Long libroId,
-            @Parameter(description = "Token JWT en formato: Bearer {token}", required = true)
-            @RequestHeader("Authorization") String authHeader) {
+            @Parameter(description = "ID del usuario autenticado propagado por el Gateway", required = true)
+            @RequestHeader("X-User-Id") String usuarioId) {
 
-        byte[] bytes = contentService.obtenerArchivo(libroId, authHeader);
+        byte[] bytes = contentService.obtenerArchivo(libroId, usuarioId);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,

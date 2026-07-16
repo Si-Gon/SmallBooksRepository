@@ -11,8 +11,8 @@ import java.util.List;
 public interface LendingClient {
 
     // Obtener préstamos activos del usuario autenticado
-    // Pasamos el token para que E-Lending extraiga el usuarioId
+    // Pasamos el usuarioId propagado por el Gateway
     @GetMapping("/api/lending/prestamos/activos")
     List<PrestamoDTO> obtenerPrestamosActivos(
-            @RequestHeader("Authorization") String authHeader);
+            @RequestHeader("X-User-Id") String usuarioId);
 }

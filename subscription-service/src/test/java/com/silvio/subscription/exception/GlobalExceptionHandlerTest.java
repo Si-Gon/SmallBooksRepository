@@ -51,19 +51,6 @@ class GlobalExceptionHandlerTest {
     }
 
     // =========================================================
-    // TokenExtraccionException → 401 UNAUTHORIZED
-    // =========================================================
-
-    @Test
-    void tokenExtraccion_debeRetornar401() {
-        ResponseEntity<Map<String, String>> response = handler.manejarTokenExtraccion(
-                new TokenExtraccionException());
-
-        assertEquals(401, response.getStatusCode().value());
-        assertTrue(response.getBody().get("error").contains("extraer el usuario"));
-    }
-
-    // =========================================================
     // SuscripcionNotFoundException → 404 NOT_FOUND
     // =========================================================
 

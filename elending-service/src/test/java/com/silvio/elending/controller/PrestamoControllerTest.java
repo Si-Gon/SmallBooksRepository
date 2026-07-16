@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.silvio.elending.dto.PrestamoRequestDTO;
 import com.silvio.elending.dto.PrestamoResponseDTO;
 import com.silvio.elending.exception.LimitePrestamosExcedidoException;
-import com.silvio.elending.exception.TokenExtraccionException;
 import com.silvio.elending.model.Prestamo.EstadoPrestamo;
-import com.silvio.elending.security.JwtExtractor;
 import com.silvio.elending.service.PrestamoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Tests del PrestamoController.
  *
  * Puntos clave de este controller:
- * 1. El usuarioId NO viene en el body — viene del token JWT via JwtExtractor.
- * 2. Todos los endpoints autenticados requieren el header "Authorization".
- * 3. JwtExtractor también se mockea — no queremos validar tokens JWT reales en tests.
+ * 1. El usuarioId NO viene en el body — viene del header X-User-Id propagado por el Gateway.
+ * 2. Todos los endpoints autenticados requieren el header "X-User-Id".
  */
 @WebMvcTest(PrestamoController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -51,15 +48,9 @@ class PrestamoControllerTest {
     @MockBean
     private PrestamoService prestamoService;
 
-    // MockBean del JwtExtractor — necesario porque el Controller lo inyecta con @RequiredArgsConstructor
-    @MockBean
-    private JwtExtractor jwtExtractor;
-
     @Autowired
     private ObjectMapper objectMapper;
 
-    // Token JWT ficticio — no necesita ser válido porque JwtExtractor está mockeado
-    private static final String FAKE_JWT = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c3VhcmlvMSJ9.fake";
     private static final String USUARIO_ID = "usuario1";
 
     // =========================================================
@@ -68,9 +59,6 @@ class PrestamoControllerTest {
 
     @Test
     void crearPrestamo_exitoso_debeRetornar201() throws Exception {
-        // El mock del JwtExtractor devuelve el usuarioId sin validar el token real
-        when(jwtExtractor.extraerUsuario(FAKE_JWT)).thenReturn(USUARIO_ID);
-
         PrestamoRequestDTO request = new PrestamoRequestDTO();
         request.setLibroId(1L);
 
@@ -79,7 +67,7 @@ class PrestamoControllerTest {
                 .thenReturn(response);
 
         mockMvc.perform(post("/api/lending/prestamos")
-                        .header("Authorization", FAKE_JWT)
+                        .header("X-User-Id", USUARIO_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
@@ -93,13 +81,11 @@ class PrestamoControllerTest {
     @Test
     void crearPrestamo_sinLibroId_debeRetornar400() throws Exception {
         // @NotNull en libroId debe rechazar el body con campo ausente
-        when(jwtExtractor.extraerUsuario(FAKE_JWT)).thenReturn(USUARIO_ID);
-
         PrestamoRequestDTO requestInvalido = new PrestamoRequestDTO();
         // libroId = null → viola @NotNull
 
         mockMvc.perform(post("/api/lending/prestamos")
-                        .header("Authorization", FAKE_JWT)
+                        .header("X-User-Id", USUARIO_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestInvalido)))
                 .andExpect(status().isBadRequest());
@@ -108,13 +94,11 @@ class PrestamoControllerTest {
     @Test
     void crearPrestamo_libroIdCero_debeRetornar400() throws Exception {
         // @Positive rechaza libroId = 0
-        when(jwtExtractor.extraerUsuario(FAKE_JWT)).thenReturn(USUARIO_ID);
-
         PrestamoRequestDTO requestInvalido = new PrestamoRequestDTO();
         requestInvalido.setLibroId(0L); // viola @Positive
 
         mockMvc.perform(post("/api/lending/prestamos")
-                        .header("Authorization", FAKE_JWT)
+                        .header("X-User-Id", USUARIO_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestInvalido)))
                 .andExpect(status().isBadRequest());
@@ -124,7 +108,6 @@ class PrestamoControllerTest {
 
     @Test
     void crearPrestamo_limiteAlcanzado_debeRetornar4xx() throws Exception {
-        when(jwtExtractor.extraerUsuario(FAKE_JWT)).thenReturn(USUARIO_ID);
         when(prestamoService.crearPrestamo(any(PrestamoRequestDTO.class), eq(USUARIO_ID)))
                 .thenThrow(new LimitePrestamosExcedidoException(2, "BASICO"));
 
@@ -132,7 +115,7 @@ class PrestamoControllerTest {
         request.setLibroId(1L);
 
         mockMvc.perform(post("/api/lending/prestamos")
-                        .header("Authorization", FAKE_JWT)
+                        .header("X-User-Id", USUARIO_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 // El GlobalExceptionHandler convierte RuntimeException → 4xx
@@ -140,19 +123,17 @@ class PrestamoControllerTest {
     }
 
     @Test
-    void crearPrestamo_tokenInvalido_debeRetornar4xx() throws Exception {
-        // JwtExtractor lanza excepción cuando el token no puede parsearse
-        when(jwtExtractor.extraerUsuario(any())).thenThrow(
-                new TokenExtraccionException());
-
+    void crearPrestamo_headerXUserIdAusente_debeRetornar400() throws Exception {
+        // Sin header X-User-Id — Spring lanza MissingRequestHeaderException
         PrestamoRequestDTO request = new PrestamoRequestDTO();
         request.setLibroId(1L);
 
         mockMvc.perform(post("/api/lending/prestamos")
-                        .header("Authorization", "Bearer token_invalido")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().isBadRequest());
+
+        verify(prestamoService, never()).crearPrestamo(any(), anyString());
     }
 
     // =========================================================
@@ -161,8 +142,6 @@ class PrestamoControllerTest {
 
     @Test
     void obtenerActivos_debeRetornar200ConLista() throws Exception {
-        when(jwtExtractor.extraerUsuario(FAKE_JWT)).thenReturn(USUARIO_ID);
-
         List<PrestamoResponseDTO> prestamos = Arrays.asList(
                 crearPrestamoResponse(1L, USUARIO_ID, 1L, EstadoPrestamo.ACTIVO),
                 crearPrestamoResponse(2L, USUARIO_ID, 2L, EstadoPrestamo.ACTIVO)
@@ -170,7 +149,7 @@ class PrestamoControllerTest {
         when(prestamoService.obtenerPrestamosActivos(USUARIO_ID)).thenReturn(prestamos);
 
         mockMvc.perform(get("/api/lending/prestamos/activos")
-                        .header("Authorization", FAKE_JWT))
+                        .header("X-User-Id", USUARIO_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].estado").value("ACTIVO"))
                 .andExpect(jsonPath("$[1].estado").value("ACTIVO"));
@@ -179,25 +158,19 @@ class PrestamoControllerTest {
     }
 
     @Test
-    void obtenerActivos_tokenInvalido_debeRetornar4xx() throws Exception {
-        // JwtExtractor lanza excepción con token inválido
-        when(jwtExtractor.extraerUsuario(any())).thenThrow(
-                new TokenExtraccionException());
-
-        mockMvc.perform(get("/api/lending/prestamos/activos")
-                        .header("Authorization", "Bearer token_invalido"))
-                .andExpect(status().is4xxClientError());
+    void obtenerActivos_headerXUserIdAusente_debeRetornar400() throws Exception {
+        mockMvc.perform(get("/api/lending/prestamos/activos"))
+                .andExpect(status().isBadRequest());
 
         verify(prestamoService, never()).obtenerPrestamosActivos(anyString());
     }
 
     @Test
     void obtenerActivos_sinPrestamos_debeRetornar200ListaVacia() throws Exception {
-        when(jwtExtractor.extraerUsuario(FAKE_JWT)).thenReturn(USUARIO_ID);
         when(prestamoService.obtenerPrestamosActivos(USUARIO_ID)).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/api/lending/prestamos/activos")
-                        .header("Authorization", FAKE_JWT))
+                        .header("X-User-Id", USUARIO_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$").isEmpty());
@@ -209,8 +182,6 @@ class PrestamoControllerTest {
 
     @Test
     void obtenerHistorial_debeRetornar200ConHistorial() throws Exception {
-        when(jwtExtractor.extraerUsuario(FAKE_JWT)).thenReturn(USUARIO_ID);
-
         List<PrestamoResponseDTO> historial = Arrays.asList(
                 crearPrestamoResponse(1L, USUARIO_ID, 1L, EstadoPrestamo.ACTIVO),
                 crearPrestamoResponse(2L, USUARIO_ID, 2L, EstadoPrestamo.VENCIDO)
@@ -218,49 +189,28 @@ class PrestamoControllerTest {
         when(prestamoService.obtenerHistorial(USUARIO_ID)).thenReturn(historial);
 
         mockMvc.perform(get("/api/lending/prestamos/historial")
-                        .header("Authorization", FAKE_JWT))
+                        .header("X-User-Id", USUARIO_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].estado").value("ACTIVO"))
                 .andExpect(jsonPath("$[1].estado").value("VENCIDO"));
     }
 
     @Test
-    void obtenerHistorial_tokenInvalido_debeRetornar4xx() throws Exception {
-        when(jwtExtractor.extraerUsuario(any())).thenThrow(
-                new TokenExtraccionException());
-
-        mockMvc.perform(get("/api/lending/prestamos/historial")
-                        .header("Authorization", "Bearer token_invalido"))
-                .andExpect(status().is4xxClientError());
+    void obtenerHistorial_headerXUserIdAusente_debeRetornar400() throws Exception {
+        mockMvc.perform(get("/api/lending/prestamos/historial"))
+                .andExpect(status().isBadRequest());
 
         verify(prestamoService, never()).obtenerHistorial(anyString());
     }
 
     @Test
-    void crearPrestamo_sinToken_debeRetornar400() throws Exception {
-        // Sin header Authorization — el controller falla antes de llegar al service
-        PrestamoRequestDTO request = new PrestamoRequestDTO();
-        request.setLibroId(1L);
-
-        mockMvc.perform(post("/api/lending/prestamos")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest()); // Missing header → error de servlet
-                // Nota: @RequestHeader sin required=false → error de servlet, no entra al handler
-
-        verify(prestamoService, never()).crearPrestamo(any(), anyString());
-    }
-
-    @Test
     void crearPrestamo_libroIdNegativo_debeRetornar400() throws Exception {
         // @Positive rechaza libroId negativo
-        when(jwtExtractor.extraerUsuario(FAKE_JWT)).thenReturn(USUARIO_ID);
-
         PrestamoRequestDTO requestInvalido = new PrestamoRequestDTO();
         requestInvalido.setLibroId(-1L); // viola @Positive
 
         mockMvc.perform(post("/api/lending/prestamos")
-                        .header("Authorization", FAKE_JWT)
+                        .header("X-User-Id", USUARIO_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestInvalido)))
                 .andExpect(status().isBadRequest());
@@ -281,7 +231,7 @@ class PrestamoControllerTest {
         Page<PrestamoResponseDTO> page = new PageImpl<>(content);
         when(prestamoService.obtenerTodos(any(Pageable.class))).thenReturn(page);
 
-        // Este endpoint NO requiere header Authorization (es interno)
+        // Este endpoint NO requiere header X-User-Id (es interno)
         mockMvc.perform(get("/api/lending/prestamos/todos"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].usuarioId").value("usuario1"))

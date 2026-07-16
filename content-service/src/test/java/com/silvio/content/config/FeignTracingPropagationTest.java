@@ -52,45 +52,45 @@ class FeignTracingPropagationTest {
         PrestamoDTO prestamo = new PrestamoDTO();
         prestamo.setLibroId(1L);
         prestamo.setEstado("ACTIVO");
-        when(lendingClient.obtenerPrestamosActivos("Bearer test-token"))
+        when(lendingClient.obtenerPrestamosActivos("silvio"))
                 .thenReturn(java.util.List.of(prestamo));
         when(ingestionClient.obtenerBytes(1L)).thenReturn(new byte[]{1, 2, 3});
 
         assertDoesNotThrow(() -> {
-            var resultado = contentService.obtenerArchivo(1L, "Bearer test-token");
+            var resultado = contentService.obtenerArchivo(1L, "silvio");
             assertNotNull(resultado);
             assertArrayEquals(new byte[]{1, 2, 3}, resultado);
         });
 
         // Verifica que ambas llamadas Feign se ejecutaron
-        verify(lendingClient, times(1)).obtenerPrestamosActivos("Bearer test-token");
+        verify(lendingClient, times(1)).obtenerPrestamosActivos("silvio");
         verify(ingestionClient, times(1)).obtenerBytes(1L);
     }
 
     @Test
     void llamadaFeign_sinPrestamoActivo_lanzaExcepcion() {
-        when(lendingClient.obtenerPrestamosActivos("Bearer test-token"))
+        when(lendingClient.obtenerPrestamosActivos("silvio"))
                 .thenReturn(java.util.Collections.emptyList());
 
         assertThrows(AccesoDenegadoException.class,
-                () -> contentService.obtenerArchivo(1L, "Bearer test-token"),
+                () -> contentService.obtenerArchivo(1L, "silvio"),
                 "Sin préstamo activo debe lanzar excepción");
 
-        verify(lendingClient, times(1)).obtenerPrestamosActivos("Bearer test-token");
+        verify(lendingClient, times(1)).obtenerPrestamosActivos("silvio");
         verify(ingestionClient, never()).obtenerBytes(anyLong());
     }
 
     @Test
     void llamadaFeign_lendingClientFalla_lanzaExcepcion() {
-        when(lendingClient.obtenerPrestamosActivos("Bearer test-token"))
+        when(lendingClient.obtenerPrestamosActivos("silvio"))
                 .thenThrow(new RuntimeException("Error de conexión con E-Lending"));
 
         // El servicio ya no envuelve excepciones — se propagan directamente
         RuntimeException ex = assertThrows(RuntimeException.class,
-                () -> contentService.obtenerArchivo(1L, "Bearer test-token"));
+                () -> contentService.obtenerArchivo(1L, "silvio"));
         assertTrue(ex.getMessage().contains("Error de conexión con E-Lending"));
 
-        verify(lendingClient, times(1)).obtenerPrestamosActivos("Bearer test-token");
+        verify(lendingClient, times(1)).obtenerPrestamosActivos("silvio");
         verify(ingestionClient, never()).obtenerBytes(anyLong());
     }
 }

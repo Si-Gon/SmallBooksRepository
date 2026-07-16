@@ -54,14 +54,14 @@ class ContentServiceTest {
     @Test
     void obtenerArchivo_conPrestamoActivo_retornaBytes() {
         byte[] bytes = "contenido del pdf".getBytes();
-        when(lendingClient.obtenerPrestamosActivos("Bearer token"))
+        when(lendingClient.obtenerPrestamosActivos("silvio"))
             .thenReturn(List.of(prestamo(1L, "ACTIVO")));
         when(ingestionClient.obtenerBytes(1L)).thenReturn(bytes);
 
-        byte[] resultado = contentService.obtenerArchivo(1L, "Bearer token");
+        byte[] resultado = contentService.obtenerArchivo(1L, "silvio");
 
         assertThat(resultado).isEqualTo(bytes);
-        verify(lendingClient).obtenerPrestamosActivos("Bearer token");
+        verify(lendingClient).obtenerPrestamosActivos("silvio");
         verify(ingestionClient).obtenerBytes(1L);
     }
 
@@ -72,10 +72,10 @@ class ContentServiceTest {
     @Test
     void obtenerArchivo_prestamoVencido_lanzaAccesoDenegado() {
         // El usuario tiene el libro pero VENCIDO — no puede descargar
-        when(lendingClient.obtenerPrestamosActivos("Bearer token"))
+        when(lendingClient.obtenerPrestamosActivos("silvio"))
             .thenReturn(List.of(prestamo(1L, "VENCIDO")));
 
-        assertThatThrownBy(() -> contentService.obtenerArchivo(1L, "Bearer token"))
+        assertThatThrownBy(() -> contentService.obtenerArchivo(1L, "silvio"))
             .isInstanceOf(AccesoDenegadoException.class)
             .hasMessageContaining("Acceso denegado");
 
@@ -90,10 +90,10 @@ class ContentServiceTest {
     @Test
     void obtenerArchivo_libroDiferente_lanzaAccesoDenegado() {
         // El usuario tiene prestado el libro 99, pero pide el libro 1
-        when(lendingClient.obtenerPrestamosActivos("Bearer token"))
+        when(lendingClient.obtenerPrestamosActivos("silvio"))
             .thenReturn(List.of(prestamo(99L, "ACTIVO")));
 
-        assertThatThrownBy(() -> contentService.obtenerArchivo(1L, "Bearer token"))
+        assertThatThrownBy(() -> contentService.obtenerArchivo(1L, "silvio"))
             .isInstanceOf(AccesoDenegadoException.class)
             .hasMessageContaining("Acceso denegado");
 
@@ -106,10 +106,10 @@ class ContentServiceTest {
 
     @Test
     void obtenerArchivo_sinPrestamos_lanzaAccesoDenegado() {
-        when(lendingClient.obtenerPrestamosActivos("Bearer token"))
+        when(lendingClient.obtenerPrestamosActivos("silvio"))
             .thenReturn(List.of());
 
-        assertThatThrownBy(() -> contentService.obtenerArchivo(1L, "Bearer token"))
+        assertThatThrownBy(() -> contentService.obtenerArchivo(1L, "silvio"))
             .isInstanceOf(AccesoDenegadoException.class)
             .hasMessageContaining("Acceso denegado");
 
@@ -122,11 +122,11 @@ class ContentServiceTest {
 
     @Test
     void obtenerArchivo_errorEnLending_lanzaNoSePudoVerificar() {
-        when(lendingClient.obtenerPrestamosActivos("Bearer token"))
+        when(lendingClient.obtenerPrestamosActivos("silvio"))
             .thenThrow(new RuntimeException("Connection refused"));
 
         // El servicio ya no envuelve excepciones — se propagan directamente
-        assertThatThrownBy(() -> contentService.obtenerArchivo(1L, "Bearer token"))
+        assertThatThrownBy(() -> contentService.obtenerArchivo(1L, "silvio"))
             .isInstanceOf(RuntimeException.class)
             .hasMessageContaining("Connection refused");
 
@@ -139,13 +139,13 @@ class ContentServiceTest {
 
     @Test
     void obtenerArchivo_errorEnIngestion_lanzaNoSePudoObtener() {
-        when(lendingClient.obtenerPrestamosActivos("Bearer token"))
+        when(lendingClient.obtenerPrestamosActivos("silvio"))
             .thenReturn(List.of(prestamo(1L, "ACTIVO")));
         when(ingestionClient.obtenerBytes(1L))
             .thenThrow(new RuntimeException("404 Not Found"));
 
         // El servicio ya no envuelve excepciones — se propagan directamente
-        assertThatThrownBy(() -> contentService.obtenerArchivo(1L, "Bearer token"))
+        assertThatThrownBy(() -> contentService.obtenerArchivo(1L, "silvio"))
             .isInstanceOf(RuntimeException.class)
             .hasMessageContaining("404 Not Found");
     }

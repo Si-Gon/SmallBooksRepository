@@ -21,11 +21,11 @@ public class ContentService {
     private final IngestionClient ingestionClient;
 
     @Observed(name = "content.obtenerArchivo")
-    public byte[] obtenerArchivo(Long libroId, String authHeader) {
+    public byte[] obtenerArchivo(Long libroId, String usuarioId) {
         log.info("Solicitud de acceso al archivo del libro id: {}", libroId);
 
         // Paso 1: Verificar préstamo activo
-        List<PrestamoDTO> prestamosActivos = lendingClient.obtenerPrestamosActivos(authHeader);
+        List<PrestamoDTO> prestamosActivos = lendingClient.obtenerPrestamosActivos(usuarioId);
         log.info("Préstamos activos encontrados: {}", prestamosActivos.size());
 
         // Paso 2: Verificar que tiene el libro
