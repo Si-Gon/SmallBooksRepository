@@ -54,4 +54,5 @@ BACKLOG.md
 # Reportes de auditoría 
 docs/*security-audit*.md
 docs/*audit*.md
-docs/architecture/**
+docs/architecture/
+reports/

@@ -1,6 +1,0 @@
-GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-,com.silvio.analytics.controller,AnalyticsController,0,43,0,0,0,8,0,3,0,3
-,com.silvio.analytics,AnalyticsServiceApplication,5,3,0,0,2,1,1,1,1,1
-,com.silvio.analytics.config,SwaggerConfig,0,17,0,0,0,5,0,2,0,2
-,com.silvio.analytics.service,AnalyticsService,4,178,0,0,2,41,2,5,2,5
-,com.silvio.analytics.exception,GlobalExceptionHandler,0,18,0,0,0,4,0,2,0,2
