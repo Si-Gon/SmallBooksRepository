@@ -46,8 +46,8 @@ public class AuthController {
     }
 
     @Operation(summary = "Registrar usuario",
-               description = "Crea una nueva cuenta de usuario con username, password y roles. " +
-                             "Roles disponibles: ROLE_USER (plan BASICO por defecto), ROLE_PREMIUM, ROLE_LIBRARIAN")
+               description = "Crea una nueva cuenta de usuario con username y password. " +
+                             "Siempre asigna ROLE_USER por defecto — nunca acepta roles del cliente.")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Usuario registrado exitosamente"),
         @ApiResponse(responseCode = "400", description = "Datos de registro inválidos"),
@@ -55,7 +55,7 @@ public class AuthController {
     })
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> register(@Valid @RequestBody RegisterRequest request) {
-        userService.registerUser(request.getUsername(), request.getPassword(), request.getRoles());
+        userService.registerUser(request.getUsername(), request.getPassword());
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(Map.of(
                 "message", " Usuario '" + request.getUsername() + "' registrado exitosamente",

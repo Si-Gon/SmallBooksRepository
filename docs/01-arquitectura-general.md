@@ -191,10 +191,10 @@ El flujo de creación de préstamo implementa compensación automática: si fall
 5. Si expiró → POST /auth/refresh con refresh token → nuevos tokens
 ```
 
-### JWT Secret
 
-- Clave HMAC compartida: `Duoc.1983Duoc.1983Duoc.1983Duoc.1983`
-- Configurada en `identity-service.yml` y `msvc-gateway.yml`
+### JWT Secret
+- Clave HMAC-SHA256 de 256 bits, configurada en `.env` como `JWT_SECRET`
+- Inyectada en `identity-service.yml` y `msvc-gateway.yml` vía variable de entorno
 - El JWT incluye claims: `username`, `type` ("access"|"refresh"), `roles`
 
 ---

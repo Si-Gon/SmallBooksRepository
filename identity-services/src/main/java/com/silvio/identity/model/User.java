@@ -31,9 +31,9 @@ public class User {
     @ToString.Exclude
     private Set<String> roles; // ej: "ROLE_ADMIN", "ROLE_USER"
 
-    // Campos para recuperación de contraseña
+    // Hash SHA-256 del token de recuperación (nunca se almacena el token en texto plano)
     @ToString.Exclude
-    private String resetToken;
+    private String resetTokenHash;
     private LocalDateTime resetTokenExpiry;
 
     // Hash SHA-256 del refresh token vigente para rotación

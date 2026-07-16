@@ -62,7 +62,7 @@ public class UserService implements UserDetailsService {
 
     @Observed(name = "identity.registerUser")
     @Transactional
-    public void registerUser(String username, String rawPassword, Set<String> roles) {
+    public void registerUser(String username, String rawPassword) {
         log.info("Registrando nuevo usuario: {}", username);
         if (userRepository.findByUsername(username).isPresent()) {
             log.warn("Intento de registro con username ya existente: {}", username);
@@ -72,7 +72,8 @@ public class UserService implements UserDetailsService {
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(rawPassword));
-        user.setRoles(roles != null && !roles.isEmpty() ? roles : Set.of("ROLE_USER"));
+        // Siempre asignar ROLE_USER por defecto — nunca aceptar roles del cliente
+        user.setRoles(Set.of("ROLE_USER"));
         userRepository.save(user);
         log.info("Usuario registrado exitosamente: {} con roles: {}", username, user.getRoles());
     }
@@ -158,7 +159,8 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsuarioNotFoundException(username));
 
         String resetToken = UUID.randomUUID().toString();
-        user.setResetToken(resetToken);
+        // Almacenar solo el hash SHA-256, nunca el token en texto plano
+        user.setResetTokenHash(hashToken(resetToken));
         user.setResetTokenExpiry(LocalDateTime.now().plusHours(jwtProperties.getResetTokenExpirationHours()));
         userRepository.save(user);
         log.info("Token de recuperación generado para usuario: {}, expira en {} horas",
@@ -170,7 +172,8 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void resetPassword(String token, String newPassword) {
         log.info("Intentando reset de contraseña con token");
-        User user = userRepository.findByResetToken(token)
+        String tokenHash = hashToken(token);
+        User user = userRepository.findByResetTokenHash(tokenHash)
                 .orElseThrow(() -> {
                     log.warn("Token de recuperación inválido");
                     return new TokenInvalidoException();
@@ -182,7 +185,7 @@ public class UserService implements UserDetailsService {
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));
-        user.setResetToken(null);
+        user.setResetTokenHash(null);
         user.setResetTokenExpiry(null);
         userRepository.save(user);
         log.info("Contraseña actualizada exitosamente para usuario: {}", user.getUsername());
@@ -220,15 +223,16 @@ public class UserService implements UserDetailsService {
     // ─── Refresh Token Rotation ──────────────────────────────────────────────
 
     /**
-     * Genera el hash SHA-256 de un refresh token para almacenamiento seguro.
+     * Genera el hash SHA-256 de un token para almacenamiento seguro.
+     * Usado tanto para refresh tokens como para tokens de recuperación.
      */
-    private String hashRefreshToken(String refreshToken) {
+    private String hashToken(String token) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(refreshToken.getBytes(StandardCharsets.UTF_8));
+            byte[] hash = digest.digest(token.getBytes(StandardCharsets.UTF_8));
             return HexFormat.of().formatHex(hash);
         } catch (NoSuchAlgorithmException e) {
-            log.error("Error al generar hash del refresh token", e);
+            log.error("Error al generar hash del token", e);
             throw new ErrorSeguridadException("Error interno de seguridad");
         }
     }
@@ -239,7 +243,7 @@ public class UserService implements UserDetailsService {
         log.info("Almacenando hash de refresh token para usuario: {}", username);
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsuarioNotFoundException(username));
-        user.setRefreshTokenHash(hashRefreshToken(refreshToken));
+        user.setRefreshTokenHash(hashToken(refreshToken));
         userRepository.save(user);
     }
 
@@ -252,7 +256,7 @@ public class UserService implements UserDetailsService {
     @Observed(name = "identity.rotateRefreshToken")
     @Transactional
     public void rotateRefreshToken(String oldRefreshToken, String newRefreshToken) {
-        String oldHash = hashRefreshToken(oldRefreshToken);
+        String oldHash = hashToken(oldRefreshToken);
 
         User user = userRepository.findByRefreshTokenHash(oldHash)
                 .orElseThrow(() -> {
@@ -260,7 +264,7 @@ public class UserService implements UserDetailsService {
                     return new TokenInvalidoException();
                 });
 
-        String newHash = hashRefreshToken(newRefreshToken);
+        String newHash = hashToken(newRefreshToken);
         user.setRefreshTokenHash(newHash);
         userRepository.save(user);
         log.info("Refresh token rotado exitosamente para usuario: {}", user.getUsername());

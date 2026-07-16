@@ -117,23 +117,10 @@ class AuthDTOValidationTest {
     }
 
     @Test
-    void registerRequest_rolesNulo_noDebeTenerViolacion() {
-        RegisterRequest dto = new RegisterRequest();
-        dto.setUsername("nuevouser");
-        dto.setPassword("password123");
-        dto.setRoles(null);         // opcional
-
-        Set<ConstraintViolation<RegisterRequest>> violations = validator.validate(dto);
-
-        assertTrue(violations.isEmpty(), "roles null es valido (opcional)");
-    }
-
-    @Test
     void registerRequest_valido_noDebeTenerViolacion() {
         RegisterRequest dto = new RegisterRequest();
         dto.setUsername("nuevouser");
         dto.setPassword("password123");
-        dto.setRoles(Set.of("ROLE_USER"));
 
         Set<ConstraintViolation<RegisterRequest>> violations = validator.validate(dto);
 

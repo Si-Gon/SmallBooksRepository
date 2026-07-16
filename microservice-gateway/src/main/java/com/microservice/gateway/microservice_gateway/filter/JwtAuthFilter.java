@@ -64,13 +64,13 @@ public class JwtAuthFilter extends AbstractGatewayFilterFactory<JwtAuthFilter.Co
             try {
                 // --- Paso 2: Validar firma y expiración del token ---
                 // Keys.hmacShaKeyFor convierte el String secret en una Key criptográfica
-                // parseClaimsJws lanza excepción si el token es inválido o expiró
+                // parseSignedClaims lanza excepción si el token es inválido o expiró
                 SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
                 Claims claims = Jwts.parser()
                         .verifyWith(key)
                         .build()
-                        .parseClaimsJws(token)
-                        .getBody();
+                        .parseSignedClaims(token)
+                        .getPayload();
  
                 // --- Paso 3: Verificar que sea access token ---
                 // El campo "type" dentro del token lo pone identity-service

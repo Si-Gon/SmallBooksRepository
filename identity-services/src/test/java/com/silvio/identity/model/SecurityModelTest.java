@@ -51,8 +51,8 @@ class SecurityModelTest {
     @Test
     void userEntity_debeTenerToStringExcludeEnResetToken() {
         String source = leerFuente();
-        assertTrue(source.matches("(?s).*@ToString\\.Exclude\\s+private String resetToken;.*"),
-                "@ToString.Exclude debe estar antes de 'private String resetToken;'");
+        assertTrue(source.matches("(?s).*@ToString\\.Exclude\\s+private String resetTokenHash;.*"),
+                "@ToString.Exclude debe estar antes de 'private String resetTokenHash;'");
     }
 
     @Test
@@ -74,10 +74,10 @@ class SecurityModelTest {
     @Test
     void userEntity_toStringNoDebeContenerResetToken() {
         User user = new User();
-        user.setResetToken("reset-token-value");
+        user.setResetTokenHash("reset-token-hash-value");
         String toString = user.toString();
-        assertFalse(toString.contains("reset-token-value"),
-                "toString() no debe contener el valor de resetToken");
+        assertFalse(toString.contains("reset-token-hash-value"),
+                "toString() no debe contener el valor de resetTokenHash");
     }
 
     @Test

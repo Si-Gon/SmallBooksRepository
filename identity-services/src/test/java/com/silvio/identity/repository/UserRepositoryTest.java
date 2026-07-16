@@ -139,18 +139,18 @@ class UserRepositoryTest {
         assertThat(resultado.get().getRoles()).isNullOrEmpty();
     }
 
-    // ─── findByResetToken ───────────────────────────────────────────────────
+    // ─── findByResetTokenHash ───────────────────────────────────────────────
 
     @Test
-    void findByResetToken_retornaUsuario_cuandoExiste() {
+    void findByResetTokenHash_retornaUsuario_cuandoExiste() {
         // Given
         User user = crearUsuarioBase("silvio");
-        user.setResetToken("token-de-recuperacion-123");
+        user.setResetTokenHash("a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2");
         userRepository.save(user);
 
         // When
         Optional<User> resultado = userRepository
-                .findByResetToken("token-de-recuperacion-123");
+                .findByResetTokenHash("a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2");
 
         // Then
         assertThat(resultado).isPresent();
@@ -158,10 +158,10 @@ class UserRepositoryTest {
     }
 
     @Test
-    void findByResetToken_retornaVacio_cuandoNoExiste() {
+    void findByResetTokenHash_retornaVacio_cuandoNoExiste() {
         // When
         Optional<User> resultado = userRepository
-                .findByResetToken("token-inexistente");
+                .findByResetTokenHash("hash-inexistente");
 
         // Then
         assertThat(resultado).isEmpty();

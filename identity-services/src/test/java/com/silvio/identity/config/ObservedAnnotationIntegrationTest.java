@@ -68,7 +68,7 @@ class ObservedAnnotationIntegrationTest {
         when(userRepository.findByUsername("test-user")).thenReturn(java.util.Optional.empty());
         when(passwordEncoder.encode(anyString())).thenReturn("encoded");
         assertDoesNotThrow(() ->
-                userService.registerUser("test-user", "password", java.util.Set.of("ROLE_USER")));
+                userService.registerUser("test-user", "password"));
     }
 
     @Test
@@ -100,7 +100,9 @@ class ObservedAnnotationIntegrationTest {
         com.silvio.identity.model.User user = new com.silvio.identity.model.User();
         user.setUsername("test-user");
         user.setResetTokenExpiry(java.time.LocalDateTime.now().plusHours(1));
-        when(userRepository.findByResetToken("valid-token"))
+        String tokenHash = hashParaTest("valid-token");
+        user.setResetTokenHash(tokenHash);
+        when(userRepository.findByResetTokenHash(tokenHash))
                 .thenReturn(java.util.Optional.of(user));
         when(passwordEncoder.encode(anyString())).thenReturn("new-encoded");
         assertDoesNotThrow(() ->
@@ -117,6 +119,17 @@ class ObservedAnnotationIntegrationTest {
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
         assertDoesNotThrow(() ->
                 userService.changePassword("test-user", "currentPassword", "newPassword"));
+    }
+
+    // Reproduce el mismo hash SHA-256 que usa UserService.hashToken()
+    private String hashParaTest(String token) {
+        try {
+            java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(token.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            return java.util.HexFormat.of().formatHex(hash);
+        } catch (java.security.NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test

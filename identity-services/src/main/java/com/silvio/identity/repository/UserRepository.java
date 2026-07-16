@@ -15,6 +15,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.username = :username")
     Optional<User> findByUsernameWithRoles(@Param("username") String username);
 
-    Optional<User> findByResetToken(String resetToken);
+    Optional<User> findByResetTokenHash(String resetTokenHash);
     Optional<User> findByRefreshTokenHash(String refreshTokenHash);
 }

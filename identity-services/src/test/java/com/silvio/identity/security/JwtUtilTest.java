@@ -175,7 +175,7 @@ class JwtUtilTest {
                 Jwts.parser()
                         .verifyWith(differentKey)
                         .build()
-                        .parseClaimsJws(token)
+                        .parseSignedClaims(token)
         );
     }
 

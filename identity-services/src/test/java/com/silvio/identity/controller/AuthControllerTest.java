@@ -24,7 +24,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Set;
+
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -145,9 +145,8 @@ class AuthControllerTest {
         RegisterRequest request = new RegisterRequest();
         request.setUsername("nuevousuario");
         request.setPassword("Password123!");
-        request.setRoles(Set.of("ROLE_USER"));
 
-        doNothing().when(userService).registerUser(any(), any(), any());
+        doNothing().when(userService).registerUser(any(), any());
 
         // Verificar que retorna Map<String, Object> con message, username y status
         mockMvc.perform(post("/auth/register").with(csrf())
@@ -158,7 +157,33 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.username").value("nuevousuario"))
                 .andExpect(jsonPath("$.status").value("CREATED"));
 
-        verify(userService).registerUser(eq("nuevousuario"), eq("Password123!"), any());
+        verify(userService).registerUser(eq("nuevousuario"), eq("Password123!"));
+    }
+
+    @Test
+    void register_conRolesEnJson_ignoradosSinEfecto() throws Exception {
+        // Enviar JSON con campo roles (que RegisterRequest no tiene)
+        // debe ser ignorado por Jackson y no afectar al registro
+        String jsonConRolesExtra = """
+                {
+                    "username": "testuser",
+                    "password": "Password123!",
+                    "roles": ["ROLE_ADMIN"]
+                }
+                """;
+
+        doNothing().when(userService).registerUser(any(), any());
+
+        mockMvc.perform(post("/auth/register").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonConRolesExtra))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.username").value("testuser"))
+                .andExpect(jsonPath("$.status").value("CREATED"));
+
+        // registerUser solo recibe username y password — el campo roles extra
+        // del JSON es ignorado porque RegisterRequest no tiene ese campo
+        verify(userService).registerUser(eq("testuser"), eq("Password123!"));
     }
 
     @Test
@@ -168,7 +193,7 @@ class AuthControllerTest {
         request.setPassword("Password123!");
 
         doThrow(new UsuarioDuplicadoException("existente"))
-                .when(userService).registerUser(any(), any(), any());
+                .when(userService).registerUser(any(), any());
 
         mockMvc.perform(post("/auth/register").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)

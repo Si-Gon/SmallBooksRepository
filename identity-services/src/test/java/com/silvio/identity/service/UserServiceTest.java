@@ -71,7 +71,7 @@ class UserServiceTest {
         return user;
     }
 
-    // Reproduce el mismo hash SHA-256 que usa UserService.hashRefreshToken()
+    // Reproduce el mismo hash SHA-256 que usa UserService.hashToken()
     private String hashTokenForTest(String token) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -90,42 +90,27 @@ class UserServiceTest {
     // ─── tests registerUser ──────────────────────────────────────────────────
 
     @Test
-    void registerUser_exitoso_con_roles_personalizados() {
+    void registerUser_exitoso_asigna_ROLE_USER_siempre() {
         // Given
         String username = "silvio";
         String rawPassword = "password123";
-        Set<String> roles = Set.of("ROLE_PREMIUM");
 
         when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
         when(passwordEncoder.encode(rawPassword)).thenReturn("$2a$10$hashedpassword");
-        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
-
-        // When
-        userService.registerUser(username, rawPassword, roles);
-
-        // Then
-        verify(userRepository).findByUsername(username);
-        verify(passwordEncoder).encode(rawPassword);
-        verify(userRepository).save(any(User.class));
-    }
-
-    @Test
-    void registerUser_exitoso_asigna_ROLE_USER_por_defecto_si_roles_es_null() {
-        // Given
-        String username = "nuevo";
-        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
-        when(passwordEncoder.encode(any())).thenReturn("$2a$10$hashed");
         when(userRepository.save(any(User.class))).thenAnswer(i -> {
             User saved = i.getArgument(0);
-            // Verificar que se asignó ROLE_USER por defecto
-            assertTrue(saved.getRoles().contains("ROLE_USER"));
+            // Verificar que siempre se asigna ROLE_USER, independientemente del cliente
+            assertEquals(Set.of("ROLE_USER"), saved.getRoles(),
+                    "Siempre debe asignarse ROLE_USER — nunca aceptar roles del cliente");
             return saved;
         });
 
         // When
-        userService.registerUser(username, "pass123", null);
+        userService.registerUser(username, rawPassword);
 
         // Then
+        verify(userRepository).findByUsername(username);
+        verify(passwordEncoder).encode(rawPassword);
         verify(userRepository).save(any(User.class));
     }
 
@@ -138,7 +123,7 @@ class UserServiceTest {
 
         // When & Then
         UsuarioDuplicadoException ex = assertThrows(UsuarioDuplicadoException.class,
-                () -> userService.registerUser(username, "pass123", null));
+                () -> userService.registerUser(username, "pass123"));
 
         assertTrue(ex.getMessage().contains("ya existe") || ex.getMessage().contains(username));
         verify(userRepository, never()).save(any(User.class));
@@ -193,8 +178,12 @@ class UserServiceTest {
         // Then
         assertNotNull(token);
         assertFalse(token.isEmpty());
-        // El token debe ser un UUID válido
+        // El token devuelto debe ser un UUID en texto plano (el hash se almacena internamente)
         assertDoesNotThrow(() -> UUID.fromString(token));
+        // Verificar que en BD se almacenó el hash, no el token en texto plano
+        assertNotNull(user.getResetTokenHash());
+        assertEquals(64, user.getResetTokenHash().length(), "El hash SHA-256 debe tener 64 caracteres hex");
+        assertNotEquals(token, user.getResetTokenHash(), "Nunca debe almacenarse el token en texto plano");
         verify(userRepository).save(any(User.class));
         verify(jwtProperties, atLeastOnce()).getResetTokenExpirationHours();
     }
@@ -241,11 +230,12 @@ class UserServiceTest {
     void resetPassword_exitoso_con_token_valido() {
         // Given
         String token = UUID.randomUUID().toString();
+        String tokenHash = hashTokenForTest(token);
         User user = usuarioBase("silvio");
-        user.setResetToken(token);
+        user.setResetTokenHash(tokenHash);
         user.setResetTokenExpiry(LocalDateTime.now().plusHours(1)); // no expirado
 
-        when(userRepository.findByResetToken(token)).thenReturn(Optional.of(user));
+        when(userRepository.findByResetTokenHash(tokenHash)).thenReturn(Optional.of(user));
         when(passwordEncoder.encode("nuevaPassword123")).thenReturn("$2a$10$newHash");
         when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
 
@@ -255,8 +245,8 @@ class UserServiceTest {
         // Then
         verify(passwordEncoder).encode("nuevaPassword123");
         verify(userRepository).save(any(User.class));
-        // El token debe quedar limpio después del reset
-        assertNull(user.getResetToken());
+        // El hash del token debe quedar limpio después del reset
+        assertNull(user.getResetTokenHash());
         assertNull(user.getResetTokenExpiry());
     }
 
@@ -264,11 +254,12 @@ class UserServiceTest {
     void resetPassword_falla_con_token_expirado() {
         // Given
         String token = UUID.randomUUID().toString();
+        String tokenHash = hashTokenForTest(token);
         User user = usuarioBase("silvio");
-        user.setResetToken(token);
+        user.setResetTokenHash(tokenHash);
         user.setResetTokenExpiry(LocalDateTime.now().minusHours(1)); // ya expiró
 
-        when(userRepository.findByResetToken(token)).thenReturn(Optional.of(user));
+        when(userRepository.findByResetTokenHash(tokenHash)).thenReturn(Optional.of(user));
 
         // When & Then
         TokenExpiradoException ex = assertThrows(TokenExpiradoException.class,
@@ -280,10 +271,27 @@ class UserServiceTest {
     }
 
     @Test
+    void resetPassword_tokenYaUtilizadoAnteriormente_debeFallar() {
+        // Given — simula que un token fue usado exitosamente en un reset anterior
+        // (resetTokenHash = null) y un atacante intenta reusarlo
+        String token = UUID.randomUUID().toString();
+        String tokenHash = hashTokenForTest(token);
+        // El hash ya fue limpiado después del reset exitoso — no existe en BD
+        when(userRepository.findByResetTokenHash(tokenHash)).thenReturn(Optional.empty());
+
+        // When & Then — el token ya usado no debe permitir un nuevo reset
+        TokenInvalidoException ex = assertThrows(TokenInvalidoException.class,
+                () -> userService.resetPassword(token, "nuevaPassword"));
+        assertTrue(ex.getMessage().contains("inválido") || ex.getMessage().contains("token"),
+                "Debe lanzar TokenInvalidoException informando token inválido");
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
     void resetPassword_falla_con_token_invalido() {
         // Given
         String tokenInvalido = "token-que-no-existe";
-        when(userRepository.findByResetToken(tokenInvalido)).thenReturn(Optional.empty());
+        when(userRepository.findByResetTokenHash(hashTokenForTest(tokenInvalido))).thenReturn(Optional.empty());
 
         // When & Then
         assertThrows(TokenInvalidoException.class,

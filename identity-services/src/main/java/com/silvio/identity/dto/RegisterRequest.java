@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.ToString;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import java.util.Set;
 
 @Data
 public class RegisterRequest {
@@ -16,6 +15,4 @@ public class RegisterRequest {
     @Size(min = 6, max = 100, message = "La contraseña debe tener entre 6 y 100 caracteres")
     @ToString.Exclude
     private String password;
-
-    private Set<String> roles; // ej: ["ROLE_USER"]
 }
