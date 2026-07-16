@@ -90,6 +90,16 @@ class SecurityModelTest {
     }
 
     @Test
+    void userEntity_rolesField_debeTenerFetchTypeLAZY() {
+        String source = leerFuente();
+        assertTrue(source.contains("fetch = FetchType.LAZY"),
+                "User.java debe tener fetch = FetchType.LAZY en roles para evitar N+1");
+        // Verifica que está en la línea de @ElementCollection
+        assertTrue(source.matches("(?s).*@ElementCollection\\(fetch = FetchType\\.LAZY\\).*"),
+                "@ElementCollection debe tener fetch = FetchType.LAZY");
+    }
+
+    @Test
     void userEntity_toStringDebeContenerCamposNoSensibles() {
         User user = new User();
         user.setId(1L);

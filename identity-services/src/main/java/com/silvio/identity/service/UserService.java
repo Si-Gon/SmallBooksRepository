@@ -135,7 +135,7 @@ public class UserService implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Cargando usuario para autenticación: {}", username);
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsernameWithRoles(username)
                 .orElseThrow(() -> {
                     log.warn("Usuario no encontrado: {}", username);
                     return new UsernameNotFoundException(" Usuario no encontrado: " + username);
@@ -270,7 +270,7 @@ public class UserService implements UserDetailsService {
     @Transactional(readOnly = true)
     public UsuarioDTO obtenerUsuarioPorUsername(String username) {
         log.info("Consultando usuario por username: {}", username);
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsernameWithRoles(username)
                 .orElseThrow(() -> {
                     log.warn("Usuario no encontrado: {}", username);
                     return new UsernameNotFoundException("Usuario '" + username + "' no encontrado");

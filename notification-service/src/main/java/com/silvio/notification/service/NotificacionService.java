@@ -117,14 +117,12 @@ public class NotificacionService {
     }
 
     @Observed(name = "notification.marcarTodasLeidas")
+    @Transactional
     public void marcarTodasLeidas(String usuarioId) {
         log.info("Marcando todas las notificaciones como leídas — usuario: {}", usuarioId);
-        List<Notificacion> noLeidas = notificacionRepository
-                .findByUsuarioIdAndLeidaFalse(usuarioId);
-        noLeidas.forEach(n -> n.setLeida(true));
-        notificacionRepository.saveAll(noLeidas);
+        int actualizadas = notificacionRepository.marcarTodasLeidasPorUsuario(usuarioId);
         log.info("{} notificaciones marcadas como leídas para usuario: {}",
-                noLeidas.size(), usuarioId);
+                actualizadas, usuarioId);
     }
 
     private NotificacionDTO mapearADto(Notificacion n) {

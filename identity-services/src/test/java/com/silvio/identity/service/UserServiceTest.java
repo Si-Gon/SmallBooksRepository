@@ -151,7 +151,7 @@ class UserServiceTest {
     void loadUserByUsername_devuelve_UserDetails_cuando_usuario_existe() {
         // Given
         String username = "silvio";
-        when(userRepository.findByUsername(username))
+        when(userRepository.findByUsernameWithRoles(username))
                 .thenReturn(Optional.of(usuarioBase(username)));
 
         // When
@@ -161,19 +161,19 @@ class UserServiceTest {
         assertNotNull(resultado);
         assertEquals(username, resultado.getUsername());
         assertFalse(resultado.getAuthorities().isEmpty());
-        verify(userRepository).findByUsername(username);
+        verify(userRepository).findByUsernameWithRoles(username);
     }
 
     @Test
     void loadUserByUsername_lanza_excepcion_cuando_usuario_no_existe() {
         // Given
         String username = "noexiste";
-        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
+        when(userRepository.findByUsernameWithRoles(username)).thenReturn(Optional.empty());
 
         // When & Then
         assertThrows(UsernameNotFoundException.class,
                 () -> userService.loadUserByUsername(username));
-        verify(userRepository).findByUsername(username);
+        verify(userRepository).findByUsernameWithRoles(username);
     }
 
     // ─── tests createPasswordResetToken ──────────────────────────────────────
@@ -460,7 +460,7 @@ class UserServiceTest {
         User user = usuarioBase(username);
         user.setId(1L);
 
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameWithRoles(username)).thenReturn(Optional.of(user));
 
         // When
         UsuarioDTO dto = userService.obtenerUsuarioPorUsername(username);
@@ -471,7 +471,7 @@ class UserServiceTest {
         assertEquals(username, dto.getUsername());
         assertTrue(dto.getRoles().contains("ROLE_USER"));
         assertEquals(1, dto.getRoles().size());
-        verify(userRepository).findByUsername(username);
+        verify(userRepository).findByUsernameWithRoles(username);
     }
 
     @Test
@@ -482,7 +482,7 @@ class UserServiceTest {
         user.setId(2L);
         user.setRoles(Set.of("ROLE_USER", "ROLE_ADMIN", "ROLE_PREMIUM"));
 
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameWithRoles(username)).thenReturn(Optional.of(user));
 
         // When
         UsuarioDTO dto = userService.obtenerUsuarioPorUsername(username);
@@ -493,34 +493,34 @@ class UserServiceTest {
         assertEquals(username, dto.getUsername());
         assertEquals(3, dto.getRoles().size());
         assertTrue(dto.getRoles().containsAll(Set.of("ROLE_USER", "ROLE_ADMIN", "ROLE_PREMIUM")));
-        verify(userRepository).findByUsername(username);
+        verify(userRepository).findByUsernameWithRoles(username);
     }
 
     @Test
     void obtenerUsuarioPorUsername_falla_cuando_usuario_no_existe() {
         // Given
         String username = "noexiste";
-        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
+        when(userRepository.findByUsernameWithRoles(username)).thenReturn(Optional.empty());
 
         // When & Then
         UsernameNotFoundException ex = assertThrows(UsernameNotFoundException.class,
                 () -> userService.obtenerUsuarioPorUsername(username));
 
         assertTrue(ex.getMessage().contains("no encontrado"));
-        verify(userRepository).findByUsername(username);
+        verify(userRepository).findByUsernameWithRoles(username);
     }
 
     @Test
     void obtenerUsuarioPorUsername_falla_cuando_username_es_null() {
         // Given — Spring Data JPA devuelve Optional.empty() para parámetros null
-        when(userRepository.findByUsername(null)).thenReturn(Optional.empty());
+        when(userRepository.findByUsernameWithRoles(null)).thenReturn(Optional.empty());
 
         // When & Then — debe lanzar UsernameNotFoundException como con cualquier usuario inexistente
         UsernameNotFoundException ex = assertThrows(UsernameNotFoundException.class,
                 () -> userService.obtenerUsuarioPorUsername(null));
 
         assertTrue(ex.getMessage().contains("no encontrado"));
-        verify(userRepository).findByUsername(null);
+        verify(userRepository).findByUsernameWithRoles(null);
     }
 
     // ─── tests login ─────────────────────────────────────────────────────────
@@ -597,7 +597,7 @@ class UserServiceTest {
         when(userDetails.getUsername()).thenReturn("silvio");
         // loadUserByUsername busca en repo
         User user = usuarioBase("silvio");
-        when(userRepository.findByUsername("silvio")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameWithRoles("silvio")).thenReturn(Optional.of(user));
 
         when(jwtUtil.generateAccessToken(any(UserDetails.class))).thenReturn("nuevo.access.token");
         when(jwtUtil.generateRefreshToken("silvio")).thenReturn("nuevo.refresh.token");
@@ -676,7 +676,7 @@ class UserServiceTest {
         when(jwtUtil.extractUsername(oldRefreshToken)).thenReturn("silvio");
 
         User user = usuarioBase("silvio");
-        when(userRepository.findByUsername("silvio")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameWithRoles("silvio")).thenReturn(Optional.of(user));
 
         // El hash del old token NO existe en BD — simula token ya rotado
         String expectedOldHash = hashTokenForTest(oldRefreshToken);

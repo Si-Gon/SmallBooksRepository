@@ -25,9 +25,10 @@ public class User {
     @ToString.Exclude
     private String password; // almacenar siempre el hash BCrypt
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
+    @ToString.Exclude
     private Set<String> roles; // ej: "ROLE_ADMIN", "ROLE_USER"
 
     // Campos para recuperación de contraseña

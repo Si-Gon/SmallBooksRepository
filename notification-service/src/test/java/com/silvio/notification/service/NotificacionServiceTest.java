@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
  * - obtenerPorUsuario(): devuelve todas ordenadas por fecha DESC
  * - obtenerNoLeidas(): filtra solo las no leídas
  * - marcarLeida(): pone leida=true para una notificación específica
- * - marcarTodasLeidas(): itera y pone leida=true en todas las no leídas del usuario
+ * - marcarTodasLeidas(): update masivo vía @Modifying @Query
  */
 @ExtendWith(MockitoExtension.class)
 class NotificacionServiceTest {
@@ -329,30 +329,24 @@ class NotificacionServiceTest {
     // =====================================================================
 
     @Test
-    void marcarTodasLeidas_conNoLeidas_marcaTodasYGuarda() {
-        List<Notificacion> noLeidas = List.of(
-            entity(1L, "silvio", TipoNotificacion.VENCIDO, false),
-            entity(2L, "silvio", TipoNotificacion.PROXIMO_VENCER, false)
-        );
-        when(notificacionRepository.findByUsuarioIdAndLeidaFalse("silvio"))
-            .thenReturn(noLeidas);
+    void marcarTodasLeidas_conNoLeidas_marcaTodasConBulkUpdate() {
+        when(notificacionRepository.marcarTodasLeidasPorUsuario("silvio"))
+            .thenReturn(2);
 
         notificacionService.marcarTodasLeidas("silvio");
 
-        // Todas deben tener leida=true después de llamar al método
-        assertThat(noLeidas).allMatch(n -> n.getLeida());
-        // saveAll debe haberse llamado con la lista completa
-        verify(notificacionRepository).saveAll(noLeidas);
+        // Debe llamar al método de bulk update en el repositorio
+        verify(notificacionRepository).marcarTodasLeidasPorUsuario("silvio");
     }
 
     @Test
-    void marcarTodasLeidas_sinNoLeidas_noGuardaNada() {
-        when(notificacionRepository.findByUsuarioIdAndLeidaFalse("silvio"))
-            .thenReturn(List.of());
+    void marcarTodasLeidas_sinNoLeidas_retornaCero() {
+        when(notificacionRepository.marcarTodasLeidasPorUsuario("silvio"))
+            .thenReturn(0);
 
         notificacionService.marcarTodasLeidas("silvio");
 
-        // saveAll se llama con lista vacía — ningún guardado real
-        verify(notificacionRepository).saveAll(List.of());
+        // Debe llamar al bulk update aunque no haya registros afectados
+        verify(notificacionRepository).marcarTodasLeidasPorUsuario("silvio");
     }
 }

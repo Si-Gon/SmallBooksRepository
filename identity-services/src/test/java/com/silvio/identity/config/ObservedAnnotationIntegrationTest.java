@@ -77,7 +77,7 @@ class ObservedAnnotationIntegrationTest {
         user.setUsername("test-user");
         user.setPassword("encoded");
         user.setRoles(java.util.Set.of("ROLE_USER"));
-        when(userRepository.findByUsername("test-user")).thenReturn(java.util.Optional.of(user));
+        when(userRepository.findByUsernameWithRoles("test-user")).thenReturn(java.util.Optional.of(user));
         assertDoesNotThrow(() -> {
             var resultado = userService.loadUserByUsername("test-user");
             assertNotNull(resultado);
@@ -124,7 +124,7 @@ class ObservedAnnotationIntegrationTest {
         com.silvio.identity.model.User user = new com.silvio.identity.model.User();
         user.setUsername("test-user");
         user.setRoles(java.util.Set.of("ROLE_USER"));
-        when(userRepository.findByUsername("test-user")).thenReturn(java.util.Optional.of(user));
+        when(userRepository.findByUsernameWithRoles("test-user")).thenReturn(java.util.Optional.of(user));
         assertDoesNotThrow(() -> {
             var resultado = userService.obtenerUsuarioPorUsername("test-user");
             assertNotNull(resultado);
