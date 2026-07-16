@@ -11,7 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import org.springframework.data.domain.Page;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 // Tests de integracion para verificar que las 3 anotaciones @Observed
@@ -82,8 +85,8 @@ class ObservedAnnotationIntegrationTest {
 
     @Test
     void observedAspect_obtenerTodos_creaSpanCorrectamente() {
-        when(catalogClient.obtenerTodos())
-                .thenReturn(java.util.Collections.emptyList());
+        when(catalogClient.obtenerTodos(anyInt(), anyInt(), anyString()))
+                .thenReturn(Page.empty());
         assertDoesNotThrow(() -> {
             var resultado = searchService.obtenerTodos();
             assertNotNull(resultado);

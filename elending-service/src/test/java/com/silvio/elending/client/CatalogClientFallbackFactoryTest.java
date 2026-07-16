@@ -4,13 +4,13 @@ import com.silvio.elending.dto.LibroDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 // Tests para CatalogClientFallbackFactory
 // Verifica que cuando el circuito está abierto o catalog-service no responde,
-// se devuelvan respuestas degradadas: libro "No disponible" y lista vacía.
+// se devuelvan respuestas degradadas: libro "No disponible" y página vacía.
 class CatalogClientFallbackFactoryTest {
 
     private CatalogClientFallbackFactory fallbackFactory;
@@ -40,17 +40,76 @@ class CatalogClientFallbackFactoryTest {
     }
 
     @Test
-    void create_conExcepcion_obtenerTodos_retornaListaVacia() {
+    void create_conExcepcion_obtenerTodos_retornaPaginaVacia() {
         // Given
         RuntimeException causa = new RuntimeException("Timeout");
 
         // When
         CatalogClient clienteFallback = fallbackFactory.create(causa);
-        List<LibroDTO> resultado = clienteFallback.obtenerTodos();
+        Page<LibroDTO> resultado = clienteFallback.obtenerTodos(0, 20, "titulo,asc");
 
-        // Then — lista vacía, no null
+        // Then — página vacía, no null
         assertNotNull(resultado);
         assertTrue(resultado.isEmpty());
+    }
+
+    @Test
+    void crear_conExcepcion_obtenerTodos_conParametrosVariados_retornaPaginaVaciaSiempre() {
+        // Given — cualquier excepción
+        RuntimeException causa = new RuntimeException("Error genérico");
+        CatalogClient clienteFallback = fallbackFactory.create(causa);
+
+        // When & Then — diferentes combinaciones page/size/sort siempre retornan Page.empty()
+        assertTrue(clienteFallback.obtenerTodos(0, 1, "id,asc").isEmpty());
+        assertTrue(clienteFallback.obtenerTodos(5, 50, "autor,desc").isEmpty());
+        assertTrue(clienteFallback.obtenerTodos(999, 999, "campoInexistente,asc").isEmpty());
+        assertTrue(clienteFallback.obtenerTodos(0, Integer.MAX_VALUE, "").isEmpty());
+    }
+
+    @Test
+    void crear_conExcepcion_obtenerTodos_pageNegativa_retornaPaginaVacia() {
+        // Given — parámetros inválidos
+        RuntimeException causa = new RuntimeException("Error");
+        CatalogClient clienteFallback = fallbackFactory.create(causa);
+
+        // When — página negativa
+        Page<LibroDTO> resultado = clienteFallback.obtenerTodos(-1, 20, "titulo,asc");
+
+        // Then — debe retornar vacío sin lanzar excepción
+        assertNotNull(resultado);
+        assertTrue(resultado.isEmpty());
+    }
+
+    @Test
+    void crear_conExcepcion_obtenerTodos_sortInvalido_retornaPaginaVacia() {
+        // Given
+        RuntimeException causa = new RuntimeException("Error");
+        CatalogClient clienteFallback = fallbackFactory.create(causa);
+
+        // When — sort con formato inválido
+        Page<LibroDTO> resultado = clienteFallback.obtenerTodos(0, 20, ",,");
+
+        // Then — debe retornar vacío sin lanzar excepción
+        assertNotNull(resultado);
+        assertTrue(resultado.isEmpty());
+    }
+
+    @Test
+    void crear_conExcepcion_obtenerTodos_parametrosDefault_retornaPaginaVacia() {
+        // Given — simula que catalog-service no responde
+        RuntimeException causa = new RuntimeException("Connection refused");
+        CatalogClient clienteFallback = fallbackFactory.create(causa);
+
+        // When — valores por defecto del @RequestParam en el Feign client
+        Page<LibroDTO> resultado = clienteFallback.obtenerTodos(0, 20, "titulo,asc");
+
+        // Then — la página vacía mantiene las propiedades de Page.empty()
+        // NOTA: Page.empty() retorna totalPages = 1 (size=0 evita div/0)
+        assertNotNull(resultado);
+        assertTrue(resultado.isEmpty());
+        assertFalse(resultado.hasContent());
+        assertEquals(0, resultado.getNumber());
+        assertEquals(0, resultado.getTotalElements());
     }
 
     @Test
@@ -92,15 +151,15 @@ class CatalogClientFallbackFactoryTest {
 
         // When — llamar a ambos métodos
         LibroDTO libro = clienteFallback.obtenerLibro(77L);
-        List<LibroDTO> lista = clienteFallback.obtenerTodos();
+        Page<LibroDTO> pagina = clienteFallback.obtenerTodos(0, 20, "titulo,asc");
 
         // Then — cada método produce su respuesta degradada independiente
         assertNotNull(libro);
         assertEquals(77L, libro.getId());
         assertEquals("No disponible", libro.getTitulo());
 
-        assertNotNull(lista);
-        assertTrue(lista.isEmpty());
+        assertNotNull(pagina);
+        assertTrue(pagina.isEmpty());
     }
 
     @Test

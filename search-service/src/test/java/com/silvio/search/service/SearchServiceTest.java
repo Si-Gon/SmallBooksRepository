@@ -8,6 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import java.util.List;
 
@@ -55,10 +57,10 @@ class SearchServiceTest {
 
     @Test
     void obtenerTodos_conLibros_retornaListaMapeada() {
-        when(catalogClient.obtenerTodos()).thenReturn(List.of(
+        when(catalogClient.obtenerTodos(anyInt(), anyInt(), anyString())).thenReturn(new PageImpl<>(List.of(
             libro(1L, "Dune", true),
             libro(2L, "Fundación", false)
-        ));
+        )));
 
         List<SearchResultDTO> resultado = searchService.obtenerTodos();
 
@@ -77,8 +79,44 @@ class SearchServiceTest {
     }
 
     @Test
+    void obtenerTodos_pasaParametrosPaginacionCorrectos() {
+        // Verifica que SearchService llame al Feign client con page=0, size=100, sort="titulo,asc"
+        when(catalogClient.obtenerTodos(0, 100, "titulo,asc")).thenReturn(Page.empty());
+
+        searchService.obtenerTodos();
+
+        verify(catalogClient).obtenerTodos(eq(0), eq(100), eq("titulo,asc"));
+    }
+
+    @Test
+    void obtenerTodos_conUnElemento_retornaUnResultado() {
+        // Caso borde: page con un solo elemento
+        when(catalogClient.obtenerTodos(anyInt(), anyInt(), anyString()))
+            .thenReturn(new PageImpl<>(List.of(libro(1L, "Único libro", true))));
+
+        List<SearchResultDTO> resultado = searchService.obtenerTodos();
+
+        assertThat(resultado).hasSize(1);
+        assertThat(resultado.get(0).getTitulo()).isEqualTo("Único libro");
+    }
+
+    @Test
+    void obtenerTodos_consultaTotalElements() {
+        // Verifica que se acceda a getTotalElements() (se usa en el log)
+        Page<LibroCatalogDTO> pagina = mock(Page.class);
+        when(pagina.getContent()).thenReturn(List.of(libro(1L, "Dune", true)));
+        when(pagina.getTotalElements()).thenReturn(1L);
+        when(catalogClient.obtenerTodos(anyInt(), anyInt(), anyString())).thenReturn(pagina);
+
+        List<SearchResultDTO> resultado = searchService.obtenerTodos();
+
+        assertThat(resultado).hasSize(1);
+        verify(pagina).getTotalElements();
+    }
+
+    @Test
     void obtenerTodos_listaVacia_retornaListaVacia() {
-        when(catalogClient.obtenerTodos()).thenReturn(List.of());
+        when(catalogClient.obtenerTodos(anyInt(), anyInt(), anyString())).thenReturn(Page.empty());
 
         List<SearchResultDTO> resultado = searchService.obtenerTodos();
 
@@ -87,7 +125,7 @@ class SearchServiceTest {
 
     @Test
     void obtenerTodos_errorFeign_lanzaRuntimeException() {
-        when(catalogClient.obtenerTodos()).thenThrow(new RuntimeException("catalog-service no disponible"));
+        when(catalogClient.obtenerTodos(anyInt(), anyInt(), anyString())).thenThrow(new RuntimeException("catalog-service no disponible"));
 
         // El servicio ya no envuelve excepciones — se propagan directamente
         assertThatThrownBy(() -> searchService.obtenerTodos())

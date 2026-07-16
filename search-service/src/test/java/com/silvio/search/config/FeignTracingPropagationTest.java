@@ -10,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import org.springframework.data.domain.Page;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -38,8 +40,8 @@ class FeignTracingPropagationTest {
 
     @Test
     void llamadaFeign_obtenerTodos_propagaTrace() {
-        when(catalogClient.obtenerTodos())
-                .thenReturn(java.util.Collections.emptyList());
+        when(catalogClient.obtenerTodos(anyInt(), anyInt(), anyString()))
+                .thenReturn(Page.empty());
 
         assertDoesNotThrow(() -> {
             var resultado = searchService.obtenerTodos();
@@ -47,7 +49,7 @@ class FeignTracingPropagationTest {
             assertTrue(resultado.isEmpty());
         });
 
-        verify(catalogClient, times(1)).obtenerTodos();
+        verify(catalogClient, times(1)).obtenerTodos(anyInt(), anyInt(), anyString());
     }
 
     @Test

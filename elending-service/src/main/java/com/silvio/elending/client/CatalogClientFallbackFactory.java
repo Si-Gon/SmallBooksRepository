@@ -3,10 +3,8 @@ package com.silvio.elending.client;
 import com.silvio.elending.dto.LibroDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-
-import java.util.Collections;
-import java.util.List;
 
 // Fallback factory para CatalogClient
 // Cuando el circuito está abierto o el servicio no responde,
@@ -35,9 +33,9 @@ public class CatalogClientFallbackFactory implements FallbackFactory<CatalogClie
             }
 
             @Override
-            public List<LibroDTO> obtenerTodos() {
-                log.warn("Fallback — obtenerTodos() — devolviendo lista vacía");
-                return Collections.emptyList();
+            public Page<LibroDTO> obtenerTodos(int page, int size, String sort) {
+                log.warn("Fallback — obtenerTodos() — devolviendo página vacía");
+                return Page.empty();
             }
         };
     }

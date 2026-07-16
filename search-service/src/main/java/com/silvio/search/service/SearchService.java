@@ -5,6 +5,7 @@ import com.silvio.search.dto.LibroCatalogDTO;
 import com.silvio.search.dto.SearchResultDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import io.micrometer.observation.annotation.Observed;
@@ -37,9 +38,10 @@ public class SearchService {
 
     @Observed(name = "search.obtenerTodos")
     public List<SearchResultDTO> obtenerTodos() {
-        log.info("Consultando catálogo completo via Catalog Service");
-        List<LibroCatalogDTO> resultados = catalogClient.obtenerTodos();
-        log.info("Total libros en catálogo: {}", resultados.size());
+        log.info("Consultando catálogo completo via Catalog Service (paginado)");
+        Page<LibroCatalogDTO> pagina = catalogClient.obtenerTodos(0, 100, "titulo,asc");
+        List<LibroCatalogDTO> resultados = pagina.getContent();
+        log.info("Total libros en catálogo: {}", pagina.getTotalElements());
         return resultados.stream().map(this::mapearADto).collect(Collectors.toList());
     }
 
