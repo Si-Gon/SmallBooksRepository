@@ -82,6 +82,7 @@ public class NotificacionService {
     }
 
     @Observed(name = "notification.obtenerPorUsuario")
+    @Transactional(readOnly = true)
     public List<NotificacionDTO> obtenerPorUsuario(String usuarioId) {
         log.info("Consultando notificaciones del usuario: {}", usuarioId);
         return notificacionRepository
@@ -92,6 +93,7 @@ public class NotificacionService {
     }
 
     @Observed(name = "notification.obtenerNoLeidas")
+    @Transactional(readOnly = true)
     public List<NotificacionDTO> obtenerNoLeidas(String usuarioId) {
         log.info("Consultando notificaciones no leídas del usuario: {}", usuarioId);
         return notificacionRepository

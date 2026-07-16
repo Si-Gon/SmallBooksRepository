@@ -11,6 +11,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.micrometer.observation.annotation.Observed;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,7 @@ public class CatalogService {
     private final LibroRepository libroRepository;
 
     @Observed(name = "catalog.obtenerTodos")
+    @Transactional(readOnly = true)
     public Page<LibroResponseDTO> obtenerTodos(Pageable pageable) {
         if (pageable.isUnpaged()) {
             log.info("Consultando todos los libros del catálogo — sin paginación");
@@ -40,6 +42,7 @@ public class CatalogService {
     }
 
     @Observed(name = "catalog.obtenerDisponibles")
+    @Transactional(readOnly = true)
     public List<LibroResponseDTO> obtenerDisponibles() {
         log.info("Consultando libros disponibles");
         return libroRepository.findByDisponibleTrue()
@@ -49,6 +52,7 @@ public class CatalogService {
     }
 
     @Observed(name = "catalog.obtenerPorId")
+    @Transactional(readOnly = true)
     public LibroResponseDTO obtenerPorId(@NonNull Long id) {
         log.info("Consultando libro con id: {}", id);
         Libro libro = libroRepository.findById(id)
@@ -60,6 +64,7 @@ public class CatalogService {
     }
 
     @Observed(name = "catalog.buscar")
+    @Transactional(readOnly = true)
     public List<LibroResponseDTO> buscar(String titulo, String autor, String genero) {
     log.info("Búsqueda combinada — titulo: {}, autor: {}, genero: {}", titulo, autor, genero);
 

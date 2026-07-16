@@ -132,6 +132,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     @Observed(name = "identity.loadUserByUsername")
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Cargando usuario para autenticación: {}", username);
         User user = userRepository.findByUsername(username)

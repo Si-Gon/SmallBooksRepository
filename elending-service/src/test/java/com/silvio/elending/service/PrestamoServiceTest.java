@@ -764,11 +764,13 @@ class PrestamoServiceTest {
         proximo.setFechaVencimiento(LocalDateTime.now().plusDays(1));
 
         // Primera llamada (vencidos) → devuelve vencido
-        // Segunda llamada (próximos) → devuelve vencido + proximo (el filter() excluye el vencido)
+        // Segunda llamada (próximos) → usa BETWEEN, solo devuelve el próximo (no el vencido)
         when(prestamoRepository.findByEstadoAndFechaVencimientoBefore(
                 eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class)))
-                .thenReturn(Arrays.asList(vencido))    // 1ra: vencidos (ahora)
-                .thenReturn(Arrays.asList(vencido, proximo)); // 2da: próximos (ahora + 2d)
+                .thenReturn(Arrays.asList(vencido));    // vencidos (ahora)
+        when(prestamoRepository.findByEstadoAndFechaVencimientoBetween(
+                eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(Arrays.asList(proximo)); // próximos (ahora, en2Dias)
 
         when(licenseClient.devolver(10L)).thenReturn(licenciaDisponible());
         when(prestamoRepository.save(any(Prestamo.class)))
@@ -799,8 +801,10 @@ class PrestamoServiceTest {
         // Sin préstamos vencidos
         when(prestamoRepository.findByEstadoAndFechaVencimientoBefore(
                 eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class)))
-                .thenReturn(new ArrayList<>())   // primera llamada: vencidos
-                .thenReturn(Arrays.asList(proximoAVencer)); // segunda llamada: próximos a vencer
+                .thenReturn(new ArrayList<>());   // vencidos: vacío
+        when(prestamoRepository.findByEstadoAndFechaVencimientoBetween(
+                eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(Arrays.asList(proximoAVencer)); // próximos a vencer
 
         // When
         prestamoService.cerrarPrestamosVencidos();
@@ -959,7 +963,9 @@ class PrestamoServiceTest {
 
         when(prestamoRepository.findByEstadoAndFechaVencimientoBefore(
                 eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class)))
-                .thenReturn(new ArrayList<>())           // vencidos: vacío
+                .thenReturn(new ArrayList<>());           // vencidos: vacío
+        when(prestamoRepository.findByEstadoAndFechaVencimientoBetween(
+                eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class), any(LocalDateTime.class)))
                 .thenReturn(Arrays.asList(proximo));     // próximos: 1
         // Notificación falla
         doThrow(new RuntimeException("RabbitMQ no disponible"))
@@ -992,7 +998,9 @@ class PrestamoServiceTest {
 
         when(prestamoRepository.findByEstadoAndFechaVencimientoBefore(
                 eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class)))
-                .thenReturn(new ArrayList<>())               // vencidos
+                .thenReturn(new ArrayList<>());               // vencidos
+        when(prestamoRepository.findByEstadoAndFechaVencimientoBetween(
+                eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class), any(LocalDateTime.class)))
                 .thenReturn(Arrays.asList(proximo1, proximo2)); // próximos
 
         // La notificación falla para el primero pero funciona para el segundo
@@ -1005,6 +1013,223 @@ class PrestamoServiceTest {
 
         // Then — ambas notificaciones se intentaron
         verify(notificacionPublisher, times(2)).publicarEvento(any(NotificacionEvent.class));
+    }
+
+    // ─── tests cerrarPrestamosVencidos — BETWEEN boundary (próximos) ─────────
+    // JPA BETWEEN es inclusivo en ambos extremos: fecha BETWEEN desde AND hasta
+    // Estos tests verifican el comportamiento del servicio con resultados del repo.
+
+    @Test
+    void proximosAVencer_conVencimientoExactamenteAhora_incluidoEnBETWEEN() {
+        // Given — préstamo con fechaVencimiento == ahora (borde inferior del BETWEEN)
+        Prestamo exactamenteAhora = new Prestamo();
+        exactamenteAhora.setId(40L);
+        exactamenteAhora.setUsuarioId("usuario_between_inf");
+        exactamenteAhora.setLibroId(400L);
+        exactamenteAhora.setEstado(EstadoPrestamo.ACTIVO);
+        exactamenteAhora.setFechaVencimiento(LocalDateTime.now()); // exactamente ahora
+
+        when(prestamoRepository.findByEstadoAndFechaVencimientoBefore(
+                eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class)))
+                .thenReturn(new ArrayList<>()); // sin vencidos
+        when(prestamoRepository.findByEstadoAndFechaVencimientoBetween(
+                eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(Arrays.asList(exactamenteAhora)); // incluido en BETWEEN
+
+        // When
+        prestamoService.cerrarPrestamosVencidos();
+
+        // Then — se notifica como próximo a vencer
+        verify(notificacionPublisher).publicarEvento(any(NotificacionEvent.class));
+        verify(licenseClient, never()).devolver(anyLong());
+    }
+
+    @Test
+    void proximosAVencer_conVencimientoExactamenteEn2Dias_incluidoEnBETWEEN() {
+        // Given — préstamo con fechaVencimiento == ahora + 2 días (borde superior del BETWEEN)
+        Prestamo exactamenteEn2Dias = new Prestamo();
+        exactamenteEn2Dias.setId(41L);
+        exactamenteEn2Dias.setUsuarioId("usuario_between_sup");
+        exactamenteEn2Dias.setLibroId(410L);
+        exactamenteEn2Dias.setEstado(EstadoPrestamo.ACTIVO);
+        exactamenteEn2Dias.setFechaVencimiento(LocalDateTime.now().plusDays(2)); // exactamente en 2 días
+
+        when(prestamoRepository.findByEstadoAndFechaVencimientoBefore(
+                eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class)))
+                .thenReturn(new ArrayList<>()); // sin vencidos
+        when(prestamoRepository.findByEstadoAndFechaVencimientoBetween(
+                eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(Arrays.asList(exactamenteEn2Dias)); // incluido en BETWEEN
+
+        // When
+        prestamoService.cerrarPrestamosVencidos();
+
+        // Then — se notifica como próximo a vencer
+        verify(notificacionPublisher).publicarEvento(any(NotificacionEvent.class));
+        verify(licenseClient, never()).devolver(anyLong());
+    }
+
+    @Test
+    void proximosAVencer_excluyePrestamoConVencimientoAntesDeAhora() {
+        // Given — préstamo con fechaVencimiento antes de ahora (ya vencido)
+        // El BETWEEN(ahora, en2Dias) no lo incluye, el servicio no debe notificarlo
+        Prestamo yaVencido = new Prestamo();
+        yaVencido.setId(42L);
+        yaVencido.setUsuarioId("usuario_between_excl_past");
+        yaVencido.setLibroId(420L);
+        yaVencido.setEstado(EstadoPrestamo.ACTIVO);
+        yaVencido.setFechaVencimiento(LocalDateTime.now().minusHours(1)); // antes de ahora
+
+        when(prestamoRepository.findByEstadoAndFechaVencimientoBefore(
+                eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class)))
+                .thenReturn(Arrays.asList(yaVencido)); // sí está vencido
+        when(licenseClient.devolver(420L)).thenReturn(licenciaDisponible());
+        when(prestamoRepository.save(any(Prestamo.class)))
+                .thenAnswer(i -> i.getArgument(0));
+        // BETWEEN devuelve vacío — el préstamo vencido NO está entre ahora y en2Dias
+        when(prestamoRepository.findByEstadoAndFechaVencimientoBetween(
+                eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(new ArrayList<>());
+
+        // When
+        prestamoService.cerrarPrestamosVencidos();
+
+        // Then — el préstamo se cerró como vencido, NO se notificó como próximo
+        verify(licenseClient).devolver(420L);
+        verify(prestamoRepository).save(any(Prestamo.class));
+        assertEquals(EstadoPrestamo.VENCIDO, yaVencido.getEstado());
+        // Solo 1 notificación: la de préstamo vencido (no la de próximo a vencer)
+        verify(notificacionPublisher, times(1)).publicarEvento(any(NotificacionEvent.class));
+    }
+
+    @Test
+    void proximosAVencer_excluyePrestamoConVencimientoDespuesDe2Dias() {
+        // Given — préstamo con fechaVencimiento después de ahora + 2 días
+        // El BETWEEN(ahora, en2Dias) no lo incluye
+        Prestamo muyLejano = new Prestamo();
+        muyLejano.setId(43L);
+        muyLejano.setUsuarioId("usuario_between_excl_future");
+        muyLejano.setLibroId(430L);
+        muyLejano.setEstado(EstadoPrestamo.ACTIVO);
+        muyLejano.setFechaVencimiento(LocalDateTime.now().plusDays(5)); // dentro de 5 días
+
+        when(prestamoRepository.findByEstadoAndFechaVencimientoBefore(
+                eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class)))
+                .thenReturn(new ArrayList<>()); // sin vencidos
+        // BETWEEN devuelve vacío — el préstamo lejano NO está entre ahora y en2Dias
+        when(prestamoRepository.findByEstadoAndFechaVencimientoBetween(
+                eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(new ArrayList<>());
+
+        // When
+        prestamoService.cerrarPrestamosVencidos();
+
+        // Then — no se notifica porque está fuera del rango de próximos a vencer
+        verify(licenseClient, never()).devolver(anyLong());
+        verify(notificacionPublisher, never()).publicarEvento(any(NotificacionEvent.class));
+    }
+
+    @Test
+    void proximosAVencer_sinPrestamos_correctamenteManejado() {
+        // Given — ni vencidos ni próximos a vencer
+        when(prestamoRepository.findByEstadoAndFechaVencimientoBefore(
+                eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class)))
+                .thenReturn(new ArrayList<>()); // sin vencidos
+        when(prestamoRepository.findByEstadoAndFechaVencimientoBetween(
+                eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(new ArrayList<>()); // sin próximos
+
+        // When — no debe lanzar excepción ni hacer nada
+        prestamoService.cerrarPrestamosVencidos();
+
+        // Then — silenciosamente sin efectos secundarios
+        verify(licenseClient, never()).devolver(anyLong());
+        verify(prestamoRepository, never()).save(any());
+        verify(notificacionPublisher, never()).publicarEvento(any(NotificacionEvent.class));
+    }
+
+    // ─── tests cerrarPrestamosVencidos — vencidos y próximos mezclados ────────
+
+    @Test
+    void cerrarPrestamosVencidos_conVencidosYProximos_ambosProcesados() {
+        // Given — un préstamo vencido y uno próximo en la misma ejecución
+        Prestamo vencido = new Prestamo();
+        vencido.setId(50L);
+        vencido.setUsuarioId("usuario_mix_vencido");
+        vencido.setLibroId(500L);
+        vencido.setEstado(EstadoPrestamo.ACTIVO);
+        vencido.setFechaVencimiento(LocalDateTime.now().minusDays(1));
+
+        Prestamo proximo = new Prestamo();
+        proximo.setId(51L);
+        proximo.setUsuarioId("usuario_mix_proximo");
+        proximo.setLibroId(510L);
+        proximo.setEstado(EstadoPrestamo.ACTIVO);
+        proximo.setFechaVencimiento(LocalDateTime.now().plusDays(1));
+
+        when(prestamoRepository.findByEstadoAndFechaVencimientoBefore(
+                eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class)))
+                .thenReturn(Arrays.asList(vencido));
+        when(licenseClient.devolver(500L)).thenReturn(licenciaDisponible());
+        when(prestamoRepository.save(any(Prestamo.class)))
+                .thenAnswer(i -> i.getArgument(0));
+        when(prestamoRepository.findByEstadoAndFechaVencimientoBetween(
+                eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(Arrays.asList(proximo));
+
+        // When
+        prestamoService.cerrarPrestamosVencidos();
+
+        // Then — vencido se cerró y se notificó; próximo también se notificó
+        verify(licenseClient).devolver(500L);
+        verify(licenseClient, never()).devolver(510L);
+        verify(prestamoRepository).save(any(Prestamo.class));
+        assertEquals(EstadoPrestamo.VENCIDO, vencido.getEstado());
+        // 1 notificación de vencido + 1 notificación de próximo a vencer
+        verify(notificacionPublisher, times(2)).publicarEvento(any(NotificacionEvent.class));
+    }
+
+    @Test
+    void cerrarPrestamosVencidos_notificacionProximoFalla_noAfectaVencidos() {
+        // Given — un préstamo vencido y uno próximo, la notificación del próximo falla
+        Prestamo vencido = new Prestamo();
+        vencido.setId(52L);
+        vencido.setUsuarioId("usuario_mix_fail");
+        vencido.setLibroId(520L);
+        vencido.setEstado(EstadoPrestamo.ACTIVO);
+        vencido.setFechaVencimiento(LocalDateTime.now().minusDays(1));
+
+        Prestamo proximo = new Prestamo();
+        proximo.setId(53L);
+        proximo.setUsuarioId("usuario_mix_prox_fail");
+        proximo.setLibroId(530L);
+        proximo.setEstado(EstadoPrestamo.ACTIVO);
+        proximo.setFechaVencimiento(LocalDateTime.now().plusDays(1));
+
+        when(prestamoRepository.findByEstadoAndFechaVencimientoBefore(
+                eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class)))
+                .thenReturn(Arrays.asList(vencido));
+        when(licenseClient.devolver(520L)).thenReturn(licenciaDisponible());
+        when(prestamoRepository.save(any(Prestamo.class)))
+                .thenAnswer(i -> i.getArgument(0));
+        when(prestamoRepository.findByEstadoAndFechaVencimientoBetween(
+                eq(EstadoPrestamo.ACTIVO), any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(Arrays.asList(proximo));
+
+        // La notificación falla SÓLO para el próximo a vencer
+        doThrow(new RuntimeException("RabbitMQ no disponible"))
+                .when(notificacionPublisher).publicarEvento(any(NotificacionEvent.class));
+
+        // When — no debe lanzar excepción
+        prestamoService.cerrarPrestamosVencidos();
+
+        // Then — el vencido se procesó completo, el próximo falló en notificación
+        verify(licenseClient).devolver(520L);
+        verify(prestamoRepository).save(any(Prestamo.class));
+        assertEquals(EstadoPrestamo.VENCIDO, vencido.getEstado());
+        // La notificación del vencido se intentó (1ra llamada)
+        // y la del próximo también se intentó (2da llamada)
+        verify(notificacionPublisher, atLeast(2)).publicarEvento(any(NotificacionEvent.class));
     }
 
     // ─── tests crearPrestamo — verificación del objeto guardado ─────────────

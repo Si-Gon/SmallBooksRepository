@@ -5,6 +5,7 @@ import com.silvio.ingestion.model.ArchivoLibro;
 import com.silvio.ingestion.repository.ArchivoLibroRepository;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -26,6 +27,7 @@ public String guardar(MultipartFile archivo, Long libroId) {
 }
 
 @Override
+@Transactional(readOnly = true)
 public byte[] obtener(String rutaOClave) {
     Long libroId = Long.valueOf(rutaOClave.replace("db:", ""));
     ArchivoLibro entidad = repository.findByLibroId(libroId)

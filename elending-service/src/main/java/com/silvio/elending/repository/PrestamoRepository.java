@@ -22,6 +22,11 @@ public interface PrestamoRepository extends JpaRepository<Prestamo, Long> {
     List<Prestamo> findByEstadoAndFechaVencimientoBefore(
             EstadoPrestamo estado, LocalDateTime ahora);
 
+    // Préstamos próximos a vencer entre desde y hasta — evita traer vencidos y filtrar en memoria
+    // SELECT * FROM prestamos WHERE estado = 'ACTIVO' AND fecha_vencimiento BETWEEN desde AND hasta
+    List<Prestamo> findByEstadoAndFechaVencimientoBetween(
+            EstadoPrestamo estado, LocalDateTime desde, LocalDateTime hasta);
+
     // Historial completo de un usuario — para Analytics
     List<Prestamo> findByUsuarioId(String usuarioId);
 }

@@ -75,6 +75,7 @@ public class IngestionService {
     }
 
     @Observed(name = "ingestion.obtenerInfo")
+    @Transactional(readOnly = true)
     public ArchivoLibroDTO obtenerInfo(Long libroId) {
         log.info("Consultando info de archivo para libro id: {}", libroId);
         ArchivoLibroInfo info = archivoRepository.findInfoByLibroId(libroId)
@@ -86,6 +87,7 @@ public class IngestionService {
     }
 
     @Observed(name = "ingestion.obtenerBytes")
+    @Transactional(readOnly = true)
     public byte[] obtenerBytes(Long libroId) {
         log.info("Obteniendo bytes del archivo para libro id: {}", libroId);
         ArchivoLibro archivo = archivoRepository.findByLibroId(libroId)

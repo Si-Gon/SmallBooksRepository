@@ -29,6 +29,7 @@ public class LicenseService {
     private final LicenseRepository licenseRepository;
 
     @Observed(name = "license.obtenerTodas")
+    @Transactional(readOnly = true)
     public Page<LicenseResponseDTO> obtenerTodas(Pageable pageable) {
         if (pageable.isUnpaged()) {
             log.info("Consultando todas las licencias — sin paginación");
@@ -41,6 +42,7 @@ public class LicenseService {
     }
 
     @Observed(name = "license.obtenerPorLibroId")
+    @Transactional(readOnly = true)
     public LicenseResponseDTO obtenerPorLibroId(Long libroId) {
         log.info("Consultando licencia para libro id: {}", libroId);
         License license = licenseRepository.findByLibroId(libroId)

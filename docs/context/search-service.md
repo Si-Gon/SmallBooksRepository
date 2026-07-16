@@ -1,6 +1,6 @@
 ## Última Actualización
 - Fecha: 2026-07-15
-- Pipeline: Fix Feign client type mismatch after catalog-service pagination
+- Pipeline: JPA performance optimization — @Transactional(readOnly=true) additions
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -17,20 +17,11 @@
 - Cobertura de tests: 8 clases de test (SearchServiceTest, SearchControllerTest, CatalogClientPageDeserializationTest, etc.)
 
 ## Decisiones Técnicas
-- `Page<LibroCatalogDTO>` como retorno de Feign Client en lugar de `List<LibroCatalogDTO>` — el catalog-service cambió `GET /api/catalog` a respuesta paginada. Sin este cambio, la deserialización falla por type mismatch.
-- Parámetros `page`, `size`, `sort` con valores default (0, 20, "titulo,asc") — para mantener compatibilidad con clientes existentes que no envían paginación.
-- SearchService usa `page.getContent()` en lugar de iterar la lista directamente — consistente con el manejo de páginas de Spring Data.
-- Se agregó `spring-data-commons` al pom.xml — spring-hateoas 2.3.x ya no lo incluye transitivamente; sin esta dependencia, `Page.class` no está disponible y Mockito no puede crear el mock del Feign Client.
-- `Page.empty()` para tests de lista vacía — más idiomático que `new PageImpl<>(List.of())`.
-- `obtenerTodos()` llama al Feign Client con valores fijos (0, 100, "titulo,asc") para obtener el catálogo completo — no expone paginación al cliente REST (retorna List), la paginación es interna entre search-service y catalog-service.
+- `@Transactional(readOnly = true)` agregado a todos los métodos read-only (`buscar()`, `buscarDisponibles()`, `obtenerTodos()`) — aunque el servicio solo usa Feign Clients (sin JPA directo), la anotación marca la intención de solo-lectura y habilita optimizaciones si en el futuro se agrega acceso a base de datos.
 
 ## Criterios de Aceptación Cumplidos
-- Cambiar return type de `obtenerTodos()` en CatalogClient de `List<LibroCatalogDTO>` a `Page<LibroCatalogDTO>` → Implementado con `@RequestParam` page, size, sort
-- Actualizar SearchService para usar `page.getContent()` → Implementado
-- Agregar `spring-data-commons` para soporte de Page → Agregado al pom.xml
-- Actualizar tests para usar la nueva firma del Feign Client → SearchServiceTest, FeignTracingPropagationTest, ObservedAnnotationIntegrationTest, CatalogClientPageDeserializationTest
-- Tests de deserialización de Page: página con contenido, page negativa, sort inválido, Page.empty(), totalElements
-- Comentarios en español consistentes con el código existente
+- Agregar `@Transactional(readOnly = true)` a métodos read-only de search-service → Implementado en `buscar()`, `buscarDisponibles()`, `obtenerTodos()`. Import agregado. Compilación verificada.
 
 ## Historial de Cambios
 - 2026-07-15 — Feign Client CatalogClient actualizado a `Page<LibroCatalogDTO>` con parámetros page/size/sort. SearchService usa `page.getContent()`. Tests actualizados.
+- 2026-07-15 — Agregado `@Transactional(readOnly = true)` a `buscar()`, `buscarDisponibles()`, `obtenerTodos()` para optimización de rendimiento JPA y consistencia con el código base.

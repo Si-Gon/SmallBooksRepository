@@ -28,6 +28,7 @@ public class SuscripcionService {
     private static final int PREMIUM_DIAS_PRESTAMO = 14;
 
     @Observed(name = "subscription.obtenerPorUsuario")
+    @Transactional(readOnly = true)
     public SuscripcionResponseDTO obtenerPorUsuario(String usuarioId) {
         log.info("Consultando suscripción activa del usuario: {}", usuarioId);
         Suscripcion suscripcion = suscripcionRepository

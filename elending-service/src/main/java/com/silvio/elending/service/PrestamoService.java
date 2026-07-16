@@ -210,6 +210,7 @@ public class PrestamoService {
     }
 
     @Observed(name = "elending.obtenerPrestamosActivos")
+    @Transactional(readOnly = true)
     public List<PrestamoResponseDTO> obtenerPrestamosActivos(String usuarioId) {
         log.info("Consultando préstamos activos del usuario: {}", usuarioId);
         return prestamoRepository
@@ -220,6 +221,7 @@ public class PrestamoService {
     }
 
     @Observed(name = "elending.obtenerHistorial")
+    @Transactional(readOnly = true)
     public List<PrestamoResponseDTO> obtenerHistorial(String usuarioId) {
         log.info("Consultando historial completo del usuario: {}", usuarioId);
         return prestamoRepository
@@ -230,6 +232,7 @@ public class PrestamoService {
     }
 
     @Observed(name = "elending.obtenerTodos")
+    @Transactional(readOnly = true)
     public List<PrestamoResponseDTO> obtenerTodos() {
         log.info("Consultando todos los préstamos para Analytics");
         return prestamoRepository.findAll()
@@ -290,13 +293,11 @@ public class PrestamoService {
             }
         }
 
-        // Avisar próximos a vencer
+        // Avisar próximos a vencer (entre ahora y 2 días)
+        // Usa BETWEEN en la query en vez de traer vencidos y filtrar en memoria
         LocalDateTime en2Dias = ahora.plusDays(2);
         List<Prestamo> proximosAVencer = prestamoRepository
-                .findByEstadoAndFechaVencimientoBefore(EstadoPrestamo.ACTIVO, en2Dias)
-                .stream()
-                .filter(p -> p.getFechaVencimiento().isAfter(ahora))
-                .collect(Collectors.toList());
+                .findByEstadoAndFechaVencimientoBetween(EstadoPrestamo.ACTIVO, ahora, en2Dias);
 
         log.info("Préstamos próximos a vencer (2 días): {}", proximosAVencer.size());
 
