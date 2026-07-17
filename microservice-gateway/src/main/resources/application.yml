@@ -6,6 +6,17 @@ spring:
   config:
     import: 'optional:configserver:http://config:8888'
 
+# ──────────────────────────────────────────────
+# Springdoc — Swagger UI deshabilitado por defecto
+# ──────────────────────────────────────────────
+# Solo se habilita cuando SWAGGER_ENABLED=true (variable de entorno).
+# En producción NUNCA debe exponerse /swagger-ui.html ni /v3/api-docs.
+springdoc:
+  swagger-ui:
+    enabled: ${SWAGGER_ENABLED:false}
+  api-docs:
+    enabled: ${SWAGGER_ENABLED:false}
+
 logging:
   pattern:
     level: "%5p [%mdc{traceId:-NONE} %mdc{spanId:-NONE}]"

@@ -520,4 +520,133 @@ class GlobalRateLimitingFilterTest {
                 .isEqualTo(-1);
         assertThat(filter.getOrder()).isEqualTo(-1);
     }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // H-04: Tests de validación de proxy confiable
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    // ─── H-04 Caso 1: Proxy confiable (127.0.0.1) usa IP de X-Forwarded-For ──────
+
+    @Test
+    void proxyConfiable_127_0_0_1_debeUsarIpDeXForwardedFor() {
+        // DADO: Proxy confiable (127.0.0.1) con X-Forwarded-For apuntando a un cliente externo
+        // CUANDO: Se procesa la request
+        // ENTONCES: Debe usar la IP del X-Forwarded-For (203.0.113.50), no la del proxy
+        MockServerHttpRequest request = MockServerHttpRequest
+                .get("/api/catalog")
+                .header("X-Forwarded-For", "203.0.113.50")
+                .remoteAddress(new InetSocketAddress("127.0.0.1", 8080))
+                .build();
+        MockServerWebExchange exchange = MockServerWebExchange.from(request);
+
+        StepVerifier.create(filter.filter(exchange, chain))
+                .verifyComplete();
+
+        // El request debe pasar (bucket IP para 203.0.113.50 está vacío, no pre-cargado)
+        assertThat(exchange.getResponse().getStatusCode()).isNull();
+    }
+
+    // ─── H-04 Caso 2: Dirección no confiable ignora X-Forwarded-For ───────────────
+
+    @Test
+    void direccionNoConfiable_debeIgnorarXForwardedFor() {
+        // DADO: Dirección remota NO confiable (8.8.8.8 — DNS público de Google)
+        // con X-Forwarded-For intentando suplantar IP
+        // CUANDO: Se procesa la request
+        // ENTONCES: Debe usar la IP remota directamente (8.8.8.8), ignorar X-Forwarded-For
+
+        // Pre-cargamos bucket vacío para 8.8.8.8 (la IP que debe usarse)
+        Bucket globalBucket = Bucket4j.builder()
+                .addLimit(Bandwidth.classic(GLOBAL_CAPACITY, Refill.greedy(GLOBAL_REFILL, Duration.ofMinutes(1))))
+                .build();
+        Bucket ipBucketVacio = Bucket4j.builder()
+                .addLimit(Bandwidth.classic(1, Refill.greedy(1, Duration.ofMinutes(1))).withInitialTokens(0))
+                .build();
+        Map<String, Bucket> ipBuckets = new ConcurrentHashMap<>();
+        ipBuckets.put("8.8.8.8", ipBucketVacio);
+
+        RateLimitingConfig config = new RateLimitingConfig() {
+            @Override public int getPerIpCapacity() { return PER_IP_CAPACITY; }
+            @Override public int getPerIpRefillPerMinute() { return PER_IP_REFILL; }
+        };
+        GlobalRateLimitingFilter filtro = new GlobalRateLimitingFilter(
+                globalBucket, ipBuckets, config);
+
+        // X-Forwarded-For intenta suplantar con una IP diferente
+        MockServerHttpRequest request = MockServerHttpRequest
+                .get("/api/catalog")
+                .header("X-Forwarded-For", "192.168.99.99")
+                .remoteAddress(new InetSocketAddress("8.8.8.8", 8080))
+                .build();
+        MockServerWebExchange exchange = MockServerWebExchange.from(request);
+
+        StepVerifier.create(filtro.filter(exchange, chain))
+                .verifyComplete();
+
+        // Debe usar 8.8.8.8 (bucket vacío) → 429, NO 192.168.99.99
+        assertThat(exchange.getResponse().getStatusCode())
+                .isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+    }
+
+    // ─── H-04 Caso 3: IP privada (192.168.1.1) es proxy confiable ─────────────────
+
+    @Test
+    void ipPrivada_192_168_1_1_esProxyConfiable() {
+        // DADO: Dirección remota 192.168.1.1 (red privada) con X-Forwarded-For
+        // CUANDO: Se procesa la request
+        // ENTONCES: Debe tratar 192.168.1.1 como proxy y usar la IP de X-Forwarded-For
+        MockServerHttpRequest request = MockServerHttpRequest
+                .get("/api/catalog")
+                .header("X-Forwarded-For", "198.51.100.42")
+                .remoteAddress(new InetSocketAddress("192.168.1.1", 8080))
+                .build();
+        MockServerWebExchange exchange = MockServerWebExchange.from(request);
+
+        StepVerifier.create(filter.filter(exchange, chain))
+                .verifyComplete();
+
+        // El request debe pasar (bucket IP para 198.51.100.42 está vacío, no pre-cargado)
+        assertThat(exchange.getResponse().getStatusCode()).isNull();
+    }
+
+    // ─── H-04 Caso 4: X-Forwarded-For con cadena de IPs usa solo la primera ──────
+
+    @Test
+    void xForwardedForCadena_debeUsarSoloPrimeraIp() {
+        // DADO: Proxy confiable (10.0.0.1) con X-Forwarded-For conteniendo cadena de IPs
+        // CUANDO: Se procesa la request
+        // ENTONCES: Debe usar solo la primera IP (203.0.113.99), no la última ni la cadena completa
+
+        // Pre-cargamos bucket vacío para la primera IP de la cadena
+        Bucket globalBucket = Bucket4j.builder()
+                .addLimit(Bandwidth.classic(GLOBAL_CAPACITY, Refill.greedy(GLOBAL_REFILL, Duration.ofMinutes(1))))
+                .build();
+        Bucket ipBucketVacio = Bucket4j.builder()
+                .addLimit(Bandwidth.classic(1, Refill.greedy(1, Duration.ofMinutes(1))).withInitialTokens(0))
+                .build();
+        Map<String, Bucket> ipBuckets = new ConcurrentHashMap<>();
+        ipBuckets.put("203.0.113.99", ipBucketVacio);
+
+        RateLimitingConfig config = new RateLimitingConfig() {
+            @Override public int getPerIpCapacity() { return PER_IP_CAPACITY; }
+            @Override public int getPerIpRefillPerMinute() { return PER_IP_REFILL; }
+        };
+        GlobalRateLimitingFilter filtro = new GlobalRateLimitingFilter(
+                globalBucket, ipBuckets, config);
+
+        // Cadena: primera IP = 203.0.113.99 (debe ser la usada)
+        MockServerHttpRequest request = MockServerHttpRequest
+                .get("/api/catalog")
+                .header("X-Forwarded-For", "203.0.113.99, 10.0.0.2, 192.168.1.5")
+                .remoteAddress(new InetSocketAddress("10.0.0.1", 8080))
+                .build();
+        MockServerWebExchange exchange = MockServerWebExchange.from(request);
+
+        StepVerifier.create(filtro.filter(exchange, chain))
+                .verifyComplete();
+
+        // Debe usar 203.0.113.99 (bucket vacío) → 429
+        assertThat(exchange.getResponse().getStatusCode())
+                .isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+    }
 }

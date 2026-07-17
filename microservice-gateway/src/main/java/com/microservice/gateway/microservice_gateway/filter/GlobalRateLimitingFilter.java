@@ -101,23 +101,81 @@ public class GlobalRateLimitingFilter implements GlobalFilter, Ordered {
     }
 
     /**
-     * Extrae la IP real del cliente desde la request.
+     * Extrae la IP real del cliente desde la request con validación de proxy confiable.
      *
-     * Si la request pasó por un proxy o balanceador, el header
-     * X-Forwarded-For contiene la IP original del cliente.
-     * Si no hay proxy, usamos la dirección remota directa.
+     * SEGURIDAD (H-04): Solo se confía en el header X-Forwarded-For cuando la dirección
+     * remota real pertenece a un proxy conocido (localhost, redes privadas).
+     * Si el cliente conecta directamente (no desde un proxy confiable), se ignora
+     * X-Forwarded-For y se usa la dirección remota directamente para evitar
+     * suplantación de IP y bypass del rate limiting.
      */
     private String getClientIp(ServerWebExchange exchange) {
+        if (exchange.getRequest().getRemoteAddress() == null) {
+            return "unknown";
+        }
+
+        String remoteAddress = exchange.getRequest().getRemoteAddress().getAddress().getHostAddress();
+
+        // Si la dirección remota NO es un proxy confiable, ignorar X-Forwarded-For
+        // y usar la IP real del cliente directamente
+        if (!isTrustedProxy(remoteAddress)) {
+            return remoteAddress;
+        }
+
+        // La dirección remota ES un proxy confiable → extraer IP original del cliente
         String xForwardedFor = exchange.getRequest()
                 .getHeaders()
                 .getFirst("X-Forwarded-For");
         if (xForwardedFor != null && !xForwardedFor.isBlank()) {
+            // Tomar solo la primera IP (la del cliente original), no la cadena completa
             return xForwardedFor.split(",")[0].trim();
         }
-        if (exchange.getRequest().getRemoteAddress() != null) {
-            return exchange.getRequest().getRemoteAddress().getAddress().getHostAddress();
+
+        return remoteAddress;
+    }
+
+    /**
+     * Verifica si una dirección IP pertenece a un proxy confiable.
+     *
+     * Proxy confiable = dirección que sabemos es un proxy/load balancer:
+     *   - Localhost: 127.0.0.1, ::1
+     *   - Redes privadas RFC 1918: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
+     */
+    private boolean isTrustedProxy(String ip) {
+        if (ip == null) {
+            return false;
         }
-        return "unknown";
+        // Localhost IPv4
+        if ("127.0.0.1".equals(ip)) {
+            return true;
+        }
+        // Localhost IPv6
+        if ("::1".equals(ip)) {
+            return true;
+        }
+        // 10.0.0.0/8
+        if (ip.startsWith("10.")) {
+            return true;
+        }
+        // 172.16.0.0/12 (172.16.x.x — 172.31.x.x)
+        if (ip.startsWith("172.")) {
+            String[] octets = ip.split("\\.");
+            if (octets.length >= 2) {
+                try {
+                    int segundoOcteto = Integer.parseInt(octets[1]);
+                    if (segundoOcteto >= 16 && segundoOcteto <= 31) {
+                        return true;
+                    }
+                } catch (NumberFormatException ignored) {
+                    // formato inválido, no es proxy confiable
+                }
+            }
+        }
+        // 192.168.0.0/16
+        if (ip.startsWith("192.168.")) {
+            return true;
+        }
+        return false;
     }
 
     /**

@@ -48,6 +48,7 @@ services:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config:8888
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
       - JWT_SECRET=${JWT_SECRET}
+      - SWAGGER_ENABLED=true
     depends_on:
       config:
         condition: service_healthy
