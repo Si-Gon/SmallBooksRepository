@@ -85,17 +85,24 @@ public class AuthController {
                              "en desarrollo se devuelve directamente en la respuesta")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Token de recuperación generado"),
-        @ApiResponse(responseCode = "400", description = "Datos inválidos o incompletos"),
-        @ApiResponse(responseCode = "404", description = "Usuario no encontrado para el username indicado")
+        @ApiResponse(responseCode = "400", description = "Datos inválidos o incompletos")
     })
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@Valid @RequestBody PasswordResetRequest request) {
         String resetToken = userService.createPasswordResetToken(request.getUsername());
-        return ResponseEntity.ok(Map.of(
-            "message", " Si el usuario existe, se ha generado un token de recuperación",
-            "resetToken", resetToken,
-            "instruction", "Usa este token en POST /auth/reset-password con tu nueva contraseña"
-        ));
+        String mensaje = " Si el usuario existe, recibirá instrucciones de recuperación.";
+
+        if (resetToken != null) {
+            // Usuario encontrado — retornar token e instrucciones
+            return ResponseEntity.ok(Map.of(
+                "message", mensaje,
+                "resetToken", resetToken,
+                "instruction", "Usa este token en POST /auth/reset-password con tu nueva contraseña"
+            ));
+        }
+
+        // Usuario no encontrado — retornar solo mensaje genérico sin token
+        return ResponseEntity.ok(Map.of("message", mensaje));
     }
 
     @Operation(summary = "Restablecer contraseña",

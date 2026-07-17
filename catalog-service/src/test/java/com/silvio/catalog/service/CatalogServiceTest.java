@@ -19,6 +19,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.lang.reflect.Method;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -662,5 +666,145 @@ void buscar_PorTitulo_DebeRetornarLibrosCoincidentes() {
         assertThrows(NullPointerException.class, () -> catalogService.eliminar(null));
         verify(libroRepository, never()).findById(any());
         verify(libroRepository, never()).delete(any());
+    }
+
+    // =========================================================
+    // @Transactional — verificación de rollback ante excepción
+    // =========================================================
+
+    @Test
+    void agregar_CuandoRepositoryFalla_DebePropagarExcepcion() {
+        // Given
+        LibroRequestDTO request = new LibroRequestDTO();
+        request.setIsbn("9788437604947");
+        request.setTitulo("Libro Test");
+
+        when(libroRepository.findByIsbn("9788437604947")).thenReturn(Optional.empty());
+        when(libroRepository.save(any(Libro.class))).thenThrow(new RuntimeException("Error de persistencia"));
+
+        // When & Then — la excepción se propaga, @Transactional realizaría rollback
+        assertThrows(RuntimeException.class, () -> catalogService.agregar(request));
+        verify(libroRepository).save(any(Libro.class));
+    }
+
+    @Test
+    void actualizar_CuandoRepositoryFalla_DebePropagarExcepcion() {
+        // Given
+        LibroRequestDTO request = new LibroRequestDTO();
+        request.setTitulo("Libro Actualizado");
+
+        Libro libro = new Libro();
+        libro.setId(1L);
+
+        when(libroRepository.findById(1L)).thenReturn(Optional.of(libro));
+        when(libroRepository.save(any(Libro.class))).thenThrow(new RuntimeException("Error de persistencia"));
+
+        // When & Then — la excepción se propaga, @Transactional realizaría rollback
+        assertThrows(RuntimeException.class, () -> catalogService.actualizar(1L, request));
+        verify(libroRepository).save(any(Libro.class));
+    }
+
+    @Test
+    void cambiarDisponibilidad_CuandoRepositoryFalla_DebePropagarExcepcion() {
+        // Given
+        Libro libro = new Libro();
+        libro.setId(1L);
+        libro.setDisponible(true);
+
+        when(libroRepository.findById(1L)).thenReturn(Optional.of(libro));
+        when(libroRepository.save(any(Libro.class))).thenThrow(new RuntimeException("Error de persistencia"));
+
+        // When & Then — la excepción se propaga, @Transactional realizaría rollback
+        assertThrows(RuntimeException.class, () -> catalogService.cambiarDisponibilidad(1L, false));
+        verify(libroRepository).save(any(Libro.class));
+    }
+
+    @Test
+    void eliminar_CuandoRepositoryFalla_DebePropagarExcepcion() {
+        // Given
+        Libro libro = new Libro();
+        libro.setId(1L);
+
+        when(libroRepository.findById(1L)).thenReturn(Optional.of(libro));
+        doThrow(new RuntimeException("Error de persistencia")).when(libroRepository).delete(any(Libro.class));
+
+        // When & Then — la excepción se propaga, @Transactional realizaría rollback
+        assertThrows(RuntimeException.class, () -> catalogService.eliminar(1L));
+        verify(libroRepository).delete(any(Libro.class));
+    }
+
+    // =========================================================
+    // @Transactional — verificación de anotación en métodos de escritura
+    // =========================================================
+
+    @Test
+    void agregar_DebeTenerAnotacionTransactional() throws NoSuchMethodException {
+        // Given — método de escritura
+        var metodo = CatalogService.class.getMethod("agregar", LibroRequestDTO.class);
+
+        // When — verificar que tiene @Transactional sin readOnly
+        var anotacion = metodo.getAnnotation(Transactional.class);
+
+        // Then
+        assertNotNull(anotacion, "agregar() debe tener @Transactional");
+        assertFalse(anotacion.readOnly(), "agregar() no debe ser readOnly");
+    }
+
+    @Test
+    void actualizar_DebeTenerAnotacionTransactional() throws NoSuchMethodException {
+        // Given
+        var metodo = CatalogService.class.getMethod("actualizar", Long.class, LibroRequestDTO.class);
+
+        // When
+        var anotacion = metodo.getAnnotation(Transactional.class);
+
+        // Then
+        assertNotNull(anotacion, "actualizar() debe tener @Transactional");
+        assertFalse(anotacion.readOnly(), "actualizar() no debe ser readOnly");
+    }
+
+    @Test
+    void cambiarDisponibilidad_DebeTenerAnotacionTransactional() throws NoSuchMethodException {
+        // Given
+        var metodo = CatalogService.class.getMethod("cambiarDisponibilidad", Long.class, Boolean.class);
+
+        // When
+        var anotacion = metodo.getAnnotation(Transactional.class);
+
+        // Then
+        assertNotNull(anotacion, "cambiarDisponibilidad() debe tener @Transactional");
+        assertFalse(anotacion.readOnly(), "cambiarDisponibilidad() no debe ser readOnly");
+    }
+
+    @Test
+    void eliminar_DebeTenerAnotacionTransactional() throws NoSuchMethodException {
+        // Given
+        var metodo = CatalogService.class.getMethod("eliminar", Long.class);
+
+        // When
+        var anotacion = metodo.getAnnotation(Transactional.class);
+
+        // Then
+        assertNotNull(anotacion, "eliminar() debe tener @Transactional");
+        assertFalse(anotacion.readOnly(), "eliminar() no debe ser readOnly");
+    }
+
+    @Test
+    void metodosLectura_NoDebenTenerTransactionalSinReadOnly() throws NoSuchMethodException {
+        // Given — métodos de lectura que ya tenían @Transactional(readOnly = true)
+        var metodosLectura = Map.of(
+                "obtenerTodos", new Class[]{Pageable.class},
+                "obtenerDisponibles", new Class[]{},
+                "obtenerPorId", new Class[]{Long.class},
+                "buscar", new Class[]{String.class, String.class, String.class}
+        );
+
+        // When & Then — cada método de lectura debe tener readOnly = true
+        for (var entry : metodosLectura.entrySet()) {
+            var metodo = CatalogService.class.getMethod(entry.getKey(), entry.getValue());
+            var anotacion = metodo.getAnnotation(Transactional.class);
+            assertNotNull(anotacion, entry.getKey() + "() debe tener @Transactional");
+            assertTrue(anotacion.readOnly(), entry.getKey() + "() debe ser readOnly = true");
+        }
     }
 }

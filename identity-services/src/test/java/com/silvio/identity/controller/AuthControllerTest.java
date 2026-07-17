@@ -7,7 +7,6 @@ import com.silvio.identity.security.JwtAuthenticationFilter;
 import com.silvio.identity.exception.TokenExpiradoException;
 import com.silvio.identity.exception.TokenInvalidoException;
 import com.silvio.identity.exception.UsuarioDuplicadoException;
-import com.silvio.identity.exception.UsuarioNotFoundException;
 import com.silvio.identity.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -216,7 +215,9 @@ class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.resetToken").value("reset-uuid-token"));
+                .andExpect(jsonPath("$.message").value(" Si el usuario existe, recibirá instrucciones de recuperación."))
+                .andExpect(jsonPath("$.resetToken").value("reset-uuid-token"))
+                .andExpect(jsonPath("$.instruction").exists());
     }
 
     // =========================================================
@@ -366,19 +367,125 @@ class AuthControllerTest {
     // =========================================================
 
     @Test
-    void forgotPassword_usuarioNoExistente_debeRetornar404() throws Exception {
+    void forgotPassword_usuarioNoExistente_debeRetornar200SinToken() throws Exception {
         PasswordResetRequest request = new PasswordResetRequest();
         request.setUsername("usuario_inexistente");
 
-        // createPasswordResetToken lanza UsuarioNotFoundException si el usuario no existe
-        doThrow(new UsuarioNotFoundException("usuario_inexistente"))
-                .when(userService).createPasswordResetToken("usuario_inexistente");
+        // createPasswordResetToken retorna null cuando el usuario no existe
+        when(userService.createPasswordResetToken("usuario_inexistente")).thenReturn(null);
 
         mockMvc.perform(post("/auth/forgot-password").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value(" Si el usuario existe, recibirá instrucciones de recuperación."))
+                .andExpect(jsonPath("$.resetToken").doesNotExist())
+                .andExpect(jsonPath("$.instruction").doesNotExist());
 
         verify(userService).createPasswordResetToken("usuario_inexistente");
+    }
+
+    @Test
+    void forgotPassword_mensajeIdentico_SinImportarExistenciaUsuario() throws Exception {
+        // Verificar que el mensaje es idéntico cuando el usuario existe vs cuando no existe
+        String mensajeEsperado = " Si el usuario existe, recibirá instrucciones de recuperación.";
+
+        // Caso 1: usuario no existe
+        PasswordResetRequest requestInexistente = new PasswordResetRequest();
+        requestInexistente.setUsername("no_existe");
+        when(userService.createPasswordResetToken("no_existe")).thenReturn(null);
+
+        mockMvc.perform(post("/auth/forgot-password").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestInexistente)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value(mensajeEsperado));
+
+        // Caso 2: usuario existe
+        PasswordResetRequest requestExistente = new PasswordResetRequest();
+        requestExistente.setUsername("silvio");
+        when(userService.createPasswordResetToken("silvio")).thenReturn("token-uuid");
+
+        mockMvc.perform(post("/auth/forgot-password").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestExistente)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value(mensajeEsperado));
+    }
+
+    // =========================================================
+    // POST /auth/forgot-password — validación de entrada
+    // =========================================================
+
+    @Test
+    void forgotPassword_usernameVacio_debeRetornar400() throws Exception {
+        // Given — username vacío viola @NotBlank
+        String jsonSinUsername = """
+                {
+                    "username": ""
+                }
+                """;
+
+        // When & Then
+        mockMvc.perform(post("/auth/forgot-password").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonSinUsername))
+                .andExpect(status().isBadRequest());
+
+        // El servicio NO debe ser llamado cuando la validación falla
+        verify(userService, never()).createPasswordResetToken(any());
+    }
+
+    @Test
+    void forgotPassword_usernameBlank_debeRetornar400() throws Exception {
+        // Given — username con solo espacios viola @NotBlank
+        String jsonUsernameBlank = """
+                {
+                    "username": "   "
+                }
+                """;
+
+        // When & Then
+        mockMvc.perform(post("/auth/forgot-password").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonUsernameBlank))
+                .andExpect(status().isBadRequest());
+
+        verify(userService, never()).createPasswordResetToken(any());
+    }
+
+    @Test
+    void forgotPassword_usernameMuyCorto_debeRetornar400() throws Exception {
+        // Given — username de 2 caracteres viola @Size(min = 3)
+        String jsonUsernameCorto = """
+                {
+                    "username": "ab"
+                }
+                """;
+
+        // When & Then
+        mockMvc.perform(post("/auth/forgot-password").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonUsernameCorto))
+                .andExpect(status().isBadRequest());
+
+        verify(userService, never()).createPasswordResetToken(any());
+    }
+
+    @Test
+    void forgotPassword_usernameNulo_debeRetornar400() throws Exception {
+        // Given — username null viola @NotBlank
+        String jsonSinUsername = """
+                {
+                }
+                """;
+
+        // When & Then
+        mockMvc.perform(post("/auth/forgot-password").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonSinUsername))
+                .andExpect(status().isBadRequest());
+
+        verify(userService, never()).createPasswordResetToken(any());
     }
 }

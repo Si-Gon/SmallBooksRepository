@@ -214,13 +214,15 @@ class UserServiceTest {
     }
 
     @Test
-    void createPasswordResetToken_falla_cuando_usuario_no_existe() {
+    void createPasswordResetToken_retornaNull_cuando_usuario_no_existe() {
         // Given
         when(userRepository.findByUsername("noexiste")).thenReturn(Optional.empty());
 
-        // When & Then
-        assertThrows(UsuarioNotFoundException.class,
-                () -> userService.createPasswordResetToken("noexiste"));
+        // When
+        String resultado = userService.createPasswordResetToken("noexiste");
+
+        // Then — retorna null sin lanzar excepción
+        assertNull(resultado);
         verify(userRepository, never()).save(any(User.class));
     }
 

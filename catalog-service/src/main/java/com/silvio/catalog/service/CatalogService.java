@@ -79,6 +79,7 @@ public class CatalogService {
 }
 
     @Observed(name = "catalog.agregar")
+    @Transactional
     public LibroResponseDTO agregar(LibroRequestDTO request) {
         log.info("Agregando libro al catálogo — ISBN: {}, título: {}", 
                 request.getIsbn(), request.getTitulo());
@@ -108,6 +109,7 @@ public class CatalogService {
     }
 
     @Observed(name = "catalog.actualizar")
+    @Transactional
     public LibroResponseDTO actualizar(@NonNull Long id, LibroRequestDTO request) {
         log.info("Actualizando libro id: {}", id);
         Libro libro = libroRepository.findById(id)
@@ -131,6 +133,7 @@ public class CatalogService {
     }
 
     @Observed(name = "catalog.cambiarDisponibilidad")
+    @Transactional
     public LibroResponseDTO cambiarDisponibilidad(@NonNull Long id, Boolean disponible) {
         log.info("Cambiando disponibilidad libro id: {} → {}", id, disponible);
         Libro libro = libroRepository.findById(id)
@@ -140,6 +143,7 @@ public class CatalogService {
     }
 
     @Observed(name = "catalog.eliminar")
+    @Transactional
     public void eliminar(@NonNull Long id) {
         log.info("Eliminando libro id: {}", id);
         Libro libro = libroRepository.findById(id)

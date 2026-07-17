@@ -155,8 +155,14 @@ public class UserService implements UserDetailsService {
     @Transactional
     public String createPasswordResetToken(String username) {
         log.info("Generando token de recuperación para: {}", username);
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsuarioNotFoundException(username));
+        // Si el usuario no existe, retornar null sin lanzar excepción
+        // para no revelar información sobre la existencia del usuario
+        java.util.Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isEmpty()) {
+            log.warn("Intento de recuperación para usuario inexistente: {}", username);
+            return null;
+        }
+        User user = userOpt.get();
 
         String resetToken = UUID.randomUUID().toString();
         // Almacenar solo el hash SHA-256, nunca el token en texto plano

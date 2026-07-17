@@ -1,25 +1,26 @@
 ## Última Actualización
-- Fecha: 2026-07-16 12:00
-- Pipeline: Fix critical security issue C-02 (UTF-8 key derivation for JWT signing)
+- Fecha: 2026-07-17
+- Pipeline: Fix H-01 (null-check roles JWT), H-02 (Optional en forgot-password, respuesta 200 siempre)
 
 ## Estado Actual del Servicio
 - Clases principales:
   - `User` (entidad JPA) — modelo con username, password (BCrypt hash), roles (Set<String> como @ElementCollection LAZY), `resetTokenHash` (hash SHA-256 del token de recuperación, nunca texto plano), resetTokenExpiry, refreshTokenHash (hash SHA-256 del refresh token vigente).
   - `UserRepository` — repositorio JPA con findByUsername (lazy), findByUsernameWithRoles (eager vía @EntityGraph), `findByResetTokenHash`, findByRefreshTokenHash.
-  - `UserService` — lógica de negocio: registro (roles siempre ROLE_USER), login, refresh token rotation, cambio de contraseña, recuperación con token (hash SHA-256 antes de almacenar/comparar). Implementa UserDetailsService de Spring Security. Método `hashToken()` privado reutilizado para refresh y reset tokens.
+  - `UserService` — lógica de negocio: registro (roles siempre ROLE_USER), login, refresh token rotation, cambio de contraseña, recuperación con token (hash SHA-256 antes de almacenar/comparar). Implementa UserDetailsService de Spring Security. Método `hashToken()` privado reutilizado para refresh y reset tokens. `createPasswordResetToken()` retorna null si usuario no existe (sin excepción).
   - `RegisterRequest` (DTO) — solo contiene username + password. No acepta roles del cliente.
-  - `AuthController` y `UserController` — controllers que delegan en UserService (patrón CSR). `register()` solo pasa username y password.
+  - `AuthController` y `UserController` — controllers que delegan en UserService (patrón CSR). `register()` solo pasa username y password. `forgotPassword()` retorna siempre 200 OK con mensaje genérico.
   - `JwtUtil` — utilidad para generación/validación de JWT. Usa API jjwt 0.12.x: `parseSignedClaims().getPayload()`. Deriva la clave HMAC con `secret.getBytes(StandardCharsets.UTF_8)` para consistencia cross-plataforma.
+  - `JwtAuthenticationFilter` — filtro que extrae roles del JWT y configura SecurityContext. Maneja roles null/blank con `Collections.emptyList()`.
 - Endpoints expuestos:
   - `POST /api/auth/register` — registro de usuario (roles siempre ROLE_USER, ignora cualquier campo roles del JSON)
   - `POST /api/auth/login` — autenticación, devuelve access + refresh tokens
   - `POST /api/auth/refresh` — rotación de refresh token
-  - `POST /api/auth/forgot-password` — genera token de recuperación (devuelve UUID plano al cliente, almacena SHA-256 hash en BD)
+  - `POST /api/auth/forgot-password` — genera token de recuperación (retorna siempre 200 OK con mensaje genérico, no revela si usuario existe)
   - `POST /api/auth/reset-password` — cambia contraseña con token (hashea el token recibido antes de comparar con hash almacenado)
   - `PUT /api/auth/change-password` — cambia contraseña (autenticado)
   - `GET /api/users/{username}` — obtener datos del usuario
 - Dependencias externas: PostgreSQL (BD), JWT/jjwt 0.12.x (auth), BCrypt (password encoding)
-- Cobertura de tests: 170 tests, 0 failures, 0 errors. Cubierta la derivación de clave UTF-8 en `JwtUtilTest`.
+- Cobertura de tests: 184 tests, 0 failures, 0 errors. Cubierta la derivación de clave UTF-8 en `JwtUtilTest`.
 
 ## Decisiones Técnicas
 - **@ElementCollection LAZY + @EntityGraph** — Se cambió `FetchType.EAGER` a `FetchType.LAZY` en `roles` para evitar la carga innecesaria de roles en consultas que no los necesitan (ej. `findByResetTokenHash`, `findByRefreshTokenHash`). Se agregó `findByUsernameWithRoles()` con `@EntityGraph(attributePaths = "roles")` para cargarlos eager solo cuando se requiere (autenticación, consulta de usuario). Alternativa descartada: mantener EAGER — forzaba JOIN sin necesidad en toda consulta a User.
@@ -31,6 +32,8 @@
 - **C-2 (registro): Roles hardcodeados en registro** — El campo `roles` fue eliminado de `RegisterRequest.java`. `UserService.registerUser()` solo acepta username y password, siempre asigna `Set.of("ROLE_USER")`. El controller no pasa roles. Esto previene escalación de privilegios donde un cliente podría enviarse `ROLE_ADMIN` en el JSON de registro. Alternativa descartada: aceptar roles con validación — innecesariamente complejo para el caso de uso actual.
 - **C-3: Migración API jjwt 0.12.x** — `parseClaimsJws()` reemplazado por `parseSignedClaims()`, `.getBody()` reemplazado por `.getPayload()` en JwtUtil, JwtUtilTest. Comentarios en español actualizados consistentemente. Tests de regresión estática (JwtApiMigrationTest) previenen reintroducción de API deprecada.
 - **C-02 (key derivation): UTF-8 en derivación de clave HMAC** — `JwtUtil.getSigningKey()` usa `jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8)` en lugar de `getBytes()` con charset por defecto. Esto garantiza que la misma cadena de secreto produzca la misma clave criptográfica en Windows (Cp1252 por defecto) y Linux (UTF-8). Alternativa descartada: mantener charset por defecto — rompe la validación cross-plataforma del JWT.
+- **H-02: Optional en createPasswordResetToken** — Se cambió `findByUsername().orElseThrow()` a uso directo de Optional con `isEmpty()` check. Si usuario no existe, retorna null sin excepción. AuthController retorna siempre 200 OK con mensaje `"Si el usuario existe, recibirá instrucciones de recuperación."` sin revelar existencia del usuario. Alternativa descartada: lanzar excepción y capturar en controller — revelaría información al cliente.
+- **H-01: Null-check/blank-check en JwtAuthenticationFilter** — Antes de `rolesStr.split(",")`, se valida null y blank. Si null/blank → `Collections.emptyList()`. Si tiene contenido → split con `filter(!blank)` y map a `SimpleGrantedAuthority`. Import `java.util.Collections` agregado. Alternativa descartada: usar Optional.ofNullable — más verboso sin beneficio real.
 
 ## Criterios de Aceptación Cumplidos
 - 2) `User.java` debe cambiar `@ElementCollection(fetch = FetchType.EAGER)` a `FetchType.LAZY` en roles → Implementado. Se agregó `findByUsernameWithRoles()` en `UserRepository` con `@EntityGraph(attributePaths = "roles")`. `UserService.loadUserByUsername()` y `obtenerUsuarioPorUsername()` ahora usan `findByUsernameWithRoles()`.
@@ -38,6 +41,8 @@
 - C-2) Registro no acepta roles del cliente → `RegisterRequest` sin campo `roles`. `registerUser(String username, rawPassword)` siempre asigna `ROLE_USER`. `AuthController.register()` no pasa roles.
 - C-3) API jjwt deprecada reemplazada → `parseSignedClaims().getPayload()` en JwtUtil.java, JwtUtilTest.java. Tests de regresión estática en JwtApiMigrationTest.java.
 - **C-02) Derivar clave HMAC con `StandardCharsets.UTF_8`** → `JwtUtil.getSigningKey()` usa `secret.getBytes(StandardCharsets.UTF_8)`. `JwtUtilTest` actualizado para usar UTF-8 en la clave de prueba y verificar consistencia cross-plataforma.
+- **H-02)** `createPasswordResetToken()` retorna null si usuario no existe → Implementado con Optional. `forgotPassword()` retorna siempre 200 OK con mensaje genérico idéntico. Tests actualizados y nuevos agregados.
+- **H-01)** `JwtAuthenticationFilter` maneja roles null/blank sin NPE → Implementado con null-check + blank-check antes del split. `Collections.emptyList()` para casos vacíos. 3 tests unitarios creados en `JwtAuthenticationFilterTest`.
 
 ## Historial de Cambios
 - 2026-07-16 — C-02: `JwtUtil.getSigningKey()` usa `StandardCharsets.UTF_8`. `JwtUtilTest` actualizado con tests de consistencia cross-plataforma.
@@ -46,3 +51,5 @@
 - 2026-07-16 — C-2 (registro): Campo roles eliminado de RegisterRequest. registerUser() siempre asigna ROLE_USER. AuthController actualizado. Docstring Swagger corregido.
 - 2026-07-16 — C-3: parseClaimsJws() → parseSignedClaims(), getBody() → getPayload() en JwtUtil y tests. JwtApiMigrationTest creado como test de regresión estática.
 - 2026-07-16 — Tests agregados: resetPassword_tokenYaUtilizadoAnteriormente_debeFallar (UserServiceTest), register_conRolesEnJson_ignoradosSinEfecto (AuthControllerTest). Total: 169 tests identity-services.
+- 2026-07-17 — H-02: createPasswordResetToken() usa Optional, retorna null si usuario no existe. forgotPassword() retorna siempre 200 OK con mensaje genérico. Tests actualizados y nuevos.
+- 2026-07-17 — H-01: JwtAuthenticationFilter maneja roles null/blank con Collections.emptyList(). Import Collections agregado. JwtAuthenticationFilterTest creado con 3 tests. Total: 184 tests, 0 fallos.
