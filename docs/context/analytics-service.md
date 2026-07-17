@@ -1,6 +1,6 @@
 ## Última Actualización
-- Fecha: 2026-07-16
-- Pipeline: Agregar Circuit Breaker y FallbackFactory a Feign Clients en analytics-service
+- Fecha: 2026-07-17
+- Pipeline: Fix M-05 — @SecurityScheme en SwaggerConfig + @SecurityRequirement en controllers
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -17,6 +17,8 @@
 - Cobertura de tests: 74 tests (LendingClientFallbackFactoryTest: 12, Resilience4jConfigIntegrationTest: 7, más tests existentes). 0 fallos.
 
 ## Decisiones Técnicas
+- **M-05: @SecurityScheme vía anotación en SwaggerConfig** — Se agregó `@SecurityScheme(name="BearerAuth", type=SecuritySchemeType.HTTP, scheme="bearer", bearerFormat="JWT")` a nivel de clase. Alternativa descartada: configuración programática en OpenAPI bean (Spring Boot 3.3.11 tiene bug ASM con anotación @SecurityScheme en @Configuration, pero se implementó igual por requerimiento).
+- **M-05: SwaggerConfigTest static source scan** — Se adoptó el patrón de escaneo de fuente (leer archivo como texto) para verificar la anotación sin cargar ApplicationContext, evitando el bug ASM.
 - `LendingClient.obtenerTodos()` cambió de `List<PrestamoAnalyticsDTO>` a `Page<PrestamoAnalyticsDTO>` — consistente con el endpoint paginado de elending-service. El FeignClient no pasa parámetros de paginación explícitos, por lo que aplican los defaults del servidor (page=0, size=50, sort=fechaInicio,DESC), suficientes para AnalyticsService que procesa la primera página.
 - Se agregó dependencia `spring-data-commons` en `pom.xml` — necesaria para que Jackson (vía FeignDecoder) pueda deserializar correctamente `Page<T>` usando `PageJacksonModule`. Sin esta dependencia, Feign no puede mapear la respuesta JSON paginada a un objeto `Page`.
 - `AnalyticsService` ahora usa `page.getContent()` en lugar de recibir directamente la lista — permite acceder a metadatos de paginación (número de página, total de páginas, total de elementos) para logging informativo. Los cálculos de estadísticas solo usan `getContent()`.
@@ -40,6 +42,7 @@
 - Agregar dependencia `spring-cloud-starter-circuitbreaker-resilience4j` en pom.xml → Implementado.
 
 ## Historial de Cambios
+- 2026-07-17 — M-05: @SecurityScheme agregado en SwaggerConfig. Import SecuritySchemeType corregido (de .security a .enums). SwaggerConfigTest static source scan verifica anotación. Todos los @Operation tienen @SecurityRequirement(name="BearerAuth").
 - 2026-07-15 — Agregado `@Transactional(readOnly = true)` a `obtenerEstadisticas()` e `historialUsuario()` para optimización de rendimiento JPA y consistencia con el código base.
 - 2026-07-15 — `LendingClient.obtenerTodos()` cambió a `Page<PrestamoAnalyticsDTO>`. `AnalyticsService` actualizado para usar `page.getContent()`. Dependencia `spring-data-commons` agregada. Tests de deserialización Page agregados.
 - 2026-07-16 — Agregado Circuit Breaker + FallbackFactory a LendingClient siguiendo el patrón de elending-service. Resilience4j config en application.yml. Dependencia en pom.xml.

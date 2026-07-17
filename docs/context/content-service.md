@@ -1,6 +1,6 @@
 ## Última Actualización
-- Fecha: 2026-07-16 12:00
-- Pipeline: Fix critical security issue C-01 impact (propagate X-User-Id to E-Lending)
+- Fecha: 2026-07-17
+- Pipeline: Fix M-05 — @SecurityScheme en SwaggerConfig + @SecurityRequirement en controllers
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -18,6 +18,7 @@
 - Cobertura de tests: 74 tests, 0 fallos, 0 skipped. Tests de integración agregados en `ContentControllerIntegrationTest`.
 
 ## Decisiones Técnicas
+- **M-05: @SecurityScheme vía anotación en SwaggerConfig** — `@SecurityScheme(name="BearerAuth", type=SecuritySchemeType.HTTP, scheme="bearer", bearerFormat="JWT")`. Import SecuritySchemeType desde `io.swagger.v3.oas.annotations.enums`.
 - `@Transactional(readOnly = true)` agregado a `obtenerArchivo()` — aunque el servicio solo usa Feign Clients (sin JPA directo), la anotación marca la intención de solo-lectura y habilita optimizaciones si en el futuro se agrega acceso a base de datos. Consistente con el resto del código base.
 - FallbackFactory en lugar de `fallback` simple — permite loguear la causa exacta del error de conexión, útil para diagnóstico en multi-instancia. Consistente con el patrón de elending-service.
 - `spring.cloud.openfeign.circuitbreaker.enabled: true` — habilita el wrapper de Circuit Breaker de Resilience4j sobre cada `@FeignClient`.
@@ -38,6 +39,7 @@
 - **C-01 impacto: Actualizar tests de content-service** → `ContentControllerTest`, `ContentServiceTest`, `LendingClientFallbackFactoryTest`, `ObservedAnnotationIntegrationTest` y `FeignTracingPropagationTest` usan `X-User-Id` en lugar de `Authorization`. Agregado `ContentControllerIntegrationTest`.
 
 ## Historial de Cambios
+- 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. SwaggerConfigTest static scan. Import SecuritySchemeType corregido.
 - 2026-07-16 — C-01 impacto: `ContentController`/`ContentService`/`LendingClient` migrados a header `X-User-Id`. Tests actualizados; agregado `ContentControllerIntegrationTest`.
 - 2026-07-15 — Agregado `@Transactional(readOnly = true)` a `obtenerArchivo()` para optimización de rendimiento JPA y consistencia con el código base.
 - 2026-07-16 — Agregado Circuit Breaker + FallbackFactory a LendingClient e IngestionClient siguiendo el patrón de elending-service. Resilience4j config en application.yml. Dependencia en pom.xml.

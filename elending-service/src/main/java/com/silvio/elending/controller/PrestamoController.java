@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class PrestamoController {
 
     private final PrestamoService prestamoService;
 
-    @Operation(summary = "Crear préstamo",
+    @Operation(summary = "Crear préstamo", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Crea un nuevo préstamo digital. El usuario se identifica desde el header X-User-Id " +
                              "propagado por el Gateway — no es necesario enviar el usuarioId en el body. " +
                              "Valida límites de plan: BASICO (máx 2 activos), PREMIUM (máx 5 activos)")
@@ -55,7 +56,7 @@ public class PrestamoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(prestamo);
     }
 
-    @Operation(summary = "Obtener préstamos activos",
+    @Operation(summary = "Obtener préstamos activos", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Lista los préstamos activos del usuario autenticado. " +
                              "El usuario se identifica desde el header X-User-Id propagado por el Gateway")
     @ApiResponses({
@@ -77,7 +78,7 @@ public class PrestamoController {
         return ResponseEntity.ok(prestamos);
     }
 
-    @Operation(summary = "Obtener historial de préstamos",
+    @Operation(summary = "Obtener historial de préstamos", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Lista todos los préstamos (activos y vencidos) del usuario autenticado")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Historial completo obtenido"),
@@ -98,7 +99,7 @@ public class PrestamoController {
         return ResponseEntity.ok(prestamos);
     }
 
-    @Operation(summary = "Obtener todos los préstamos (paginado)",
+    @Operation(summary = "Obtener todos los préstamos (paginado)", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Endpoint interno usado por Analytics Service via Feign. " +
                               "Devuelve todos los préstamos del sistema con paginación para cálculo de estadísticas globales. " +
                               "Ordenado por fechaInicio descendente por defecto, 50 elementos por página.")
@@ -114,7 +115,7 @@ public class PrestamoController {
         return ResponseEntity.ok(prestamos);
     }
 
-    @Operation(summary = "Obtener historial por usuario",
+    @Operation(summary = "Obtener historial por usuario", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Endpoint interno usado por Analytics Service via Feign. " +
                               "Devuelve el historial de préstamos de un usuario específico. " +
                               "Si el usuario no tiene préstamos, devuelve lista vacía (200)")

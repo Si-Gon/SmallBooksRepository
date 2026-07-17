@@ -1,6 +1,6 @@
 ## Última Actualización
-- Fecha: 2026-07-15 21:30
-- Pipeline: Corrección de dos issues de rendimiento JPA (bulk UPDATE + @EntityGraph)
+- Fecha: 2026-07-17
+- Pipeline: Fix M-05 — @SecurityScheme en SwaggerConfig + @SecurityRequirement en controllers
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -19,6 +19,7 @@
 - Cobertura de tests: ~85% (130 tests, 0 failures, 31 skipped por RabbitMQ)
 
 ## Decisiones Técnicas
+- **M-05: @SecurityScheme vía anotación en SwaggerConfig** — `@SecurityScheme(name="BearerAuth", type=SecuritySchemeType.HTTP, scheme="bearer", bearerFormat="JWT")`. Import SecuritySchemeType corregido a `io.swagger.v3.oas.annotations.enums`.
 - **Bulk UPDATE con @Modifying** — Se reemplazó el bucle en memoria con `saveAll()` (generaba N UPDATEs individuales) por un solo `UPDATE` vía `@Modifying @Query` en `NotificacionRepository`. `clearAutomatically = true` evita contexto de persistencia obsoleto; `flushAutomatically = true` asegura consistencia antes del UPDATE masivo. Alternativa descartada: `saveAll()` con lista completa — generaba N consultas a la BD.
 - **IdempotencyKey con SHA-256** — Se usa un hash de (usuarioId + "|" + tipo + "|" + mensaje) como clave única para detectar duplicados de RabbitMQ. Alternativa descartada: UUID aleatorio (no permite detección de mismo mensaje reprocesado).
 - **@Transactional en marcarTodasLeidas()** — Se añadió `@Transactional` al método `marcarTodasLeidas()` para que el `@Modifying` se ejecute dentro de una transacción.
@@ -27,4 +28,5 @@
 - 1) `NotificacionService.marcarTodasLeidas()` debe usar bulk UPDATE en lugar de cargar + iterar + saveAll() → Implementado con `@Modifying @Query("UPDATE Notificacion n SET n.leida = true WHERE n.usuarioId = :usuarioId AND n.leida = false")` en `NotificacionRepository`. Servicio llamado `marcarTodasLeidasPorUsuario()` y anotado con `@Transactional`.
 
 ## Historial de Cambios
+- 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. SwaggerConfigTest static scan. Import SecuritySchemeType corregido.
 - 2026-07-15 — Implementado bulk UPDATE con @Modifying @Query en marcarTodasLeidasPorUsuario(). Agregado @Transactional al servicio. Tests de repositorio y servicio actualizados.

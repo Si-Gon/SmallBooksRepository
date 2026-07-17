@@ -1,6 +1,6 @@
 ## Última Actualización
-- Fecha: 2026-07-15
-- Pipeline: Fix crítico de rendimiento JPA — carga perezosa de LONGBLOB y proyección para consultas de metadatos
+- Fecha: 2026-07-17
+- Pipeline: Fix M-05 — @SecurityScheme en SwaggerConfig + @SecurityRequirement en controllers
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -22,6 +22,7 @@
 - Cobertura de tests: ~100% línea en `IngestionService` y `DatabaseStorageService`; 54 tests totales, 0 fallos
 
 ## Decisiones Técnicas
+- **M-05: @SecurityScheme vía anotación en SwaggerConfig** — `@SecurityScheme(name="BearerAuth", type=SecuritySchemeType.HTTP, scheme="bearer", bearerFormat="JWT")`. Import SecuritySchemeType corregido a `io.swagger.v3.oas.annotations.enums`.
 - `@Basic(fetch = FetchType.LAZY)` en campo `datos` (LONGBLOB) — Por defecto `@Lob` usa EAGER; se cambió a LAZY para evitar cargar el blob en cada consulta. Hibernate usa bytecode instrumentation para la carga perezosa.
 - Proyección `ArchivoLibroInfo` — Se creó una proyección cerrada de interfaz con 7 campos (id, libroId, nombreArchivo, formato, tamanio, rutaOClave, fechaSubida) para que `obtenerInfo()` nunca toque la columna LONGBLOB. Alternativa descartada: `@EntityGraph` o `@Query` explícito (más verboso, misma eficacia).
 - `obtenerBytes()` y `eliminar()` siguen usando `findByLibroId()` — Es correcto: necesitan la entidad completa para acceder a `rutaOClave` y al BLOB. La carga perezosa del blob es segura vía Hibernate.
@@ -35,4 +36,5 @@
 - Tests actualizados para verificar que `obtenerInfo()` usa la proyección y no `findByLibroId()` → 54 tests, 0 fallos. Verificado.
 
 ## Historial de Cambios
+- 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. SwaggerConfigTest static scan. Import SecuritySchemeType corregido.
 - 2026-07-15 — Fix crítico de rendimiento JPA: `@Basic(fetch = FetchType.LAZY)` en LONGBLOB, proyección `ArchivoLibroInfo`, `findInfoByLibroId()` en repositorio, `obtenerInfo()` refactorizado para usar proyección. Tests actualizados.

@@ -1,6 +1,6 @@
 ## Última Actualización
-- Fecha: 2026-07-16
-- Pipeline: Agregar Circuit Breaker y FallbackFactory a Feign Clients en search-service
+- Fecha: 2026-07-17
+- Pipeline: Fix M-05 — @SecurityScheme en SwaggerConfig + @SecurityRequirement en controllers
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -18,6 +18,7 @@
 - Cobertura de tests: 86 tests (CatalogClientFallbackFactoryTest: 16, Resilience4jConfigIntegrationTest: 7, más tests existentes). 0 fallos.
 
 ## Decisiones Técnicas
+- **M-05: @SecurityScheme vía anotación en SwaggerConfig** — `@SecurityScheme(name="BearerAuth", type=SecuritySchemeType.HTTP, scheme="bearer", bearerFormat="JWT")`. Import SecuritySchemeType corregido a `io.swagger.v3.oas.annotations.enums`.
 - `@Transactional(readOnly = true)` agregado a todos los métodos read-only (`buscar()`, `buscarDisponibles()`, `obtenerTodos()`) — aunque el servicio solo usa Feign Clients (sin JPA directo), la anotación marca la intención de solo-lectura y habilita optimizaciones si en el futuro se agrega acceso a base de datos.
 - FallbackFactory en lugar de `fallback` simple — permite loguear la causa exacta del error de conexión. Consistente con el patrón de elending-service.
 - `spring.cloud.openfeign.circuitbreaker.enabled: true` — habilita el wrapper de Circuit Breaker de Resilience4j sobre cada `@FeignClient`.
@@ -32,6 +33,7 @@
 - Agregar dependencia `spring-cloud-starter-circuitbreaker-resilience4j` en pom.xml → Implementado.
 
 ## Historial de Cambios
+- 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. SwaggerConfigTest static scan. Import SecuritySchemeType corregido.
 - 2026-07-15 — Feign Client CatalogClient actualizado a `Page<LibroCatalogDTO>` con parámetros page/size/sort. SearchService usa `page.getContent()`. Tests actualizados.
 - 2026-07-15 — Agregado `@Transactional(readOnly = true)` a `buscar()`, `buscarDisponibles()`, `obtenerTodos()` para optimización de rendimiento JPA y consistencia con el código base.
 - 2026-07-16 — Agregado Circuit Breaker + FallbackFactory a CatalogClient siguiendo el patrón de elending-service. Resilience4j config en application.yml. Dependencia en pom.xml.

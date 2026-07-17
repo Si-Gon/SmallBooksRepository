@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class AnalyticsController {
 
     private final AnalyticsService analyticsService;
 
-    @Operation(summary = "Obtener estadísticas globales",
+    @Operation(summary = "Obtener estadísticas globales", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Devuelve métricas generales del sistema: total de préstamos, " +
                               "libros más prestados, usuarios activos y estadísticas por plan")
     @ApiResponses({
@@ -43,7 +44,7 @@ public class AnalyticsController {
         return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Historial de préstamos por usuario",
+    @Operation(summary = "Historial de préstamos por usuario", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Devuelve el historial completo de préstamos de un usuario específico " +
                               "para análisis de comportamiento de lectura")
     @ApiResponses({

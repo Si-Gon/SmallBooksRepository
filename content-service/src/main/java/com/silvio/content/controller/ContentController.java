@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class ContentController {
 
     private final ContentService contentService;
 
-    @Operation(summary = "Descargar archivo de libro",
+    @Operation(summary = "Descargar archivo de libro", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Descarga el archivo PDF o EPUB del libro indicado. " +
                              "Requiere que el usuario autenticado tenga un préstamo activo para ese libro. " +
                              "El usuario se identifica desde el header X-User-Id propagado por el Gateway")

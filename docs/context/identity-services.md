@@ -1,6 +1,6 @@
 ## Última Actualización
 - Fecha: 2026-07-17
-- Pipeline: Fix H-01 (null-check roles JWT), H-02 (Optional en forgot-password, respuesta 200 siempre)
+- Pipeline: Fix M-05 — @SecurityScheme en SwaggerConfig + @SecurityRequirement en controllers
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -23,6 +23,8 @@
 - Cobertura de tests: 184 tests, 0 failures, 0 errors. Cubierta la derivación de clave UTF-8 en `JwtUtilTest`.
 
 ## Decisiones Técnicas
+- **M-05: @SecurityScheme vía anotación en SwaggerConfig** — `@SecurityScheme(name="BearerAuth", type=SecuritySchemeType.HTTP, scheme="bearer", bearerFormat="JWT")`. Import SecuritySchemeType corregido a `io.swagger.v3.oas.annotations.enums`.
+- **M-05: Endpoints públicos excluidos** — AuthController: /auth/login, /auth/register, /auth/refresh, /auth/forgot-password, /auth/reset-password no tienen `@SecurityRequirement`. Solo /auth/change-password tiene security.
 - **@ElementCollection LAZY + @EntityGraph** — Se cambió `FetchType.EAGER` a `FetchType.LAZY` en `roles` para evitar la carga innecesaria de roles en consultas que no los necesitan (ej. `findByResetTokenHash`, `findByRefreshTokenHash`). Se agregó `findByUsernameWithRoles()` con `@EntityGraph(attributePaths = "roles")` para cargarlos eager solo cuando se requiere (autenticación, consulta de usuario). Alternativa descartada: mantener EAGER — forzaba JOIN sin necesidad en toda consulta a User.
 - **@Query explícita + @EntityGraph** — La combinación `@EntityGraph` + `@Query` explícita evita que Spring Data JPA intente derivar la consulta del nombre del método `findByUsernameWithRoles`. Sin `@Query`, el framework buscaría una propiedad `usernameWithRoles` inexistente en la entidad.
 - **Patrón CSR (Controller-Service-Repository)** — Toda la lógica de negocio reside en UserService, no en los controllers. Los controllers solo reciben requests, validan y delegan.
@@ -45,6 +47,7 @@
 - **H-01)** `JwtAuthenticationFilter` maneja roles null/blank sin NPE → Implementado con null-check + blank-check antes del split. `Collections.emptyList()` para casos vacíos. 3 tests unitarios creados en `JwtAuthenticationFilterTest`.
 
 ## Historial de Cambios
+- 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. Import SecuritySchemeType corregido. SwaggerConfigTest static scan. Endpoints públicos excluidos de @SecurityRequirement.
 - 2026-07-16 — C-02: `JwtUtil.getSigningKey()` usa `StandardCharsets.UTF_8`. `JwtUtilTest` actualizado con tests de consistencia cross-plataforma.
 - 2026-07-15 — Roles cambiado de EAGER a LAZY. Agregado findByUsernameWithRoles() con @EntityGraph. Actualizados loadUserByUsername() y obtenerUsuarioPorUsername(). Tests actualizados.
 - 2026-07-16 — C-1: resetToken renombrado a resetTokenHash, hash SHA-256 aplicado en createPasswordResetToken() y resetPassword(). hashRefreshToken() renombrado a hashToken(). UserRepository actualizado (findByResetTokenHash).

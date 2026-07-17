@@ -1,4 +1,4 @@
-package com.silvio.elending.config;
+package com.silvio.ingestion.config;
 
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SwaggerConfigTest {
 
     private static final Path SWAGGER_CONFIG_SOURCE = Paths.get(
-            "src/main/java/com/silvio/elending/config/SwaggerConfig.java");
+            "src/main/java/com/silvio/ingestion/config/SwaggerConfig.java");
 
     private String leerFuente() {
         try {

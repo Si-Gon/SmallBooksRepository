@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class SuscripcionController {
 
     private final SuscripcionService suscripcionService;
 
-    @Operation(summary = "Consultar mi plan actual",
+    @Operation(summary = "Consultar mi plan actual", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Devuelve la suscripción activa del usuario autenticado")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Plan obtenido exitosamente"),
@@ -46,7 +47,7 @@ public class SuscripcionController {
         return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Obtener plan por usuario",
+    @Operation(summary = "Obtener plan por usuario", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Endpoint interno usado por E-Lending Service via Feign")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Suscripción obtenida exitosamente"),
@@ -66,7 +67,7 @@ public class SuscripcionController {
         return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Crear o cambiar suscripción",
+    @Operation(summary = "Crear o cambiar suscripción", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Crea una nueva suscripción o cambia el plan actual del usuario")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Suscripción creada exitosamente"),
@@ -88,7 +89,7 @@ public class SuscripcionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
-    @Operation(summary = "Cancelar suscripción",
+    @Operation(summary = "Cancelar suscripción", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Cancela la suscripción activa — el usuario vuelve al plan BASICO")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Suscripción cancelada exitosamente"),

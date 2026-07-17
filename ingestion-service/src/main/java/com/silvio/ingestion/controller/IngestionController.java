@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class IngestionController {
 
     private final IngestionService ingestionService;
 
-    @Operation(summary = "Subir archivo de libro",
+    @Operation(summary = "Subir archivo de libro", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Sube un archivo PDF o EPUB asociado a un libro del catálogo. " +
                              "Usar form-data en Postman: key 'archivo' de tipo File. " +
                              "El archivo se almacena como BLOB en MySQL")
@@ -57,7 +58,7 @@ public class IngestionController {
     return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
-    @Operation(summary = "Obtener información del archivo",
+    @Operation(summary = "Obtener información del archivo", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Devuelve la metadata del archivo asociado a un libro: nombre, formato, tamaño y fecha de subida")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Información obtenida exitosamente"),
@@ -80,7 +81,7 @@ public class IngestionController {
     return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Obtener bytes del archivo",
+    @Operation(summary = "Obtener bytes del archivo", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Endpoint interno usado por Content Delivery Service via Feign. " +
                              "Devuelve los bytes raw del archivo para entrega al usuario final")
     @ApiResponses({
@@ -99,7 +100,7 @@ public class IngestionController {
                 .body(bytes);
     }
 
-    @Operation(summary = "Eliminar archivo",
+    @Operation(summary = "Eliminar archivo", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Elimina el archivo asociado a un libro tanto de la base de datos como del registro")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Archivo eliminado exitosamente"),

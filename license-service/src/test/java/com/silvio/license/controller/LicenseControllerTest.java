@@ -208,7 +208,7 @@ class LicenseControllerTest {
 
     @Test
     void prestar_conIdNegativo_debeRetornar400() throws Exception {
-        mockMvc.perform(put("/api/licenses/-1/prestar"))
+        mockMvc.perform(patch("/api/licenses/-1/prestar"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.libroId").value("El ID debe ser un número positivo"))
                 .andExpect(jsonPath("$.codigo").value("ERR-400"));
@@ -218,7 +218,7 @@ class LicenseControllerTest {
 
     @Test
     void devolver_conIdNegativo_debeRetornar400() throws Exception {
-        mockMvc.perform(put("/api/licenses/-1/devolver"))
+        mockMvc.perform(patch("/api/licenses/-1/devolver"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.libroId").value("El ID debe ser un número positivo"))
                 .andExpect(jsonPath("$.codigo").value("ERR-400"));
@@ -332,7 +332,7 @@ class LicenseControllerTest {
         verify(licenseService).actualizar(eq(1L), any(LicenseRequestDTO.class));
     }
 
-    // ─── PUT /api/licenses/{libroId}/prestar ─────────────────────────────────
+    // ─── PATCH /api/licenses/{libroId}/prestar ────────────────────────────────
 
     @Test
     void prestar_devuelve_200_cuando_hay_copias_disponibles() throws Exception {
@@ -341,7 +341,7 @@ class LicenseControllerTest {
         when(licenseService.prestar(1L)).thenReturn(response);
 
         // When & Then
-        mockMvc.perform(put("/api/licenses/1/prestar"))
+        mockMvc.perform(patch("/api/licenses/1/prestar"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.copiasDisponibles").value(2))
                 .andExpect(jsonPath("$._links.devolver").exists());
@@ -356,13 +356,13 @@ class LicenseControllerTest {
             .thenThrow(new CopiaNoDisponibleException(1L));
 
         // When & Then
-        mockMvc.perform(put("/api/licenses/1/prestar"))
+        mockMvc.perform(patch("/api/licenses/1/prestar"))
             .andExpect(status().isUnprocessableEntity());
 
         verify(licenseService).prestar(1L);
 }
 
-    // ─── PUT /api/licenses/{libroId}/devolver ────────────────────────────────
+    // ─── PATCH /api/licenses/{libroId}/devolver ───────────────────────────────
 
     @Test
     void devolver_devuelve_200_cuando_hay_copias_prestadas() throws Exception {
@@ -371,7 +371,7 @@ class LicenseControllerTest {
         when(licenseService.devolver(1L)).thenReturn(response);
 
         // When & Then
-        mockMvc.perform(put("/api/licenses/1/devolver"))
+        mockMvc.perform(patch("/api/licenses/1/devolver"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.copiasDisponibles").value(4))
                 .andExpect(jsonPath("$._links.prestar").exists());
@@ -379,20 +379,20 @@ class LicenseControllerTest {
         verify(licenseService).devolver(1L);
     }
 
-    @Test
+     @Test
      void devolver_devuelve_400_cuando_todas_las_copias_estan_disponibles() throws Exception {
         // Given
         when(licenseService.devolver(1L))
             .thenThrow(new DevolucionInvalidaException());
 
         // When & Then
-        mockMvc.perform(put("/api/licenses/1/devolver"))
+        mockMvc.perform(patch("/api/licenses/1/devolver"))
             .andExpect(status().isBadRequest());
 
         verify(licenseService).devolver(1L);
      }
 
-    // ─── PUT /api/licenses/{libroId}/devolver — más casos de error ───────────
+    // ─── PATCH /api/licenses/{libroId}/devolver — más casos de error ──────────
 
     @Test
     void devolver_devuelve_404_cuando_licencia_no_existe() throws Exception {
@@ -400,7 +400,7 @@ class LicenseControllerTest {
         when(licenseService.devolver(999L))
             .thenThrow(new LicenciaNotFoundException(999L));
 
-        mockMvc.perform(put("/api/licenses/999/devolver"))
+        mockMvc.perform(patch("/api/licenses/999/devolver"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").exists());
 
@@ -413,14 +413,14 @@ class LicenseControllerTest {
         when(licenseService.devolver(1L))
             .thenThrow(new ErrorDevolucionException());
 
-        mockMvc.perform(put("/api/licenses/1/devolver"))
+        mockMvc.perform(patch("/api/licenses/1/devolver"))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.error").exists());
 
         verify(licenseService).devolver(1L);
     }
 
-    // ─── PUT /api/licenses/{libroId}/prestar — más casos de error ───────────
+    // ─── PATCH /api/licenses/{libroId}/prestar — más casos de error ──────────
 
     @Test
     void prestar_devuelve_404_cuando_licencia_no_existe() throws Exception {
@@ -428,7 +428,7 @@ class LicenseControllerTest {
         when(licenseService.prestar(999L))
             .thenThrow(new LicenciaNotFoundException(999L));
 
-        mockMvc.perform(put("/api/licenses/999/prestar"))
+        mockMvc.perform(patch("/api/licenses/999/prestar"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").exists());
 
@@ -441,7 +441,7 @@ class LicenseControllerTest {
         when(licenseService.prestar(1L))
             .thenThrow(new ConflictosConcurrenciaException());
 
-        mockMvc.perform(put("/api/licenses/1/prestar"))
+        mockMvc.perform(patch("/api/licenses/1/prestar"))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.error").exists());
 

@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -30,7 +31,7 @@ public class LicenseController {
 
     private final LicenseService licenseService;
 
-    @Operation(summary = "Listar todas las licencias",
+    @Operation(summary = "Listar todas las licencias", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Devuelve todas las licencias registradas con paginación, incluyendo cantidad de copias totales y disponibles")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista paginada de licencias obtenida exitosamente"),
@@ -50,7 +51,7 @@ public class LicenseController {
         return ResponseEntity.ok(pagina);
     }
 
-    @Operation(summary = "Obtener licencia por libro",
+    @Operation(summary = "Obtener licencia por libro", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Consulta la licencia de un libro específico. " +
                              "Usado por E-Lending Service via Feign antes de crear un préstamo " +
                              "para verificar si hay copias disponibles")
@@ -78,7 +79,7 @@ public class LicenseController {
         return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Registrar nueva licencia")
+    @Operation(summary = "Registrar nueva licencia", security = @SecurityRequirement(name = "BearerAuth"))
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Licencia creada exitosamente"),
         @ApiResponse(responseCode = "400", description = "Datos de licencia inválidos"),
@@ -98,7 +99,7 @@ public class LicenseController {
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
-    @Operation(summary = "Actualizar licencia")
+    @Operation(summary = "Actualizar licencia", security = @SecurityRequirement(name = "BearerAuth"))
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Licencia actualizada exitosamente"),
         @ApiResponse(responseCode = "400", description = "Datos de licencia inválidos"),
@@ -121,15 +122,15 @@ public class LicenseController {
         return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Descontar copia al prestar")
+    @Operation(summary = "Descontar copia al prestar", security = @SecurityRequirement(name = "BearerAuth"))
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Copia descontada exitosamente"),
+        @ApiResponse(responseCode = "200", description = "PATCH — Copia descontada exitosamente"),
         @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
         @ApiResponse(responseCode = "404", description = "Licencia no encontrada"),
         @ApiResponse(responseCode = "409", description = "Conflicto de concurrencia — la última copia fue tomada por otro usuario"),
         @ApiResponse(responseCode = "422", description = "No hay copias disponibles para prestar")
     })
-    @PutMapping("/{libroId}/prestar")
+    @PatchMapping("/{libroId}/prestar")
     public ResponseEntity<LicenseResponseDTO> prestar(
             @Parameter(description = "ID del libro", required = true)
             @PathVariable @Positive(message = "El ID debe ser un número positivo") Long libroId) {
@@ -143,15 +144,15 @@ public class LicenseController {
         return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Sumar copia al devolver")
+    @Operation(summary = "Sumar copia al devolver", security = @SecurityRequirement(name = "BearerAuth"))
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Copia devuelta exitosamente"),
+        @ApiResponse(responseCode = "200", description = "PATCH — Copia devuelta exitosamente"),
         @ApiResponse(responseCode = "400", description = "La devolución no es válida — todas las copias ya están disponibles"),
         @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
         @ApiResponse(responseCode = "404", description = "Licencia no encontrada"),
         @ApiResponse(responseCode = "500", description = "Error interno del servidor — reintentos de concurrencia agotados")
     })
-    @PutMapping("/{libroId}/devolver")
+    @PatchMapping("/{libroId}/devolver")
     public ResponseEntity<LicenseResponseDTO> devolver(
             @Parameter(description = "ID del libro", required = true)
             @PathVariable @Positive(message = "El ID debe ser un número positivo") Long libroId) {

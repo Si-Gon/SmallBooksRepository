@@ -1,6 +1,6 @@
 ## Última Actualización
 - Fecha: 2026-07-17
-- Pipeline: Fix H-03: @Transactional en métodos de escritura de CatalogService
+- Pipeline: Fix M-05 — @SecurityScheme en SwaggerConfig + @SecurityRequirement en controllers
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -21,6 +21,8 @@
 - Cobertura de tests: ~95% (43 tests service + tests controller, 0 fallos, 0 errores)
 
 ## Decisiones Técnicas
+- **M-05: @SecurityScheme vía anotación en SwaggerConfig** — Se agregó `@SecurityScheme(name="BearerAuth", type=SecuritySchemeType.HTTP, scheme="bearer", bearerFormat="JWT")`. Import SecuritySchemeType corregido a `io.swagger.v3.oas.annotations.enums.SecuritySchemeType`.
+- **M-05: SwaggerConfigTest static source scan** — Verifica la presencia de la anotación en el fuente sin cargar ApplicationContext.
 - Índices B-tree (no FULLTEXT) — porque los métodos del repositorio usan `LIKE %text%` con `ContainingIgnoreCase`, que no se beneficia del índice B-tree para el prefijo `%`. Sin embargo, ayudan en `buscarCombinado` con parámetros exactos y en consultas de disponibilidad.
 - Índice compuesto `(disponible, genero)` con `disponible` primero — por su alta selectividad (boolean) y porque es el filtro más común desde E-Lending.
 - Índices gestionados desde Flyway, no desde anotaciones JPA — para mantener control explícito de la versión y orden de creación en todos los entornos.
@@ -43,6 +45,7 @@
 - **H-03)** Agregar `@Transactional` a métodos de escritura en CatalogService → Implementado en `agregar()`, `actualizar()`, `cambiarDisponibilidad()`, `eliminar()`. Import existente no duplicado. Tests de rollback agregados (verifican propagación de RuntimeException).
 
 ## Historial de Cambios
+- 2026-07-17 — M-05: @SecurityScheme agregado en SwaggerConfig. Import SecuritySchemeType corregido a .enums. SwaggerConfigTest static scan. @SecurityRequirement en @Operation de CatalogController.
 - 2026-07-15 — Creación de V3__agregar_indices_tabla_libros.sql con 5 índices sobre tabla `libros` para optimizar consultas del catálogo
 - 2026-07-15 19:38 — Paginación en `GET /api/catalog`: `obtenerTodos()` refactorizado para aceptar `Pageable`, controller con `@PageableDefault(size=20, sort="titulo")`, Swagger actualizado, +7 tests de paginación agregados
 - 2026-07-17 — H-03: @Transactional agregado a 4 métodos de escritura (agregar, actualizar, cambiarDisponibilidad, eliminar). +4 tests de rollback en CatalogServiceTest. Total tests: 43, 0 fallos.

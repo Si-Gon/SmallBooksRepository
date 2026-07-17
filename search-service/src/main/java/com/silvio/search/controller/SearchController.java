@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class SearchController {
 
     private final SearchService searchService;
 
-    @Operation(summary = "Listar todos los libros",
+    @Operation(summary = "Listar todos los libros", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Devuelve el catálogo completo de libros disponibles en la plataforma")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista completa obtenida exitosamente"),
@@ -43,7 +44,7 @@ public class SearchController {
         return ResponseEntity.ok(lista);
     }
 
-    @Operation(summary = "Listar libros disponibles",
+    @Operation(summary = "Listar libros disponibles", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Devuelve solo los libros disponibles para préstamo en este momento")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista de disponibles obtenida exitosamente"),
@@ -63,7 +64,7 @@ public class SearchController {
         return ResponseEntity.ok(lista);
     }
 
-    @Operation(summary = "Buscar libros",
+    @Operation(summary = "Buscar libros", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Búsqueda combinable por título, autor o género. " +
                               "Todos los parámetros son opcionales. " +
                               "Ejemplo: /api/search/buscar?titulo=harry&genero=fantasia")

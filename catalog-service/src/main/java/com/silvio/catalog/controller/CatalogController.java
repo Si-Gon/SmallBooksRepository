@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -34,7 +35,7 @@ public class CatalogController {
 
     private final CatalogService catalogService;
 
-    @Operation(summary = "Listar todos los libros",
+    @Operation(summary = "Listar todos los libros", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Devuelve la lista paginada de libros registrados en el catálogo")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista paginada obtenida exitosamente"),
@@ -53,7 +54,7 @@ public class CatalogController {
         return ResponseEntity.ok(pagina);
     }
 
-    @Operation(summary = "Listar libros disponibles",
+    @Operation(summary = "Listar libros disponibles", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Devuelve solo los libros marcados como disponibles para préstamo")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista obtenida exitosamente"),
@@ -71,7 +72,7 @@ public class CatalogController {
     return ResponseEntity.ok(libros);
     }
 
-    @Operation(summary = "Obtener libro por ID",
+    @Operation(summary = "Obtener libro por ID", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Devuelve un libro específico según su identificador")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Libro encontrado"),
@@ -93,7 +94,7 @@ public class CatalogController {
         return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Buscar libros",
+    @Operation(summary = "Buscar libros", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Búsqueda por título, autor o género. Los parámetros son opcionales y combinables")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Búsqueda realizada exitosamente"),
@@ -111,7 +112,7 @@ public class CatalogController {
         return ResponseEntity.ok(catalogService.buscar(titulo, autor, genero));
     }
 
-    @Operation(summary = "Agregar libro",
+    @Operation(summary = "Agregar libro", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Registra un nuevo libro en el catálogo")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Libro creado exitosamente"),
@@ -131,7 +132,7 @@ public class CatalogController {
         
     }
 
-    @Operation(summary = "Actualizar libro",
+    @Operation(summary = "Actualizar libro", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Actualiza todos los campos de un libro existente")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Libro actualizado exitosamente"),
@@ -152,7 +153,7 @@ public class CatalogController {
         return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Cambiar disponibilidad",
+    @Operation(summary = "Cambiar disponibilidad", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Marca un libro como disponible o no disponible. " +
                              "Usado internamente por E-Lending via Feign al crear/devolver préstamos")
     @ApiResponses({
@@ -170,7 +171,7 @@ public class CatalogController {
         return ResponseEntity.ok(catalogService.cambiarDisponibilidad(id, disponible));
     }
 
-    @Operation(summary = "Eliminar libro",
+    @Operation(summary = "Eliminar libro", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Elimina permanentemente un libro del catálogo")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Libro eliminado exitosamente"),

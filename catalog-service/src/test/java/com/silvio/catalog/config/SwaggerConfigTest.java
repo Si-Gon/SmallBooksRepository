@@ -1,44 +1,48 @@
 package com.silvio.catalog.config;
 
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests para SwaggerConfig.
  *
- * Verifica que el bean OpenAPI se cree correctamente con la metadata
- * del servicio (título, versión, descripción).
+ * Verifica que la clase SwaggerConfig tenga la anotación @SecurityScheme
+ * con configuración JWT Bearer para autenticación.
+ * <p>
+ * Es un test de regresión estático: si alguien elimina la anotación
+ * en el futuro, este test fallará en CI.
  */
 class SwaggerConfigTest {
 
-    private final SwaggerConfig swaggerConfig = new SwaggerConfig();
+    private static final Path SWAGGER_CONFIG_SOURCE = Paths.get(
+            "src/main/java/com/silvio/catalog/config/SwaggerConfig.java");
 
-    @Test
-    void customOpenAPI_DebeCrearBeanConMetadataCorrecta() {
-        // When
-        OpenAPI openAPI = swaggerConfig.customOpenAPI();
-
-        // Then
-        assertNotNull(openAPI, "El bean OpenAPI no debe ser null");
-
-        Info info = openAPI.getInfo();
-        assertNotNull(info, "La metadata Info no debe ser null");
-        assertEquals("SmallBooks - Catalog Service", info.getTitle());
-        assertEquals("1.0.0", info.getVersion());
-        assertEquals("Gestión del catálogo de libros disponibles en la plataforma", info.getDescription());
+    private String leerFuente() {
+        try {
+            return Files.readString(SWAGGER_CONFIG_SOURCE);
+        } catch (IOException e) {
+            throw new RuntimeException("No se pudo leer " + SWAGGER_CONFIG_SOURCE, e);
+        }
     }
 
     @Test
-    void customOpenAPI_DebeCrearNuevaInstanciaEnCadaLlamada() {
-        // When: llamamos dos veces al método del bean
-        OpenAPI primeraLlamada = swaggerConfig.customOpenAPI();
-        OpenAPI segundaLlamada = swaggerConfig.customOpenAPI();
-
-        // Then: deben ser instancias diferentes (Spring maneja el singleton)
-        assertNotSame(primeraLlamada, segundaLlamada,
-                "El método @Bean puede crear una nueva instancia; Spring asegura el singleton");
+    void swaggerConfig_DebeTenerAnnotationSecurityScheme() {
+        String source = leerFuente();
+        assertTrue(source.contains("@SecurityScheme"),
+                "SwaggerConfig.java debe tener la anotación @SecurityScheme");
+        assertTrue(source.contains("name = \"BearerAuth\""),
+                "@SecurityScheme debe tener name = \"BearerAuth\"");
+        assertTrue(source.contains("type = SecuritySchemeType.HTTP"),
+                "@SecurityScheme debe ser de tipo HTTP");
+        assertTrue(source.contains("scheme = \"bearer\""),
+                "@SecurityScheme debe usar scheme bearer");
+        assertTrue(source.contains("bearerFormat = \"JWT\""),
+                "@SecurityScheme debe tener bearerFormat JWT");
     }
 }

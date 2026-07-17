@@ -1,6 +1,6 @@
 ## Última Actualización
-- Fecha: 2026-07-16 12:00
-- Pipeline: Fix critical security issues C-01 (remove unsafe JWT extraction) and C-02 (UTF-8 key derivation)
+- Fecha: 2026-07-17
+- Pipeline: Fix M-05 — @SecurityScheme en SwaggerConfig + M-07 — @PatchMapping en LicenseClient
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -24,6 +24,8 @@
 - Cobertura de tests: 273 tests, 0 fallos, 1 skipped. Controllers afectados ~95% línea; tests de integración agregados en `PrestamoControllerIntegrationTest`.
 
 ## Decisiones Técnicas
+- **M-05: @SecurityScheme vía anotación en SwaggerConfig** — `@SecurityScheme(name="BearerAuth", type=SecuritySchemeType.HTTP, scheme="bearer", bearerFormat="JWT")`. Import SecuritySchemeType corregido a `io.swagger.v3.oas.annotations.enums`.
+- **M-07: LicenseClient.prestar() y devolver() usan @PatchMapping** — Consistentes con los endpoints PATCH de license-service. Ya estaban implementados como PATCH.
 - `PrestamoService.obtenerTodos(Pageable)` en lugar de `List<PrestamoResponseDTO>` sin parámetros — elimina la carga de toda la tabla en memoria para Analytics. Usa `prestamoRepository.findAll(pageable).map(this::mapearADto)` para que JPA genere SQL con LIMIT/OFFSET, reduciendo drásticamente el uso de memoria y el tiempo de respuesta.
 - `@PageableDefault(size = 50, sort = "fechaInicio", direction = Sort.Direction.DESC)` en el controller — define defaults consistentes para el endpoint interno. Analytics Service obtiene la primera página con estos defaults, suficiente para sus cálculos de estadísticas globales.
 - Se eliminaron los HATEOAS links con `forEach` en el endpoint `/todos` porque: 1) `Page` no itera directamente como `List`; 2) el endpoint es interno (solo Feign), no expuesto a clientes externos; 3) los links no tienen sentido en una respuesta paginada interna.
@@ -50,6 +52,8 @@
 - **C-01: Mantener comentarios en español consistentes** → Comentarios y descripciones OpenAPI actualizados.
 
 ## Historial de Cambios
+- 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. SwaggerConfigTest static scan. Import SecuritySchemeType corregido.
+- 2026-07-17 — M-07: LicenseClient usa @PatchMapping en prestar()/devolver().
 - 2026-07-16 — C-01: Eliminados `JwtExtractor` y `TokenExtraccionException`. `PrestamoController` identifica usuarios vía header `X-User-Id`. Tests actualizados; agregado `PrestamoControllerIntegrationTest`.
 - 2026-07-15 — Feign Client CatalogClient actualizado a `Page<LibroDTO>` con parámetros page/size/sort. FallbackFactory retorna `Page.empty()`. Tests de fallback actualizados.
 - 2026-07-15 — `PrestamoService.obtenerTodos()` refactorizado a `Page<PrestamoResponseDTO> obtenerTodos(Pageable)`. Controller actualizado con `@PageableDefault`. Tests expandidos con casos de paginación. AnalyticsService actualizado para usar `page.getContent()`. LendingClient retorna `Page<PrestamoAnalyticsDTO>`.

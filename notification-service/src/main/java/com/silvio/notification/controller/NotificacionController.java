@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -29,7 +30,7 @@ public class NotificacionController {
 
     private final NotificacionService notificacionService;
 
-    @Operation(summary = "Crear notificación",
+    @Operation(summary = "Crear notificación", security = @SecurityRequirement(name = "BearerAuth"),
                description = "Endpoint REST disponible para pruebas manuales. En producción, las notificaciones se crean vía RabbitMQ desde E-Lending Service.")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Notificación creada exitosamente"),
@@ -52,7 +53,7 @@ public class NotificacionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
-    @Operation(summary = "Obtener notificaciones por usuario")
+    @Operation(summary = "Obtener notificaciones por usuario", security = @SecurityRequirement(name = "BearerAuth"))
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista de notificaciones obtenida"),
         @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
@@ -75,7 +76,7 @@ public class NotificacionController {
         return ResponseEntity.ok(lista);
     }
 
-    @Operation(summary = "Obtener notificaciones no leídas")
+    @Operation(summary = "Obtener notificaciones no leídas", security = @SecurityRequirement(name = "BearerAuth"))
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista de notificaciones no leídas"),
         @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
@@ -96,7 +97,7 @@ public class NotificacionController {
         return ResponseEntity.ok(lista);
     }
 
-    @Operation(summary = "Marcar notificación como leída")
+    @Operation(summary = "Marcar notificación como leída", security = @SecurityRequirement(name = "BearerAuth"))
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Notificación marcada como leída"),
         @ApiResponse(responseCode = "400", description = "ID de notificación inválido"),
@@ -117,7 +118,7 @@ public class NotificacionController {
         return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Marcar todas las notificaciones como leídas")
+    @Operation(summary = "Marcar todas las notificaciones como leídas", security = @SecurityRequirement(name = "BearerAuth"))
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Todas marcadas como leídas"),
         @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
