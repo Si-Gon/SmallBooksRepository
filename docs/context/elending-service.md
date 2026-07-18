@@ -1,6 +1,6 @@
 ## Última Actualización
-- Fecha: 2026-07-18 00:55
-- Pipeline: Verificación de errores de compilación pre-existentes — Confirmación de que NO existen errores (falsos positivos en M-05, M-07, H-01/H-02/H-03)
+- Fecha: 2026-07-18 02:30
+- Pipeline: M-01 IDOR — Validación de acceso en 5 endpoints de 3 microservicios
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -24,6 +24,7 @@
 - Cobertura de tests: 273 tests, 0 fallos, 1 skipped. Controllers afectados ~95% línea; tests de integración agregados en `PrestamoControllerIntegrationTest`.
 
 ## Decisiones Técnicas
+- **M-01 IDOR: validación de acceso via header X-User-Id** — Se agregó helper `validarAccesoUsuario()` en `PrestamoController` para endpoint `GET /api/lending/prestamos/historial/{usuarioId}`. Compara `X-User-Id` header con `{usuarioId}` path variable. Lanza `AccesoDenegadoException` si no coinciden o header ausente. ROLE_ADMIN bypass. Alternativa descartada: Spring Security — microservicio no tiene SecurityContext; validación en controller layer.
 - **M-07 Hotfix: Revertir @SecurityScheme a configuración programática** — Se eliminó `@SecurityScheme` annotation class-level (causaba `ArrayIndexOutOfBoundsException` en ASM scanner de Spring Boot 3.3.11). Reemplazado por configuración programática en `customOpenAPI()` usando modelos OpenAPI. SwaggerConfigTest migrado de static source scan a `@SpringBootTest(classes = SwaggerConfig.class, webEnvironment = NONE)`. Alternativa descartada: mantener anotación — incompatible con ASM 9.x de Spring Boot 3.3.11.
 - **M-07: LicenseClient.prestar() y devolver() usan @PatchMapping** — Consistentes con los endpoints PATCH de license-service. Ya estaban implementados como PATCH.
 - `PrestamoService.obtenerTodos(Pageable)` en lugar de `List<PrestamoResponseDTO>` sin parámetros — elimina la carga de toda la tabla en memoria para Analytics. Usa `prestamoRepository.findAll(pageable).map(this::mapearADto)` para que JPA genere SQL con LIMIT/OFFSET, reduciendo drásticamente el uso de memoria y el tiempo de respuesta.
@@ -39,6 +40,7 @@
 - **Enlaces HATEOAS con `methodOn(...)`** — Se pasa `null` en el argumento del header dentro de `methodOn(...)` porque el header no forma parte de la URI generada.
 
 ## Criterios de Aceptación Cumplidos
+- **M-01: Validar X-User-Id vs {usuarioId} en endpoint `GET /api/lending/prestamos/historial/{usuarioId}`** → Implementado via helper `validarAccesoUsuario()`. AccesoDenegadoException→403. Tests: mismo usuario 200, otro usuario 403, admin 200, header ausente 403 (4 tests agregados en PrestamoControllerTest).
 - Refactorizar `PrestamoService.obtenerTodos()` para aceptar `Pageable` y retornar `Page<PrestamoResponseDTO>` → Implementado con `findAll(pageable).map(this::mapearADto)`
 - Actualizar endpoint `GET /api/lending/prestamos/todos` con `@PageableDefault(size=50, sort=fechaInicio, direction=DESC)` → Implementado, retorna `ResponseEntity<Page<PrestamoResponseDTO>>`
 - Actualizar Swagger `@ApiResponse` para reflejar respuesta paginada → Implementado con descripción "Página de préstamos obtenida correctamente (contiene content, totalElements, totalPages, number, size)"
@@ -52,6 +54,7 @@
 - **C-01: Mantener comentarios en español consistentes** → Comentarios y descripciones OpenAPI actualizados.
 
 ## Historial de Cambios
+- 2026-07-18 — M-01 IDOR: Agregada validación de acceso en endpoint `GET /api/lending/prestamos/historial/{usuarioId}`. Helper `validarAccesoUsuario()` con admin bypass. Tests IDOR con 4 escenarios (4 tests). Tests: 23 controller tests PASS.
 - 2026-07-18 — Verificación de compilación: se confirmó que NO existen errores de compilación en elending-service. Los reportes previos (M-05, M-07, H-01/H-02/H-03) fueron falsos positivos del bug de ASM en Spring Boot 3.3.11. mvn compile → BUILD SUCCESS (37 source files), mvn test → BUILD SUCCESS (273 tests, 0 failures, 0 errors, 1 skipped).
 - 2026-07-18 — M-07 Hotfix: ASM bug fix. @SecurityScheme eliminado de SwaggerConfig, reemplazado por configuración programática. SwaggerConfigTest migrado a @SpringBootTest. Verificado: 273 tests PASS (1 skip pre-existente), JaCoCo OK.
 - 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. SwaggerConfigTest static scan. Import SecuritySchemeType corregido.

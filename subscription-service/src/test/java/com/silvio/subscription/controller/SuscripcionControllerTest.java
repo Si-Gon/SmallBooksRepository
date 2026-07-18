@@ -118,7 +118,9 @@ class SuscripcionControllerTest {
     void obtenerPorUsuarioId_devuelve200_planBasico() throws Exception {
         when(suscripcionService.obtenerPorUsuario("silvio")).thenReturn(responseBasico("silvio"));
 
-        mockMvc.perform(get("/api/subscriptions/usuario/silvio"))
+        mockMvc.perform(get("/api/subscriptions/usuario/silvio")
+                        .header("X-User-Id", "silvio")
+                        .header("X-User-Roles", "ROLE_USER"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.usuarioId").value("silvio"))
                 .andExpect(jsonPath("$.plan").value("BASICO"))
@@ -130,7 +132,9 @@ class SuscripcionControllerTest {
     void obtenerPorUsuarioId_devuelve200_planPremium() throws Exception {
         when(suscripcionService.obtenerPorUsuario("ana")).thenReturn(responsePremium("ana"));
 
-        mockMvc.perform(get("/api/subscriptions/usuario/ana"))
+        mockMvc.perform(get("/api/subscriptions/usuario/ana")
+                        .header("X-User-Id", "ana")
+                        .header("X-User-Roles", "ROLE_USER"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.plan").value("PREMIUM"))
                 .andExpect(jsonPath("$.maxPrestamos").value(5))
@@ -142,9 +146,67 @@ class SuscripcionControllerTest {
         when(suscripcionService.obtenerPorUsuario("noexiste"))
                 .thenThrow(new SuscripcionNotFoundException("noexiste"));
 
-        mockMvc.perform(get("/api/subscriptions/usuario/noexiste"))
+        mockMvc.perform(get("/api/subscriptions/usuario/noexiste")
+                        .header("X-User-Id", "noexiste")
+                        .header("X-User-Roles", "ROLE_USER"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").exists());
+    }
+
+    // ─── IDOR: validación de acceso a datos de otro usuario ──────────────────
+
+    @Test
+    void obtenerPorUsuarioId_cuando_mismoUsuario_devuelve200() throws Exception {
+        // Given
+        when(suscripcionService.obtenerPorUsuario("silvio")).thenReturn(responseBasico("silvio"));
+
+        // When & Then — X-User-Id coincide con {usuarioId}
+        mockMvc.perform(get("/api/subscriptions/usuario/silvio")
+                        .header("X-User-Id", "silvio")
+                        .header("X-User-Roles", "ROLE_USER"))
+                .andExpect(status().isOk());
+
+        verify(suscripcionService).obtenerPorUsuario("silvio");
+    }
+
+    @Test
+    void obtenerPorUsuarioId_cuando_otroUsuario_devuelve403() throws Exception {
+        // Given — X-User-Id ("otro") NO coincide con {usuarioId} ("silvio")
+
+        // When & Then
+        mockMvc.perform(get("/api/subscriptions/usuario/silvio")
+                        .header("X-User-Id", "otro")
+                        .header("X-User-Roles", "ROLE_USER"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(suscripcionService, never()).obtenerPorUsuario(anyString());
+    }
+
+    @Test
+    void obtenerPorUsuarioId_cuando_admin_devuelve200() throws Exception {
+        // Given
+        when(suscripcionService.obtenerPorUsuario("silvio")).thenReturn(responseBasico("silvio"));
+
+        // When & Then — ROLE_ADMIN puede acceder a cualquier usuarioId
+        mockMvc.perform(get("/api/subscriptions/usuario/silvio")
+                        .header("X-User-Id", "admin")
+                        .header("X-User-Roles", "ROLE_ADMIN"))
+                .andExpect(status().isOk());
+
+        verify(suscripcionService).obtenerPorUsuario("silvio");
+    }
+
+    @Test
+    void obtenerPorUsuarioId_cuando_headerAusente_devuelve403() throws Exception {
+        // Given — sin header X-User-Id
+
+        // When & Then
+        mockMvc.perform(get("/api/subscriptions/usuario/silvio"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(suscripcionService, never()).obtenerPorUsuario(anyString());
     }
 
     // ─── POST /api/subscriptions ──────────────────────────────────────────────

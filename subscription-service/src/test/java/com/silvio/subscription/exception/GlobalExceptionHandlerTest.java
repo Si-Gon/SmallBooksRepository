@@ -136,6 +136,19 @@ class GlobalExceptionHandlerTest {
     }
 
     // =========================================================
+    // AccesoDenegadoException → 403 FORBIDDEN
+    // =========================================================
+
+    @Test
+    void accesoDenegado_debeRetornar403() {
+        ResponseEntity<Map<String, String>> response = handler.manejarAccesoDenegado(
+                new AccesoDenegadoException("Acceso denegado — no puedes acceder a los datos de otro usuario"));
+
+        assertEquals(403, response.getStatusCode().value());
+        assertTrue(response.getBody().get("error").contains("Acceso denegado"));
+    }
+
+    // =========================================================
     // RuntimeException → 500 INTERNAL_SERVER_ERROR (fallback)
     // =========================================================
 

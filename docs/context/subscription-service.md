@@ -1,6 +1,6 @@
 ## Última Actualización
-- Fecha: 2026-07-18
-- Pipeline: M-07 Hotfix — Revertir @SecurityScheme a configuración programática (ASM bug Spring Boot 3.3.11)
+- Fecha: 2026-07-18 02:30
+- Pipeline: M-01 IDOR — Validación de acceso en 5 endpoints de 3 microservicios
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -19,6 +19,7 @@
 - Cobertura de tests: 58 tests, 0 fallos, 1 skipped. Controllers afectados ~95% línea; tests de integración agregados en `SuscripcionControllerIntegrationTest`.
 
 ## Decisiones Técnicas
+- **M-01 IDOR: validación de acceso via header X-User-Id** — Se agregó helper `validarAccesoUsuario()` en `SuscripcionController` para endpoint `GET /api/subscriptions/usuario/{usuarioId}`. Compara `X-User-Id` header con `{usuarioId}` path variable. Lanza `AccesoDenegadoException` si no coinciden o header ausente. ROLE_ADMIN bypass. Alternativa descartada: Spring Security — microservicio no tiene SecurityContext; validación en controller layer.
 - **M-07 Hotfix: Revertir @SecurityScheme a configuración programática** — Se eliminó `@SecurityScheme` annotation class-level (causaba `ArrayIndexOutOfBoundsException` en ASM scanner de Spring Boot 3.3.11). Reemplazado por configuración programática en `customOpenAPI()` usando modelos OpenAPI. SwaggerConfigTest migrado de static source scan a `@SpringBootTest(classes = SwaggerConfig.class, webEnvironment = NONE)`. Alternativa descartada: mantener anotación — incompatible con ASM 9.x de Spring Boot 3.3.11.
 - **C-01: Eliminación de `JwtExtractor`** — `subscription-service` ya no decodifica Base64 del payload JWT sin verificar firma. Confía en el header `X-User-Id` validado e inyectado por el Gateway. Alternativa descartada: validar el JWT localmente — duplicaría el secret y la lógica de validación en cada microservicio.
 - **Manejo de header ausente** — `GlobalExceptionHandler` captura `MissingRequestHeaderException` y responde 400. Los tests de "token inválido" se reemplazaron por tests de header `X-User-Id` ausente.
@@ -26,12 +27,14 @@
 - **Validación de plan único activo** — Se mantiene la restricción de una sola suscripción activa por usuario; al crear una nueva se cancela la activa previa.
 
 ## Criterios de Aceptación Cumplidos
+- **M-01: Validar X-User-Id vs {usuarioId} en endpoint `GET /api/subscriptions/usuario/{usuarioId}`** → Implementado via helper `validarAccesoUsuario()`. AccesoDenegadoException→403. Tests: mismo usuario 200, otro usuario 403, admin 200, header ausente 403 (4 tests agregados en SuscripcionControllerTest).
 - **C-01: Eliminar `JwtExtractor.java` de `subscription-service`** → Eliminado junto con `JwtExtractorTest.java` y `TokenExtraccionException.java`.
 - **C-01: Actualizar `SuscripcionController` para usar `@RequestHeader("X-User-Id") String usuarioId`** → Implementado en `miPlan`, `crear` y `cancelar`.
 - **C-01: Actualizar `SuscripcionControllerTest`** → Se quitaron mocks de `JwtExtractor`, se usan headers `X-User-Id` y se agregó test de header ausente.
 - **C-01: Mantener comentarios en español consistentes** → Comentarios y descripciones OpenAPI actualizados.
 
 ## Historial de Cambios
+- 2026-07-18 — M-01 IDOR: Agregada validación de acceso en endpoint `GET /api/subscriptions/usuario/{usuarioId}`. Helper `validarAccesoUsuario()` con admin bypass. Tests IDOR con 4 escenarios (4 tests). Tests: 15 controller tests PASS.
 - 2026-07-18 — M-07 Hotfix: ASM bug fix. @SecurityScheme eliminado de SwaggerConfig, reemplazado por configuración programática. SwaggerConfigTest migrado a @SpringBootTest. Verificado: 60 tests PASS (1 skip pre-existente), JaCoCo OK.
 - 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. SwaggerConfigTest static scan. Import SecuritySchemeType corregido.
 - 2026-07-16 — C-01: Eliminados `JwtExtractor` y `TokenExtraccionException`. `SuscripcionController` identifica usuarios vía header `X-User-Id`. Tests actualizados; agregado `SuscripcionControllerIntegrationTest`.

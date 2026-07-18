@@ -2,6 +2,7 @@ package com.silvio.subscription.controller;
 
 import com.silvio.subscription.dto.SuscripcionRequestDTO;
 import com.silvio.subscription.dto.SuscripcionResponseDTO;
+import com.silvio.subscription.exception.AccesoDenegadoException;
 import com.silvio.subscription.service.SuscripcionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -52,19 +53,43 @@ public class SuscripcionController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Suscripción obtenida exitosamente"),
         @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente (Gateway)"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado — no puedes acceder a la suscripción de otro usuario"),
         @ApiResponse(responseCode = "404", description = "Usuario sin suscripción activa"),
         @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<SuscripcionResponseDTO> obtenerPorUsuarioId(
             @Parameter(description = "ID del usuario (username)", required = true)
-            @PathVariable String usuarioId) {
+            @PathVariable String usuarioId,
+            @Parameter(description = "ID del usuario autenticado propagado por el Gateway", required = false)
+            @RequestHeader(value = "X-User-Id", required = false) String currentUserId,
+            @Parameter(description = "Roles del usuario autenticado propagados por el Gateway", required = false)
+            @RequestHeader(value = "X-User-Roles", required = false) String currentUserRoles) {
+        validarAccesoUsuario(currentUserId, usuarioId, currentUserRoles);
         SuscripcionResponseDTO dto = suscripcionService.obtenerPorUsuario(usuarioId);
 
         dto.add(linkTo(methodOn(SuscripcionController.class)
-                .obtenerPorUsuarioId(usuarioId)).withSelfRel());
+                .obtenerPorUsuarioId(usuarioId, null, null)).withSelfRel());
 
         return ResponseEntity.ok(dto);
+    }
+
+    // ─── helper: validación IDOR ────────────────────────────────────────────────
+
+    private void validarAccesoUsuario(String currentUserId, String usuarioId, String currentUserRoles) {
+        // 1) header X-User-Id ausente o vacío → denegar
+        if (currentUserId == null || currentUserId.isBlank()) {
+            throw new AccesoDenegadoException("X-User-Id header es obligatorio");
+        }
+        // 2) admin bypass — ROLE_ADMIN puede acceder a cualquier usuarioId
+        if (currentUserRoles != null && currentUserRoles.contains("ROLE_ADMIN")) {
+            return;
+        }
+        // 3) el usuario autenticado debe coincidir con el usuario solicitado
+        if (!currentUserId.equals(usuarioId)) {
+            throw new AccesoDenegadoException("Acceso denegado — no puedes acceder a los datos de otro usuario");
+        }
+        // 4) permitir
     }
 
     @Operation(summary = "Crear o cambiar suscripción", security = @SecurityRequirement(name = "BearerAuth"),

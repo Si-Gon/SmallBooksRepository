@@ -354,27 +354,98 @@ class PrestamoControllerTest {
 
     @Test
     void obtenerHistorialPorId_debeRetornar200() throws Exception {
+        // Given
         List<PrestamoResponseDTO> historial = Arrays.asList(
                 crearPrestamoResponse(1L, "usuario1", 5L, EstadoPrestamo.VENCIDO)
         );
         when(prestamoService.obtenerHistorial("usuario1")).thenReturn(historial);
 
-        mockMvc.perform(get("/api/lending/prestamos/historial/usuario1"))
+        // When & Then — X-User-Id coincide con {usuarioId}
+        mockMvc.perform(get("/api/lending/prestamos/historial/usuario1")
+                        .header("X-User-Id", "usuario1")
+                        .header("X-User-Roles", "ROLE_USER"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].usuarioId").value("usuario1"));
     }
 
     @Test
     void obtenerHistorialPorId_listaVacia_debeRetornar200() throws Exception {
-        // El servicio retorna lista vacía (sin excepción) — debe dar 200, no 404
+        // Given — el servicio retorna lista vacía (sin excepción) — debe dar 200, no 404
         when(prestamoService.obtenerHistorial("usuario_sin_prestamos")).thenReturn(List.of());
 
-        mockMvc.perform(get("/api/lending/prestamos/historial/usuario_sin_prestamos"))
+        // When & Then — X-User-Id coincide con {usuarioId}
+        mockMvc.perform(get("/api/lending/prestamos/historial/usuario_sin_prestamos")
+                        .header("X-User-Id", "usuario_sin_prestamos")
+                        .header("X-User-Roles", "ROLE_USER"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$").isEmpty());
 
         verify(prestamoService).obtenerHistorial("usuario_sin_prestamos");
+    }
+
+    // =========================================================
+    // IDOR: validación de acceso a datos de otro usuario
+    // =========================================================
+
+    @Test
+    void obtenerHistorialPorId_cuando_mismoUsuario_devuelve200() throws Exception {
+        // Given
+        List<PrestamoResponseDTO> historial = Arrays.asList(
+                crearPrestamoResponse(1L, "usuario1", 5L, EstadoPrestamo.VENCIDO)
+        );
+        when(prestamoService.obtenerHistorial("usuario1")).thenReturn(historial);
+
+        // When & Then — X-User-Id coincide con {usuarioId}
+        mockMvc.perform(get("/api/lending/prestamos/historial/usuario1")
+                        .header("X-User-Id", "usuario1")
+                        .header("X-User-Roles", "ROLE_USER"))
+                .andExpect(status().isOk());
+
+        verify(prestamoService).obtenerHistorial("usuario1");
+    }
+
+    @Test
+    void obtenerHistorialPorId_cuando_otroUsuario_devuelve403() throws Exception {
+        // Given — X-User-Id ("otro") NO coincide con {usuarioId} ("usuario1")
+
+        // When & Then
+        mockMvc.perform(get("/api/lending/prestamos/historial/usuario1")
+                        .header("X-User-Id", "otro")
+                        .header("X-User-Roles", "ROLE_USER"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(prestamoService, never()).obtenerHistorial(anyString());
+    }
+
+    @Test
+    void obtenerHistorialPorId_cuando_admin_devuelve200() throws Exception {
+        // Given
+        List<PrestamoResponseDTO> historial = Arrays.asList(
+                crearPrestamoResponse(1L, "usuario1", 5L, EstadoPrestamo.VENCIDO)
+        );
+        when(prestamoService.obtenerHistorial("usuario1")).thenReturn(historial);
+
+        // When & Then — ROLE_ADMIN puede acceder a cualquier usuarioId
+        mockMvc.perform(get("/api/lending/prestamos/historial/usuario1")
+                        .header("X-User-Id", "admin")
+                        .header("X-User-Roles", "ROLE_ADMIN"))
+                .andExpect(status().isOk());
+
+        verify(prestamoService).obtenerHistorial("usuario1");
+    }
+
+    @Test
+    void obtenerHistorialPorId_cuando_headerAusente_devuelve403() throws Exception {
+        // Given — sin header X-User-Id
+
+        // When & Then
+        mockMvc.perform(get("/api/lending/prestamos/historial/usuario1"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(prestamoService, never()).obtenerHistorial(anyString());
     }
 
     // =========================================================

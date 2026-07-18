@@ -163,8 +163,10 @@ class NotificacionControllerTest {
         );
         when(notificacionService.obtenerPorUsuario("usuario1")).thenReturn(lista);
 
-        // When & Then
-        mockMvc.perform(get("/api/notifications/usuario/usuario1"))
+        // When & Then — X-User-Id coincide con {usuarioId}
+        mockMvc.perform(get("/api/notifications/usuario/usuario1")
+                        .header("X-User-Id", "usuario1")
+                        .header("X-User-Roles", "ROLE_USER"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].leida").value(false))
@@ -179,8 +181,10 @@ class NotificacionControllerTest {
         when(notificacionService.obtenerPorUsuario("usuario_sin_notifs"))
                 .thenReturn(List.of());
 
-        // When & Then
-        mockMvc.perform(get("/api/notifications/usuario/usuario_sin_notifs"))
+        // When & Then — X-User-Id coincide con {usuarioId}
+        mockMvc.perform(get("/api/notifications/usuario/usuario_sin_notifs")
+                        .header("X-User-Id", "usuario_sin_notifs")
+                        .header("X-User-Roles", "ROLE_USER"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(0));
 
@@ -198,8 +202,10 @@ class NotificacionControllerTest {
         );
         when(notificacionService.obtenerNoLeidas("usuario1")).thenReturn(noLeidas);
 
-        // When & Then
-        mockMvc.perform(get("/api/notifications/usuario/usuario1/no-leidas"))
+        // When & Then — X-User-Id coincide con {usuarioId}
+        mockMvc.perform(get("/api/notifications/usuario/usuario1/no-leidas")
+                        .header("X-User-Id", "usuario1")
+                        .header("X-User-Roles", "ROLE_USER"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].leida").value(false))
@@ -214,8 +220,10 @@ class NotificacionControllerTest {
         // Given
         when(notificacionService.obtenerNoLeidas("usuario1")).thenReturn(List.of());
 
-        // When & Then
-        mockMvc.perform(get("/api/notifications/usuario/usuario1/no-leidas"))
+        // When & Then — X-User-Id coincide con {usuarioId}
+        mockMvc.perform(get("/api/notifications/usuario/usuario1/no-leidas")
+                        .header("X-User-Id", "usuario1")
+                        .header("X-User-Roles", "ROLE_USER"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(0));
     }
@@ -272,8 +280,10 @@ class NotificacionControllerTest {
         // Given
         doNothing().when(notificacionService).marcarTodasLeidas("usuario1");
 
-        // When & Then
-        mockMvc.perform(patch("/api/notifications/usuario/usuario1/leer-todas"))
+        // When & Then — X-User-Id coincide con {usuarioId}
+        mockMvc.perform(patch("/api/notifications/usuario/usuario1/leer-todas")
+                        .header("X-User-Id", "usuario1")
+                        .header("X-User-Roles", "ROLE_USER"))
                 .andExpect(status().isNoContent());
 
         verify(notificacionService).marcarTodasLeidas("usuario1");
@@ -304,7 +314,9 @@ class NotificacionControllerTest {
                 .thenThrow(new RuntimeException("Error inesperado de base de datos"));
 
         // When & Then
-        mockMvc.perform(get("/api/notifications/usuario/error500"))
+        mockMvc.perform(get("/api/notifications/usuario/error500")
+                        .header("X-User-Id", "error500")
+                        .header("X-User-Roles", "ROLE_USER"))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.error").exists());
     }
@@ -316,7 +328,9 @@ class NotificacionControllerTest {
                 .thenThrow(new RuntimeException("Error inesperado de base de datos"));
 
         // When & Then
-        mockMvc.perform(get("/api/notifications/usuario/error500/no-leidas"))
+        mockMvc.perform(get("/api/notifications/usuario/error500/no-leidas")
+                        .header("X-User-Id", "error500")
+                        .header("X-User-Roles", "ROLE_USER"))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.error").exists());
     }
@@ -331,5 +345,185 @@ class NotificacionControllerTest {
         mockMvc.perform(patch("/api/notifications/1/leer"))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.error").exists());
+    }
+
+    // ══════════════════════════════════════════════════════════════════════
+    // IDOR: validación de acceso a datos de otro usuario
+    // ══════════════════════════════════════════════════════════════════════
+
+    // ─── GET /api/notifications/usuario/{usuarioId} ───────────────────────
+
+    @Test
+    void obtenerPorUsuario_cuando_mismoUsuario_devuelve200() throws Exception {
+        // Given
+        List<NotificacionDTO> lista = Arrays.asList(
+                notificacionDTO(1L, "usuario1", TipoNotificacion.PRESTAMO_CREADO, false)
+        );
+        when(notificacionService.obtenerPorUsuario("usuario1")).thenReturn(lista);
+
+        // When & Then — X-User-Id coincide con {usuarioId}
+        mockMvc.perform(get("/api/notifications/usuario/usuario1")
+                        .header("X-User-Id", "usuario1")
+                        .header("X-User-Roles", "ROLE_USER"))
+                .andExpect(status().isOk());
+
+        verify(notificacionService).obtenerPorUsuario("usuario1");
+    }
+
+    @Test
+    void obtenerPorUsuario_cuando_otroUsuario_devuelve403() throws Exception {
+        // Given — X-User-Id ("otro") NO coincide con {usuarioId} ("usuario1")
+
+        // When & Then
+        mockMvc.perform(get("/api/notifications/usuario/usuario1")
+                        .header("X-User-Id", "otro")
+                        .header("X-User-Roles", "ROLE_USER"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(notificacionService, never()).obtenerPorUsuario(anyString());
+    }
+
+    @Test
+    void obtenerPorUsuario_cuando_admin_devuelve200() throws Exception {
+        // Given
+        List<NotificacionDTO> lista = Arrays.asList(
+                notificacionDTO(1L, "usuario1", TipoNotificacion.PRESTAMO_CREADO, false)
+        );
+        when(notificacionService.obtenerPorUsuario("usuario1")).thenReturn(lista);
+
+        // When & Then — ROLE_ADMIN puede acceder a cualquier usuarioId
+        mockMvc.perform(get("/api/notifications/usuario/usuario1")
+                        .header("X-User-Id", "admin")
+                        .header("X-User-Roles", "ROLE_ADMIN"))
+                .andExpect(status().isOk());
+
+        verify(notificacionService).obtenerPorUsuario("usuario1");
+    }
+
+    @Test
+    void obtenerPorUsuario_cuando_headerAusente_devuelve403() throws Exception {
+        // Given — sin header X-User-Id
+
+        // When & Then
+        mockMvc.perform(get("/api/notifications/usuario/usuario1"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(notificacionService, never()).obtenerPorUsuario(anyString());
+    }
+
+    // ─── GET /api/notifications/usuario/{usuarioId}/no-leidas ─────────────
+
+    @Test
+    void obtenerNoLeidas_cuando_mismoUsuario_devuelve200() throws Exception {
+        // Given
+        List<NotificacionDTO> lista = Arrays.asList(
+                notificacionDTO(1L, "usuario1", TipoNotificacion.PRESTAMO_CREADO, false)
+        );
+        when(notificacionService.obtenerNoLeidas("usuario1")).thenReturn(lista);
+
+        // When & Then
+        mockMvc.perform(get("/api/notifications/usuario/usuario1/no-leidas")
+                        .header("X-User-Id", "usuario1")
+                        .header("X-User-Roles", "ROLE_USER"))
+                .andExpect(status().isOk());
+
+        verify(notificacionService).obtenerNoLeidas("usuario1");
+    }
+
+    @Test
+    void obtenerNoLeidas_cuando_otroUsuario_devuelve403() throws Exception {
+        // Given — X-User-Id ("otro") NO coincide con {usuarioId} ("usuario1")
+
+        // When & Then
+        mockMvc.perform(get("/api/notifications/usuario/usuario1/no-leidas")
+                        .header("X-User-Id", "otro")
+                        .header("X-User-Roles", "ROLE_USER"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(notificacionService, never()).obtenerNoLeidas(anyString());
+    }
+
+    @Test
+    void obtenerNoLeidas_cuando_admin_devuelve200() throws Exception {
+        // Given
+        List<NotificacionDTO> lista = Arrays.asList(
+                notificacionDTO(1L, "usuario1", TipoNotificacion.PRESTAMO_CREADO, false)
+        );
+        when(notificacionService.obtenerNoLeidas("usuario1")).thenReturn(lista);
+
+        // When & Then — ROLE_ADMIN puede acceder a cualquier usuarioId
+        mockMvc.perform(get("/api/notifications/usuario/usuario1/no-leidas")
+                        .header("X-User-Id", "admin")
+                        .header("X-User-Roles", "ROLE_ADMIN"))
+                .andExpect(status().isOk());
+
+        verify(notificacionService).obtenerNoLeidas("usuario1");
+    }
+
+    @Test
+    void obtenerNoLeidas_cuando_headerAusente_devuelve403() throws Exception {
+        // When & Then
+        mockMvc.perform(get("/api/notifications/usuario/usuario1/no-leidas"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(notificacionService, never()).obtenerNoLeidas(anyString());
+    }
+
+    // ─── PATCH /api/notifications/usuario/{usuarioId}/leer-todas ──────────
+
+    @Test
+    void marcarTodasLeidas_cuando_mismoUsuario_devuelve204() throws Exception {
+        // Given
+        doNothing().when(notificacionService).marcarTodasLeidas("usuario1");
+
+        // When & Then
+        mockMvc.perform(patch("/api/notifications/usuario/usuario1/leer-todas")
+                        .header("X-User-Id", "usuario1")
+                        .header("X-User-Roles", "ROLE_USER"))
+                .andExpect(status().isNoContent());
+
+        verify(notificacionService).marcarTodasLeidas("usuario1");
+    }
+
+    @Test
+    void marcarTodasLeidas_cuando_otroUsuario_devuelve403() throws Exception {
+        // Given — X-User-Id ("otro") NO coincide con {usuarioId} ("usuario1")
+
+        // When & Then
+        mockMvc.perform(patch("/api/notifications/usuario/usuario1/leer-todas")
+                        .header("X-User-Id", "otro")
+                        .header("X-User-Roles", "ROLE_USER"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(notificacionService, never()).marcarTodasLeidas(anyString());
+    }
+
+    @Test
+    void marcarTodasLeidas_cuando_admin_devuelve204() throws Exception {
+        // Given
+        doNothing().when(notificacionService).marcarTodasLeidas("usuario1");
+
+        // When & Then — ROLE_ADMIN puede acceder a cualquier usuarioId
+        mockMvc.perform(patch("/api/notifications/usuario/usuario1/leer-todas")
+                        .header("X-User-Id", "admin")
+                        .header("X-User-Roles", "ROLE_ADMIN"))
+                .andExpect(status().isNoContent());
+
+        verify(notificacionService).marcarTodasLeidas("usuario1");
+    }
+
+    @Test
+    void marcarTodasLeidas_cuando_headerAusente_devuelve403() throws Exception {
+        // When & Then
+        mockMvc.perform(patch("/api/notifications/usuario/usuario1/leer-todas"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").exists());
+
+        verify(notificacionService, never()).marcarTodasLeidas(anyString());
     }
 }  

@@ -2,6 +2,7 @@ package com.silvio.elending.controller;
 
 import com.silvio.elending.dto.PrestamoRequestDTO;
 import com.silvio.elending.dto.PrestamoResponseDTO;
+import com.silvio.elending.exception.AccesoDenegadoException;
 import com.silvio.elending.service.PrestamoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -122,16 +123,40 @@ public class PrestamoController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Historial obtenido exitosamente (puede ser lista vacía)"),
         @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente (Gateway)"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado — no puedes acceder al historial de otro usuario"),
         @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/prestamos/historial/{usuarioId}")
     public ResponseEntity<List<PrestamoResponseDTO>> obtenerHistorialPorId(
             @Parameter(description = "ID del usuario (username)", required = true)
-            @PathVariable String usuarioId) {
+            @PathVariable String usuarioId,
+            @Parameter(description = "ID del usuario autenticado propagado por el Gateway", required = false)
+            @RequestHeader(value = "X-User-Id", required = false) String currentUserId,
+            @Parameter(description = "Roles del usuario autenticado propagados por el Gateway", required = false)
+            @RequestHeader(value = "X-User-Roles", required = false) String currentUserRoles) {
+        validarAccesoUsuario(currentUserId, usuarioId, currentUserRoles);
         List<PrestamoResponseDTO> prestamos = prestamoService.obtenerHistorial(usuarioId);
         prestamos.forEach(p ->
             p.add(linkTo(methodOn(PrestamoController.class)
-                    .obtenerHistorialPorId(usuarioId)).withSelfRel()));
+                    .obtenerHistorialPorId(usuarioId, null, null)).withSelfRel()));
         return ResponseEntity.ok(prestamos);
+    }
+
+    // ─── helper: validación IDOR ────────────────────────────────────────────────
+
+    private void validarAccesoUsuario(String currentUserId, String usuarioId, String currentUserRoles) {
+        // 1) header X-User-Id ausente o vacío → denegar
+        if (currentUserId == null || currentUserId.isBlank()) {
+            throw new AccesoDenegadoException("X-User-Id header es obligatorio");
+        }
+        // 2) admin bypass — ROLE_ADMIN puede acceder a cualquier usuarioId
+        if (currentUserRoles != null && currentUserRoles.contains("ROLE_ADMIN")) {
+            return;
+        }
+        // 3) el usuario autenticado debe coincidir con el usuario solicitado
+        if (!currentUserId.equals(usuarioId)) {
+            throw new AccesoDenegadoException("Acceso denegado — no puedes acceder a los datos de otro usuario");
+        }
+        // 4) permitir
     }
 }
