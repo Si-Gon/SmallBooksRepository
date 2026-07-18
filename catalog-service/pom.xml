@@ -73,6 +73,17 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- Security: validación de roles vía headers propagados por Gateway -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<!-- Security test: @WithMockUser, SecurityMockMvcRequestPostProcessors -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<!-- H2: base de datos en memoria para tests — reemplaza MySQL durante mvn test -->
 		<dependency>
 			<groupId>com.h2database</groupId>

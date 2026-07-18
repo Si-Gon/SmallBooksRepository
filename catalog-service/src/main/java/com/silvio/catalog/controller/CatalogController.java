@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.hateoas.CollectionModel;
@@ -118,9 +119,11 @@ public class CatalogController {
         @ApiResponse(responseCode = "201", description = "Libro creado exitosamente"),
         @ApiResponse(responseCode = "400", description = "Datos del libro inválidos o incompletos"),
         @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "403", description = "No tiene permisos de administrador"),
         @ApiResponse(responseCode = "409", description = "El ISBN del libro ya existe")
     })
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<LibroResponseDTO> agregar(
             @Valid @RequestBody LibroRequestDTO request) {
                  LibroResponseDTO dto = catalogService.agregar(request);
@@ -138,9 +141,11 @@ public class CatalogController {
         @ApiResponse(responseCode = "200", description = "Libro actualizado exitosamente"),
         @ApiResponse(responseCode = "400", description = "Datos inválidos o ID incorrecto"),
         @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "403", description = "No tiene permisos de administrador"),
         @ApiResponse(responseCode = "404", description = "Libro no encontrado")
     })
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<LibroResponseDTO> actualizar(
             @Parameter(description = "ID del libro a actualizar", required = true)
             @PathVariable @Positive(message = "El ID debe ser un número positivo") Long id,
@@ -160,9 +165,11 @@ public class CatalogController {
         @ApiResponse(responseCode = "200", description = "Disponibilidad actualizada"),
         @ApiResponse(responseCode = "400", description = "Parámetro 'disponible' inválido o ausente"),
         @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "403", description = "No tiene permisos de administrador"),
         @ApiResponse(responseCode = "404", description = "Libro no encontrado")
     })
     @PatchMapping("/{id}/disponibilidad")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<LibroResponseDTO> cambiarDisponibilidad(
             @Parameter(description = "ID del libro", required = true)
             @PathVariable @Positive(message = "El ID debe ser un número positivo") Long id,
@@ -176,9 +183,11 @@ public class CatalogController {
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Libro eliminado exitosamente"),
         @ApiResponse(responseCode = "401", description = "Token JWT inválido o ausente"),
+        @ApiResponse(responseCode = "403", description = "No tiene permisos de administrador"),
         @ApiResponse(responseCode = "404", description = "Libro no encontrado")
     })
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> eliminar(
             @Parameter(description = "ID del libro a eliminar", required = true)
             @PathVariable @Positive(message = "El ID debe ser un número positivo") Long id) {

@@ -1,6 +1,6 @@
 ## Última Actualización
-- Fecha: 2026-07-18
-- Pipeline: M-07 Hotfix — Revertir @SecurityScheme a configuración programática (ASM bug Spring Boot 3.3.11)
+- Fecha: 2026-07-18 00:55
+- Pipeline: Verificación de errores de compilación pre-existentes — Confirmación de que NO existen errores (falsos positivos en M-05, M-07, H-01/H-02/H-03)
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -52,6 +52,7 @@
 - **C-01: Mantener comentarios en español consistentes** → Comentarios y descripciones OpenAPI actualizados.
 
 ## Historial de Cambios
+- 2026-07-18 — Verificación de compilación: se confirmó que NO existen errores de compilación en elending-service. Los reportes previos (M-05, M-07, H-01/H-02/H-03) fueron falsos positivos del bug de ASM en Spring Boot 3.3.11. mvn compile → BUILD SUCCESS (37 source files), mvn test → BUILD SUCCESS (273 tests, 0 failures, 0 errors, 1 skipped).
 - 2026-07-18 — M-07 Hotfix: ASM bug fix. @SecurityScheme eliminado de SwaggerConfig, reemplazado por configuración programática. SwaggerConfigTest migrado a @SpringBootTest. Verificado: 273 tests PASS (1 skip pre-existente), JaCoCo OK.
 - 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. SwaggerConfigTest static scan. Import SecuritySchemeType corregido.
 - 2026-07-17 — M-07: LicenseClient usa @PatchMapping en prestar()/devolver().

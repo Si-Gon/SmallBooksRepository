@@ -1,16 +1,24 @@
 package com.silvio.catalog.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.silvio.catalog.config.SecurityConfig;
 import com.silvio.catalog.dto.LibroRequestDTO;
 import com.silvio.catalog.dto.LibroResponseDTO;
 import com.silvio.catalog.exception.LibroNotFoundException;
 import com.silvio.catalog.exception.LibroDuplicadoException;
+import com.silvio.catalog.security.JwtAuthenticationFilter;
 import com.silvio.catalog.service.CatalogService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -40,9 +48,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * El CatalogService se reemplaza con un @MockBean (Mockito), así controlamos
  * exactamente qué devuelve el servicio en cada test.
  *
+ * Estrategia para @WebMvcTest + Spring Security 6:
+ * 1. excludeFilters excluye SecurityConfig y JwtAuthenticationFilter del contexto
+ *    → Spring no carga la config de seguridad real ni el filtro JWT
+ * 2. @TestConfiguration interna provee un SecurityFilterChain que desactiva CSRF
+ *    y permite todas las peticiones → evita el 401 por defecto de Spring Security
+ *
  * MockMvc simula peticiones HTTP reales sin necesitar un servidor arrancado.
  */
-@WebMvcTest(CatalogController.class)
+@WebMvcTest(
+    value = CatalogController.class,
+    excludeFilters = @ComponentScan.Filter(
+        type = FilterType.ASSIGNABLE_TYPE,
+        classes = { SecurityConfig.class, JwtAuthenticationFilter.class }
+    )
+)
 @ActiveProfiles("test")
 class CatalogControllerTest {
 
@@ -51,6 +71,23 @@ class CatalogControllerTest {
 
     @MockBean
     private CatalogService catalogService;  // Mock del servicio — no toca la BD
+
+    /**
+     * Configuración de seguridad para tests.
+     *
+     * Desactiva CSRF y permite todas las peticiones para que los tests
+     * existentes no requieran autenticación.
+     */
+    @TestConfiguration
+    static class TestSecurityConfig {
+        @Bean
+        SecurityFilterChain testFilterChain(HttpSecurity http) throws Exception {
+            http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+            return http.build();
+        }
+    }
 
     @Autowired
     private ObjectMapper objectMapper;  // Convierte objetos Java ↔ JSON
