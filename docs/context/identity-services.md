@@ -1,6 +1,6 @@
 ## Última Actualización
-- Fecha: 2026-07-17
-- Pipeline: Fix M-05 — @SecurityScheme en SwaggerConfig + @SecurityRequirement en controllers
+- Fecha: 2026-07-18
+- Pipeline: M-07 Hotfix — Revertir @SecurityScheme a configuración programática (ASM bug Spring Boot 3.3.11)
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -23,7 +23,7 @@
 - Cobertura de tests: 184 tests, 0 failures, 0 errors. Cubierta la derivación de clave UTF-8 en `JwtUtilTest`.
 
 ## Decisiones Técnicas
-- **M-05: @SecurityScheme vía anotación en SwaggerConfig** — `@SecurityScheme(name="BearerAuth", type=SecuritySchemeType.HTTP, scheme="bearer", bearerFormat="JWT")`. Import SecuritySchemeType corregido a `io.swagger.v3.oas.annotations.enums`.
+- **M-07 Hotfix: Revertir @SecurityScheme a configuración programática** — Se eliminó `@SecurityScheme` annotation class-level (causaba `ArrayIndexOutOfBoundsException` en ASM scanner de Spring Boot 3.3.11). Reemplazado por configuración programática en `customOpenAPI()` usando modelos OpenAPI. SwaggerConfigTest migrado de static source scan a `@SpringBootTest(classes = SwaggerConfig.class, webEnvironment = NONE)`. Alternativa descartada: mantener anotación — incompatible con ASM 9.x de Spring Boot 3.3.11.
 - **M-05: Endpoints públicos excluidos** — AuthController: /auth/login, /auth/register, /auth/refresh, /auth/forgot-password, /auth/reset-password no tienen `@SecurityRequirement`. Solo /auth/change-password tiene security.
 - **@ElementCollection LAZY + @EntityGraph** — Se cambió `FetchType.EAGER` a `FetchType.LAZY` en `roles` para evitar la carga innecesaria de roles en consultas que no los necesitan (ej. `findByResetTokenHash`, `findByRefreshTokenHash`). Se agregó `findByUsernameWithRoles()` con `@EntityGraph(attributePaths = "roles")` para cargarlos eager solo cuando se requiere (autenticación, consulta de usuario). Alternativa descartada: mantener EAGER — forzaba JOIN sin necesidad en toda consulta a User.
 - **@Query explícita + @EntityGraph** — La combinación `@EntityGraph` + `@Query` explícita evita que Spring Data JPA intente derivar la consulta del nombre del método `findByUsernameWithRoles`. Sin `@Query`, el framework buscaría una propiedad `usernameWithRoles` inexistente en la entidad.
@@ -47,6 +47,7 @@
 - **H-01)** `JwtAuthenticationFilter` maneja roles null/blank sin NPE → Implementado con null-check + blank-check antes del split. `Collections.emptyList()` para casos vacíos. 3 tests unitarios creados en `JwtAuthenticationFilterTest`.
 
 ## Historial de Cambios
+- 2026-07-18 — M-07 Hotfix: ASM bug fix. @SecurityScheme eliminado de SwaggerConfig, reemplazado por configuración programática. SwaggerConfigTest migrado a @SpringBootTest. Verificado: 186 tests PASS, JaCoCo OK.
 - 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. Import SecuritySchemeType corregido. SwaggerConfigTest static scan. Endpoints públicos excluidos de @SecurityRequirement.
 - 2026-07-16 — C-02: `JwtUtil.getSigningKey()` usa `StandardCharsets.UTF_8`. `JwtUtilTest` actualizado con tests de consistencia cross-plataforma.
 - 2026-07-15 — Roles cambiado de EAGER a LAZY. Agregado findByUsernameWithRoles() con @EntityGraph. Actualizados loadUserByUsername() y obtenerUsuarioPorUsername(). Tests actualizados.

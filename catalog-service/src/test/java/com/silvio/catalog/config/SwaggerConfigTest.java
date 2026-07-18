@@ -1,48 +1,59 @@
 package com.silvio.catalog.config;
 
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests para SwaggerConfig.
- *
- * Verifica que la clase SwaggerConfig tenga la anotación @SecurityScheme
- * con configuración JWT Bearer para autenticación.
  * <p>
- * Es un test de regresión estático: si alguien elimina la anotación
- * en el futuro, este test fallará en CI.
+ * Verifica que el bean OpenAPI contenga la configuración programática
+ * de seguridad JWT Bearer, sin usar anotaciones @SecurityScheme
+ * que causan ArrayIndexOutOfBoundsException en Spring Boot 3.3.11.
  */
+@SpringBootTest(classes = SwaggerConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@ActiveProfiles("test")
 class SwaggerConfigTest {
 
-    private static final Path SWAGGER_CONFIG_SOURCE = Paths.get(
-            "src/main/java/com/silvio/catalog/config/SwaggerConfig.java");
+    @Autowired
+    private OpenAPI openAPI;
 
-    private String leerFuente() {
-        try {
-            return Files.readString(SWAGGER_CONFIG_SOURCE);
-        } catch (IOException e) {
-            throw new RuntimeException("No se pudo leer " + SWAGGER_CONFIG_SOURCE, e);
-        }
+    @Test
+    void customOpenAPI_DebeContenerSecuritySchemeBearerAuth() {
+        assertNotNull(openAPI, "El bean OpenAPI no debe ser null");
+
+        var components = openAPI.getComponents();
+        assertNotNull(components, "Components no debe ser null");
+        assertTrue(components.getSecuritySchemes().containsKey("BearerAuth"),
+                "Debe existir un SecurityScheme llamado BearerAuth");
+
+        var securityScheme = components.getSecuritySchemes().get("BearerAuth");
+        assertEquals(SecurityScheme.Type.HTTP, securityScheme.getType(),
+                "El tipo del SecurityScheme debe ser HTTP");
+        assertEquals("bearer", securityScheme.getScheme(),
+                "El scheme del SecurityScheme debe ser bearer");
+        assertEquals("JWT", securityScheme.getBearerFormat(),
+                "El bearerFormat del SecurityScheme debe ser JWT");
+
+        assertNotNull(openAPI.getSecurity(), "La lista de SecurityRequirement no debe ser null");
+        assertFalse(openAPI.getSecurity().isEmpty(), "Debe haber al menos un SecurityRequirement");
+
+        var securityRequirement = openAPI.getSecurity().get(0);
+        assertTrue(securityRequirement.containsKey("BearerAuth"),
+                "El SecurityRequirement debe contener BearerAuth");
     }
 
     @Test
-    void swaggerConfig_DebeTenerAnnotationSecurityScheme() {
-        String source = leerFuente();
-        assertTrue(source.contains("@SecurityScheme"),
-                "SwaggerConfig.java debe tener la anotación @SecurityScheme");
-        assertTrue(source.contains("name = \"BearerAuth\""),
-                "@SecurityScheme debe tener name = \"BearerAuth\"");
-        assertTrue(source.contains("type = SecuritySchemeType.HTTP"),
-                "@SecurityScheme debe ser de tipo HTTP");
-        assertTrue(source.contains("scheme = \"bearer\""),
-                "@SecurityScheme debe usar scheme bearer");
-        assertTrue(source.contains("bearerFormat = \"JWT\""),
-                "@SecurityScheme debe tener bearerFormat JWT");
+    void customOpenAPI_DebeContenerInfoCorrecto() {
+        assertNotNull(openAPI.getInfo(), "Info no debe ser null");
+        assertEquals("SmallBooks - Catalog Service", openAPI.getInfo().getTitle());
+        assertEquals("1.0.0", openAPI.getInfo().getVersion());
+        assertEquals("Gestión del catálogo de libros disponibles en la plataforma",
+                openAPI.getInfo().getDescription());
     }
 }

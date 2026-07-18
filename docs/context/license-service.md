@@ -1,6 +1,6 @@
 ## Última Actualización
-- Fecha: 2026-07-17
-- Pipeline: Fix M-05 — @SecurityScheme en SwaggerConfig + M-07 — @PatchMapping en prestar/devolver
+- Fecha: 2026-07-18
+- Pipeline: M-07 Hotfix — Revertir @SecurityScheme a configuración programática (ASM bug Spring Boot 3.3.11)
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -19,7 +19,7 @@
 - Cobertura de tests: ~95% (95 tests, 0 fallos, 0 errores)
 
 ## Decisiones Técnicas
-- **M-05: @SecurityScheme vía anotación en SwaggerConfig** — `@SecurityScheme(name="BearerAuth", type=SecuritySchemeType.HTTP, scheme="bearer", bearerFormat="JWT")`. Import SecuritySchemeType corregido a `io.swagger.v3.oas.annotations.enums`.
+- **M-07 Hotfix: Revertir @SecurityScheme a configuración programática** — Se eliminó `@SecurityScheme` annotation class-level (causaba `ArrayIndexOutOfBoundsException` en ASM scanner de Spring Boot 3.3.11). Reemplazado por configuración programática en `customOpenAPI()` usando modelos OpenAPI. SwaggerConfigTest migrado de static source scan a `@SpringBootTest(classes = SwaggerConfig.class, webEnvironment = NONE)`. Alternativa descartada: mantener anotación — incompatible con ASM 9.x de Spring Boot 3.3.11.
 - **M-07: prestar() y devolver() usan @PatchMapping** — Se cambió de PUT a PATCH para reflejar que son operaciones parciales (descontar/sumar copias), no reemplazo completo del recurso. @ApiResponse descriptions actualizadas con prefijo "PATCH —".
 - `Pageable` como parámetro en `obtenerTodas()` en lugar de crear un wrapper propio — Spring Data Web Support convierte automáticamente `page`, `size`, `sort` de la request en `Pageable`.
 - `@PageableDefault(size=20, sort="id")` para evitar consultas sin límite — default seguro de 20 elementos ordenados por ID.
@@ -33,6 +33,7 @@
 - Actualizar tests para usar `Pageable.unpaged()` o `PageRequest.of()` → Tests existentes actualizados y 8 nuevos tests de paginación agregados (4 en service, 4 en controller)
 
 ## Historial de Cambios
+- 2026-07-18 — M-07 Hotfix: ASM bug fix. @SecurityScheme eliminado de SwaggerConfig, reemplazado por configuración programática. SwaggerConfigTest migrado a @SpringBootTest. Verificado: 97 tests PASS, JaCoCo OK.
 - 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. SwaggerConfigTest static scan. Import SecuritySchemeType corregido.
 - 2026-07-17 — M-07: prestar()/devolver() cambiados a @PatchMapping. @ApiResponse descriptions actualizadas con "PATCH —".
 - 2026-07-15 19:38 — Paginación en `GET /api/licenses`: `obtenerTodas()` refactorizado para aceptar `Pageable`, controller con `@PageableDefault(size=20, sort="id")`, Swagger actualizado, +8 tests de paginación agregados

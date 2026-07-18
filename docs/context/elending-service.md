@@ -1,6 +1,6 @@
 ## Última Actualización
-- Fecha: 2026-07-17
-- Pipeline: Fix M-05 — @SecurityScheme en SwaggerConfig + M-07 — @PatchMapping en LicenseClient
+- Fecha: 2026-07-18
+- Pipeline: M-07 Hotfix — Revertir @SecurityScheme a configuración programática (ASM bug Spring Boot 3.3.11)
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -24,7 +24,7 @@
 - Cobertura de tests: 273 tests, 0 fallos, 1 skipped. Controllers afectados ~95% línea; tests de integración agregados en `PrestamoControllerIntegrationTest`.
 
 ## Decisiones Técnicas
-- **M-05: @SecurityScheme vía anotación en SwaggerConfig** — `@SecurityScheme(name="BearerAuth", type=SecuritySchemeType.HTTP, scheme="bearer", bearerFormat="JWT")`. Import SecuritySchemeType corregido a `io.swagger.v3.oas.annotations.enums`.
+- **M-07 Hotfix: Revertir @SecurityScheme a configuración programática** — Se eliminó `@SecurityScheme` annotation class-level (causaba `ArrayIndexOutOfBoundsException` en ASM scanner de Spring Boot 3.3.11). Reemplazado por configuración programática en `customOpenAPI()` usando modelos OpenAPI. SwaggerConfigTest migrado de static source scan a `@SpringBootTest(classes = SwaggerConfig.class, webEnvironment = NONE)`. Alternativa descartada: mantener anotación — incompatible con ASM 9.x de Spring Boot 3.3.11.
 - **M-07: LicenseClient.prestar() y devolver() usan @PatchMapping** — Consistentes con los endpoints PATCH de license-service. Ya estaban implementados como PATCH.
 - `PrestamoService.obtenerTodos(Pageable)` en lugar de `List<PrestamoResponseDTO>` sin parámetros — elimina la carga de toda la tabla en memoria para Analytics. Usa `prestamoRepository.findAll(pageable).map(this::mapearADto)` para que JPA genere SQL con LIMIT/OFFSET, reduciendo drásticamente el uso de memoria y el tiempo de respuesta.
 - `@PageableDefault(size = 50, sort = "fechaInicio", direction = Sort.Direction.DESC)` en el controller — define defaults consistentes para el endpoint interno. Analytics Service obtiene la primera página con estos defaults, suficiente para sus cálculos de estadísticas globales.
@@ -52,6 +52,7 @@
 - **C-01: Mantener comentarios en español consistentes** → Comentarios y descripciones OpenAPI actualizados.
 
 ## Historial de Cambios
+- 2026-07-18 — M-07 Hotfix: ASM bug fix. @SecurityScheme eliminado de SwaggerConfig, reemplazado por configuración programática. SwaggerConfigTest migrado a @SpringBootTest. Verificado: 273 tests PASS (1 skip pre-existente), JaCoCo OK.
 - 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. SwaggerConfigTest static scan. Import SecuritySchemeType corregido.
 - 2026-07-17 — M-07: LicenseClient usa @PatchMapping en prestar()/devolver().
 - 2026-07-16 — C-01: Eliminados `JwtExtractor` y `TokenExtraccionException`. `PrestamoController` identifica usuarios vía header `X-User-Id`. Tests actualizados; agregado `PrestamoControllerIntegrationTest`.
