@@ -243,9 +243,11 @@ El flujo de creación de préstamo implementa compensación automática: si fall
 
 ---
 
-## 9. Comunicación entre Microservicios (OpenFeign)
+## 9. Comunicación entre Microservicios
 
-### Mapa de Dependencias
+### 9.1 Comunicación Síncrona con OpenFeign
+
+#### Mapa de Dependencias
 
 | Microservicio Origen | Cliente Feign | Microservicio Destino | Endpoints Consumidos |
 |---------------------|--------------|----------------------|---------------------|
@@ -257,12 +259,29 @@ El flujo de creación de préstamo implementa compensación automática: si fall
 | **content-service** | `LendingClient` | elending-service | `GET /api/lending/prestamos/activos` (con auth header) |
 | **content-service** | `IngestionClient` | ingestion-service | `GET /api/ingestion/{libroId}/bytes` |
 
+### 9.2 Comunicación Asíncrona con RabbitMQ
+
+La plataforma incorpora mensajería asíncrona para notificaciones de usuario, desacoplando la lógica de préstamos (elending-service) del envío de notificaciones (notification-service). Esto evita que fallos en el servicio de notificaciones bloqueen el flujo de préstamos.
+
+#### Productor: elending-service
+- **Exchange/Topología**: Usa exchange direct `smallbooks.notifications` con routing key `notificacion.creada`.
+- **Evento**: Publica `NotificacionEvent` (usuarioId, tipo, mensaje) tras crear un préstamo exitoso y al detectar préstamos próximos a vencer (scheduler).
+- **Manejo de fallos**: La publicación es fire-and-forget — si RabbitMQ no está disponible, el préstamo se completa igualmente y la notificación se pierde (consistencia eventual, priorizando disponibilidad).
+
+#### Consumidor: notification-service
+- **Listener**: `NotificacionEventListener` escucha el exchange `smallbooks.notifications` y persiste la notificación en BD.
+- **Idempotencia con SHA-256**: Cada mensaje incluye una `idempotencyKey` calculada como `SHA-256(usuarioId + "|" + tipo + "|" + mensaje)`. El consumidor verifica si ya existe una notificación con esa clave antes de insertar, evitando duplicados por reprocesamiento de mensajes.
+- **Persistencia**: La entidad `Notificacion` almacena usuarioId, tipo, mensaje, fechaEnvio, leida e idempotencyKey.
+
+#### Trazabilidad Distribuida
+- Micrometer Tracing propaga automáticamente el contexto de traza (traceId/spanId) a través de headers AMQP en los mensajes RabbitMQ, permitiendo seguir el flujo completo extremo a extremo: `Gateway → elending-service → RabbitMQ → notification-service`.
+
 ### Observabilidad y Resiliencia
 
-- **Logging estructurado** con SLF4J en todos los servicios
-- **IDs de correlación**: No implementado aún (pendiente de verificar)
-- **Circuit Breaker**: No implementado (pendiente — los errores Feign se manejan con try-catch)
-- **Trazabilidad distribuida**: Pendiente de implementar
+- **Logging estructurado** con SLF4J en todos los servicios, con patrón MDC que incluye `traceId` y `spanId` para correlación
+- **IDs de correlación**: Implementado — Micrometer Tracing inyecta `traceId`/`spanId` en MDC en todos los servicios. Se propagan automáticamente via headers B3/traceparent en llamadas Feign y mensajes RabbitMQ.
+- **Circuit Breaker**: Implementado con Resilience4j en los 10 microservicios de negocio. Cada `@FeignClient` tiene su propia instancia de circuit breaker con `sliding-window-size=10`, `failure-rate-threshold=50%`, `wait-duration-in-open-state=30s`. Todos usan patrón `FallbackFactory` para degradación controlada (respuestas vacías o defaults) con logging de la causa del fallo.
+- **Trazabilidad distribuida**: Implementada con Micrometer Tracing (bridge Brave) + Zipkin en los 13 servicios. Cada servicio exporta trazas a `zipkin:9411` con sampling probability 1.0. Los métodos de negocio están anotados con `@Observed` para crear spans. El Gateway inyecta `X-Trace-Id` en las respuestas HTTP. La traza se propaga a través de Feign (headers B3) y RabbitMQ (AMQP headers).
 
 ---
 
@@ -291,15 +310,24 @@ http://localhost:{puerto}/swagger-ui/index.html
 
 ## 11. Pruebas y Cobertura
 
-| Tipo | Microservicios | Tests |
-|------|---------------|-------|
-| Unitarios (Service) | catalog-service, elending-service, identity-service | 33 |
-| REST MockMvc (Controller) | license-service, subscription-service, notification-service | 33 |
-| **Total** | **6 microservicios** | **66 tests — 0 fallos** |
+| Microservicio | Tests | Cobertura JaCoCo |
+|--------------|-------|-----------------|
+| catalog-service | 188 | ~95% |
+| elending-service | 273 | ~95% |
+| identity-services | 184 | ~95% |
+| license-service | 95 | ~95% |
+| notification-service | 130 (31 skips por RabbitMQ) | ~85% |
+| subscription-service | 58 | ~95% |
+| search-service | 86 | ~95% |
+| analytics-service | 74 | ~95% |
+| ingestion-service | 66 | ~95% |
+| content-service | 74 | ~95% |
+| **Total (10 business MS)** | **1.228 — 0 fallos** | **>80% en todos** |
 
-- Herramienta: JUnit 5 + Mockito
-- Cobertura: JaCoCo (>80% en todos los MS)
+- Herramienta: JUnit 5 + Mockito + Spring Boot Test
+- Cobertura: JaCoCo 0.8.11 (>80% en todos los MS, la mayoría ~95%)
 - Estructura de tests: Given / When / Then
+- Tipos: tests unitarios (Service), REST MockMvc (Controller), integración (ControllerIntegrationTest), seguridad (filtros JWT), y resiliencia (FallbackFactory, Circuit Breaker, tracing)
 
 ---
 
@@ -322,15 +350,16 @@ http://localhost:{puerto}/swagger-ui/index.html
 5. Descontar 1 copia → License Service (Feign)
 6. Crear registro de préstamo en BD
    └→ Si falla: compensación automática (restaurar copia)
-7. Notificar al usuario → Notification Service (Feign)
+7. Notificar al usuario → Notification Service (Feign síncrono + RabbitMQ asíncrono)
    └→ Si falla: silencioso, no bloquea el flujo
 ```
 
 ### Scheduler de Vencimientos
 
 - `PrestamoService.cerrarPrestamosVencidos()` se ejecuta **cada 1 hora**
-- Detecta préstamos vencidos, devuelve copias a License Service, genera notificaciones
+- Detecta préstamos vencidos, devuelve copias a License Service, genera notificaciones vía RabbitMQ
 - También notifica préstamos próximos a vencer (2 días antes)
+- **Bloqueo distribuido con ShedLock**: El scheduler usa ShedLock (`shedlock-spring` 5.13.0 + `shedlock-provider-jdbc-template`) para garantizar que solo una instancia ejecute la tarea en despliegues multi-instancia. El lock se almacena en la base de datos compartida y se libera automáticamente al finalizar.
 
 ---
 
