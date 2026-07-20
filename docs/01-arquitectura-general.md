@@ -400,7 +400,5 @@ SmallBooksRepository/
 ├── analytics-service/                   ← Estadísticas (:8091)
 ├── ingestion-service/                   ← Carga archivos (:8092)
 ├── content-service/                     ← Entrega contenido (:8093)
-├── reports/
-│   └── jacoco/                          ← Reportes cobertura
 └── docs/                                ← Documentación técnica
 ```

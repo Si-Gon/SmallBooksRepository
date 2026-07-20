@@ -62,15 +62,7 @@
       <version>${lombok.version}</version>
       <optional>true</optional>
     </dependency>
-    <dependency> <!-- Documentacion automatica con OpenAPI/Swagger en todos los microservicios -->
-        <groupId>org.springdoc</groupId>
-        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-        <version>2.5.0</version>
-    </dependency>
-    <dependency> <!-- HATEOAS en todos los microservicios -->
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-hateoas</artifactId>
-    </dependency>
+
 
     <!-- ============================================================ -->
     <!-- TRACING DISTRIBUIDO — Micrometer Tracing + Brave             -->
@@ -98,12 +90,7 @@
         <groupId>io.zipkin.reporter2</groupId>
         <artifactId>zipkin-reporter-brave</artifactId>
     </dependency>
-    <!-- Micrometer Observation Test: TestObservationRegistry para validar spans -->
-    <dependency>
-        <groupId>io.micrometer</groupId>
-        <artifactId>micrometer-observation-test</artifactId>
-        <scope>test</scope>
-    </dependency>
+
   </dependencies>
 
   <dependencyManagement>
@@ -137,6 +124,39 @@
         <version>${jjwt.version}</version>
         <scope>runtime</scope>
       </dependency>
+
+      <!-- ============================================================ -->
+      <!-- OPENAPI / SWAGGER — Centralizado en dependencyManagement     -->
+      <!-- Los microservicios WebMVC declaran springdoc-webmvc-ui       -->
+      <!-- El gateway (WebFlux) declara springdoc-webflux-ui            -->
+      <!-- ============================================================ -->
+      <dependency>
+          <groupId>org.springdoc</groupId>
+          <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+          <version>2.5.0</version>
+      </dependency>
+
+      <!-- ============================================================ -->
+      <!-- HATEOAS — Disponible para microservicios WebMVC             -->
+      <!-- Los 10 microservicios de negocio lo declaran explícitamente -->
+      <!-- Version explicita coincidiendo con spring-boot-starter-parent -->
+      <!-- ============================================================ -->
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-hateoas</artifactId>
+          <version>3.3.11</version>
+      </dependency>
+
+      <!-- ============================================================ -->
+      <!-- MICROMETER OBSERVATION TEST — Solo como test dependency     -->
+      <!-- ============================================================ -->
+      <dependency>
+          <groupId>io.micrometer</groupId>
+          <artifactId>micrometer-observation-test</artifactId>
+          <version>${micrometer.version}</version>
+          <scope>test</scope>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
