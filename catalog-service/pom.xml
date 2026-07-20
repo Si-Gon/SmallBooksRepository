@@ -7,7 +7,7 @@
     <artifactId>SpringMicroService</artifactId>
     <version>1.0-SNAPSHOT</version>
 </parent>
-	<groupId>com.silvio.catalog</groupId>
+	<groupId>com.silvio</groupId>
 	<artifactId>catalog-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name/>
