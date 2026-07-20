@@ -1,6 +1,6 @@
 ## Última Actualización
-- Fecha: 2026-07-18
-- Pipeline: M-07 Hotfix — Revertir @SecurityScheme a configuración programática (ASM bug Spring Boot 3.3.11)
+- Fecha: 2026-07-20
+- Pipeline: Z-01 — Limpieza de exception classes zombie (10 clases)
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -39,6 +39,7 @@
 - **C-01 impacto: Actualizar tests de content-service** → `ContentControllerTest`, `ContentServiceTest`, `LendingClientFallbackFactoryTest`, `ObservedAnnotationIntegrationTest` y `FeignTracingPropagationTest` usan `X-User-Id` en lugar de `Authorization`. Agregado `ContentControllerIntegrationTest`.
 
 ## Historial de Cambios
+- 2026-07-20 — Z-01: Eliminadas VerificacionPrestamoException y ArchivoNoEncontradoException (zombies puras, 0 referencias). Ambos archivos .java eliminados del filesystem.
 - 2026-07-18 — M-07 Hotfix: ASM bug fix. @SecurityScheme eliminado de SwaggerConfig, reemplazado por configuración programática. SwaggerConfigTest migrado a @SpringBootTest. Verificado: 76 tests PASS, JaCoCo OK.
 - 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. SwaggerConfigTest static scan. Import SecuritySchemeType corregido.
 - 2026-07-16 — C-01 impacto: `ContentController`/`ContentService`/`LendingClient` migrados a header `X-User-Id`. Tests actualizados; agregado `ContentControllerIntegrationTest`.

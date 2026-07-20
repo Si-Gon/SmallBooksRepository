@@ -14,6 +14,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -28,14 +29,6 @@ public class GlobalExceptionHandler {
                 errores.put(error.getField(), error.getDefaultMessage())
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errores);
-    }
-
-    @ExceptionHandler(SuscripcionNotFoundException.class)
-    public ResponseEntity<Map<String, String>> manejarSuscripcionNotFound(
-            SuscripcionNotFoundException ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error); // 404
     }
 
     // Acceso denegado — IDOR: X-User-Id no coincide con {usuarioId}
@@ -93,6 +86,15 @@ public class GlobalExceptionHandler {
         errores.put("codigo", "ERR-400");
         log.warn("ConstraintViolationException: {}", errores);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errores);
+    }
+
+    // NoSuchElementException — reemplazo genérico para exceptions "not found"
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<Map<String, String>> manejarNoEncontrado(
+            NoSuchElementException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage() != null ? ex.getMessage() : "Recurso no encontrado");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error); // 404
     }
 
     @ExceptionHandler(RuntimeException.class)

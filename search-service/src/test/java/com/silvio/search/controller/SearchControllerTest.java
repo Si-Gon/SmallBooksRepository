@@ -1,7 +1,6 @@
 package com.silvio.search.controller;
 
 import com.silvio.search.dto.SearchResultDTO;
-import com.silvio.search.exception.ErrorConsultaCatalogoException;
 import com.silvio.search.service.SearchService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,16 +74,6 @@ class SearchControllerTest {
                 .andExpect(jsonPath("$.length()").value(0));
     }
 
-    @Test
-    void obtenerTodos_errorServicio_debeRetornar503() throws Exception {
-        when(searchService.obtenerTodos())
-            .thenThrow(new ErrorConsultaCatalogoException("obtener catálogo", "Connection refused"));
-
-        mockMvc.perform(get("/api/search"))
-                .andExpect(status().isServiceUnavailable())
-                .andExpect(jsonPath("$.error").exists());
-    }
-
     // =====================================================================
     // GET /api/search/disponibles
     // =====================================================================
@@ -136,16 +125,6 @@ class SearchControllerTest {
         mockMvc.perform(get("/api/search/buscar"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
-    }
-
-    @Test
-    void buscar_errorServicio_debeRetornar503() throws Exception {
-        when(searchService.buscar(any(), any(), any()))
-            .thenThrow(new ErrorConsultaCatalogoException("consultar el catálogo", "timeout"));
-
-        mockMvc.perform(get("/api/search/buscar").param("titulo", "algo"))
-                .andExpect(status().isServiceUnavailable())
-                .andExpect(jsonPath("$.error").exists());
     }
 
     // =====================================================================

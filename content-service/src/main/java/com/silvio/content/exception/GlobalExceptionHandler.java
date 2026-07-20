@@ -20,28 +20,12 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(VerificacionPrestamoException.class)
-    public ResponseEntity<Map<String, String>> manejarVerificacionPrestamo(
-            VerificacionPrestamoException ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(error); // 503
-    }
-
     @ExceptionHandler(AccesoDenegadoException.class)
     public ResponseEntity<Map<String, String>> manejarAccesoDenegado(
             AccesoDenegadoException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error); // 403
-    }
-
-    @ExceptionHandler(ArchivoNoEncontradoException.class)
-    public ResponseEntity<Map<String, String>> manejarArchivoNoEncontrado(
-            ArchivoNoEncontradoException ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error); // 404
     }
 
     // Error de comunicación con servicio externo (Feign)

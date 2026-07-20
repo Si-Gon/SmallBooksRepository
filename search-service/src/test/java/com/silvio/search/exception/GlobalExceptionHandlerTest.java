@@ -31,20 +31,6 @@ class GlobalExceptionHandlerTest {
     private final GlobalExceptionHandler handler = new GlobalExceptionHandler();
 
     // =========================================================
-    // ErrorConsultaCatalogoException → 503 SERVICE_UNAVAILABLE
-    // =========================================================
-
-    @Test
-    void errorConsultaCatalogo_debeRetornar503() {
-        var response = handler.manejarErrorConsulta(
-                new ErrorConsultaCatalogoException("buscar", "timeout"));
-
-        assertEquals(503, response.getStatusCode().value());
-        assertTrue(response.getBody().get("error").contains("Error al buscar"));
-        assertTrue(response.getBody().get("error").contains("timeout"));
-    }
-
-    // =========================================================
     // FeignException → status HTTP de la respuesta remota
     // =========================================================
 

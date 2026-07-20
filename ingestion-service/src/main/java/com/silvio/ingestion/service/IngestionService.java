@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.silvio.ingestion.exception.ArchivoNoEncontradoException;
 import com.silvio.ingestion.exception.ErrorLecturaArchivoException;
 import com.silvio.ingestion.exception.FormatoNoPermitidoException;
 import io.micrometer.observation.annotation.Observed;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -81,7 +81,7 @@ public class IngestionService {
         ArchivoLibroInfo info = archivoRepository.findInfoByLibroId(libroId)
                 .orElseThrow(() -> {
                     log.warn("No hay archivo para libro id: {}", libroId);
-                    return new ArchivoNoEncontradoException(libroId);
+                    return new NoSuchElementException("No hay archivo subido para el libro con id: " + libroId);
                 });
         return mapearADto(info);
     }
@@ -91,7 +91,7 @@ public class IngestionService {
     public byte[] obtenerBytes(Long libroId) {
         log.info("Obteniendo bytes del archivo para libro id: {}", libroId);
         ArchivoLibro archivo = archivoRepository.findByLibroId(libroId)
-                .orElseThrow(() -> new ArchivoNoEncontradoException(libroId));
+                .orElseThrow(() -> new NoSuchElementException("No hay archivo subido para el libro con id: " + libroId));
         return storageService.obtener(archivo.getRutaOClave());
     }
 
@@ -100,7 +100,7 @@ public class IngestionService {
     public void eliminar(Long libroId) {
         log.info("Eliminando archivo para libro id: {}", libroId);
         ArchivoLibro archivo = archivoRepository.findByLibroId(libroId)
-                .orElseThrow(() -> new ArchivoNoEncontradoException(libroId));
+                .orElseThrow(() -> new NoSuchElementException("No hay archivo subido para el libro con id: " + libroId));
 
         storageService.eliminar(archivo.getRutaOClave());
         archivoRepository.delete(archivo);

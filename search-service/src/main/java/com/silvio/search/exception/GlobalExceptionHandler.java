@@ -20,14 +20,6 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(ErrorConsultaCatalogoException.class)
-    public ResponseEntity<Map<String, String>> manejarErrorConsulta(
-            ErrorConsultaCatalogoException ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(error); // 503
-    }
-
     // Error de comunicación con servicio externo (Feign)
     @ExceptionHandler(FeignException.class)
     public ResponseEntity<Map<String, String>> manejarFeignException(

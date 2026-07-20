@@ -1,7 +1,6 @@
 package com.silvio.ingestion.controller;
 
 import com.silvio.ingestion.dto.ArchivoLibroDTO;
-import com.silvio.ingestion.exception.ArchivoNoEncontradoException;
 import com.silvio.ingestion.exception.ErrorAlmacenamientoException;
 import com.silvio.ingestion.exception.FormatoNoPermitidoException;
 import com.silvio.ingestion.service.IngestionService;
@@ -152,17 +151,6 @@ class IngestionControllerTest {
                 .andExpect(jsonPath("$.tamanio").value(2048));
     }
 
-    @Test
-    void obtenerInfo_archivoNoExiste_debeRetornar404() throws Exception {
-        // ArchivoNoEncontradoException → GlobalExceptionHandler devuelve 404
-        when(ingestionService.obtenerInfo(99L))
-            .thenThrow(new ArchivoNoEncontradoException(99L));
-
-        mockMvc.perform(get("/api/ingestion/99"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").exists());
-    }
-
     // =====================================================================
     // GET /api/ingestion/{libroId}/bytes
     // =====================================================================
@@ -178,15 +166,6 @@ class IngestionControllerTest {
                 .andExpect(content().bytes(bytes));
     }
 
-    @Test
-    void obtenerBytes_archivoNoExiste_debeRetornar404() throws Exception {
-        when(ingestionService.obtenerBytes(5L))
-            .thenThrow(new ArchivoNoEncontradoException(5L));
-
-        mockMvc.perform(get("/api/ingestion/5/bytes"))
-                .andExpect(status().isNotFound());
-    }
-
     // =====================================================================
     // DELETE /api/ingestion/{libroId}
     // =====================================================================
@@ -199,16 +178,6 @@ class IngestionControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(ingestionService).eliminar(1L);
-    }
-
-    @Test
-    void eliminar_archivoNoExiste_debeRetornar404() throws Exception {
-        doThrow(new ArchivoNoEncontradoException(7L))
-            .when(ingestionService).eliminar(7L);
-
-        mockMvc.perform(delete("/api/ingestion/7"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").exists());
     }
 
     // =====================================================================
@@ -242,20 +211,4 @@ class IngestionControllerTest {
                 .andExpect(jsonPath("$.error").exists());
     }
 
-    @Test
-    void subirArchivo_libroNoEncontrado_debeRetornar404() throws Exception {
-        MockMultipartFile archivo = new MockMultipartFile(
-            "archivo", "libro.pdf", "application/pdf", "contenido".getBytes());
-
-        // ArchivoNoEncontradoException → GlobalExceptionHandler devuelve 404
-        // (cuando el libroId no existe en el catálogo)
-        when(ingestionService.subirArchivo(eq(99L), any()))
-            .thenThrow(new ArchivoNoEncontradoException(99L));
-
-        mockMvc.perform(multipart("/api/ingestion/upload/99").file(archivo))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").exists());
-
-        verify(ingestionService).subirArchivo(eq(99L), any());
-    }
 }

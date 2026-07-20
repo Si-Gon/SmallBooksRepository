@@ -1,8 +1,6 @@
 package com.silvio.content.controller;
 
 import com.silvio.content.exception.AccesoDenegadoException;
-import com.silvio.content.exception.ArchivoNoEncontradoException;
-import com.silvio.content.exception.VerificacionPrestamoException;
 import com.silvio.content.service.ContentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,30 +91,6 @@ class ContentControllerTest {
         mockMvc.perform(get("/api/content/1")
                         .header("X-User-Id", "silvio"))
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.error").exists());
-    }
-
-    @Test
-    void descargarArchivo_errorEnLending_debeRetornar503() throws Exception {
-        // VerificacionPrestamoException → GlobalExceptionHandler devuelve 503
-        when(contentService.obtenerArchivo(2L, "silvio"))
-            .thenThrow(new VerificacionPrestamoException("Connection refused"));
-
-        mockMvc.perform(get("/api/content/2")
-                        .header("X-User-Id", "silvio"))
-                .andExpect(status().isServiceUnavailable())
-                .andExpect(jsonPath("$.error").exists());
-    }
-
-    @Test
-    void descargarArchivo_archivoNoEncontrado_debeRetornar404() throws Exception {
-        // ArchivoNoEncontradoException → GlobalExceptionHandler devuelve 404
-        when(contentService.obtenerArchivo(3L, "silvio"))
-                .thenThrow(new ArchivoNoEncontradoException(3L));
-
-        mockMvc.perform(get("/api/content/3")
-                        .header("X-User-Id", "silvio"))
-                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").exists());
     }
 

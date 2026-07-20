@@ -1,6 +1,6 @@
 ## Última Actualización
-- Fecha: 2026-07-18
-- Pipeline: M-07 Hotfix — Revertir @SecurityScheme a configuración programática (ASM bug Spring Boot 3.3.11)
+- Fecha: 2026-07-20
+- Pipeline: Z-01 — Limpieza de exception classes zombie (10 clases)
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -42,6 +42,7 @@
 - Agregar dependencia `spring-cloud-starter-circuitbreaker-resilience4j` en pom.xml → Implementado.
 
 ## Historial de Cambios
+- 2026-07-20 — Z-01: Eliminadas ErrorDatosPrestamosException y ErrorHistorialUsuarioException (zombies puras, 0 referencias). Sin cambios en código — nunca fueron instanciadas.
 - 2026-07-18 — M-07 Hotfix: ASM bug fix. @SecurityScheme eliminado de SwaggerConfig, reemplazado por configuración programática de modelos OpenAPI. SwaggerConfigTest migrado de static source scan a @SpringBootTest con contexto real. Verificado: 76 tests PASS, JaCoCo OK.
 - 2026-07-17 — M-05: @SecurityScheme agregado en SwaggerConfig. Import SecuritySchemeType corregido (de .security a .enums). SwaggerConfigTest static source scan verifica anotación. Todos los @Operation tienen @SecurityRequirement(name="BearerAuth").
 - 2026-07-15 — Agregado `@Transactional(readOnly = true)` a `obtenerEstadisticas()` e `historialUsuario()` para optimización de rendimiento JPA y consistencia con el código base.

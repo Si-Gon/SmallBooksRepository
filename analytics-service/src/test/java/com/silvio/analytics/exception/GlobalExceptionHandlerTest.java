@@ -32,33 +32,6 @@ class GlobalExceptionHandlerTest {
     private final GlobalExceptionHandler handler = new GlobalExceptionHandler();
 
     // =========================================================
-    // ErrorDatosPrestamosException → 503 SERVICE_UNAVAILABLE
-    // =========================================================
-
-    @Test
-    void errorDatosPrestamos_debeRetornar503() {
-        var response = handler.manejarErrorDatosPrestamos(
-                new ErrorDatosPrestamosException("timeout"));
-
-        assertEquals(503, response.getStatusCode().value());
-        assertTrue(response.getBody().get("error").contains("Error al obtener datos de préstamos"));
-    }
-
-    // =========================================================
-    // ErrorHistorialUsuarioException → 503 SERVICE_UNAVAILABLE
-    // =========================================================
-
-    @Test
-    void errorHistorialUsuario_debeRetornar503() {
-        var response = handler.manejarErrorHistorial(
-                new ErrorHistorialUsuarioException("silvio"));
-
-        assertEquals(503, response.getStatusCode().value());
-        assertTrue(response.getBody().get("error").contains("Error al obtener historial"));
-        assertTrue(response.getBody().get("error").contains("silvio"));
-    }
-
-    // =========================================================
     // FeignException → status HTTP de la respuesta remota
     // =========================================================
 

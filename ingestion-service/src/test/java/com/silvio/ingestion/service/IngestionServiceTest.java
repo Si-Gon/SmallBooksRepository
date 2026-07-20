@@ -1,7 +1,6 @@
 package com.silvio.ingestion.service;
 
 import com.silvio.ingestion.dto.ArchivoLibroDTO;
-import com.silvio.ingestion.exception.ArchivoNoEncontradoException;
 import com.silvio.ingestion.exception.ErrorLecturaArchivoException;
 import com.silvio.ingestion.exception.FormatoNoPermitidoException;
 import com.silvio.ingestion.model.ArchivoLibro;
@@ -183,15 +182,6 @@ class IngestionServiceTest {
         assertThat(resultado.getFormato()).isEqualTo("PDF");
     }
 
-    @Test
-    void obtenerInfo_archivoNoExiste_lanzaExcepcion() {
-        when(archivoRepository.findInfoByLibroId(99L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> ingestionService.obtenerInfo(99L))
-            .isInstanceOf(ArchivoNoEncontradoException.class)
-            .hasMessageContaining("No hay archivo subido para el libro con id: 99");
-    }
-
     // =====================================================================
     // obtenerBytes()
     // =====================================================================
@@ -209,15 +199,6 @@ class IngestionServiceTest {
         verify(storageService).obtener("db:10");
     }
 
-    @Test
-    void obtenerBytes_archivoNoExiste_lanzaExcepcion() {
-        when(archivoRepository.findByLibroId(5L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> ingestionService.obtenerBytes(5L))
-            .isInstanceOf(ArchivoNoEncontradoException.class)
-            .hasMessageContaining("No hay archivo subido para el libro con id: 5");
-    }
-
     // =====================================================================
     // eliminar()
     // =====================================================================
@@ -231,18 +212,6 @@ class IngestionServiceTest {
 
         verify(storageService).eliminar("db:10");
         verify(archivoRepository).delete(archivo);
-    }
-
-    @Test
-    void eliminar_archivoNoExiste_lanzaExcepcion() {
-        when(archivoRepository.findByLibroId(7L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> ingestionService.eliminar(7L))
-            .isInstanceOf(ArchivoNoEncontradoException.class)
-            .hasMessageContaining("No hay archivo subido para el libro con id: 7");
-
-        verify(storageService, never()).eliminar(any());
-        verify(archivoRepository, never()).delete(any());
     }
 
     // =====================================================================

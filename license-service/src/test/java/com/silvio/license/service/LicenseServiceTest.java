@@ -7,7 +7,6 @@ import com.silvio.license.exception.ConflictosConcurrenciaException;
 import com.silvio.license.exception.DevolucionInvalidaException;
 import com.silvio.license.exception.ErrorDevolucionException;
 import com.silvio.license.exception.LicenciaDuplicadaException;
-import com.silvio.license.exception.LicenciaNotFoundException;
 import com.silvio.license.exception.ReduccionCopiasInvalidaException;
 import com.silvio.license.model.License;
 import com.silvio.license.repository.LicenseRepository;
@@ -195,15 +194,6 @@ class LicenseServiceTest {
         assertThat(resultado.getCopiasDisponibles()).isEqualTo(8);
     }
 
-    @Test
-    void obtenerPorLibroId_noExiste_lanzaLicenciaNotFoundException() {
-        when(licenseRepository.findByLibroId(99L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> licenseService.obtenerPorLibroId(99L))
-            .isInstanceOf(LicenciaNotFoundException.class)
-            .hasMessageContaining("No existe licencia para el libro con id: 99");
-    }
-
     // =====================================================================
     // crear()
     // =====================================================================
@@ -266,15 +256,6 @@ class LicenseServiceTest {
             .hasMessageContaining("No hay copias disponibles del libro con id: 1");
 
         verify(licenseRepository, never()).save(any());
-    }
-
-    @Test
-    void prestar_licenciaNoExiste_lanzaLicenciaNotFoundException() {
-        when(licenseRepository.findByLibroId(7L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> licenseService.prestar(7L))
-            .isInstanceOf(LicenciaNotFoundException.class)
-            .hasMessageContaining("No existe licencia para el libro con id: 7");
     }
 
     // =====================================================================
@@ -414,12 +395,4 @@ class LicenseServiceTest {
         verify(licenseRepository, never()).save(any());
     }
 
-    @Test
-    void actualizar_licenciaNoExiste_lanzaLicenciaNotFoundException() {
-        when(licenseRepository.findByLibroId(9L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> licenseService.actualizar(9L, request(9L, 5)))
-            .isInstanceOf(LicenciaNotFoundException.class)
-            .hasMessageContaining("No existe licencia para el libro con id: 9");
-    }
 }

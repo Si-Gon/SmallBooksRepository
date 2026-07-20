@@ -51,19 +51,6 @@ class GlobalExceptionHandlerTest {
     }
 
     // =========================================================
-    // SuscripcionNotFoundException → 404 NOT_FOUND
-    // =========================================================
-
-    @Test
-    void suscripcionNoEncontrada_debeRetornar404() {
-        ResponseEntity<Map<String, String>> response = handler.manejarSuscripcionNotFound(
-                new SuscripcionNotFoundException("user123"));
-
-        assertEquals(404, response.getStatusCode().value());
-        assertTrue(response.getBody().get("error").contains("user123"));
-    }
-
-    // =========================================================
     // MethodArgumentTypeMismatchException → 400 BAD_REQUEST
     // =========================================================
 

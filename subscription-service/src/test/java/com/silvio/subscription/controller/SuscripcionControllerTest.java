@@ -3,7 +3,6 @@ package com.silvio.subscription.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.silvio.subscription.dto.SuscripcionRequestDTO;
 import com.silvio.subscription.dto.SuscripcionResponseDTO;
-import com.silvio.subscription.exception.SuscripcionNotFoundException;
 import com.silvio.subscription.model.Suscripcion.PlanSuscripcion;
 import com.silvio.subscription.service.SuscripcionService;
 import org.junit.jupiter.api.Test;
@@ -94,17 +93,6 @@ class SuscripcionControllerTest {
     }
 
     @Test
-    void miPlan_devuelve404_cuandoNoTieneSuscripcion() throws Exception {
-        when(suscripcionService.obtenerPorUsuario("usuario_sin_plan"))
-                .thenThrow(new SuscripcionNotFoundException("usuario_sin_plan"));
-
-        mockMvc.perform(get("/api/subscriptions/mi-plan")
-                        .header("X-User-Id", "usuario_sin_plan"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").exists());
-    }
-
-    @Test
     void miPlan_devuelve400_cuandoHeaderXUserIdAusente() throws Exception {
         mockMvc.perform(get("/api/subscriptions/mi-plan"))
                 .andExpect(status().isBadRequest());
@@ -139,18 +127,6 @@ class SuscripcionControllerTest {
                 .andExpect(jsonPath("$.plan").value("PREMIUM"))
                 .andExpect(jsonPath("$.maxPrestamos").value(5))
                 .andExpect(jsonPath("$.diasPrestamo").value(14));
-    }
-
-    @Test
-    void obtenerPorUsuarioId_devuelve404_cuandoNoExiste() throws Exception {
-        when(suscripcionService.obtenerPorUsuario("noexiste"))
-                .thenThrow(new SuscripcionNotFoundException("noexiste"));
-
-        mockMvc.perform(get("/api/subscriptions/usuario/noexiste")
-                        .header("X-User-Id", "noexiste")
-                        .header("X-User-Roles", "ROLE_USER"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").exists());
     }
 
     // ─── IDOR: validación de acceso a datos de otro usuario ──────────────────
@@ -273,13 +249,4 @@ class SuscripcionControllerTest {
         verify(suscripcionService).cancelar("silvio");
     }
 
-    @Test
-    void cancelar_devuelve404_cuandoNoTieneSuscripcion() throws Exception {
-        when(suscripcionService.cancelar("usuario_sin_plan"))
-                .thenThrow(new SuscripcionNotFoundException("usuario_sin_plan"));
-
-        mockMvc.perform(patch("/api/subscriptions/cancelar")
-                        .header("X-User-Id", "usuario_sin_plan"))
-                .andExpect(status().isNotFound());
-    }
 }

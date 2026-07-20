@@ -6,7 +6,6 @@ import com.silvio.license.dto.LicenseResponseDTO;
 import com.silvio.license.exception.CopiaNoDisponibleException;
 import com.silvio.license.exception.DevolucionInvalidaException;
 import com.silvio.license.exception.ErrorDevolucionException;
-import com.silvio.license.exception.LicenciaNotFoundException;
 import com.silvio.license.exception.ConflictosConcurrenciaException;
 import com.silvio.license.service.LicenseService;
 import org.junit.jupiter.api.Test;
@@ -246,20 +245,6 @@ class LicenseControllerTest {
         verify(licenseService).obtenerPorLibroId(1L);
     }
 
-    @Test
-    void obtenerPorLibroId_devuelve_404_cuando_no_existe() throws Exception {
-        // Given
-        when(licenseService.obtenerPorLibroId(999L))
-            .thenThrow(new LicenciaNotFoundException(999L));
-
-        // When & Then
-        mockMvc.perform(get("/api/licenses/999"))
-            .andExpect(status().isNotFound());
-
-        verify(licenseService).obtenerPorLibroId(999L);
-    }
-
-
     // ─── POST /api/licenses ──────────────────────────────────────────────────
 
     @Test
@@ -395,19 +380,6 @@ class LicenseControllerTest {
     // ─── PATCH /api/licenses/{libroId}/devolver — más casos de error ──────────
 
     @Test
-    void devolver_devuelve_404_cuando_licencia_no_existe() throws Exception {
-        // LicenciaNotFoundException → GlobalExceptionHandler devuelve 404
-        when(licenseService.devolver(999L))
-            .thenThrow(new LicenciaNotFoundException(999L));
-
-        mockMvc.perform(patch("/api/licenses/999/devolver"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").exists());
-
-        verify(licenseService).devolver(999L);
-    }
-
-    @Test
     void devolver_devuelve_500_cuando_errorDevolucion() throws Exception {
         // ErrorDevolucionException → GlobalExceptionHandler devuelve 500
         when(licenseService.devolver(1L))
@@ -421,19 +393,6 @@ class LicenseControllerTest {
     }
 
     // ─── PATCH /api/licenses/{libroId}/prestar — más casos de error ──────────
-
-    @Test
-    void prestar_devuelve_404_cuando_licencia_no_existe() throws Exception {
-        // LicenciaNotFoundException → GlobalExceptionHandler devuelve 404
-        when(licenseService.prestar(999L))
-            .thenThrow(new LicenciaNotFoundException(999L));
-
-        mockMvc.perform(patch("/api/licenses/999/prestar"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").exists());
-
-        verify(licenseService).prestar(999L);
-    }
 
     @Test
     void prestar_devuelve_409_cuando_concurrencia() throws Exception {

@@ -30,14 +30,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errores);
     }
 
-    @ExceptionHandler(NotificacionNotFoundException.class)
-    public ResponseEntity<Map<String, String>> manejarNotificacionNoEncontrada(
-            NotificacionNotFoundException ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error); // 404
-    }
-
     @ExceptionHandler(HashNoDisponibleException.class)
     public ResponseEntity<Map<String, String>> manejarHashNoDisponible(
             HashNoDisponibleException ex) {

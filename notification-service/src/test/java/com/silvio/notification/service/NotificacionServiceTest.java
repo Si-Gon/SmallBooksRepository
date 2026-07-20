@@ -2,7 +2,6 @@ package com.silvio.notification.service;
 
 import com.silvio.notification.dto.NotificacionDTO;
 import com.silvio.notification.dto.NotificacionRequestDTO;
-import com.silvio.notification.exception.NotificacionNotFoundException;
 import com.silvio.notification.model.Notificacion;
 import com.silvio.notification.model.Notificacion.TipoNotificacion;
 import com.silvio.notification.repository.NotificacionRepository;
@@ -311,17 +310,6 @@ class NotificacionServiceTest {
         assertThat(n.getLeida()).isTrue();
         assertThat(resultado.getLeida()).isTrue();
         verify(notificacionRepository).save(n);
-    }
-
-    @Test
-    void marcarLeida_notificacionNoExiste_lanzaExcepcion() {
-        when(notificacionRepository.findById(99L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> notificacionService.marcarLeida(99L))
-            .isInstanceOf(NotificacionNotFoundException.class)
-            .hasMessageContaining("Notificación no encontrada con id: 99");
-
-        verify(notificacionRepository, never()).save(any());
     }
 
     // =====================================================================

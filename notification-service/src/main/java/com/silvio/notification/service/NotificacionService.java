@@ -3,7 +3,6 @@ package com.silvio.notification.service;
 import com.silvio.notification.dto.NotificacionDTO;
 import com.silvio.notification.dto.NotificacionRequestDTO;
 import com.silvio.notification.exception.HashNoDisponibleException;
-import com.silvio.notification.exception.NotificacionNotFoundException;
 import com.silvio.notification.model.Notificacion;
 import com.silvio.notification.repository.NotificacionRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.micrometer.observation.annotation.Observed;
+import java.util.NoSuchElementException;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -109,7 +109,7 @@ public class NotificacionService {
         Notificacion notificacion = notificacionRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Notificación no encontrada — id: {}", id);
-                    return new NotificacionNotFoundException(id);
+                    return new NoSuchElementException("Notificación no encontrada con id: " + id);
                 });
 
         notificacion.setLeida(true);

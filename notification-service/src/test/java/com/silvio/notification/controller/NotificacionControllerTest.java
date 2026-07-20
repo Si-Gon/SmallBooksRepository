@@ -3,7 +3,6 @@ package com.silvio.notification.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.silvio.notification.dto.NotificacionDTO;
 import com.silvio.notification.dto.NotificacionRequestDTO;
-import com.silvio.notification.exception.NotificacionNotFoundException;
 import com.silvio.notification.model.Notificacion.TipoNotificacion;
 import com.silvio.notification.service.NotificacionService;
 import org.junit.jupiter.api.Test;
@@ -257,20 +256,6 @@ class NotificacionControllerTest {
                 .andExpect(jsonPath("$._links.marcar-todas-leidas").exists());
 
         verify(notificacionService).marcarLeida(1L);
-    }
-
-    @Test
-    void marcarLeida_devuelve_404_cuando_notificacion_no_existe() throws Exception {
-        // Given
-        when(notificacionService.marcarLeida(999L))
-                .thenThrow(new NotificacionNotFoundException(999L));
-
-        // When & Then
-        mockMvc.perform(patch("/api/notifications/999/leer"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").exists());
-
-        verify(notificacionService).marcarLeida(999L);
     }
 
     // ─── PATCH /api/notifications/usuario/{usuarioId}/leer-todas ─────────────

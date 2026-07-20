@@ -1,6 +1,6 @@
 ## Última Actualización
-- Fecha: 2026-07-18
-- Pipeline: M-07 Hotfix — Revertir @SecurityScheme a configuración programática (ASM bug Spring Boot 3.3.11)
+- Fecha: 2026-07-20
+- Pipeline: Z-01 — Limpieza de exception classes zombie (10 clases)
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -35,6 +35,7 @@
 - **C-3: Migración API jjwt 0.12.x** — `parseClaimsJws()` reemplazado por `parseSignedClaims()`, `.getBody()` reemplazado por `.getPayload()` en JwtUtil, JwtUtilTest. Comentarios en español actualizados consistentemente. Tests de regresión estática (JwtApiMigrationTest) previenen reintroducción de API deprecada.
 - **C-02 (key derivation): UTF-8 en derivación de clave HMAC** — `JwtUtil.getSigningKey()` usa `jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8)` en lugar de `getBytes()` con charset por defecto. Esto garantiza que la misma cadena de secreto produzca la misma clave criptográfica en Windows (Cp1252 por defecto) y Linux (UTF-8). Alternativa descartada: mantener charset por defecto — rompe la validación cross-plataforma del JWT.
 - **H-02: Optional en createPasswordResetToken** — Se cambió `findByUsername().orElseThrow()` a uso directo de Optional con `isEmpty()` check. Si usuario no existe, retorna null sin excepción. AuthController retorna siempre 200 OK con mensaje `"Si el usuario existe, recibirá instrucciones de recuperación."` sin revelar existencia del usuario. Alternativa descartada: lanzar excepción y capturar en controller — revelaría información al cliente.
+- **Z-01: UsuarioNotFoundException reemplazado por java.util.NoSuchElementException** — Se eliminó la clase zombie `UsuarioNotFoundException` (sin throw new en producción). Los throws en `UserService` se reemplazaron por `NoSuchElementException` con mensaje descriptivo. Alternativa descartada: crear nueva excepción personalizada — usar stdlib reduce código muerto futuro.
 - **H-01: Null-check/blank-check en JwtAuthenticationFilter** — Antes de `rolesStr.split(",")`, se valida null y blank. Si null/blank → `Collections.emptyList()`. Si tiene contenido → split con `filter(!blank)` y map a `SimpleGrantedAuthority`. Import `java.util.Collections` agregado. Alternativa descartada: usar Optional.ofNullable — más verboso sin beneficio real.
 
 ## Criterios de Aceptación Cumplidos
@@ -45,8 +46,10 @@
 - **C-02) Derivar clave HMAC con `StandardCharsets.UTF_8`** → `JwtUtil.getSigningKey()` usa `secret.getBytes(StandardCharsets.UTF_8)`. `JwtUtilTest` actualizado para usar UTF-8 en la clave de prueba y verificar consistencia cross-plataforma.
 - **H-02)** `createPasswordResetToken()` retorna null si usuario no existe → Implementado con Optional. `forgotPassword()` retorna siempre 200 OK con mensaje genérico idéntico. Tests actualizados y nuevos agregados.
 - **H-01)** `JwtAuthenticationFilter` maneja roles null/blank sin NPE → Implementado con null-check + blank-check antes del split. `Collections.emptyList()` para casos vacíos. 3 tests unitarios creados en `JwtAuthenticationFilterTest`.
+- **Z-01) Reemplazar UsuarioNotFoundException por NoSuchElementException** → `UserService` ya no lanza `UsuarioNotFoundException`. Usa `NoSuchElementException` con mensaje descriptivo. Clase zombie eliminada del filesystem. Tests actualizados. Compilación verificada.
 
 ## Historial de Cambios
+- 2026-07-20 — Z-01: UsuarioNotFoundException eliminada, reemplazada por NoSuchElementException en UserService. Tests actualizados. Compilación verificada.
 - 2026-07-18 — M-07 Hotfix: ASM bug fix. @SecurityScheme eliminado de SwaggerConfig, reemplazado por configuración programática. SwaggerConfigTest migrado a @SpringBootTest. Verificado: 186 tests PASS, JaCoCo OK.
 - 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. Import SecuritySchemeType corregido. SwaggerConfigTest static scan. Endpoints públicos excluidos de @SecurityRequirement.
 - 2026-07-16 — C-02: `JwtUtil.getSigningKey()` usa `StandardCharsets.UTF_8`. `JwtUtilTest` actualizado con tests de consistencia cross-plataforma.

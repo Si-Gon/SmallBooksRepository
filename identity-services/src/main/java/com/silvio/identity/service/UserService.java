@@ -11,7 +11,6 @@ import com.silvio.identity.exception.ErrorSeguridadException;
 import com.silvio.identity.exception.TokenExpiradoException;
 import com.silvio.identity.exception.TokenInvalidoException;
 import com.silvio.identity.exception.UsuarioDuplicadoException;
-import com.silvio.identity.exception.UsuarioNotFoundException;
 import com.silvio.identity.repository.UserRepository;
 import com.silvio.identity.security.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import io.micrometer.observation.annotation.Observed;
 
 import java.nio.charset.StandardCharsets;
+import java.util.NoSuchElementException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -202,7 +202,7 @@ public class UserService implements UserDetailsService {
     public void changePassword(String username, String currentPassword, String newPassword) {
         log.info("Cambiando contraseña para usuario: {}", username);
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsuarioNotFoundException(username));
+                .orElseThrow(() -> new NoSuchElementException("Usuario no encontrado: " + username));
 
         if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
             log.warn("Contraseña actual incorrecta para usuario: {}", username);
@@ -248,7 +248,7 @@ public class UserService implements UserDetailsService {
     public void storeRefreshTokenHash(String username, String refreshToken) {
         log.info("Almacenando hash de refresh token para usuario: {}", username);
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsuarioNotFoundException(username));
+                .orElseThrow(() -> new NoSuchElementException("Usuario no encontrado: " + username));
         user.setRefreshTokenHash(hashToken(refreshToken));
         userRepository.save(user);
     }

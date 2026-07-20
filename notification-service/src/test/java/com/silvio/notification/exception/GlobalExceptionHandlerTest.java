@@ -51,19 +51,6 @@ class GlobalExceptionHandlerTest {
     }
 
     // =========================================================
-    // NotificacionNotFoundException → 404 NOT_FOUND
-    // =========================================================
-
-    @Test
-    void notificacionNoEncontrada_debeRetornar404() {
-        ResponseEntity<Map<String, String>> response = handler.manejarNotificacionNoEncontrada(
-                new NotificacionNotFoundException(99L));
-
-        assertEquals(404, response.getStatusCode().value());
-        assertTrue(response.getBody().get("error").contains("99"));
-    }
-
-    // =========================================================
     // HashNoDisponibleException → 500 INTERNAL_SERVER_ERROR
     // =========================================================
 

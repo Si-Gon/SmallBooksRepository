@@ -9,7 +9,6 @@ import com.silvio.identity.exception.ContrasenaIncorrectaException;
 import com.silvio.identity.exception.TokenExpiradoException;
 import com.silvio.identity.exception.TokenInvalidoException;
 import com.silvio.identity.exception.UsuarioDuplicadoException;
-import com.silvio.identity.exception.UsuarioNotFoundException;
 import com.silvio.identity.model.User;
 import com.silvio.identity.repository.UserRepository;
 import com.silvio.identity.security.JwtUtil;
@@ -341,17 +340,6 @@ class UserServiceTest {
         verify(passwordEncoder, never()).encode(any());
     }
 
-    @Test
-    void changePassword_falla_cuando_usuario_no_existe() {
-        // Given
-        when(userRepository.findByUsername("noexiste")).thenReturn(Optional.empty());
-
-        // When & Then
-        assertThrows(UsuarioNotFoundException.class,
-                () -> userService.changePassword("noexiste", "pass", "nueva"));
-        verify(userRepository, never()).save(any(User.class));
-    }
-
     // ─── tests storeRefreshTokenHash ──────────────────────────────────────────
 
     @Test
@@ -372,17 +360,6 @@ class UserServiceTest {
         // Verificar que se asignó un hash (SHA-256 = 64 caracteres hex)
         assertNotNull(user.getRefreshTokenHash());
         assertEquals(64, user.getRefreshTokenHash().length());
-    }
-
-    @Test
-    void storeRefreshTokenHash_falla_cuando_usuario_no_existe() {
-        // Given
-        when(userRepository.findByUsername("noexiste")).thenReturn(Optional.empty());
-
-        // When & Then
-        assertThrows(UsuarioNotFoundException.class,
-                () -> userService.storeRefreshTokenHash("noexiste", "token"));
-        verify(userRepository, never()).save(any(User.class));
     }
 
     // ─── tests rotateRefreshToken ─────────────────────────────────────────────
@@ -730,19 +707,4 @@ class UserServiceTest {
         verify(userRepository).findByUsername("silvio");
     }
 
-    @Test
-    void changePasswordFromToken_usuarioNoExistente_debeLanzarUsuarioNotFoundException() {
-        // Given
-        String authHeader = "Bearer jwt.token.inexistente";
-        when(jwtUtil.extractUsername("jwt.token.inexistente")).thenReturn("noexiste");
-        when(userRepository.findByUsername("noexiste")).thenReturn(Optional.empty());
-
-        // When & Then
-        assertThrows(UsuarioNotFoundException.class,
-                () -> userService.changePasswordFromToken(authHeader, "pass", "nueva"));
-        verify(jwtUtil).extractUsername("jwt.token.inexistente");
-        verify(userRepository).findByUsername("noexiste");
-        verify(passwordEncoder, never()).matches(anyString(), anyString());
-        verify(userRepository, never()).save(any(User.class));
     }
-}

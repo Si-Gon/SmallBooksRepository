@@ -47,14 +47,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    // Usuario no encontrado (dominio)
-    @ExceptionHandler(UsuarioNotFoundException.class)
-    public ResponseEntity<Map<String, String>> manejarUsuarioNoEncontrado(UsuarioNotFoundException ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("message", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-    }
-
     // Usuario duplicado
     @ExceptionHandler(UsuarioDuplicadoException.class)
     public ResponseEntity<Map<String, String>> manejarUsuarioDuplicado(UsuarioDuplicadoException ex) {

@@ -66,20 +66,6 @@ class GlobalExceptionHandlerTest {
     }
 
     // =========================================================
-    // LicenciaNotFoundException → 404 NOT_FOUND
-    // =========================================================
-
-    @Test
-    void licenciaNoEncontrada_debeRetornar404() {
-        ResponseEntity<Map<String, String>> response = handler.manejarLicenciaNoEncontrada(
-                new LicenciaNotFoundException(1L));
-
-        assertEquals(404, response.getStatusCode().value());
-        assertTrue(response.getBody().get("error").contains("No existe licencia"));
-        assertTrue(response.getBody().get("error").contains("1"));
-    }
-
-    // =========================================================
     // LicenciaDuplicadaException → 409 CONFLICT
     // =========================================================
 

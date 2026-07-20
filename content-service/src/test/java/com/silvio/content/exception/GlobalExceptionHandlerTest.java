@@ -33,19 +33,6 @@ class GlobalExceptionHandlerTest {
     private final GlobalExceptionHandler handler = new GlobalExceptionHandler();
 
     // =========================================================
-    // VerificacionPrestamoException → 503 SERVICE_UNAVAILABLE
-    // =========================================================
-
-    @Test
-    void verificacionPrestamo_debeRetornar503() {
-        var response = handler.manejarVerificacionPrestamo(
-                new VerificacionPrestamoException("elending-service no disponible"));
-
-        assertEquals(503, response.getStatusCode().value());
-        assertTrue(response.getBody().get("error").contains("No se pudo verificar"));
-    }
-
-    // =========================================================
     // AccesoDenegadoException → 403 FORBIDDEN
     // =========================================================
 
@@ -56,19 +43,6 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(403, response.getStatusCode().value());
         assertTrue(response.getBody().get("error").contains("Acceso denegado"));
-    }
-
-    // =========================================================
-    // ArchivoNoEncontradoException → 404 NOT_FOUND
-    // =========================================================
-
-    @Test
-    void archivoNoEncontrado_debeRetornar404() {
-        var response = handler.manejarArchivoNoEncontrado(
-                new ArchivoNoEncontradoException(42L));
-
-        assertEquals(404, response.getStatusCode().value());
-        assertTrue(response.getBody().get("error").contains("No se pudo obtener el archivo"));
     }
 
     // =========================================================

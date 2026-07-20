@@ -2,8 +2,6 @@ package com.silvio.analytics.controller;
 
 import com.silvio.analytics.dto.EstadisticasDTO;
 import com.silvio.analytics.dto.PrestamoAnalyticsDTO;
-import com.silvio.analytics.exception.ErrorDatosPrestamosException;
-import com.silvio.analytics.exception.ErrorHistorialUsuarioException;
 import com.silvio.analytics.service.AnalyticsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,17 +80,6 @@ class AnalyticsControllerTest {
         verify(analyticsService).obtenerEstadisticas();
     }
 
-    @Test
-    void obtenerEstadisticas_errorInterno_debeRetornar503() throws Exception {
-        // ErrorDatosPrestamosException → GlobalExceptionHandler devuelve 503
-        when(analyticsService.obtenerEstadisticas())
-            .thenThrow(new ErrorDatosPrestamosException("Connection refused"));
-
-        mockMvc.perform(get("/api/analytics/estadisticas"))
-                .andExpect(status().isServiceUnavailable())
-                .andExpect(jsonPath("$.error").exists());
-    }
-
     // =====================================================================
     // GET /api/analytics/historial/{usuarioId}
     // =====================================================================
@@ -124,16 +111,6 @@ class AnalyticsControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(0));
-    }
-
-    @Test
-    void historialUsuario_errorEnServicio_debeRetornar503() throws Exception {
-        when(analyticsService.historialUsuario("fallo"))
-            .thenThrow(new ErrorHistorialUsuarioException("fallo"));
-
-        mockMvc.perform(get("/api/analytics/historial/fallo"))
-                .andExpect(status().isServiceUnavailable())
-                .andExpect(jsonPath("$.error").exists());
     }
 
     // =====================================================================

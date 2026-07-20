@@ -23,7 +23,6 @@ import static org.mockito.Mockito.*;
  * recibe la lista del catálogo, la mapea a SearchResultDTO y la devuelve.
  * Testeamos:
  *  - Que el mapeo de campos funciona correctamente
- *  - Que errores del FeignClient se convierten en ErrorConsultaCatalogoException
  *  - Que listas vacías se manejan correctamente
  */
 @ExtendWith(MockitoExtension.class)

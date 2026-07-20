@@ -57,20 +57,6 @@ class GlobalExceptionHandlerTest {
     }
 
     // =========================================================
-    // ArchivoNoEncontradoException → 404 NOT_FOUND
-    // =========================================================
-
-    @Test
-    void archivoNoEncontrado_debeRetornar404() {
-        ArchivoNoEncontradoException ex = new ArchivoNoEncontradoException(99L);
-
-        ResponseEntity<Map<String, String>> response = handler.manejarArchivoNoEncontrado(ex);
-
-        assertEquals(404, response.getStatusCode().value());
-        assertTrue(response.getBody().get("error").contains("99"));
-    }
-
-    // =========================================================
     // ErrorLecturaArchivoException → 500 INTERNAL_SERVER_ERROR
     // =========================================================
 

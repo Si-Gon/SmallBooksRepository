@@ -81,19 +81,6 @@ class GlobalExceptionHandlerTest {
     }
 
     // =========================================================
-    // UsuarioNotFoundException → 404 NOT_FOUND
-    // =========================================================
-
-    @Test
-    void usuarioNoEncontrado_debeRetornar404() {
-        ResponseEntity<Map<String, String>> response = handler.manejarUsuarioNoEncontrado(
-                new UsuarioNotFoundException("silvio"));
-
-        assertEquals(404, response.getStatusCode().value());
-        assertTrue(response.getBody().get("message").contains("silvio"));
-    }
-
-    // =========================================================
     // UsuarioDuplicadoException → 409 CONFLICT
     // =========================================================
 

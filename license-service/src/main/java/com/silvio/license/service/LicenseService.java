@@ -7,7 +7,6 @@ import com.silvio.license.exception.ConflictosConcurrenciaException;
 import com.silvio.license.exception.DevolucionInvalidaException;
 import com.silvio.license.exception.ErrorDevolucionException;
 import com.silvio.license.exception.LicenciaDuplicadaException;
-import com.silvio.license.exception.LicenciaNotFoundException;
 import com.silvio.license.exception.ReduccionCopiasInvalidaException;
 import com.silvio.license.model.License;
 import com.silvio.license.repository.LicenseRepository;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.micrometer.observation.annotation.Observed;
+import java.util.NoSuchElementException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -48,7 +48,7 @@ public class LicenseService {
         License license = licenseRepository.findByLibroId(libroId)
                 .orElseThrow(() -> {
                     log.warn("Licencia no encontrada para libro id: {}", libroId);
-                    return new LicenciaNotFoundException(libroId);
+                    return new NoSuchElementException("No existe licencia para el libro con id: " + libroId);
                 });
         return mapearADto(license);
     }
@@ -104,7 +104,7 @@ public class LicenseService {
     protected LicenseResponseDTO doPrestar(Long libroId) {
         log.info("Descontando copia — libro id: {}", libroId);
         License license = licenseRepository.findByLibroId(libroId)
-                .orElseThrow(() -> new LicenciaNotFoundException(libroId));
+                .orElseThrow(() -> new NoSuchElementException("No existe licencia para el libro con id: " + libroId));
 
         if (license.getCopiasDisponibles() <= 0) {
             log.warn("Sin copias disponibles — libro id: {}", libroId);
@@ -143,7 +143,7 @@ public class LicenseService {
     protected LicenseResponseDTO doDevolver(Long libroId) {
         log.info("Devolviendo copia — libro id: {}", libroId);
         License license = licenseRepository.findByLibroId(libroId)
-                .orElseThrow(() -> new LicenciaNotFoundException(libroId));
+                .orElseThrow(() -> new NoSuchElementException("No existe licencia para el libro con id: " + libroId));
 
         if (license.getCopiasDisponibles() >= license.getTotalCopias()) {
             log.warn("Intento de devolver copia cuando todas están disponibles — libro: {}", libroId);
@@ -162,7 +162,7 @@ public class LicenseService {
         log.info("Actualizando licencia libro id: {}, nuevo total: {}",
                 libroId, request.getTotalCopias());
         License license = licenseRepository.findByLibroId(libroId)
-                .orElseThrow(() -> new LicenciaNotFoundException(libroId));
+                .orElseThrow(() -> new NoSuchElementException("No existe licencia para el libro con id: " + libroId));
 
         int copiasPrestadas = license.getTotalCopias() - license.getCopiasDisponibles();
         if (request.getTotalCopias() < copiasPrestadas) {

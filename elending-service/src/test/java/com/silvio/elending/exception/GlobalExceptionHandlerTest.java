@@ -245,20 +245,6 @@ class GlobalExceptionHandlerTest {
     }
 
     // =========================================================
-    // PrestamoNotFoundException → 404 NOT_FOUND
-    // =========================================================
-
-    @Test
-    void prestamoNoEncontrado_debeRetornar404() {
-        var response = handler.manejarPrestamoNotFound(
-                new PrestamoNotFoundException(99L));
-
-        assertEquals(404, response.getStatusCode().value());
-        assertTrue(response.getBody().get("error").contains("Préstamo no encontrado"));
-        assertTrue(response.getBody().get("error").contains("99"));
-    }
-
-    // =========================================================
     // MethodArgumentTypeMismatchException → 400 BAD_REQUEST
     // =========================================================
 

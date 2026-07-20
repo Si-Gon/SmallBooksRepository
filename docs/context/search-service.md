@@ -1,6 +1,6 @@
 ## Última Actualización
-- Fecha: 2026-07-18
-- Pipeline: M-07 Hotfix — Revertir @SecurityScheme a configuración programática (ASM bug Spring Boot 3.3.11)
+- Fecha: 2026-07-20
+- Pipeline: Z-01 — Limpieza de exception classes zombie (10 clases)
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -33,6 +33,7 @@
 - Agregar dependencia `spring-cloud-starter-circuitbreaker-resilience4j` en pom.xml → Implementado.
 
 ## Historial de Cambios
+- 2026-07-20 — Z-01: Eliminada ErrorConsultaCatalogoException (zombie pura, 0 referencias). Sin cambios en código — nunca fue instanciada.
 - 2026-07-18 — M-07 Hotfix: ASM bug fix. @SecurityScheme eliminado de SwaggerConfig, reemplazado por configuración programática. SwaggerConfigTest migrado a @SpringBootTest. Verificado: 88 tests PASS, JaCoCo OK.
 - 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. SwaggerConfigTest static scan. Import SecuritySchemeType corregido.
 - 2026-07-15 — Feign Client CatalogClient actualizado a `Page<LibroCatalogDTO>` con parámetros page/size/sort. SearchService usa `page.getContent()`. Tests actualizados.

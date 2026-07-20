@@ -1,6 +1,6 @@
 ## Última Actualización
-- Fecha: 2026-07-18
-- Pipeline: M-07 Hotfix — Revertir @SecurityScheme a configuración programática (ASM bug Spring Boot 3.3.11)
+- Fecha: 2026-07-20
+- Pipeline: Z-01 — Limpieza de exception classes zombie (10 clases)
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -25,14 +25,17 @@
 - `@PageableDefault(size=20, sort="id")` para evitar consultas sin límite — default seguro de 20 elementos ordenados por ID.
 - HATEOAS links en `obtenerPorLibroId()`, `crear()` y `actualizar()` usan `Pageable.unpaged()` — Spring HATEOAS solo necesita la firma del método para generar la URL, no ejecuta la consulta real.
 - Los reintentos con optimistic locking (`@Version`) en `prestar()`/`devolver()` se mantienen sin cambios — la paginación solo afecta a `obtenerTodas()`, no a la lógica transaccional.
+- **Z-01: LicenciaNotFoundException reemplazado por java.util.NoSuchElementException** — Se eliminó la clase zombie `LicenciaNotFoundException`. Los throws en `LicenseService` se reemplazaron por `NoSuchElementException`. Alternativa descartada: crear nueva excepción — `NoSuchElementException` es semánticamente correcto para "not found".
 
 ## Criterios de Aceptación Cumplidos
 - Refactorizar `LicenseService.obtenerTodas()` para aceptar `Pageable` y retornar `Page<LicenseResponseDTO>` → Implementado con `findAll(pageable).map(this::mapearADto)`
 - Actualizar `LicenseController.obtenerTodas()` con `@PageableDefault(size=20, sort="id")` retornando `ResponseEntity<Page<LicenseResponseDTO>>` → Implementado con metadatos de paginación y HATEOAS links en contenido
 - Actualizar Swagger `@ApiResponse` para reflejar respuesta paginada → Descripción actualizada a "Lista paginada de licencias obtenida exitosamente"
 - Actualizar tests para usar `Pageable.unpaged()` o `PageRequest.of()` → Tests existentes actualizados y 8 nuevos tests de paginación agregados (4 en service, 4 en controller)
+- **Z-01) Reemplazar LicenciaNotFoundException por NoSuchElementException en LicenseService** → `LicenseService` usa `NoSuchElementException` en lugar de `LicenciaNotFoundException`. Clase zombie eliminada. Tests actualizados. Compilación verificada.
 
 ## Historial de Cambios
+- 2026-07-20 — Z-01: LicenciaNotFoundException eliminada, reemplazada por NoSuchElementException en LicenseService. Tests actualizados. Compilación verificada.
 - 2026-07-18 — M-07 Hotfix: ASM bug fix. @SecurityScheme eliminado de SwaggerConfig, reemplazado por configuración programática. SwaggerConfigTest migrado a @SpringBootTest. Verificado: 97 tests PASS, JaCoCo OK.
 - 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. SwaggerConfigTest static scan. Import SecuritySchemeType corregido.
 - 2026-07-17 — M-07: prestar()/devolver() cambiados a @PatchMapping. @ApiResponse descriptions actualizadas con "PATCH —".

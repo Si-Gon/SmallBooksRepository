@@ -1,6 +1,6 @@
 ## Última Actualización
-- Fecha: 2026-07-18 02:30
-- Pipeline: M-01 IDOR — Validación de acceso en 5 endpoints de 3 microservicios
+- Fecha: 2026-07-20
+- Pipeline: Z-01 — Limpieza de exception classes zombie (10 clases)
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -54,6 +54,7 @@
 - **C-01: Mantener comentarios en español consistentes** → Comentarios y descripciones OpenAPI actualizados.
 
 ## Historial de Cambios
+- 2026-07-20 — Z-01: Eliminada PrestamoNotFoundException (zombie pura, 0 referencias en producción). Verificación grep: sin throw new ni imports.
 - 2026-07-18 — M-01 IDOR: Agregada validación de acceso en endpoint `GET /api/lending/prestamos/historial/{usuarioId}`. Helper `validarAccesoUsuario()` con admin bypass. Tests IDOR con 4 escenarios (4 tests). Tests: 23 controller tests PASS.
 - 2026-07-18 — Verificación de compilación: se confirmó que NO existen errores de compilación en elending-service. Los reportes previos (M-05, M-07, H-01/H-02/H-03) fueron falsos positivos del bug de ASM en Spring Boot 3.3.11. mvn compile → BUILD SUCCESS (37 source files), mvn test → BUILD SUCCESS (273 tests, 0 failures, 0 errors, 1 skipped).
 - 2026-07-18 — M-07 Hotfix: ASM bug fix. @SecurityScheme eliminado de SwaggerConfig, reemplazado por configuración programática. SwaggerConfigTest migrado a @SpringBootTest. Verificado: 273 tests PASS (1 skip pre-existente), JaCoCo OK.

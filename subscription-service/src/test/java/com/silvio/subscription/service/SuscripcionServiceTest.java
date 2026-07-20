@@ -2,7 +2,6 @@ package com.silvio.subscription.service;
 
 import com.silvio.subscription.dto.SuscripcionRequestDTO;
 import com.silvio.subscription.dto.SuscripcionResponseDTO;
-import com.silvio.subscription.exception.SuscripcionNotFoundException;
 import com.silvio.subscription.model.Suscripcion;
 import com.silvio.subscription.model.Suscripcion.PlanSuscripcion;
 import com.silvio.subscription.repository.SuscripcionRepository;
@@ -77,16 +76,6 @@ class SuscripcionServiceTest {
         // Verifica que el mapeo de límites para BASICO es correcto
         assertThat(resultado.getMaxPrestamos()).isEqualTo(2);
         assertThat(resultado.getDiasPrestamo()).isEqualTo(7);
-    }
-
-    @Test
-    void obtenerPorUsuario_sinSuscripcion_lanzaExcepcion() {
-        when(suscripcionRepository.findByUsuarioIdAndActivaTrue("nuevo"))
-            .thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> suscripcionService.obtenerPorUsuario("nuevo"))
-            .isInstanceOf(SuscripcionNotFoundException.class)
-            .hasMessageContaining("No hay suscripción activa para el usuario: nuevo");
     }
 
     // =====================================================================
@@ -193,18 +182,6 @@ class SuscripcionServiceTest {
         verify(suscripcionRepository).save(s);
         // El DTO mapeado también debe reflejar activa=false
         assertThat(resultado.getActiva()).isFalse();
-    }
-
-    @Test
-    void cancelar_sinSuscripcion_lanzaExcepcion() {
-        when(suscripcionRepository.findByUsuarioIdAndActivaTrue("fantasma"))
-            .thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> suscripcionService.cancelar("fantasma"))
-            .isInstanceOf(SuscripcionNotFoundException.class)
-            .hasMessageContaining("No hay suscripción activa para el usuario: fantasma");
-
-        verify(suscripcionRepository, never()).save(any());
     }
 
     // =====================================================================

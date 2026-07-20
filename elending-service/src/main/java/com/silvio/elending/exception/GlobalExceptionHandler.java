@@ -105,15 +105,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error); // 500
     }
 
-    // Préstamo no encontrado por ID
-    @ExceptionHandler(PrestamoNotFoundException.class)
-    public ResponseEntity<Map<String, String>> manejarPrestamoNotFound(
-            PrestamoNotFoundException ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error); // 404
-    }
-
     // Acceso denegado — IDOR: X-User-Id no coincide con {usuarioId}
     @ExceptionHandler(AccesoDenegadoException.class)
     public ResponseEntity<Map<String, String>> manejarAccesoDenegado(
