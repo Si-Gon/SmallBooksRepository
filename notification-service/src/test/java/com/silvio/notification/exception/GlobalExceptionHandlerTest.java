@@ -16,6 +16,7 @@ import jakarta.validation.Path;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -146,6 +147,23 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(403, response.getStatusCode().value());
         assertTrue(response.getBody().get("error").contains("Acceso denegado"));
+    }
+
+    // =========================================================
+    // NoSuchElementException → 404 NOT_FOUND
+    // =========================================================
+
+    @Test
+    void noSuchElement_debeRetornar404() {
+        // Given: un NoSuchElementException con mensaje descriptivo
+        NoSuchElementException ex = new NoSuchElementException("Notificación no encontrada");
+
+        // When: se maneja la excepción
+        ResponseEntity<Map<String, String>> response = handler.manejarNoEncontrado(ex);
+
+        // Then: responde 404 NOT_FOUND con el mensaje de la excepción
+        assertEquals(404, response.getStatusCode().value());
+        assertTrue(response.getBody().get("error").contains("Notificación no encontrada"));
     }
 
     // =========================================================

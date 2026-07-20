@@ -1,6 +1,6 @@
 ## Última Actualización
 - Fecha: 2026-07-20
-- Pipeline: Z-01 — Limpieza de exception classes zombie (10 clases)
+- Pipeline: M-10 — NoSuchElementException → 404 NOT_FOUND en GlobalExceptionHandler
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -28,6 +28,7 @@
 - `obtenerBytes()` y `eliminar()` siguen usando `findByLibroId()` — Es correcto: necesitan la entidad completa para acceder a `rutaOClave` y al BLOB. La carga perezosa del blob es segura vía Hibernate.
 - `rutaOClave` está en la proyección pero no en el DTO — Por diseño, es un detalle interno de infraestructura que no debe exponerse al cliente.
 - **Z-01: ArchivoNoEncontradoException reemplazado por java.util.NoSuchElementException** — Se eliminó la clase zombie `ArchivoNoEncontradoException`. Los throws en `IngestionService` se reemplazaron por `NoSuchElementException`. Alternativa descartada: mantener la exception personalizada — no se lanzaba desde producción consistente.
+- **M-10: @ExceptionHandler(NoSuchElementException.class) → 404 NOT_FOUND** — Se agregó handler en GlobalExceptionHandler para capturar `NoSuchElementException` (lanzado por `Optional.orElseThrow()`) y retornar 404 en lugar de 500. Sigue exactamente el patrón de subscription-service. Test unitario en GlobalExceptionHandlerTest verifica NoSuchElementException → 404. Alternativa descartada: usar ResponseEntityExceptionHandler — más complejo sin beneficio para un caso simple.
 
 ## Criterios de Aceptación Cumplidos
 - Agregar `@Basic(fetch = FetchType.LAZY)` al campo `datos` → Ya estaba presente en `ArchivoLibro.java:42-45`. Verificado.
@@ -36,8 +37,10 @@
 - Refactorizar `obtenerInfo()` para usar la proyección → Ya estaba refactorizado en `IngestionService.java:78-86`. Verificado.
 - Tests actualizados para verificar que `obtenerInfo()` usa la proyección y no `findByLibroId()` → 54 tests, 0 fallos. Verificado.
 - **Z-01) Reemplazar ArchivoNoEncontradoException por NoSuchElementException en IngestionService** → `IngestionService` usa `NoSuchElementException` en lugar de `ArchivoNoEncontradoException`. Clase zombie eliminada. Tests de service y controller actualizados. Compilación verificada.
+- **M-10) NoSuchElementException → 404 NOT_FOUND en GlobalExceptionHandler** → Handler `@ExceptionHandler(NoSuchElementException.class)` retorna 404 con mensaje descriptivo. Test `noSuchElement_debeRetornar404()` en GlobalExceptionHandlerTest verifica 404. Build: 57 tests PASS.
 
 ## Historial de Cambios
+- 2026-07-20 — M-10: @ExceptionHandler(NoSuchElementException.class) → 404 NOT_FOUND verificado. Handler y test ya implementados. 57 tests PASS.
 - 2026-07-20 — Z-01: ArchivoNoEncontradoException eliminada, reemplazada por NoSuchElementException en IngestionService. Tests actualizados (service + controller). Compilación verificada.
 - 2026-07-18 — M-07 Hotfix: ASM bug fix. @SecurityScheme eliminado de SwaggerConfig, reemplazado por configuración programática. SwaggerConfigTest migrado a @SpringBootTest. Verificado: 64 tests PASS (1 skip pre-existente), JaCoCo OK.
 - 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. SwaggerConfigTest static scan. Import SecuritySchemeType corregido.

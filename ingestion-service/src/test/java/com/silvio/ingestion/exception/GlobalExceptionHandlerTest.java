@@ -13,6 +13,7 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -154,6 +155,23 @@ class GlobalExceptionHandlerTest {
         assertTrue(response.getBody().containsKey("id"));
         assertEquals("El ID debe ser un número positivo", response.getBody().get("id"));
         assertEquals("ERR-400", response.getBody().get("codigo"));
+    }
+
+    // =========================================================
+    // NoSuchElementException → 404 NOT_FOUND
+    // =========================================================
+
+    @Test
+    void noSuchElement_debeRetornar404() {
+        // Given: un NoSuchElementException con mensaje descriptivo
+        NoSuchElementException ex = new NoSuchElementException("Recurso no encontrado en ingestion");
+
+        // When: se maneja la excepción
+        ResponseEntity<Map<String, String>> response = handler.manejarNoEncontrado(ex);
+
+        // Then: responde 404 NOT_FOUND con el mensaje de la excepción
+        assertEquals(404, response.getStatusCode().value());
+        assertTrue(response.getBody().get("error").contains("Recurso no encontrado en ingestion"));
     }
 
     // =========================================================

@@ -1,6 +1,6 @@
 ## Última Actualización
 - Fecha: 2026-07-20
-- Pipeline: Z-01 — Limpieza de exception classes zombie (10 clases)
+- Pipeline: M-10 — NoSuchElementException → 404 NOT_FOUND en GlobalExceptionHandler
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -36,6 +36,7 @@
 - **C-02 (key derivation): UTF-8 en derivación de clave HMAC** — `JwtUtil.getSigningKey()` usa `jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8)` en lugar de `getBytes()` con charset por defecto. Esto garantiza que la misma cadena de secreto produzca la misma clave criptográfica en Windows (Cp1252 por defecto) y Linux (UTF-8). Alternativa descartada: mantener charset por defecto — rompe la validación cross-plataforma del JWT.
 - **H-02: Optional en createPasswordResetToken** — Se cambió `findByUsername().orElseThrow()` a uso directo de Optional con `isEmpty()` check. Si usuario no existe, retorna null sin excepción. AuthController retorna siempre 200 OK con mensaje `"Si el usuario existe, recibirá instrucciones de recuperación."` sin revelar existencia del usuario. Alternativa descartada: lanzar excepción y capturar en controller — revelaría información al cliente.
 - **Z-01: UsuarioNotFoundException reemplazado por java.util.NoSuchElementException** — Se eliminó la clase zombie `UsuarioNotFoundException` (sin throw new en producción). Los throws en `UserService` se reemplazaron por `NoSuchElementException` con mensaje descriptivo. Alternativa descartada: crear nueva excepción personalizada — usar stdlib reduce código muerto futuro.
+- **M-10: @ExceptionHandler(NoSuchElementException.class) → 404 NOT_FOUND** — Se agregó handler en GlobalExceptionHandler para capturar `NoSuchElementException` (lanzado por `Optional.orElseThrow()`) y retornar 404 en lugar de 500. Sigue exactamente el patrón de subscription-service. Test unitario en GlobalExceptionHandlerTest verifica NoSuchElementException → 404. Alternativa descartada: usar ResponseEntityExceptionHandler — más complejo sin beneficio para un caso simple.
 - **H-01: Null-check/blank-check en JwtAuthenticationFilter** — Antes de `rolesStr.split(",")`, se valida null y blank. Si null/blank → `Collections.emptyList()`. Si tiene contenido → split con `filter(!blank)` y map a `SimpleGrantedAuthority`. Import `java.util.Collections` agregado. Alternativa descartada: usar Optional.ofNullable — más verboso sin beneficio real.
 
 ## Criterios de Aceptación Cumplidos
@@ -47,8 +48,10 @@
 - **H-02)** `createPasswordResetToken()` retorna null si usuario no existe → Implementado con Optional. `forgotPassword()` retorna siempre 200 OK con mensaje genérico idéntico. Tests actualizados y nuevos agregados.
 - **H-01)** `JwtAuthenticationFilter` maneja roles null/blank sin NPE → Implementado con null-check + blank-check antes del split. `Collections.emptyList()` para casos vacíos. 3 tests unitarios creados en `JwtAuthenticationFilterTest`.
 - **Z-01) Reemplazar UsuarioNotFoundException por NoSuchElementException** → `UserService` ya no lanza `UsuarioNotFoundException`. Usa `NoSuchElementException` con mensaje descriptivo. Clase zombie eliminada del filesystem. Tests actualizados. Compilación verificada.
+- **M-10) NoSuchElementException → 404 NOT_FOUND en GlobalExceptionHandler** → Handler `@ExceptionHandler(NoSuchElementException.class)` retorna 404 con mensaje descriptivo. Test `noSuchElement_debeRetornar404()` en GlobalExceptionHandlerTest verifica 404. Build: 183 tests PASS.
 
 ## Historial de Cambios
+- 2026-07-20 — M-10: @ExceptionHandler(NoSuchElementException.class) → 404 NOT_FOUND verificado. Handler y test ya implementados. 183 tests PASS.
 - 2026-07-20 — Z-01: UsuarioNotFoundException eliminada, reemplazada por NoSuchElementException en UserService. Tests actualizados. Compilación verificada.
 - 2026-07-18 — M-07 Hotfix: ASM bug fix. @SecurityScheme eliminado de SwaggerConfig, reemplazado por configuración programática. SwaggerConfigTest migrado a @SpringBootTest. Verificado: 186 tests PASS, JaCoCo OK.
 - 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. Import SecuritySchemeType corregido. SwaggerConfigTest static scan. Endpoints públicos excluidos de @SecurityRequirement.

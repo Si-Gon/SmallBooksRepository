@@ -1,6 +1,6 @@
 ## Última Actualización
 - Fecha: 2026-07-20
-- Pipeline: Z-01 — Limpieza de exception classes zombie (10 clases)
+- Pipeline: M-10 — NoSuchElementException → 404 NOT_FOUND en GlobalExceptionHandler
 
 ## Estado Actual del Servicio
 - Clases principales:
@@ -26,6 +26,7 @@
 - HATEOAS links en `obtenerPorLibroId()`, `crear()` y `actualizar()` usan `Pageable.unpaged()` — Spring HATEOAS solo necesita la firma del método para generar la URL, no ejecuta la consulta real.
 - Los reintentos con optimistic locking (`@Version`) en `prestar()`/`devolver()` se mantienen sin cambios — la paginación solo afecta a `obtenerTodas()`, no a la lógica transaccional.
 - **Z-01: LicenciaNotFoundException reemplazado por java.util.NoSuchElementException** — Se eliminó la clase zombie `LicenciaNotFoundException`. Los throws en `LicenseService` se reemplazaron por `NoSuchElementException`. Alternativa descartada: crear nueva excepción — `NoSuchElementException` es semánticamente correcto para "not found".
+- **M-10: @ExceptionHandler(NoSuchElementException.class) → 404 NOT_FOUND** — Se agregó handler en GlobalExceptionHandler para capturar `NoSuchElementException` (lanzado por `Optional.orElseThrow()`) y retornar 404 en lugar de 500. Sigue exactamente el patrón de subscription-service. Test unitario en GlobalExceptionHandlerTest verifica NoSuchElementException → 404. Alternativa descartada: usar ResponseEntityExceptionHandler — más complejo sin beneficio para un caso simple.
 
 ## Criterios de Aceptación Cumplidos
 - Refactorizar `LicenseService.obtenerTodas()` para aceptar `Pageable` y retornar `Page<LicenseResponseDTO>` → Implementado con `findAll(pageable).map(this::mapearADto)`
@@ -33,8 +34,10 @@
 - Actualizar Swagger `@ApiResponse` para reflejar respuesta paginada → Descripción actualizada a "Lista paginada de licencias obtenida exitosamente"
 - Actualizar tests para usar `Pageable.unpaged()` o `PageRequest.of()` → Tests existentes actualizados y 8 nuevos tests de paginación agregados (4 en service, 4 en controller)
 - **Z-01) Reemplazar LicenciaNotFoundException por NoSuchElementException en LicenseService** → `LicenseService` usa `NoSuchElementException` en lugar de `LicenciaNotFoundException`. Clase zombie eliminada. Tests actualizados. Compilación verificada.
+- **M-10) NoSuchElementException → 404 NOT_FOUND en GlobalExceptionHandler** → Handler `@ExceptionHandler(NoSuchElementException.class)` retorna 404 con mensaje descriptivo. Test `noSuchElement_debeRetornar404()` en GlobalExceptionHandlerTest verifica 404. Build: 91 tests PASS.
 
 ## Historial de Cambios
+- 2026-07-20 — M-10: @ExceptionHandler(NoSuchElementException.class) → 404 NOT_FOUND verificado. Handler y test ya implementados. 91 tests PASS.
 - 2026-07-20 — Z-01: LicenciaNotFoundException eliminada, reemplazada por NoSuchElementException en LicenseService. Tests actualizados. Compilación verificada.
 - 2026-07-18 — M-07 Hotfix: ASM bug fix. @SecurityScheme eliminado de SwaggerConfig, reemplazado por configuración programática. SwaggerConfigTest migrado a @SpringBootTest. Verificado: 97 tests PASS, JaCoCo OK.
 - 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. SwaggerConfigTest static scan. Import SecuritySchemeType corregido.
