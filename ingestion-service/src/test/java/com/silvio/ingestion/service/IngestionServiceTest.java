@@ -49,6 +49,18 @@ class IngestionServiceTest {
     @InjectMocks
     private IngestionService ingestionService;
 
+    // Bytes con magic bytes correctos para pruebas
+    private static final byte[] PDF_MAGIC_BYTES = new byte[] {0x25, 0x50, 0x44, 0x46, 0x2D, 0x31, 0x2E, 0x34};
+    private static final byte[] EPUB_MAGIC_BYTES = new byte[] {0x50, 0x4B, 0x03, 0x04, 0x14, 0x00, 0x00, 0x00};
+    private static final byte[] BYTES_INVALIDOS = "Contenido malicioso".getBytes();
+    // Bytes con solo los 4 bytes mágicos exactos (límite inferior — tamaño mínimo válido)
+    private static final byte[] PDF_MAGIC_EXACTO = new byte[] {0x25, 0x50, 0x44, 0x46};
+    private static final byte[] EPUB_MAGIC_EXACTO = new byte[] {0x50, 0x4B, 0x03, 0x04};
+    // 3 bytes — está por debajo del umbral de 4
+    private static final byte[] TRES_BYTES = new byte[] {0x25, 0x50, 0x44};
+    // Firma real de PNG (otro formato renombrado maliciosamente)
+    private static final byte[] PNG_MAGIC_BYTES = new byte[] {(byte)0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
+
     private ArchivoLibro archivoEntity(Long libroId) {
         ArchivoLibro a = new ArchivoLibro();
         a.setId(10L);
@@ -83,7 +95,7 @@ class IngestionServiceTest {
     void subirArchivo_formatoPDF_debeGuardarYRetornarDTO() {
         // MockMultipartFile simula un archivo PDF subido por formulario HTTP
         MockMultipartFile archivo = new MockMultipartFile(
-            "archivo", "libro.pdf", "application/pdf", "contenido pdf".getBytes());
+            "archivo", "libro.pdf", "application/pdf", PDF_MAGIC_BYTES);
 
         when(archivoRepository.findByLibroId(1L)).thenReturn(Optional.empty());
         when(storageService.guardar(archivo, 1L)).thenReturn("db:1");
@@ -106,7 +118,7 @@ class IngestionServiceTest {
     @Test
     void subirArchivo_formatoEPUB_debeGuardarYRetornarDTO() {
         MockMultipartFile archivo = new MockMultipartFile(
-            "archivo", "libro.epub", "application/epub+zip", "contenido epub".getBytes());
+            "archivo", "libro.epub", "application/epub+zip", EPUB_MAGIC_BYTES);
 
         when(archivoRepository.findByLibroId(2L)).thenReturn(Optional.empty());
         when(storageService.guardar(archivo, 2L)).thenReturn("db:2");
@@ -148,7 +160,7 @@ class IngestionServiceTest {
     @Test
     void subirArchivo_archivoYaExiste_debeReemplazarElAnterior() {
         MockMultipartFile archivo = new MockMultipartFile(
-            "archivo", "nuevo.pdf", "application/pdf", "nuevo contenido".getBytes());
+            "archivo", "nuevo.pdf", "application/pdf", PDF_MAGIC_BYTES);
 
         ArchivoLibro existente = archivoEntity(1L);
         when(archivoRepository.findByLibroId(1L)).thenReturn(Optional.of(existente));
@@ -272,7 +284,7 @@ class IngestionServiceTest {
 
         // Nuevo archivo con metadatos distintos
         MockMultipartFile nuevoArchivo = new MockMultipartFile(
-            "archivo", "nueva_edicion.pdf", "application/pdf", "nuevo contenido".getBytes());
+            "archivo", "nueva_edicion.pdf", "application/pdf", PDF_MAGIC_BYTES);
 
         when(storageService.guardar(nuevoArchivo, 1L)).thenReturn("db:nuevo");
         when(archivoRepository.save(any())).thenAnswer(inv -> {
@@ -321,5 +333,194 @@ class IngestionServiceTest {
         // Verify: repository.delete NUNCA debe llamarse si storage falla
         // (la transacción de Spring debe hacer rollback automático)
         verify(archivoRepository, never()).delete(any());
+    }
+
+    // =====================================================================
+    // subirArchivo() — validación de magic bytes
+    // =====================================================================
+
+    @Test
+    void subirArchivo_pdfConMagicBytesCorrectos_debePasarValidacion() {
+        // Given: archivo PDF con contenido real que comienza con %PDF
+        MockMultipartFile archivo = new MockMultipartFile(
+                "archivo", "libro.pdf", "application/pdf", PDF_MAGIC_BYTES);
+
+        when(archivoRepository.findByLibroId(1L)).thenReturn(Optional.empty());
+        when(storageService.guardar(archivo, 1L)).thenReturn("db:1");
+        when(archivoRepository.save(any())).thenAnswer(inv -> {
+            ArchivoLibro a = inv.getArgument(0);
+            a.setId(1L);
+            return a;
+        });
+
+        // When
+        ArchivoLibroDTO resultado = ingestionService.subirArchivo(1L, archivo);
+
+        // Then: debe pasar validación y guardar
+        assertThat(resultado.getFormato()).isEqualTo("PDF");
+        verify(archivoRepository).save(any(ArchivoLibro.class));
+    }
+
+    @Test
+    void subirArchivo_epubConMagicBytesCorrectos_debePasarValidacion() {
+        // Given: archivo EPUB con contenido real que comienza con PK\x03\x04
+        MockMultipartFile archivo = new MockMultipartFile(
+                "archivo", "libro.epub", "application/epub+zip", EPUB_MAGIC_BYTES);
+
+        when(archivoRepository.findByLibroId(2L)).thenReturn(Optional.empty());
+        when(storageService.guardar(archivo, 2L)).thenReturn("db:2");
+        when(archivoRepository.save(any())).thenAnswer(inv -> {
+            ArchivoLibro a = inv.getArgument(0);
+            a.setId(2L);
+            return a;
+        });
+
+        // When
+        ArchivoLibroDTO resultado = ingestionService.subirArchivo(2L, archivo);
+
+        // Then: debe pasar validación y guardar
+        assertThat(resultado.getFormato()).isEqualTo("EPUB");
+        verify(archivoRepository).save(any(ArchivoLibro.class));
+    }
+
+    @Test
+    void subirArchivo_pdfExtensionPeroContenidoFalso_lanzaFormatoNoPermitido() {
+        // Given: archivo con extensión .pdf pero contenido que no comienza con %PDF
+        MockMultipartFile archivo = new MockMultipartFile(
+                "archivo", "malicioso.pdf", "application/pdf", BYTES_INVALIDOS);
+
+        when(archivoRepository.findByLibroId(1L)).thenReturn(Optional.empty());
+        when(storageService.guardar(archivo, 1L)).thenReturn("db:1");
+
+        // When / Then: debe lanzar excepción por magic bytes inválidos
+        assertThatThrownBy(() -> ingestionService.subirArchivo(1L, archivo))
+                .isInstanceOf(FormatoNoPermitidoException.class)
+                .hasMessageContaining("bytes mágicos");
+
+        // No debe persistir en BD (storageService.guardar sí se llamó antes de validar bytes)
+        verify(archivoRepository, never()).save(any());
+        verify(storageService).guardar(archivo, 1L);
+    }
+
+    @Test
+    void subirArchivo_epubExtensionPeroContenidoFalso_lanzaFormatoNoPermitido() {
+        // Given: archivo con extensión .epub pero contenido que no comienza con ZIP
+        MockMultipartFile archivo = new MockMultipartFile(
+                "archivo", "malicioso.epub", "application/epub+zip", BYTES_INVALIDOS);
+
+        when(archivoRepository.findByLibroId(2L)).thenReturn(Optional.empty());
+        when(storageService.guardar(archivo, 2L)).thenReturn("db:2");
+
+        // When / Then: debe lanzar excepción por magic bytes inválidos
+        assertThatThrownBy(() -> ingestionService.subirArchivo(2L, archivo))
+                .isInstanceOf(FormatoNoPermitidoException.class)
+                .hasMessageContaining("bytes mágicos");
+
+        // No debe persistir en BD (storageService.guardar sí se llamó antes de validar bytes)
+        verify(archivoRepository, never()).save(any());
+        verify(storageService).guardar(archivo, 2L);
+    }
+
+    @Test
+    void subirArchivo_archivoVacio_lanzaFormatoNoPermitido() {
+        // Given: archivo vacío (sin contenido)
+        MockMultipartFile archivo = new MockMultipartFile(
+                "archivo", "vacio.pdf", "application/pdf", new byte[0]);
+
+        when(archivoRepository.findByLibroId(1L)).thenReturn(Optional.empty());
+        when(storageService.guardar(archivo, 1L)).thenReturn("db:1");
+
+        // When / Then: debe lanzar excepción por archivo vacío
+        assertThatThrownBy(() -> ingestionService.subirArchivo(1L, archivo))
+                .isInstanceOf(FormatoNoPermitidoException.class)
+                .hasMessageContaining("vacío");
+
+        // No debe persistir en BD (storageService.guardar sí se llamó antes de validar bytes)
+        verify(archivoRepository, never()).save(any());
+        verify(storageService).guardar(archivo, 1L);
+    }
+
+    @Test
+    void subirArchivo_pdfMagicBytesExactos4Bytes_debePasarValidacion() {
+        // Given: archivo PDF con exactamente 4 bytes (el mínimo necesario para validar)
+        MockMultipartFile archivo = new MockMultipartFile(
+                "archivo", "minimo.pdf", "application/pdf", PDF_MAGIC_EXACTO);
+
+        when(archivoRepository.findByLibroId(1L)).thenReturn(Optional.empty());
+        when(storageService.guardar(archivo, 1L)).thenReturn("db:1");
+        when(archivoRepository.save(any())).thenAnswer(inv -> {
+            ArchivoLibro a = inv.getArgument(0);
+            a.setId(1L);
+            return a;
+        });
+
+        // When
+        ArchivoLibroDTO resultado = ingestionService.subirArchivo(1L, archivo);
+
+        // Then: debe pasar validación y guardar
+        assertThat(resultado.getFormato()).isEqualTo("PDF");
+        assertThat(resultado.getTamanio()).isEqualTo(4L);
+        verify(archivoRepository).save(any(ArchivoLibro.class));
+    }
+
+    @Test
+    void subirArchivo_epubMagicBytesExactos4Bytes_debePasarValidacion() {
+        // Given: archivo EPUB con exactamente 4 bytes (el mínimo necesario para validar)
+        MockMultipartFile archivo = new MockMultipartFile(
+                "archivo", "minimo.epub", "application/epub+zip", EPUB_MAGIC_EXACTO);
+
+        when(archivoRepository.findByLibroId(2L)).thenReturn(Optional.empty());
+        when(storageService.guardar(archivo, 2L)).thenReturn("db:2");
+        when(archivoRepository.save(any())).thenAnswer(inv -> {
+            ArchivoLibro a = inv.getArgument(0);
+            a.setId(2L);
+            return a;
+        });
+
+        // When
+        ArchivoLibroDTO resultado = ingestionService.subirArchivo(2L, archivo);
+
+        // Then: debe pasar validación y guardar
+        assertThat(resultado.getFormato()).isEqualTo("EPUB");
+        assertThat(resultado.getTamanio()).isEqualTo(4L);
+        verify(archivoRepository).save(any(ArchivoLibro.class));
+    }
+
+    @Test
+    void subirArchivo_archivoCon3Bytes_lanzaFormatoNoPermitido() {
+        // Given: archivo con extensión .pdf pero solo 3 bytes (insuficientes para validar)
+        MockMultipartFile archivo = new MockMultipartFile(
+                "archivo", "corto.pdf", "application/pdf", TRES_BYTES);
+
+        when(archivoRepository.findByLibroId(1L)).thenReturn(Optional.empty());
+        when(storageService.guardar(archivo, 1L)).thenReturn("db:1");
+
+        // When / Then: debe lanzar excepción por archivo demasiado pequeño
+        assertThatThrownBy(() -> ingestionService.subirArchivo(1L, archivo))
+                .isInstanceOf(FormatoNoPermitidoException.class)
+                .hasMessageContaining("demasiado pequeño");
+
+        // No debe persistir en BD
+        verify(archivoRepository, never()).save(any());
+        verify(storageService).guardar(archivo, 1L);
+    }
+
+    @Test
+    void subirArchivo_pngRenombradoAPdf_lanzaFormatoNoPermitido() {
+        // Given: archivo con firma PNG real (0x89PNG...) pero extensión .pdf
+        MockMultipartFile archivo = new MockMultipartFile(
+                "archivo", "imagen.png.pdf", "application/pdf", PNG_MAGIC_BYTES);
+
+        when(archivoRepository.findByLibroId(1L)).thenReturn(Optional.empty());
+        when(storageService.guardar(archivo, 1L)).thenReturn("db:1");
+
+        // When / Then: debe lanzar excepción porque los primeros 4 bytes no son %PDF
+        assertThatThrownBy(() -> ingestionService.subirArchivo(1L, archivo))
+                .isInstanceOf(FormatoNoPermitidoException.class)
+                .hasMessageContaining("bytes mágicos");
+
+        // No debe persistir en BD
+        verify(archivoRepository, never()).save(any());
+        verify(storageService).guardar(archivo, 1L);
     }
 }

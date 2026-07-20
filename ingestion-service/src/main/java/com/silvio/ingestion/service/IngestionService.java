@@ -34,6 +34,10 @@ public class IngestionService {
             "application/epub+zip"
     );
 
+    // Magic bytes para validación de contenido real del archivo
+    private static final byte[] PDF_MAGIC = {0x25, 0x50, 0x44, 0x46}; // %PDF
+    private static final byte[] EPUB_MAGIC = {0x50, 0x4B, 0x03, 0x04}; // ZIP signature (EPUB)
+
     @Observed(name = "ingestion.subirArchivo")
     @Transactional
     public ArchivoLibroDTO subirArchivo(Long libroId, MultipartFile archivo) {
@@ -63,8 +67,10 @@ public class IngestionService {
         archivoLibro.setRutaOClave(rutaOClave);
         archivoLibro.setFechaSubida(LocalDateTime.now());
         try {
-            archivoLibro.setDatos(archivo.getBytes());
-            } catch (IOException e) {
+            byte[] bytes = archivo.getBytes();
+            validarMagicBytes(bytes, formato);
+            archivoLibro.setDatos(bytes);
+        } catch (IOException e) {
             throw new ErrorLecturaArchivoException(e.getMessage());
         }
 
@@ -105,6 +111,21 @@ public class IngestionService {
         storageService.eliminar(archivo.getRutaOClave());
         archivoRepository.delete(archivo);
         log.info("Archivo eliminado exitosamente para libro id: {}", libroId);
+    }
+
+    // Valida que los primeros bytes del archivo coincidan con el formato declarado
+    private void validarMagicBytes(byte[] bytes, String formato) {
+        if (bytes == null || bytes.length < 4) {
+            throw new FormatoNoPermitidoException(
+                    "archivo vacío o demasiado pequeño — no tiene formato " + formato);
+        }
+        byte[] expected = "PDF".equals(formato) ? PDF_MAGIC : EPUB_MAGIC;
+        for (int i = 0; i < 4; i++) {
+            if (bytes[i] != expected[i]) {
+                throw new FormatoNoPermitidoException(
+                        "Los bytes mágicos no corresponden a " + formato);
+            }
+        }
     }
 
     private ArchivoLibroDTO mapearADto(ArchivoLibro archivo) {
