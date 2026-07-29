@@ -1,8 +1,9 @@
 ## Última Actualización
-- Fecha: 2026-07-18
-- Pipeline: M-02 — Agregar RBAC a catalog-service (solo ROLE_ADMIN puede crear/actualizar/eliminar libros)
+- Fecha: 2026-07-29
+- Pipeline: AC-01 — Actuator: management.endpoints.web.exposure.include: health (ya tenía spring-boot-starter-actuator)
 
 ## Estado Actual del Servicio
+- spring-boot-starter-actuator (ya existía). management.endpoints.web.exposure.include: health — expone /actuator/health.
 - Clases principales:
   - `Libro` (com.silvio.catalog.model) — Entidad JPA que mapea la tabla `libros`. Contiene: id, titulo, autor, isbn, editorial, anioPublicacion, idioma, genero, sinopsis, portadaUrl, disponible.
   - `LibroRepository` (com.silvio.catalog.repository) — Interface Spring Data JPA. Sus métodos devuelven `List<Libro>` excepto `findAll(Pageable)` que retorna `Page<Libro>`.
@@ -65,3 +66,4 @@
 - 2026-07-15 — Creación de V3__agregar_indices_tabla_libros.sql con 5 índices sobre tabla `libros` para optimizar consultas del catálogo
 - 2026-07-15 19:38 — Paginación en `GET /api/catalog`: `obtenerTodos()` refactorizado para aceptar `Pageable`, controller con `@PageableDefault(size=20, sort="titulo")`, Swagger actualizado, +7 tests de paginación agregados
 - 2026-07-17 — H-03: @Transactional agregado a 4 métodos de escritura (agregar, actualizar, cambiarDisponibilidad, eliminar). +4 tests de rollback en CatalogServiceTest. Total tests: 43, 0 fallos.
+- 2026-07-29 — AC-01: management.endpoints.web.exposure.include: health agregado (spring-boot-starter-actuator ya existía del pipeline M-02).

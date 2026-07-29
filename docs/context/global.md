@@ -1,8 +1,10 @@
 ## Última Actualización
-- Fecha: 2026-07-20 19:22
-- Pipeline: L-01, L-02, L-03 — Limpieza de dependencias Maven en root pom.xml
+- Fecha: 2026-07-29
+- Pipeline: AC-01 — Agregar spring-boot-starter-actuator a los 8 microservicios que faltaban
 
 ## Estado Actual del Proyecto
+- **spring-boot-starter-actuator**: Ahora los 13 servicios tienen la dependencia. Antes solo 5 (eureka, config, gateway, catalog, notification). Se agrego a analytics, content, elending, identity-services, ingestion, license, search, subscription. Todos exponen /actuator/health via management.endpoints.web.exposure.include: health.
+- **Trazabilidad Feign**: spring.cloud.openfeign.micrometer.enabled=true + TracePropagationInterceptor implementado en los 4 servicios con FeignClients (analytics, content, elending, search). Ahora las llamadas Feign propagan headers B3 para trazabilidad fin-a-fin en Zipkin.
 - **docs/01-arquitectura-general.md**: Documento de arquitectura general actualizado con estado real del proyecto.
 - **groupId Maven**: Todos los 10 microservicios de negocio estandarizados a `com.silvio`.
 - **Resilience4j Circuit Breaker**: Implementado en los 10 microservicios de negocio con patrón FallbackFactory.
@@ -36,3 +38,5 @@
 - 2026-07-20 — M-06: docs/01-arquitectura-general.md actualizado (secciones 9, 9.1, 9.2, Observabilidad y Resiliencia, 11, 12). Items de Circuit Breaker, IDs de correlación y trazabilidad cambiados de "pendiente" a "Implementado".
 - 2026-07-20 — M-09: groupId estandarizado a `com.silvio` en 5 servicios: catalog-service, elending-service, license-service, notification-service, subscription-service.
 - 2026-07-20 — L-01, L-02, L-03: Limpieza de dependencias Maven en root pom.xml. `spring-boot-starter-hateoas`, `micrometer-observation-test` y `springdoc-openapi-starter-webmvc-ui` movidos de `<dependencies>` globales a `<dependencyManagement>`. Gateway añade `springdoc-openapi-starter-webflux-ui`. 10 microservicios de negocio declaran HATEOAS + webmvc-ui explícitamente. Compilación y tests verificados (14 módulos).
+- 2026-07-29 — AC-01: spring-boot-starter-actuator agregado a analytics, content, elending, identity-services, ingestion, license, search, subscription (8 servicios). management.endpoints.web.exposure.include: health agregado a los 10 servicios que no lo tenian.
+- 2026-07-29 — AC-03: Trazabilidad real Feign. micrometer.enabled=true + TracePropagationInterceptor en analytics, content, elending, search. Propagacion de headers B3.

@@ -1,8 +1,9 @@
 ## Última Actualización
-- Fecha: 2026-07-20
-- Pipeline: Z-01 — Limpieza de exception classes zombie (10 clases)
+- Fecha: 2026-07-29
+- Pipeline: AC-01 — Actuator
 
 ## Estado Actual del Servicio
+- spring-boot-starter-actuator agregado. Expone /actuator/health.
 - Clases principales:
   - `SuscripcionController` — REST controller para operaciones de suscripción. Identifica al usuario autenticado mediante `@RequestHeader("X-User-Id")` propagado por el Gateway; ya no extrae el usuario del JWT.
   - `SuscripcionService` — Capa de negocio de suscripciones. Gestiona planes BASICO/PREMIUM, límites de préstamo y cancelaciones.
@@ -41,3 +42,4 @@
 - 2026-07-18 — M-07 Hotfix: ASM bug fix. @SecurityScheme eliminado de SwaggerConfig, reemplazado por configuración programática. SwaggerConfigTest migrado a @SpringBootTest. Verificado: 60 tests PASS (1 skip pre-existente), JaCoCo OK.
 - 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. SwaggerConfigTest static scan. Import SecuritySchemeType corregido.
 - 2026-07-16 — C-01: Eliminados `JwtExtractor` y `TokenExtraccionException`. `SuscripcionController` identifica usuarios vía header `X-User-Id`. Tests actualizados; agregado `SuscripcionControllerIntegrationTest`.
+- 2026-07-29 — AC-01: Agregado spring-boot-starter-actuator + management.endpoints.web.exposure.include: health.

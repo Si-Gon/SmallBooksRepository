@@ -1,8 +1,9 @@
 ## Última Actualización
-- Fecha: 2026-07-20
-- Pipeline: M-10 — NoSuchElementException → 404 NOT_FOUND en GlobalExceptionHandler
+- Fecha: 2026-07-29
+- Pipeline: AC-01 — Actuator: management.endpoints.web.exposure.include: health (ya tenía spring-boot-starter-actuator)
 
 ## Estado Actual del Servicio
+- spring-boot-starter-actuator (ya existía). management.endpoints.web.exposure.include: health — expone /actuator/health.
 - Clases principales:
   - `NotificacionService` — orquesta la creación, consulta y marcado de notificaciones. Usa idempotencyKey para evitar duplicados vía RabbitMQ.
   - `Notificacion` (entidad JPA) — modelo con usuarioId, tipo, mensaje, fechaEnvio, leida, idempotencyKey.
@@ -40,3 +41,4 @@
 - 2026-07-18 — M-07 Hotfix: ASM bug fix. @SecurityScheme eliminado de SwaggerConfig, reemplazado por configuración programática. SwaggerConfigTest migrado a @SpringBootTest. Verificado: 132 tests PASS (31 skips pre-existentes), JaCoCo OK.
 - 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. SwaggerConfigTest static scan. Import SecuritySchemeType corregido.
 - 2026-07-15 — Implementado bulk UPDATE con @Modifying @Query en marcarTodasLeidasPorUsuario(). Agregado @Transactional al servicio. Tests de repositorio y servicio actualizados.
+- 2026-07-29 — AC-01: management.endpoints.web.exposure.include: health agregado (spring-boot-starter-actuator ya existía).

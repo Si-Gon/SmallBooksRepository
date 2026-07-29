@@ -6,8 +6,8 @@
 ![Java](https://img.shields.io/badge/Java-17-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.11-green)
 ![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2023.0.5-green)
-![Tests](https://img.shields.io/badge/Tests-859-blue)
-![Coverage](https://img.shields.io/badge/Coverage-90%25-brightgreen)
+![Tests](https://img.shields.io/badge/Tests-1445-blue)
+![Coverage](https://img.shields.io/badge/Coverage-96.66%25-brightgreen)
 ![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-black)
 
 ---
@@ -115,7 +115,7 @@ SmallBooks es una plataforma de biblioteca digital que permite a los usuarios ex
 | **Build** | Maven multi-módulo |
 | **Utilidades** | Lombok, SLF4J, Bean Validation |
 | **Testing** | JUnit 5 + Mockito + JaCoCo |
-| **Cobertura** | 90.17% — 859 tests, 0 fallos |
+| **Cobertura** | 96.66% — 1,445 tests |
 | **Contenedores** | Docker + Docker Compose |
 | **CI/CD** | GitHub Actions (path filtering por módulo) |
 
@@ -209,20 +209,20 @@ mvn test -pl elending-service
 
 | Microservicio | Tests | Cobertura |
 |---|---|---|
-| `elending-service` | 248 | 97.82% |
-| `catalog-service` | 116 | 98.47% |
-| `notification-service` | 112 | 95.61% |
-| `identity-services` | 58 | 69.57% |
-| `microservice-gateway` | 55 | 97.04% |
-| `license-service` | 54 | 90.31% |
-| `subscription-service` | 48 | 97.71% |
-| `search-service` | 45 | 96.39% |
-| `ingestion-service` | 39 | 72.99% |
-| `analytics-service` | 38 | 94.05% |
-| `content-service` | 34 | 93.59% |
-| `microservice-config` | 6 | 40.00% |
-| `microservice-eureka` | 6 | 40.00% |
-| **Total** | **859** | **90.17%** |
+| `elending-service` | 295 | 99.50% |
+| `catalog-service` | 198 | 99.04% |
+| `notification-service` | 155 | 96.71% |
+| `identity-services` | 199 | 98.42% |
+| `microservice-gateway` | 113 | 91.60% |
+| `license-service` | 98 | 97.66% |
+| `subscription-service` | 65 | 98.54% |
+| `search-service` | 88 | 98.17% |
+| `ingestion-service` | 70 | 86.46% |
+| `analytics-service` | 75 | 96.40% |
+| `content-service` | 75 | 97.94% |
+| `microservice-config` | 8 | 33.33% |
+| `microservice-eureka` | 6 | 33.33% |
+| **Total** | **1,445** | **96.66%** |
 
 ---
 

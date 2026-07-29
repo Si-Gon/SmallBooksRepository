@@ -1,8 +1,11 @@
 ## Última Actualización
-- Fecha: 2026-07-20
-- Pipeline: Z-01 — Limpieza de exception classes zombie (10 clases)
+- Fecha: 2026-07-29
+- Pipeline: AC-01+AC-03 — Actuator + Trazabilidad Feign real
 
 ## Estado Actual del Servicio
+- spring-boot-starter-actuator agregado. Expone /actuator/health.
+- spring.cloud.openfeign.micrometer.enabled: true — Feign crea observaciones Micrometer.
+- TracePropagationInterceptor: propaga headers B3 (X-B3-TraceId, X-B3-SpanId) en llamadas Feign a catalog-service.
 - Clases principales:
   - `CatalogClient` — Feign client hacia catalog-service. `obtenerTodos()` retorna `Page<LibroCatalogDTO>` con parámetros page, size, sort. Circuit Breaker habilitado con `fallbackFactory`.
   - `CatalogClientFallbackFactory` — FallbackFactory para CatalogClient. Cuando catalog-service no responde, `obtenerTodos()` devuelve `Page.empty()`, `buscar()` y `obtenerDisponibles()` devuelven `Collections.emptyList()`.
@@ -39,3 +42,5 @@
 - 2026-07-15 — Feign Client CatalogClient actualizado a `Page<LibroCatalogDTO>` con parámetros page/size/sort. SearchService usa `page.getContent()`. Tests actualizados.
 - 2026-07-15 — Agregado `@Transactional(readOnly = true)` a `buscar()`, `buscarDisponibles()`, `obtenerTodos()` para optimización de rendimiento JPA y consistencia con el código base.
 - 2026-07-16 — Agregado Circuit Breaker + FallbackFactory a CatalogClient siguiendo el patrón de elending-service. Resilience4j config en application.yml. Dependencia en pom.xml.
+- 2026-07-29 — AC-01: Agregado spring-boot-starter-actuator + management.endpoints.web.exposure.include: health.
+- 2026-07-29 — AC-03: Agregado spring.cloud.openfeign.micrometer.enabled: true + TracePropagationInterceptor. Trazabilidad fin-a-fin via Feign.

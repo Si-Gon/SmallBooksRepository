@@ -1,8 +1,11 @@
 ## Última Actualización
-- Fecha: 2026-07-20
-- Pipeline: Z-01 — Limpieza de exception classes zombie (10 clases)
+- Fecha: 2026-07-29
+- Pipeline: AC-01+AC-03 — Actuator + Trazabilidad Feign real
 
 ## Estado Actual del Servicio
+- spring-boot-starter-actuator agregado. Expone /actuator/health.
+- spring.cloud.openfeign.micrometer.enabled: true — Feign crea observaciones Micrometer.
+- TracePropagationInterceptor: propaga headers B3 (X-B3-TraceId, X-B3-SpanId) en llamadas Feign a elending-service e ingestion-service.
 - Clases principales:
   - `ContentService` — Capa de negocio de contenido. Verifica préstamos activos vía Feign client hacia elending-service, luego obtiene archivos vía Feign client hacia ingestion-service. Sin acceso directo a JPA/Hibernate.
   - `LendingClient` — Feign client hacia elending-service. `obtenerPrestamosActivos(usuarioId)` retorna `List<PrestamoDTO>` y envía el header `X-User-Id` en lugar de `Authorization`. Circuit Breaker habilitado con `fallbackFactory`.
@@ -45,3 +48,5 @@
 - 2026-07-16 — C-01 impacto: `ContentController`/`ContentService`/`LendingClient` migrados a header `X-User-Id`. Tests actualizados; agregado `ContentControllerIntegrationTest`.
 - 2026-07-15 — Agregado `@Transactional(readOnly = true)` a `obtenerArchivo()` para optimización de rendimiento JPA y consistencia con el código base.
 - 2026-07-16 — Agregado Circuit Breaker + FallbackFactory a LendingClient e IngestionClient siguiendo el patrón de elending-service. Resilience4j config en application.yml. Dependencia en pom.xml.
+- 2026-07-29 — AC-01: Agregado spring-boot-starter-actuator + management.endpoints.web.exposure.include: health.
+- 2026-07-29 — AC-03: Agregado spring.cloud.openfeign.micrometer.enabled: true + TracePropagationInterceptor. Trazabilidad fin-a-fin via Feign.

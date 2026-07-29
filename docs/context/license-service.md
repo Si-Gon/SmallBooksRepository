@@ -1,8 +1,9 @@
 ## Última Actualización
-- Fecha: 2026-07-20
-- Pipeline: M-10 — NoSuchElementException → 404 NOT_FOUND en GlobalExceptionHandler
+- Fecha: 2026-07-29
+- Pipeline: AC-01 — Actuator
 
 ## Estado Actual del Servicio
+- spring-boot-starter-actuator agregado. Expone /actuator/health.
 - Clases principales:
   - `License` (com.silvio.license.model) — Entidad JPA que mapea la tabla `licencias`. Contiene: id, libroId, totalCopias, copiasDisponibles, version (optimistic locking).
   - `LicenseRepository` (com.silvio.license.repository) — Interface Spring Data JPA. Métodos: `findByLibroId(Long)`, hereda `findAll(Pageable)` que retorna `Page<License>`.
@@ -43,3 +44,4 @@
 - 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. SwaggerConfigTest static scan. Import SecuritySchemeType corregido.
 - 2026-07-17 — M-07: prestar()/devolver() cambiados a @PatchMapping. @ApiResponse descriptions actualizadas con "PATCH —".
 - 2026-07-15 19:38 — Paginación en `GET /api/licenses`: `obtenerTodas()` refactorizado para aceptar `Pageable`, controller con `@PageableDefault(size=20, sort="id")`, Swagger actualizado, +8 tests de paginación agregados
+- 2026-07-29 — AC-01: Agregado spring-boot-starter-actuator + management.endpoints.web.exposure.include: health.

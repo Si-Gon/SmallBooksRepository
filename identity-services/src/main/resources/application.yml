@@ -15,6 +15,10 @@ logging:
 
 # Tracing distribuido — fallback local cuando el Config Server no está disponible
 management:
+  endpoints:
+    web:
+      exposure:
+        include: health
   tracing:
     sampling:
       probability: 1.0

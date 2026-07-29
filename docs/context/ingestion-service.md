@@ -1,8 +1,9 @@
 ## Última Actualización
-- Fecha: 2026-07-20
-- Pipeline: M-04 — validación de magic bytes en subirArchivo()
+- Fecha: 2026-07-29
+- Pipeline: AC-01 — Actuator
 
 ## Estado Actual del Servicio
+- spring-boot-starter-actuator agregado. Expone /actuator/health.
 - Clases principales:
   - `ArchivoLibro` — Entidad JPA que mapea la tabla `archivos_libros`. Contiene metadatos del archivo (nombre, formato, tamaño, ruta) y el contenido binario (LONGBLOB) cargado bajo demanda vía `@Basic(fetch = FetchType.LAZY)`.
   - `ArchivoLibroInfo` — Proyección cerrada de interfaz Spring Data que excluye el campo LONGBLOB `datos`. Usada en consultas de solo metadatos.
@@ -48,3 +49,4 @@
 - 2026-07-18 — M-07 Hotfix: ASM bug fix. @SecurityScheme eliminado de SwaggerConfig, reemplazado por configuración programática. SwaggerConfigTest migrado a @SpringBootTest. Verificado: 64 tests PASS (1 skip pre-existente), JaCoCo OK.
 - 2026-07-17 — M-05: @SecurityScheme en SwaggerConfig. SwaggerConfigTest static scan. Import SecuritySchemeType corregido.
 - 2026-07-15 — Fix crítico de rendimiento JPA: `@Basic(fetch = FetchType.LAZY)` en LONGBLOB, proyección `ArchivoLibroInfo`, `findInfoByLibroId()` en repositorio, `obtenerInfo()` refactorizado para usar proyección. Tests actualizados.
+- 2026-07-29 — AC-01: Agregado spring-boot-starter-actuator + management.endpoints.web.exposure.include: health.

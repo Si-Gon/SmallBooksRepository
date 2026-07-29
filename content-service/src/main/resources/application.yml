@@ -9,6 +9,8 @@ spring:
     openfeign:
       circuitbreaker:
         enabled: true
+      micrometer:
+        enabled: true
 
   # Sin BD propia — depende de E-Lending e Ingestion via Feign
   autoconfigure:
@@ -54,6 +56,10 @@ resilience4j:
 
 # Tracing distribuido — fallback local cuando el Config Server no esta disponible
 management:
+  endpoints:
+    web:
+      exposure:
+        include: health
   tracing:
     sampling:
       probability: 1.0

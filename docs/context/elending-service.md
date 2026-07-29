@@ -1,8 +1,12 @@
 ## Última Actualización
-- Fecha: 2026-07-20
-- Pipeline: Z-01 — Limpieza de exception classes zombie (10 clases)
+- Fecha: 2026-07-29
+- Pipeline: AC-04 — IDs dinámicos en PipelineIntegrationTest para evitar colisiones entre runs
 
 ## Estado Actual del Servicio
+- spring-boot-starter-actuator agregado. Expone /actuator/health.
+- spring.cloud.openfeign.micrometer.enabled: true — Feign crea observaciones Micrometer.
+- TracePropagationInterceptor: propaga headers B3 (X-B3-TraceId, X-B3-SpanId) en llamadas Feign a catalog-service, identity-service, license-service y subscription-service.
+- PipelineIntegrationTest: ISBN dinámico con timestamp para evitar 409 Conflict. ADMIN_USER y USER_ID también dinámicos (sufijo timestamp) para evitar colisiones de límite de préstamos (plan BASICO, max 2) entre ejecuciones. Inicializados en @BeforeAll.
 - Clases principales:
   - `CatalogClient` (com.silvio.elending.client) — Feign client hacia catalog-service. `obtenerTodos()` retorna `Page<LibroDTO>` con parámetros page, size, sort. Circuit breaker habilitado via `spring.cloud.openfeign.circuitbreaker.enabled=true`.
   - `CatalogClientFallbackFactory` (com.silvio.elending.client) — Fallback factory para CatalogClient. `obtenerTodos()` retorna `Page.empty()` cuando el circuito está abierto.
@@ -63,3 +67,7 @@
 - 2026-07-16 — C-01: Eliminados `JwtExtractor` y `TokenExtraccionException`. `PrestamoController` identifica usuarios vía header `X-User-Id`. Tests actualizados; agregado `PrestamoControllerIntegrationTest`.
 - 2026-07-15 — Feign Client CatalogClient actualizado a `Page<LibroDTO>` con parámetros page/size/sort. FallbackFactory retorna `Page.empty()`. Tests de fallback actualizados.
 - 2026-07-15 — `PrestamoService.obtenerTodos()` refactorizado a `Page<PrestamoResponseDTO> obtenerTodos(Pageable)`. Controller actualizado con `@PageableDefault`. Tests expandidos con casos de paginación. AnalyticsService actualizado para usar `page.getContent()`. LendingClient retorna `Page<PrestamoAnalyticsDTO>`.
+- 2026-07-29 — AC-01: Agregado spring-boot-starter-actuator + management.endpoints.web.exposure.include: health.
+- 2026-07-29 — AC-02: PipelineIntegrationTest: ISBN dinamico para evitar 409 en corridas sucesivas.
+- 2026-07-29 — AC-03: Agregado spring.cloud.openfeign.micrometer.enabled: true + TracePropagationInterceptor. Trazabilidad fin-a-fin via Feign.
+- 2026-07-29 — AC-04: PipelineIntegrationTest: ADMIN_USER y USER_ID dinámicos con sufijo timestamp. Evita colisiones de límite de préstamos entre ejecuciones.

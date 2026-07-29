@@ -1,8 +1,9 @@
 ## Última Actualización
-- Fecha: 2026-07-20
-- Pipeline: M-10 — NoSuchElementException → 404 NOT_FOUND en GlobalExceptionHandler
+- Fecha: 2026-07-29
+- Pipeline: AC-01 — Actuator
 
 ## Estado Actual del Servicio
+- spring-boot-starter-actuator agregado. Expone /actuator/health.
 - Clases principales:
   - `User` (entidad JPA) — modelo con username, password (BCrypt hash), roles (Set<String> como @ElementCollection LAZY), `resetTokenHash` (hash SHA-256 del token de recuperación, nunca texto plano), resetTokenExpiry, refreshTokenHash (hash SHA-256 del refresh token vigente).
   - `UserRepository` — repositorio JPA con findByUsername (lazy), findByUsernameWithRoles (eager vía @EntityGraph), `findByResetTokenHash`, findByRefreshTokenHash.
@@ -63,3 +64,4 @@
 - 2026-07-16 — Tests agregados: resetPassword_tokenYaUtilizadoAnteriormente_debeFallar (UserServiceTest), register_conRolesEnJson_ignoradosSinEfecto (AuthControllerTest). Total: 169 tests identity-services.
 - 2026-07-17 — H-02: createPasswordResetToken() usa Optional, retorna null si usuario no existe. forgotPassword() retorna siempre 200 OK con mensaje genérico. Tests actualizados y nuevos.
 - 2026-07-17 — H-01: JwtAuthenticationFilter maneja roles null/blank con Collections.emptyList(). Import Collections agregado. JwtAuthenticationFilterTest creado con 3 tests. Total: 184 tests, 0 fallos.
+- 2026-07-29 — AC-01: Agregado spring-boot-starter-actuator + management.endpoints.web.exposure.include: health.
