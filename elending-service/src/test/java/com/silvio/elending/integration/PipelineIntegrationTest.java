@@ -43,6 +43,12 @@ class PipelineIntegrationTest {
 
     @BeforeAll
     static void seedData() throws Exception {
+        // Omitir el test si el entorno Docker de integración no está levantado.
+        // Esto evita fallas de conexión (java.net.ConnectException) cuando se ejecuta
+        // `mvn test` sin haber levantado docker-compose.test.yml previamente.
+        Assumptions.assumeTrue(dockerTestDisponible(),
+                "Entorno Docker de integración no disponible — se omite PipelineIntegrationTest");
+
         // IDs únicos por ejecución para evitar colisión con datos de runs anteriores
         seedTimestamp = String.valueOf(System.currentTimeMillis());
         adminUser = "admin-" + seedTimestamp;
@@ -94,6 +100,7 @@ class PipelineIntegrationTest {
                 .uri(URI.create(ELENDING_URL + "/api/lending/prestamos"))
                 .header("Content-Type", "application/json")
                 .header("X-User-Id", userId)
+                .header("X-User-Roles", "ROLE_USER")
                 .POST(HttpRequest.BodyPublishers.ofString(prestamoJson))
                 .build(),
             HttpResponse.BodyHandlers.ofString());
@@ -229,6 +236,25 @@ class PipelineIntegrationTest {
     }
 
     // ─── Helpers: control de contenedores Docker ────────────────────────────
+
+    /**
+     * Verifica rápidamente si el entorno Docker de integración está disponible.
+     * Intenta contactar al health check de catalog-service con un timeout corto.
+     * Si no responde, el test se omite (Assumptions.assumeTrue) en lugar de fallar.
+     */
+    private static boolean dockerTestDisponible() {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(CATALOG_URL + "/actuator/health"))
+                    .timeout(Duration.ofSeconds(2))
+                    .GET()
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.statusCode() == 200 && response.body().contains("\"status\":\"UP\"");
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     private static void detenerContenedor(String nombreContenedor) throws IOException, InterruptedException {
         ejecutarComando("docker", "stop", nombreContenedor);

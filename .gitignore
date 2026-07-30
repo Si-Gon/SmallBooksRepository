@@ -50,6 +50,7 @@ Thumbs.db
 .opencode-context.md
 .opencode-history/
 BACKLOG.md
+pipeline-artifacts/
 
 # Reportes de auditoría 
 docs/*security-audit*.md

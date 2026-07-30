@@ -27,6 +27,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * - El header Authorization ya no se procesa en este microservicio.
  * - Si un cliente malicioso llega directamente con X-User-Id arbitrario,
  *   el servicio lo acepta por diseño (la seguridad está en el Gateway).
+ *
+ * Con la actualización de SecurityConfig, los tests también envían X-User-Roles
+ * para pasar la autorización de Spring Security (hasRole("USER")) y llegar al controller.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -53,7 +56,8 @@ class PrestamoControllerIntegrationTest {
     @Test
     void obtenerActivos_conXUserId_debeRetornar200() throws Exception {
         mockMvc.perform(get("/api/lending/prestamos/activos")
-                        .header("X-User-Id", USUARIO_ID))
+                        .header("X-User-Id", USUARIO_ID)
+                        .header("X-User-Roles", "ROLE_USER"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
     }
@@ -61,8 +65,11 @@ class PrestamoControllerIntegrationTest {
     @Test
     void obtenerActivos_conAuthorizationSinXUserId_debeRetornar400() throws Exception {
         // El servicio ya no extrae el usuario del JWT; sin X-User-Id debe fallar.
+        // Se agrega X-User-Roles para pasar la autorización de Spring Security
+        // y llegar al controller, que valida la presencia de X-User-Id.
         mockMvc.perform(get("/api/lending/prestamos/activos")
-                        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.fake"))
+                        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.fake")
+                        .header("X-User-Roles", "ROLE_USER"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -71,7 +78,8 @@ class PrestamoControllerIntegrationTest {
         // El Gateway es el único responsable de validar el JWT y sobrescribir X-User-Id.
         // Un acceso directo al microservicio con un header arbitrario es aceptado por diseño.
         mockMvc.perform(get("/api/lending/prestamos/activos")
-                        .header("X-User-Id", "hacker_directo"))
+                        .header("X-User-Id", "hacker_directo")
+                        .header("X-User-Roles", "ROLE_USER"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
     }
@@ -79,7 +87,8 @@ class PrestamoControllerIntegrationTest {
     @Test
     void obtenerHistorial_conXUserId_debeRetornar200() throws Exception {
         mockMvc.perform(get("/api/lending/prestamos/historial")
-                        .header("X-User-Id", USUARIO_ID))
+                        .header("X-User-Id", USUARIO_ID)
+                        .header("X-User-Roles", "ROLE_USER"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
     }
@@ -91,6 +100,7 @@ class PrestamoControllerIntegrationTest {
 
         mockMvc.perform(post("/api/lending/prestamos")
                         .header("X-User-Id", USUARIO_ID)
+                        .header("X-User-Roles", "ROLE_USER")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
@@ -98,11 +108,14 @@ class PrestamoControllerIntegrationTest {
 
     @Test
     void crearPrestamo_conAuthorizationSinXUserId_debeRetornar400() throws Exception {
+        // Se agrega X-User-Roles para pasar la autorización de Spring Security
+        // y llegar al controller, que valida la presencia de X-User-Id.
         PrestamoRequestDTO request = new PrestamoRequestDTO();
         request.setLibroId(1L);
 
         mockMvc.perform(post("/api/lending/prestamos")
                         .header("Authorization", "Bearer token.valido.aqui")
+                        .header("X-User-Roles", "ROLE_USER")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());

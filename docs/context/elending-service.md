@@ -1,6 +1,6 @@
 ## Última Actualización
 - Fecha: 2026-07-29
-- Pipeline: AC-04 — IDs dinámicos en PipelineIntegrationTest para evitar colisiones entre runs
+- Pipeline: SecurityConfig — Reemplazar permitAll() con reglas de autorización reales por endpoint
 
 ## Estado Actual del Servicio
 - spring-boot-starter-actuator agregado. Expone /actuator/health.
@@ -15,17 +15,19 @@
   - `Prestamo` (model) — Entidad JPA con `@Version` para optimistic locking.
   - `PrestamoRepository` — Spring Data JPA repository. Hereda `findAll(Pageable)` de `JpaRepository`.
   - `LibroDTO` (com.silvio.elending.dto) — DTO de Catalog Service (id, titulo, autor, isbn, genero, disponible).
-  - `JwtAuthenticationFilter` — Filtro interno que preserva el token JWT para llamadas Feign; ya no utiliza `JwtExtractor`.
-  - `GlobalExceptionHandler` — Maneja `MissingRequestHeaderException` como 400; se eliminó el manejador de `TokenExtraccionException`.
-  - Eliminados en este pipeline: `JwtExtractor.java`, `JwtExtractorTest.java`, `TokenExtraccionException.java`.
-- Endpoints expuestos:
-  - `GET /api/lending/prestamos/activos` — Préstamos activos del usuario autenticado (requiere header `X-User-Id`).
-  - `GET /api/lending/prestamos/historial` — Historial completo del usuario autenticado (requiere header `X-User-Id`).
-  - `GET /api/lending/prestamos/todos` — Todos los préstamos del sistema con paginación (interno, usado por Analytics Service). Acepta `page`, `size`, `sort` como query params. Default: size=50, sort=fechaInicio,DESC.
-  - `GET /api/lending/prestamos/historial/{usuarioId}` — Historial por usuario (interno, usado por Analytics Service).
-  - `POST /api/lending/prestamos` — Crear préstamo (requiere header `X-User-Id`).
+   - `JwtAuthenticationFilter` — Filtro que lee 3 headers (`X-User-Id`, `X-User-Roles`, `Authorization`) y construye `UsernamePasswordAuthenticationToken` con principal=userId, credentials=token (para Feign), authorities=roles parseados (para hasRole()). SIEMPRE setea Authentication en SecurityContextHolder, incluso sin headers.
+   - `SecurityConfig` — Configuración de seguridad con reglas por endpoint: `/actuator/health`, `/swagger-ui/**`, `/v3/api-docs/**` permitAll(); endpoints de usuario requieren hasRole("USER"); `/todos` requiere hasRole("ADMIN"); fallback anyRequest().authenticated(). Cada regla documentada con comentarios.
+   - `GlobalExceptionHandler` — Maneja `MissingRequestHeaderException` como 400; se eliminó el manejador de `TokenExtraccionException`.
+   - `SecurityConfigIntegrationTest` — 26 tests que verifican autorización con filtros habilitados (públicos, USER, ADMIN, fallback).
+   - Eliminados en pipelines previos: `JwtExtractor.java`, `JwtExtractorTest.java`, `TokenExtraccionException.java`.
+ - Endpoints expuestos:
+   - `POST /api/lending/prestamos` — Crear préstamo. Requiere hasRole("USER") + header `X-User-Id`.
+   - `GET /api/lending/prestamos/activos` — Préstamos activos del usuario autenticado. Requiere hasRole("USER") + header `X-User-Id`.
+   - `GET /api/lending/prestamos/historial` — Historial completo del usuario autenticado. Requiere hasRole("USER") + header `X-User-Id`.
+   - `GET /api/lending/prestamos/historial/{usuarioId}` — Historial por usuario (validación IDOR manual en controller via `validarAccesoUsuario()`). Requiere hasRole("USER") para pasar SecurityConfig; la validación IDOR opera dentro del controller.
+   - `GET /api/lending/prestamos/todos` — Todos los préstamos del sistema con paginación (interno, Analytics Service via Feign). Requiere hasRole("ADMIN"). Acepta `page`, `size`, `sort` como query params. Default: size=50, sort=fechaInicio,DESC.
 - Dependencias externas: catalog-service (Feign), license-service (Feign), subscription-service (Feign), RabbitMQ (notificaciones), MySQL/PostgreSQL (base de datos), ShedLock (bloqueo distribuido)
-- Cobertura de tests: 273 tests, 0 fallos, 1 skipped. Controllers afectados ~95% línea; tests de integración agregados en `PrestamoControllerIntegrationTest`.
+- Cobertura de tests: 306 tests, 0 fallos, 1 skipped (PipelineIntegrationTest requiere Docker). Tests de seguridad: 26 tests en `SecurityConfigIntegrationTest` (filtros habilitados, 5 grupos de endpoints). Controllers afectados ~95% línea.
 
 ## Decisiones Técnicas
 - **M-01 IDOR: validación de acceso via header X-User-Id** — Se agregó helper `validarAccesoUsuario()` en `PrestamoController` para endpoint `GET /api/lending/prestamos/historial/{usuarioId}`. Compara `X-User-Id` header con `{usuarioId}` path variable. Lanza `AccesoDenegadoException` si no coinciden o header ausente. ROLE_ADMIN bypass. Alternativa descartada: Spring Security — microservicio no tiene SecurityContext; validación en controller layer.
@@ -42,6 +44,13 @@
 - **C-01: Eliminación de `JwtExtractor`** — `elending-service` ya no decodifica Base64 del payload JWT sin verificar firma. Confía en el header `X-User-Id` validado e inyectado por el Gateway. Alternativa descartada: validar el JWT localmente — duplicaría el secret y la lógica de validación en cada microservicio.
 - **Manejo de header ausente** — `GlobalExceptionHandler` captura `MissingRequestHeaderException` y responde 400. Los tests de "token inválido" se reemplazaron por tests de header `X-User-Id` ausente.
 - **Enlaces HATEOAS con `methodOn(...)`** — Se pasa `null` en el argumento del header dentro de `methodOn(...)` porque el header no forma parte de la URI generada.
+- **SEC-01: Reglas de autorización por endpoint en SecurityConfig** — Reemplazado `.anyRequest().permitAll()` con reglas explícitas: endpoints públicos (health, Swagger) permitAll(); endpoints de préstamo de usuario hasRole("USER"); `/todos` hasRole("ADMIN"); fallback authenticated(). Alternativa descartada: mantener permitAll() — sin autenticación real, cualquier cliente podía crear/listar préstamos de cualquier usuario.
+- **SEC-01: JwtAuthenticationFilter siempre setea Authentication** — Incluso sin headers, se crea un `UsernamePasswordAuthenticationToken` con principal=null, credentials=null, authorities=empty. Esto asegura que `FeignRequestInterceptor` nunca reciba null en `SecurityContextHolder.getContext().getAuthentication()`, y que el token JWT se preserve en credentials para propagación Feign. Efecto colateral: `anyRequest().authenticated()` se satisface incluso sin headers reales.
+- **SEC-01: hasRole("USER") para /historial/{usuarioId}** — Se usa hasRole("USER") en lugar de permitAll() para que el request pase SecurityConfig y llegue al controller, donde `validarAccesoUsuario()` aplica la validación IDOR (mismo usuario o admin bypass). Alternativa descartada: permitAll() + IDOR en controller — dejaba el endpoint sin autenticación básica.
+- **SEC-01: hasRole("ADMIN") para /todos** — Endpoint que expone TODOS los préstamos del sistema. Restringido a ADMIN. Alternativa descartada: hasRole("USER") — cualquier usuario autenticado podría ver datos de todos los préstamos.
+- **SEC-01: FINDING — ADMIN puro no accede a endpoints USER** — Un usuario con solo ROLE_ADMIN (sin ROLE_USER) recibe 403 en endpoints protegidos por hasRole("USER"). Decisión: mantener hasRole("USER") como está; asegurar que el Identity Service asigne ROLE_USER a todos los usuarios (incluyendo admins).
+- **SEC-01: parseRoles() copiado de catalog-service** — Método que parsea el header X-User-Roles (CSV) en `List<SimpleGrantedAuthority>`. Split por coma, trim, filtrado de vacíos. Consistente con el patrón del resto del proyecto.
+- **SEC-01: PipelineIntegrationTest con Docker detection** — Se agregó `Assumptions.assumeTrue(dockerTestDisponible(), ...)` al inicio de seedData() para omitir la clase cuando catalog-service no responde. Se agregó header `X-User-Roles: ROLE_USER` al POST de creación de préstamo. Alternativa descartada: ignorar el test siempre — Docker disponible en CI/TEAMS.
 
 ## Criterios de Aceptación Cumplidos
 - **M-01: Validar X-User-Id vs {usuarioId} en endpoint `GET /api/lending/prestamos/historial/{usuarioId}`** → Implementado via helper `validarAccesoUsuario()`. AccesoDenegadoException→403. Tests: mismo usuario 200, otro usuario 403, admin 200, header ausente 403 (4 tests agregados en PrestamoControllerTest).
@@ -56,6 +65,11 @@
 - **C-01: Actualizar `PrestamoController` para usar `@RequestHeader("X-User-Id") String usuarioId`** → Implementado en `crearPrestamo`, `obtenerActivos` y `obtenerHistorial`.
 - **C-01: Actualizar `PrestamoControllerTest`** → Se quitaron mocks de `JwtExtractor`, se usan headers `X-User-Id` y se agregaron tests de header ausente.
 - **C-01: Mantener comentarios en español consistentes** → Comentarios y descripciones OpenAPI actualizados.
+- **SEC-01: Reemplazar permitAll() con reglas de autorización reales** → Implementado en SecurityConfig: 3 endpoints permitAll() (health, Swagger), 4 endpoints hasRole("USER"), 1 endpoint hasRole("ADMIN"), fallback authenticated(). Cada regla documentada con comentarios.
+- **SEC-01: JwtAuthenticationFilter debe poblar autoridades para hasRole()** → Implementado: parsea X-User-Roles en `List<SimpleGrantedAuthority>`, construye `UsernamePasswordAuthenticationToken` con authorities. Token preservado en credentials para FeignRequestInterceptor.
+- **SEC-01: Tests existentes deben seguir pasando** → 306 tests, 0 failures, 0 errors, 1 skipped. SecurityConfigIntegrationTest (26 tests) verifica reglas con filtros habilitados.
+- **SEC-01: PipelineIntegrationTest compatible con Docker** → `seedData()` usa `Assumptions.assumeTrue()` para omitir sin Docker. POST /api/lending/prestamos envía X-User-Roles: ROLE_USER.
+- **SEC-01: Ningún endpoint queda con permitAll() salvo justificación explícita** → Justificados: `/actuator/health` (health check), `/swagger-ui/**` y `/v3/api-docs/**` (documentación). Todos los endpoints de préstamo tienen hasRole("USER") o hasRole("ADMIN").
 
 ## Historial de Cambios
 - 2026-07-20 — Z-01: Eliminada PrestamoNotFoundException (zombie pura, 0 referencias en producción). Verificación grep: sin throw new ni imports.
@@ -71,3 +85,4 @@
 - 2026-07-29 — AC-02: PipelineIntegrationTest: ISBN dinamico para evitar 409 en corridas sucesivas.
 - 2026-07-29 — AC-03: Agregado spring.cloud.openfeign.micrometer.enabled: true + TracePropagationInterceptor. Trazabilidad fin-a-fin via Feign.
 - 2026-07-29 — AC-04: PipelineIntegrationTest: ADMIN_USER y USER_ID dinámicos con sufijo timestamp. Evita colisiones de límite de préstamos entre ejecuciones.
+- 2026-07-29 — SEC-01: SecurityConfig reemplazado: permitAll() → hasRole("USER")/hasRole("ADMIN") por endpoint + fallback authenticated(). JwtAuthenticationFilter ahora parsea X-User-Id/X-User-Roles, siempre setea Authentication. SecurityConfigIntegrationTest: 26 tests de autorización. PipelineIntegrationTest: Docker detection + X-User-Roles header.
